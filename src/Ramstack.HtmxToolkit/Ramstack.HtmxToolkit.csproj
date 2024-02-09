@@ -1,27 +1,49 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net6.0;net7.0;net8.0</TargetFrameworks>
-    <Description>Provides functionality to ASP.NET Core to interact with Htmx (https://htmx.org).</Description>
+    <TargetFramework>net6.0</TargetFramework>
+    <Description>Enables seamless integration of HTMX with ASP.NET Core (https://htmx.org).</Description>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <NeutralLanguage>en-us</NeutralLanguage>
     <LangVersion>preview</LangVersion>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Deterministic>True</Deterministic>
   </PropertyGroup>
 
   <PropertyGroup>
     <NoWarn>649;1591;IDE0079</NoWarn>
     <WarningsAsErrors>CS8600;CS8601;CS8602;CS8603;CS8604;CS8610;CS8613;CS8614;CS8618;CS8619;CS8620;CS8625;CS8643;CS8653;CS8714</WarningsAsErrors>
   </PropertyGroup>
-  
+
   <PropertyGroup>
-    <RepositoryUrl>https://github.com/rameel/htmxtoolkit</RepositoryUrl>
+    <RepositoryUrl>https://github.com/rameel/ramstack.htmxtoolkit</RepositoryUrl>
     <PackageTags>htmx, asp.net core</PackageTags>
+    <Authors>Rameel</Authors>
+    <PackageProjectUrl>https://github.com/rameel/ramstack.htmxtoolkit#readme</PackageProjectUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <IncludeSymbols>True</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
 
   <ItemGroup>
     <None Remove="Assets\htmx-toolkit.js" />
@@ -34,6 +56,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <None Include="..\..\README.md" Link="Properties\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
   </ItemGroup>
 </Project>
