@@ -1,0 +1,17 @@
+{
+  "name": "@ramstack/htmxtoolkit",
+  "private": true,
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "build": "rollup -c"
+  },
+  "author": "rameel <rameel-b@hotmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "@rollup/plugin-terser": "^0.4.4",
+    "rollup": "^4.9.6",
+    "rollup-plugin-bundle-size": "^1.0.3",
+    "terser": "^5.27.0"
+  }
+}
