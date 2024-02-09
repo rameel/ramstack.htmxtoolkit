@@ -20,7 +20,7 @@ public sealed class HtmxResponseHeaders
     /// Initializes a new instance of the <see cref="HtmxResponseHeaders"/>.
     /// </summary>
     /// <param name="response">The HTTP response.</param>
-    public HtmxResponseHeaders(HttpResponse response) =>
+    internal HtmxResponseHeaders(HttpResponse response) =>
         _headers = response.Headers;
 
     /// <summary>

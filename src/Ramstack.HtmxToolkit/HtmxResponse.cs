@@ -30,7 +30,7 @@ public readonly struct HtmxResponse
     /// Initializes a new instance of the <see cref="HtmxResponse"/>.
     /// </summary>
     /// <param name="response">The HTTP response.</param>
-    public HtmxResponse(HttpResponse response) =>
+    internal HtmxResponse(HttpResponse response) =>
         _response = response;
 
     /// <summary>

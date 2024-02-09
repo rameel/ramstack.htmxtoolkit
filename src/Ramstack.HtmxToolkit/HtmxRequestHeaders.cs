@@ -15,6 +15,13 @@ public readonly struct HtmxRequestHeaders
     private readonly IHeaderDictionary _headers;
 
     /// <summary>
+    /// Initializes a new instance of the <see cref="HtmxRequestHeaders"/>.
+    /// </summary>
+    /// <param name="request">The HTTP request.</param>
+    internal HtmxRequestHeaders(HttpRequest request) =>
+        _headers = request.Headers;
+
+    /// <summary>
     /// Gets a value indicating whether the request was made using AJAX
     /// instead of a normal navigation.
     /// </summary>
@@ -62,13 +69,6 @@ public readonly struct HtmxRequestHeaders
     /// </summary>
     /// <remarks><see cref="HtmxRequestHeaderNames.Trigger"/></remarks>
     public string? Trigger => GetString(_headers, HtmxRequestHeaderNames.Trigger);
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="HtmxRequestHeaders"/>.
-    /// </summary>
-    /// <param name="request">The HTTP request.</param>
-    public HtmxRequestHeaders(HttpRequest request) =>
-        _headers = request.Headers;
 
     private static bool GetBoolean(IHeaderDictionary dictionary, string key) =>
         dictionary.TryGetValue(key, out var value) && value[0] == "true";
