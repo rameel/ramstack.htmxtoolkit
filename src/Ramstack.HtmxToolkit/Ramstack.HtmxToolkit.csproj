@@ -17,7 +17,7 @@
 
   <PropertyGroup>
     <RepositoryUrl>https://github.com/rameel/ramstack.htmxtoolkit</RepositoryUrl>
-    <PackageTags>htmx, asp.net core</PackageTags>
+    <PackageTags>htmx;aspnetcore</PackageTags>
     <Authors>Rameel</Authors>
     <PackageProjectUrl>https://github.com/rameel/ramstack.htmxtoolkit#readme</PackageProjectUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
