@@ -27,8 +27,7 @@ public static class HtmxAssets
 
     private static string GetResource(string name)
     {
-        var stream = typeof(HtmxAssets).Assembly.GetManifestResourceStream(
-            $"Ramstack.HtmxToolkit.Assets.{name}")!;
+        var stream = typeof(HtmxAssets).Assembly.GetManifestResourceStream(name)!;
 
         using var reader = new StreamReader(stream);
         return reader.ReadToEnd();
