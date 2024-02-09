@@ -10,7 +10,7 @@ namespace Ramstack.HtmxToolkit;
 /// Represents strongly typed HTMX request headers.
 /// </summary>
 [DebuggerTypeProxy(typeof(HtmxRequestHeadersDebugView))]
-public sealed class HtmxRequestHeaders
+public readonly struct HtmxRequestHeaders
 {
     private readonly IHeaderDictionary _headers;
 

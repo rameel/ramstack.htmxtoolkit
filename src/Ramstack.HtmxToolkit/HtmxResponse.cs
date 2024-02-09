@@ -12,9 +12,8 @@ namespace Ramstack.HtmxToolkit;
 /// Represents HTTP response to set htmx response headers.
 /// </summary>
 [DebuggerTypeProxy(typeof(HtmxResponseDebugView))]
-public sealed class HtmxResponse
+public readonly struct HtmxResponse
 {
-    private readonly IHeaderDictionary _headers;
     private readonly HttpResponse _response;
 
     /// <summary>
@@ -32,7 +31,7 @@ public sealed class HtmxResponse
     /// </summary>
     /// <param name="response">The HTTP response.</param>
     public HtmxResponse(HttpResponse response) =>
-        (_headers, _response) = (response.Headers, response);
+        _response = response;
 
     /// <summary>
     /// Sets the <c>HX-Location</c> header to a client-side redirect that does not do a full page reload.
@@ -189,7 +188,7 @@ public sealed class HtmxResponse
 
     private static HtmxResponse SetHeader(HtmxResponse response, string key, string value)
     {
-        response._headers[key] = new StringValues(value);
+        response._response.Headers[key] = new StringValues(value);
         return response;
     }
 
@@ -202,16 +201,25 @@ public sealed class HtmxResponse
             _ => HtmxResponseHeaderNames.TriggerAfterSwap
         };
 
-        if (response._headers.TryGetValue(key, out var values))
+        if (response._response.Headers.TryGetValue(key, out var values))
         {
             var current = JsonSerializer.Deserialize<Dictionary<string, object>>(values.ToString())!;
-            foreach (var (k, v) in events)
-                current.TryAdd(k, v);
+
+            if (events is Dictionary<string, object> dictionary)
+            {
+                foreach (var (k, v) in dictionary)
+                    current.TryAdd(k, v);
+            }
+            else
+            {
+                foreach (var (k, v) in events)
+                    current.TryAdd(k, v);
+            }
 
             events = current;
         }
 
-        response._headers[key] = JsonSerializer.Serialize(events, JsonOptions.CamelCase);
+        response._response.Headers[key] = JsonSerializer.Serialize(events, JsonOptions.CamelCase);
         return response;
     }
 
@@ -220,7 +228,7 @@ public sealed class HtmxResponse
     private sealed class HtmxResponseDebugView(HtmxResponse response)
     {
         [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
-        public KeyValuePair<string, string>[] Items => DebugHelpers.GetResponseHeaders(response._headers);
+        public KeyValuePair<string, string>[] Items => DebugHelpers.GetResponseHeaders(response._response.Headers);
     }
 
     #endregion
