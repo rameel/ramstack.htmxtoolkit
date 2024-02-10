@@ -18,6 +18,21 @@ public static class HttpRequestExtensions
         request.Headers.ContainsKey(HtmxRequestHeaderNames.Request);
 
     /// <summary>
+    /// Determines whether the specified HTTP request is htmx request.
+    /// </summary>
+    /// <param name="request">The HTTP request.</param>
+    /// <param name="headers">When this methods returns, contains the <see cref="HtmxRequestHeaders"/>
+    /// that provides well-known htmx headers.</param>
+    /// <returns>
+    /// <c>true</c> if the specified HTTP request is htmx request; otherwise, <c>false</c>.
+    /// </returns>
+    public static bool IsHtmxRequest(this HttpRequest request, out HtmxRequestHeaders headers)
+    {
+        headers = new HtmxRequestHeaders(request);
+        return request.IsHtmxRequest();
+    }
+
+    /// <summary>
     /// Determines whether the specified HTTP request was made using AJAX
     /// instead of a normal navigation.
     /// </summary>
@@ -26,7 +41,23 @@ public static class HttpRequestExtensions
     /// <c>true</c> if the specified HTTP request is boosted; otherwise, <c>false</c>.
     /// </returns>
     public static bool IsHtmxBoosted(this HttpRequest request) =>
-        request.Headers.TryGetValue(HtmxRequestHeaderNames.Boosted, out var value) && value[0] == "true";
+        request.Headers.TryGetValue(HtmxRequestHeaderNames.Boosted, out var value) && value is ["true"];
+
+    /// <summary>
+    /// Determines whether the specified HTTP request was made using AJAX
+    /// instead of a normal navigation.
+    /// </summary>
+    /// <param name="request">The HTTP request.</param>
+    /// <param name="headers">When this methods returns, contains the <see cref="HtmxRequestHeaders"/>
+    /// that provides well-known htmx headers.</param>
+    /// <returns>
+    /// <c>true</c> if the specified HTTP request is boosted; otherwise, <c>false</c>.
+    /// </returns>
+    public static bool IsHtmxBoosted(this HttpRequest request, out HtmxRequestHeaders headers)
+    {
+        headers = new HtmxRequestHeaders(request);
+        return request.IsHtmxBoosted();
+    }
 
     /// <summary>
     /// Returns the <see cref="HtmxRequestHeaders"/> that provides well-known htmx headers.
