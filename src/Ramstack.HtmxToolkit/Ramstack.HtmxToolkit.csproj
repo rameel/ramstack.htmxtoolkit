@@ -17,11 +17,12 @@
 
   <PropertyGroup>
     <RepositoryUrl>https://github.com/rameel/ramstack.htmxtoolkit</RepositoryUrl>
-    <PackageTags>htmx;aspnetcore</PackageTags>
     <Authors>Rameel</Authors>
+    <PackageTags>htmx;aspnetcore</PackageTags>
     <PackageProjectUrl>https://github.com/rameel/ramstack.htmxtoolkit#readme</PackageProjectUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageIcon>Icon.png</PackageIcon>
     <IncludeSymbols>True</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
@@ -43,6 +44,10 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="MinVer" Version="4.3.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 
   <ItemGroup>
@@ -56,6 +61,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="..\..\Icon.png" Link="Properties\Icon.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
     <None Include="..\..\README.md" Link="Properties\README.md">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>

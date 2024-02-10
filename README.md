@@ -45,6 +45,17 @@ public static class HttpRequestExtensions
     public static bool IsHtmxRequest(this HttpRequest request);
 
     /// <summary>
+    /// Determines whether the specified HTTP request is htmx request.
+    /// </summary>
+    /// <param name="request">The HTTP request.</param>
+    /// <param name="headers">When this methods returns, contains the <see cref="HtmxRequestHeaders"/>
+    /// that provides well-known htmx headers.</param>
+    /// <returns>
+    /// <c>true</c> if the specified HTTP request is htmx request; otherwise, <c>false</c>.
+    /// </returns>
+    public static bool IsHtmxRequest(this HttpRequest request, out HtmxRequestHeaders headers);
+
+    /// <summary>
     /// Determines whether the specified HTTP request was made using AJAX
     /// instead of a normal navigation.
     /// </summary>
@@ -53,6 +64,18 @@ public static class HttpRequestExtensions
     /// <c>true</c> if the specified HTTP request is boosted; otherwise, <c>false</c>.
     /// </returns>
     public static bool IsHtmxBoosted(this HttpRequest request);
+
+    /// <summary>
+    /// Determines whether the specified HTTP request was made using AJAX
+    /// instead of a normal navigation.
+    /// </summary>
+    /// <param name="request">The HTTP request.</param>
+    /// <param name="headers">When this methods returns, contains the <see cref="HtmxRequestHeaders"/>
+    /// that provides well-known htmx headers.</param>
+    /// <returns>
+    /// <c>true</c> if the specified HTTP request is boosted; otherwise, <c>false</c>.
+    /// </returns>
+    public static bool IsHtmxBoosted(this HttpRequest request, out HtmxRequestHeaders headers);
 
     /// <summary>
     /// Returns the <see cref="HtmxRequestHeaders"/> that provides well-known htmx headers.
@@ -80,7 +103,19 @@ if (Request.IsHtmxRequest())
 return View();
 ```
 
-The second method provides access to strongly typed headers set by HTMX:
+The overloads of these methods provide access to strongly typed headers set by HTMX:
+
+```csharp
+if (Request.IsHtmxRequest(out var headers))
+{
+    if (headers.HistoryRestoreRequest)
+    {
+        ...
+    }
+}
+```
+
+In addition, access to strongly typed headers can be obtained by calling `GetHtmxHeaders`:
 
 ```csharp
 var headers = Request.GetHtmxHeaders();
@@ -92,7 +127,7 @@ The full list of headers is presented below:
 /// <summary>
 /// Represents strongly typed HTMX request headers.
 /// </summary>
-public sealed class HtmxRequestHeaders
+public readonly struct HtmxRequestHeaders
 {
     /// <summary>
     /// Gets a value indicating whether the request
@@ -266,6 +301,7 @@ public sealed class HtmxResponseHeaders
     public string PushUrl { get; set; }
 
     ...
+    // The remaining properties are omitted for brevity
 }
 ```
 
@@ -554,6 +590,7 @@ For working with configuration, the `HtmxConfigTagHelper` class is provided.
           include-antiforgery-token="true" />
 </head>
 ```
+The following code will be generated:
 
 ```html
 <!DOCTYPE html>
