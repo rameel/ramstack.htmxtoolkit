@@ -92,7 +92,7 @@ The full list of headers is presented below:
 /// <summary>
 /// Represents strongly typed HTMX request headers.
 /// </summary>
-public sealed class HtmxRequestHeaders
+public readonly struct HtmxRequestHeaders
 {
     /// <summary>
     /// Gets a value indicating whether the request
@@ -266,6 +266,7 @@ public sealed class HtmxResponseHeaders
     public string PushUrl { get; set; }
 
     ...
+    // The remaining properties are omitted for brevity
 }
 ```
 
@@ -554,6 +555,7 @@ For working with configuration, the `HtmxConfigTagHelper` class is provided.
           include-antiforgery-token="true" />
 </head>
 ```
+The following code will be generated:
 
 ```html
 <!DOCTYPE html>
