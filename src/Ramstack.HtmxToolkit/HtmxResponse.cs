@@ -44,6 +44,25 @@ public readonly struct HtmxResponse
         SetHeader(this, HtmxResponseHeaderNames.Location, value);
 
     /// <summary>
+    /// Sets the <c>HX-Location</c> header to a client-side redirect that does not do a full page reload.
+    /// </summary>
+    /// <param name="path">The path of the reqeust.</param>
+    /// <param name="context">The AJAX context of the request.</param>
+    /// <returns>
+    /// The current <see cref="HtmxResponse"/> instance.
+    /// </returns>
+    public HtmxResponse Location(string path, AjaxContext context)
+    {
+        return LocationImpl(this, path, context);
+
+        static HtmxResponse LocationImpl(HtmxResponse response, string path, AjaxContext context)
+        {
+            var value = JsonSerializer.Serialize(new AjaxObject(path, context), JsonOptions.PreserveKeyCase);
+            return SetHeader(response, HtmxResponseHeaderNames.Location, value);
+        }
+    }
+
+    /// <summary>
     /// Sets the <c>HX-Push-Url</c> header to push a new URL into the history stack.
     /// </summary>
     /// <param name="value">The header value to set.</param>
