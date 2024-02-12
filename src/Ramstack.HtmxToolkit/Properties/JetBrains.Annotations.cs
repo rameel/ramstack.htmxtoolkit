@@ -40,7 +40,7 @@ namespace JetBrains.Annotations;
 /// </summary>
 /// <example><code>
 /// [CanBeNull] object Test() => null;
-/// 
+///
 /// void UseTest() {
 ///   var p = Test();
 ///   var s = p.ToString(); // Warning: Possible 'System.NullReferenceException'
@@ -75,13 +75,13 @@ internal sealed class NotNullAttribute : Attribute;
 /// <example><code>
 /// [UsedImplicitly]
 /// public class TypeConverter {}
-/// 
+///
 /// public class SummaryData
 /// {
 ///   [UsedImplicitly(ImplicitUseKindFlags.InstantiatedWithFixedConstructorSignature)]
 ///   public SummaryData() {}
 /// }
-/// 
+///
 /// [UsedImplicitly(ImplicitUseTargetFlags.WithInheritors | ImplicitUseTargetFlags.Default)]
 /// public interface IService {}
 /// </code></example>
