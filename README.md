@@ -340,7 +340,7 @@ with a callback that accepts `HtmxResponse`, allowing you to specify response he
 in a fluent style:
 
 ```csharp
-Response.Htmx(headers => headers
+Response.Htmx(h => h
     .TriggerEvent(
         eventName: "process",
         detail: new { Value = ... })
@@ -351,7 +351,7 @@ Response.Htmx(headers => headers
 
 ```csharp
 Response.Htmx(
-    static (headers, stop) => headers
+    static (h, stop) => h
         .TriggerEvent(
             eventName: "process",
             detail: new { Value = ... })
@@ -512,11 +512,11 @@ the key is the parameter name, and the value is the parameter value. In the exam
 a dictionary with specific parameters is created, which is then used as the value
 of the `hx-all-route-data` attribute.
 
-```razor
+```html
 @{
-    var parameters = new Dictionary<string, string> {
-        { "category", "science" },
-        { "pdf", "true" }
+    var parameters = new {
+        category = "science",
+        pdf = true
     };
 }
 
