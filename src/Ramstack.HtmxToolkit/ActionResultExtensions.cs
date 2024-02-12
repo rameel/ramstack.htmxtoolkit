@@ -30,4 +30,30 @@ public static class ActionResultExtensions
     /// </returns>
     public static HtmxResult<TState> Htmx<TState>(this IActionResult result, Action<HtmxResponse, TState> configure, TState state) =>
         new(result, configure, state);
+
+    /// <summary>
+    /// Converts the specified <see cref="IActionResult"/> to a partial view if it is a <see cref="ViewResult"/>.
+    /// </summary>
+    /// <param name="result">The <see cref="IActionResult"/> to convert.</param>
+    /// <returns>
+    /// If the specified <paramref name="result"/> is a <see cref="ViewResult"/>, returns a <see cref="PartialViewResult"/>;
+    /// otherwise, returns the original <paramref name="result"/>.
+    /// </returns>
+    internal static IActionResult ToPartialViewResult(this IActionResult result)
+    {
+        if (result is ViewResult view)
+        {
+            return new PartialViewResult
+            {
+                ViewName = view.ViewName,
+                ViewData = view.ViewData,
+                TempData = view.TempData,
+                ContentType = view.ContentType,
+                ViewEngine = view.ViewEngine,
+                StatusCode = view.StatusCode
+            };
+        }
+
+        return result;
+    }
 }

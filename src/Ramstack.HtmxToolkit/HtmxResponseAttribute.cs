@@ -74,6 +74,11 @@ public sealed class HtmxResponseAttribute : Attribute, IResultFilter
     /// </summary>
     public bool StopPolling { get; set; }
 
+    /// <summary>
+    /// Gets or sets a value that determines whether to return a partial view for htmx requests.
+    /// </summary>
+    public bool ReturnPartial { get; set; }
+
     /// <inheritdoc />
     public void OnResultExecuting(ResultExecutingContext context)
     {
@@ -86,6 +91,9 @@ public sealed class HtmxResponseAttribute : Attribute, IResultFilter
             var headers = response.Headers;
             foreach (ref var kvp in CollectionsMarshal.AsSpan(_headers))
                 headers[kvp.Key] = kvp.Value;
+
+            if (ReturnPartial)
+                context.Result = context.Result.ToPartialViewResult();
         }
     }
 
