@@ -177,7 +177,7 @@ public readonly struct HtmxRequestHeaders
 Example of usage:
 
 ```csharp
-if (Request.GetHtmxHeaders().IsHistoryRestoreRequests)
+if (Request.GetHtmxHeaders().HistoryRestoreRequests)
 {
     ...
 }
@@ -266,7 +266,6 @@ public static class HttpResponseExtensions
     /// <param name="response">The HTTP response to configure.</param>
     /// <param name="configure">The function to configure the htmx response headers.</param>
     public static void Htmx(this HttpResponse response, Action<HtmxResponse> configure);
-    }
 
     /// <summary>
     /// Configures the htmx response headers.
