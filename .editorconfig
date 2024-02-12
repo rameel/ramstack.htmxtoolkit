@@ -8,20 +8,23 @@ indent_style = space
 insert_final_newline = true
 trim_trailing_whitespace = true
 
-[*.{json,props,targets,csproj}]
+[*.{props,targets,csproj}]
 indent_size = 2
 
-[*.{min.js}]
+[*.min.js]
 insert_final_newline = false
 
 [*.{tt,ttinclude}]
 end_of_line = crlf
 
+[*.{cs,cshtml}]
+resharper_csharp_max_line_length = 160
+
 # IDE0079: Remove unnecessary suppression
 dotnet_remove_unnecessary_suppression_exclusions = category:ReSharper
 
 # IDE0079: Remove unnecessary suppression
-dotnet_diagnostic.IDE0079.severity = none
+# dotnet_diagnostic.IDE0079.severity = none
 
 # CA2255: The 'ModuleInitializer' attribute should not be used in libraries
 dotnet_diagnostic.CA2255.severity = none
