@@ -5,6 +5,9 @@ namespace Ramstack.HtmxToolkit;
 /// </summary>
 public sealed class AjaxContext
 {
+    /// <summary>
+    /// Gets or sets AJAX path of the request.
+    /// </summary>
     internal string? Path { get; set; }
 
     /// <summary>
