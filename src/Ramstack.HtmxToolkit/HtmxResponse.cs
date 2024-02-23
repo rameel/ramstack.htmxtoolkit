@@ -57,7 +57,7 @@ public readonly struct HtmxResponse
 
         static HtmxResponse LocationImpl(HtmxResponse response, string path, AjaxContext context)
         {
-            var value = JsonSerializer.Serialize(new AjaxObject(path, context), JsonOptions.PreserveKeyCase);
+            var value = JsonSerializer.Serialize(new AjaxContextWrapper(path, context), JsonOptions.PreserveKeyCase);
             return SetHeader(response, HtmxResponseHeaderNames.Location, value);
         }
     }

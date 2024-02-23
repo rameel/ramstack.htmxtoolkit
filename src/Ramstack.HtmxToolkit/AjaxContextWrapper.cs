@@ -7,16 +7,16 @@ namespace Ramstack.HtmxToolkit;
 /// <summary>
 /// Represents a wrapper of the <see cref="AjaxContext"/> for the serialization purpose.
 /// </summary>
-internal readonly struct AjaxObject
+internal readonly struct AjaxContextWrapper
 {
     private readonly AjaxContext _context;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="AjaxObject"/>.
+    /// Initializes a new instance of the <see cref="AjaxContextWrapper"/>.
     /// </summary>
     /// <param name="path">The path of the AJAX request.</param>
     /// <param name="context">The <see cref="AjaxContext"/>.</param>
-    public AjaxObject(string path, AjaxContext context)
+    public AjaxContextWrapper(string path, AjaxContext context)
     {
         context.Path = path;
         _context = context;
