@@ -74,7 +74,8 @@ public readonly struct HtmxResponse
     /// <list type="bullet">
     ///   <item>
     ///     A URL to be pushed into the location bar. This may be relative or absolute,
-    ///     as per <a href="https://developer.mozilla.org/en-US/docs/Web/API/History/pushState">history.pushState()</a>.</item>
+    ///     as per <a href="https://developer.mozilla.org/en-US/docs/Web/API/History/pushState">history.pushState()</a>.
+    ///   </item>
     ///   <item>
     ///     <c>false</c>, which prevents the browser's history being updated.
     ///   </item>
@@ -124,7 +125,8 @@ public readonly struct HtmxResponse
     ///   <item>
     ///     A URL to replace the current URL in the location bar. This may be relative or absolute,
     ///     as per <a href="https://developer.mozilla.org/en-US/docs/Web/API/History/replaceState">history.replaceState()</a>,
-    ///     but must have the same origin as the current URL.</item>
+    ///     but must have the same origin as the current URL.
+    ///   </item>
     ///   <item>
     ///     <c>false</c>, which prevents the browser's current URL from being updated.
     ///   </item>
