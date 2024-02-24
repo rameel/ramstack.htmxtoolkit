@@ -251,6 +251,7 @@ public sealed class HtmxConfigTagHelper(IAntiforgery antiforgery) : TagHelper
     /// <inheritdoc />
     public override Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
     {
+        output.Attributes.RemoveAll("htmx-config");
         output.Attributes.SetAttribute("name", "htmx-config");
 
         var config = new HtmlString(
