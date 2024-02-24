@@ -600,6 +600,14 @@ The following code will be generated:
 </head>
 ```
 
+If desired or for the purpose of semantics, you can use `htmx-config` as the standalone name of the element:
+```html
+<htmx-config default-swap-style="HtmxSwap.OuterHtml"
+             use-template-fragments="true"
+             scroll-behavior="HtmxScrollBehavior.Smooth"
+             include-antiforgery-token="true" />
+```
+
 ## Antiforgery Token
 
 If you have enabled the generation of the **Antiforgery** token in the configuration
