@@ -276,7 +276,7 @@ public sealed class HtmxConfigTagHelper(IAntiforgery antiforgery) : TagHelper
         public bool? HistoryEnabled => helper.HistoryEnabled;
         public int? HistoryCacheSize => helper.HistoryCacheSize;
         public bool? RefreshOnHistoryMiss => helper.RefreshOnHistoryMiss;
-        public string? DefaultSwapStyle => helper.DefaultSwapStyle?.GetSwapValue();
+        public string? DefaultSwapStyle => helper.DefaultSwapStyle.GetSwapValue();
         public int? DefaultSwapDelay => helper.DefaultSwapDelay;
         public int? DefaultSettleDelay => helper.DefaultSettleDelay;
         public bool? IncludeIndicatorStyles => helper.IncludeIndicatorStyles;
