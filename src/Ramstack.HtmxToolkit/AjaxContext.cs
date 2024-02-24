@@ -38,12 +38,12 @@ public sealed class AjaxContext
     /// <summary>
     /// Gets or sets values to submit with the request.
     /// </summary>
-    public IDictionary<string, string?>? Values { get; set; }
+    public object? Values { get; set; }
 
     /// <summary>
     /// Gets or sets headers to submit with the request.
     /// </summary>
-    public IDictionary<string, string>? Headers { get; set; }
+    public object? Headers { get; set; }
 
     /// <summary>
     /// Gets or sets allows you to select the content you want swapped from a response.

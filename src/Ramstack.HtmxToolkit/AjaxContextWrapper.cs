@@ -1,4 +1,4 @@
-﻿using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
 
 using Ramstack.HtmxToolkit.Internal;
 
@@ -28,7 +28,7 @@ internal readonly struct AjaxContextWrapper
     [JsonPropertyName("handler")] public string? Handler => _context.Handler;
     [JsonPropertyName("target")]  public string? Target => _context.Target;
     [JsonPropertyName("swap")]    public string? Swap => _context.Swap?.GetSwapValue();
-    [JsonPropertyName("values")]  public IDictionary<string, string?>? Values => _context.Values;
-    [JsonPropertyName("headers")] public IDictionary<string, string>? Headers => _context.Headers;
+    [JsonPropertyName("values")]  public object? Values => _context.Values;
+    [JsonPropertyName("headers")] public object? Headers => _context.Headers;
     [JsonPropertyName("select")]  public string? Select => _context.Select;
 }
