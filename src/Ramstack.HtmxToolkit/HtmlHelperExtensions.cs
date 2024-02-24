@@ -42,6 +42,6 @@ public static class HtmlHelperExtensions
     /// <returns>
     /// An HTML string of the path to the javascript.
     /// </returns>
-    public static IHtmlContent HtmxAntiforgeryScriptPath(this IHtmlHelper _, bool debug) =>
+    public static IHtmlContent HtmxAntiforgeryScriptPath(this IHtmlHelper _, bool debug = false) =>
         debug ? DebugPath : Path;
 }
