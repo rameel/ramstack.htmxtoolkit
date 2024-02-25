@@ -44,14 +44,54 @@ public readonly struct HtmxResponse
         SetHeader(this, HtmxResponseHeaderNames.Location, value);
 
     /// <summary>
+    /// Sets the <c>HX-Location</c> header to a client-side redirect that does not do a full page reload.
+    /// </summary>
+    /// <param name="path">The path of the request.</param>
+    /// <param name="context">The AJAX context of the request.</param>
+    /// <returns>
+    /// The current <see cref="HtmxResponse"/> instance.
+    /// </returns>
+    public HtmxResponse Location(string path, AjaxContext context)
+    {
+        return LocationImpl(this, path, context);
+
+        static HtmxResponse LocationImpl(HtmxResponse response, string path, AjaxContext context)
+        {
+            var value = JsonSerializer.Serialize(new AjaxContextWrapper(path, context), JsonOptions.PreserveKeyCase);
+            return SetHeader(response, HtmxResponseHeaderNames.Location, value);
+        }
+    }
+
+    /// <summary>
     /// Sets the <c>HX-Push-Url</c> header to push a new URL into the history stack.
     /// </summary>
     /// <param name="value">The header value to set.</param>
     /// <returns>
     /// The current <see cref="HtmxResponse"/> instance.
     /// </returns>
+    /// <remarks>
+    /// The possible values for this header are:
+    /// <list type="bullet">
+    ///   <item>
+    ///     A URL to be pushed into the location bar. This may be relative or absolute,
+    ///     as per <a href="https://developer.mozilla.org/en-US/docs/Web/API/History/pushState">history.pushState()</a>.
+    ///   </item>
+    ///   <item>
+    ///     <c>false</c>, which prevents the browser's history being updated.
+    ///   </item>
+    /// </list>
+    /// </remarks>
     public HtmxResponse PushUrl(string value) =>
         SetHeader(this, HtmxResponseHeaderNames.PushUrl, value);
+
+    /// <summary>
+    /// Sets the <c>HX-Push-Url</c> header to <c>false</c> that prevents the browser's history being updated.
+    /// </summary>
+    /// <returns>
+    /// The current <see cref="HtmxResponse"/> instance.
+    /// </returns>
+    public HtmxResponse PreventPushUrl() =>
+        SetHeader(this, HtmxResponseHeaderNames.PushUrl, "false");
 
     /// <summary>
     /// Sets the <c>HX-Redirect</c> header to a clent-side redirect to a new location.
@@ -79,8 +119,30 @@ public readonly struct HtmxResponse
     /// <returns>
     /// The current <see cref="HtmxResponse"/> instance.
     /// </returns>
+    /// <remarks>
+    /// The possible values for this header are:
+    /// <list type="bullet">
+    ///   <item>
+    ///     A URL to replace the current URL in the location bar. This may be relative or absolute,
+    ///     as per <a href="https://developer.mozilla.org/en-US/docs/Web/API/History/replaceState">history.replaceState()</a>,
+    ///     but must have the same origin as the current URL.
+    ///   </item>
+    ///   <item>
+    ///     <c>false</c>, which prevents the browser's current URL from being updated.
+    ///   </item>
+    /// </list>
+    /// </remarks>
     public HtmxResponse ReplaceUrl(string value) =>
         SetHeader(this, HtmxResponseHeaderNames.ReplaceUrl, value);
+
+    /// <summary>
+    /// Sets the <c>HX-Replace-Url</c> header to <c>false</c> that prevents the browser's history being updated.
+    /// </summary>
+    /// <returns>
+    /// The current <see cref="HtmxResponse"/> instance.
+    /// </returns>
+    public HtmxResponse PreventReplaceUrl() =>
+        SetHeader(this, HtmxResponseHeaderNames.ReplaceUrl, "false");
 
     /// <summary>
     /// Sets the <c>HX-Reswap</c> header to specify how the response will be swapped.

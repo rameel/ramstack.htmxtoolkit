@@ -8,6 +8,9 @@ internal static class EnumHelper
     public static string GetScrollBehaviorValue(this HtmxScrollBehavior value) =>
         value == HtmxScrollBehavior.Auto ? "auto" : "smooth";
 
+    public static string? GetSwapValue(this HtmxSwap? value) =>
+        value?.GetSwapValue();
+
     public static string GetSwapValue(this HtmxSwap value)
     {
         switch (value)

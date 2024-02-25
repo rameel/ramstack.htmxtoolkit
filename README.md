@@ -12,6 +12,9 @@ Provides HTMX integration for ASP.NET Core applications.
     - [HtmxHeaderTagHelper](#htmxheadertaghelper)
     - [HtmxConfigTagHelper](#htmxconfigtaghelper)
   - [Antiforgery Token](#antiforgery-token)
+  - [Changelog](#changelog)
+    - [1.2.0](#1.2.0)
+    - [1.1.0](#1.1.0)
   - [License](#license)
 <!--/TOC-->
 
@@ -177,7 +180,7 @@ public readonly struct HtmxRequestHeaders
 Example of usage:
 
 ```csharp
-if (Request.GetHtmxHeaders().IsHistoryRestoreRequests)
+if (Request.GetHtmxHeaders().HistoryRestoreRequests)
 {
     ...
 }
@@ -266,7 +269,6 @@ public static class HttpResponseExtensions
     /// <param name="response">The HTTP response to configure.</param>
     /// <param name="configure">The function to configure the htmx response headers.</param>
     public static void Htmx(this HttpResponse response, Action<HtmxResponse> configure);
-    }
 
     /// <summary>
     /// Configures the htmx response headers.
@@ -341,7 +343,7 @@ with a callback that accepts `HtmxResponse`, allowing you to specify response he
 in a fluent style:
 
 ```csharp
-Response.Htmx(headers => headers
+Response.Htmx(h => h
     .TriggerEvent(
         eventName: "process",
         detail: new { Value = ... })
@@ -352,7 +354,7 @@ Response.Htmx(headers => headers
 
 ```csharp
 Response.Htmx(
-    static (headers, stop) => headers
+    static (h, stop) => h
         .TriggerEvent(
             eventName: "process",
             detail: new { Value = ... })
@@ -513,11 +515,11 @@ the key is the parameter name, and the value is the parameter value. In the exam
 a dictionary with specific parameters is created, which is then used as the value
 of the `hx-all-route-data` attribute.
 
-```razor
+```html
 @{
-    var parameters = new Dictionary<string, string> {
-        { "category", "science" },
-        { "pdf", "true" }
+    var parameters = new {
+        category = "science",
+        pdf = true
     };
 }
 
@@ -601,6 +603,14 @@ The following code will be generated:
 </head>
 ```
 
+If desired or for the purpose of semantics, you can use `htmx-config` as the standalone name of the element:
+```html
+<htmx-config default-swap-style="HtmxSwap.OuterHtml"
+             use-template-fragments="true"
+             scroll-behavior="HtmxScrollBehavior.Smooth"
+             include-antiforgery-token="true" />
+```
+
 ## Antiforgery Token
 
 If you have enabled the generation of the **Antiforgery** token in the configuration
@@ -668,6 +678,17 @@ The presence of this parameter determines the loading of the debug version:
 
 The `debug` parameter determines whether to load the minimized version (used by default)
 or the debug version of the script.
+
+## Changelog
+
+### 1.2.0
+* Add `AjaxContext` to align with the capabilities provided by htmx
+* Add method overloads for `PushUrl` and `ReplaceUrl` that prevents URL changes (`PreventPushUrl` / `PreventReplaceUrl`)
+* Add support "htmx-config" element as a standalone HTML element
+
+### 1.1.0
+* Add overloads for IsHtmxRequest and IsHtmxBoosted methods enabling retrieval of htmx request headers
+* Improve HtmxRequestAttribute
 
 ## License
 This package is released under the **MIT License**.

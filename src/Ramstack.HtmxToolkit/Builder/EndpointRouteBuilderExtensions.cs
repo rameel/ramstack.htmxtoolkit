@@ -72,8 +72,7 @@ public static class EndpointRouteBuilderExtensions
         return builder.MapGet(path, context =>
         {
             context.Response.ContentType = "text/javascript";
-            context.Response.Headers["cache-control"] = "public,max-age=31536000";
-            context.Response.Headers["Expires"] = DateTime.UtcNow.AddYears(1).ToString("R");
+            context.Response.Headers["Cache-Control"] = "public,max-age=31536000";
 
             return context.Response.WriteAsync(
                 context.Request.QueryString.Value == "?debug"

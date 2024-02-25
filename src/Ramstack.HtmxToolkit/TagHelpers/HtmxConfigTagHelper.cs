@@ -15,6 +15,7 @@ namespace Ramstack.HtmxToolkit.TagHelpers;
 /// Represents the <see cref="ITagHelper" /> implementation targeting &lt;meta&gt; elements to set htmx options declaratively.
 /// </summary>
 [HtmlTargetElement("meta", Attributes = "htmx-config", TagStructure = TagStructure.WithoutEndTag)]
+[HtmlTargetElement("htmx-config", TagStructure = TagStructure.WithoutEndTag)]
 public sealed class HtmxConfigTagHelper(IAntiforgery antiforgery) : TagHelper
 {
     /// <summary>
@@ -251,6 +252,11 @@ public sealed class HtmxConfigTagHelper(IAntiforgery antiforgery) : TagHelper
     /// <inheritdoc />
     public override Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
     {
+        if (output.TagName == "meta")
+            output.Attributes.RemoveAll("htmx-config");
+
+        output.TagName = "meta";
+
         output.Attributes.SetAttribute("name", "htmx-config");
 
         var config = new HtmlString(
@@ -276,7 +282,7 @@ public sealed class HtmxConfigTagHelper(IAntiforgery antiforgery) : TagHelper
         public bool? HistoryEnabled => helper.HistoryEnabled;
         public int? HistoryCacheSize => helper.HistoryCacheSize;
         public bool? RefreshOnHistoryMiss => helper.RefreshOnHistoryMiss;
-        public string? DefaultSwapStyle => helper.DefaultSwapStyle?.GetSwapValue();
+        public string? DefaultSwapStyle => helper.DefaultSwapStyle.GetSwapValue();
         public int? DefaultSwapDelay => helper.DefaultSwapDelay;
         public int? DefaultSettleDelay => helper.DefaultSettleDelay;
         public bool? IncludeIndicatorStyles => helper.IncludeIndicatorStyles;

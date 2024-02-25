@@ -35,10 +35,11 @@ internal static class DebugHelpers
 
     private static KeyValuePair<string, string>[] GetHeaders(IHeaderDictionary headers, params string[] properties)
     {
-        return properties
-            .Where(headers.ContainsKey)
-            .Select(name =>
-                KeyValuePair.Create(name, headers[name].ToString()))
-            .ToArray();
+        var list = new List<KeyValuePair<string, string>>();
+        foreach (var name in properties)
+            if (headers.TryGetValue(name, out var values))
+                list.Add(KeyValuePair.Create(name, values.ToString()));
+
+        return [..list];
     }
 }

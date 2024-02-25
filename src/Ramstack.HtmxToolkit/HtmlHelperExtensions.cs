@@ -27,7 +27,8 @@ public static class HtmlHelperExtensions
     /// Returns an HTML string containing the javascript for htmx to integrate with the anti-forgery feature of ASP.NET Core.
     /// </summary>
     /// <param name="_">The <see cref="IHtmlHelper"/> instance that this method extends.</param>
-    /// <param name="debug">A boolean value indicating whether to use the debug version of the javascript.</param>
+    /// <param name="debug">A boolean value indicating whether to use the debug version of the javascript.
+    /// Defaults to <c>false</c>.</param>
     /// <returns>
     /// An HTML string of the script.
     /// </returns>
@@ -38,10 +39,11 @@ public static class HtmlHelperExtensions
     /// Returns an HTML string of the path to the javascript to integrate with the anti-forgery feature of ASP.NET Core.
     /// </summary>
     /// <param name="_">The <see cref="IHtmlHelper"/> instance that this method extends.</param>
-    /// <param name="debug">A boolean value indicating whether to use the debug version of the javascript.</param>
+    /// <param name="debug">A boolean value indicating whether to use the debug version of the javascript.
+    /// Defaults to <c>false</c>.</param>
     /// <returns>
     /// An HTML string of the path to the javascript.
     /// </returns>
-    public static IHtmlContent HtmxAntiforgeryScriptPath(this IHtmlHelper _, bool debug) =>
+    public static IHtmlContent HtmxAntiforgeryScriptPath(this IHtmlHelper _, bool debug = false) =>
         debug ? DebugPath : Path;
 }
