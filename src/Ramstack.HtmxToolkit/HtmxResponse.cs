@@ -46,7 +46,7 @@ public readonly struct HtmxResponse
     /// <summary>
     /// Sets the <c>HX-Location</c> header to a client-side redirect that does not do a full page reload.
     /// </summary>
-    /// <param name="path">The path of the reqeust.</param>
+    /// <param name="path">The path of the request.</param>
     /// <param name="context">The AJAX context of the request.</param>
     /// <returns>
     /// The current <see cref="HtmxResponse"/> instance.
