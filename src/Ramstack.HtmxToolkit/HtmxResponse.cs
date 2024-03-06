@@ -290,7 +290,7 @@ public readonly struct HtmxResponse
     private sealed class HtmxResponseDebugView(HtmxResponse response)
     {
         [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
-        public KeyValuePair<string, string>[] Items => DebugHelpers.GetResponseHeaders(response._response.Headers);
+        public KeyValuePair<string, string>[] Items => DebugHelpers.GetHeaders(response._response.Headers);
     }
 
     #endregion

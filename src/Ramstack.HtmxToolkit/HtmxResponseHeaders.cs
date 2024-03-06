@@ -173,7 +173,7 @@ public sealed class HtmxResponseHeaders
     private sealed class HtmxResponseHeadersDebugView(HtmxResponseHeaders headers)
     {
         [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
-        public KeyValuePair<string, string>[] Items => DebugHelpers.GetResponseHeaders(headers._headers);
+        public KeyValuePair<string, string>[] Items => DebugHelpers.GetHeaders(headers._headers);
     }
 
     #endregion

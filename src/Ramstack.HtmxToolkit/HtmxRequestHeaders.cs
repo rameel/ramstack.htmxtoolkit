@@ -84,7 +84,7 @@ public readonly struct HtmxRequestHeaders
     private sealed class HtmxRequestHeadersDebugView(HtmxRequestHeaders headers)
     {
         [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
-        public KeyValuePair<string, string>[] Items => DebugHelpers.GetRequestHeaders(headers._headers);
+        public KeyValuePair<string, string>[] Items => DebugHelpers.GetHeaders(headers._headers);
     }
 
     #endregion
