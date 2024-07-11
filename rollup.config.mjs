@@ -1,5 +1,18 @@
+import path from "path";
 import size from "rollup-plugin-bundle-size";
 import terser from "@rollup/plugin-terser";
+
+function trim() {
+    return {
+        name: "trim",
+        generateBundle(options, bundle) {
+            if (options.file.match(/\.min\.js$/)) {
+                const key = path.basename(options.file);
+                bundle[key].code = bundle[key].code.trim();
+            }
+        }
+    };
+}
 
 export default {
     input: "src/Ramstack.HtmxToolkit/Assets/htmx-toolkit.js",
@@ -25,5 +38,5 @@ export default {
             }
         })]
     }],
-    plugins: [size()]
+    plugins: [trim(), size()]
 };
