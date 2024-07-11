@@ -11,7 +11,7 @@ namespace Ramstack.HtmxToolkit.Builder;
 public static class EndpointRouteBuilderExtensions
 {
     /// <summary>
-    /// The default path to the htmx anti-forgery javascript asset.
+    /// Gets the default path to the htmx anti-forgery javascript asset.
     /// </summary>
     internal static string AssetPath { get; private set; } = $"/htmxtoolkit/{HtmxAssets.Hash}";
 

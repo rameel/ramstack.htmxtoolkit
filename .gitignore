@@ -39,16 +39,5 @@ obj/
 #Ignore npm modules
 node_modules/
 
-#Ignore Modules & Themes files
-_build/
-src/web/Macrostore.App/Themes/
-src/web/Macrostore.App/Modules/
-src/web/Macrostore.App/wwwroot/module/
-
-#Ignore publish profiles
-src/web/Macrostore.App/.config/
-src/web/Macrostore.App/Properties/PublishProfiles/
-src/web/Macrostore.App/Properties/ServiceDependencies/
-
 /Directory.Build.targets
 

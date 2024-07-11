@@ -1,22 +1,23 @@
 # HtmxToolkit
 Provides HTMX integration for ASP.NET Core applications.
 
-<!--TOC-->
-  - [Getting Started](#getting-started)
-  - [HttpRequest](#httprequest)
-    - [HtmxRequestAttribute](#htmxrequestattribute)
-  - [HttpResponse](#httpresponse)
-    - [The declarative way of setting response headers](#the-declarative-way-of-setting-response-headers)
-  - [TagHelpers](#taghelpers)
-    - [HtmxUrlTagHelper](#htmxurltaghelper)
-    - [HtmxHeaderTagHelper](#htmxheadertaghelper)
-    - [HtmxConfigTagHelper](#htmxconfigtaghelper)
-  - [Antiforgery Token](#antiforgery-token)
-  - [Changelog](#changelog)
-    - [1.2.0](#1.2.0)
-    - [1.1.0](#1.1.0)
-  - [License](#license)
-<!--/TOC-->
+<!-- TOC -->
+  * [Getting Started](#getting-started)
+  * [HttpRequest](#httprequest)
+    * [HtmxRequestAttribute](#htmxrequestattribute)
+  * [HttpResponse](#httpresponse)
+    * [The declarative way of setting response headers](#the-declarative-way-of-setting-response-headers)
+  * [TagHelpers](#taghelpers)
+    * [HtmxUrlTagHelper](#htmxurltaghelper)
+    * [HtmxHeaderTagHelper](#htmxheadertaghelper)
+    * [HtmxConfigTagHelper](#htmxconfigtaghelper)
+  * [Antiforgery Token](#antiforgery-token)
+  * [Changelog](#changelog)
+    * [1.2.1](#121)
+    * [1.2.0](#120)
+    * [1.1.0](#110)
+  * [License](#license)
+<!-- TOC -->
 
 ## Getting Started
 
@@ -680,6 +681,9 @@ The `debug` parameter determines whether to load the minimized version (used by 
 or the debug version of the script.
 
 ## Changelog
+
+### 1.2.1
+Add `[DisallowNull]` attribute to `Reswap` property to disallow null input
 
 ### 1.2.0
 * Add `AjaxContext` to align with the capabilities provided by htmx

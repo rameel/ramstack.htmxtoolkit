@@ -75,6 +75,7 @@ public sealed class HtmxResponseHeaders
     /// <summary>
     /// Gets or sets the <c>HX-Reswap</c> header to specify how the response will be swapped.
     /// </summary>
+    [DisallowNull]
     public HtmxSwap? Reswap
     {
         get => EnumHelper.ParseHtmxSwap(GetHeader(_headers, HtmxResponseHeaderNames.Reswap));
@@ -173,7 +174,7 @@ public sealed class HtmxResponseHeaders
     private sealed class HtmxResponseHeadersDebugView(HtmxResponseHeaders headers)
     {
         [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
-        public KeyValuePair<string, string>[] Items => DebugHelpers.GetResponseHeaders(headers._headers);
+        public KeyValuePair<string, string>[] Items => DebugHelpers.GetHeaders(headers._headers);
     }
 
     #endregion
