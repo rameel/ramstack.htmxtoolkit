@@ -35,8 +35,8 @@ SOFTWARE. */
 namespace JetBrains.Annotations;
 
 /// <summary>
-/// Indicates that the value of the marked element could be <c>null</c> sometimes,
-/// so checking for <c>null</c> is required before its usage.
+/// Indicates that the value of the marked element could be <see langword="null" /> sometimes,
+/// so checking for <see langword="null" /> is required before its usage.
 /// </summary>
 /// <example><code>
 /// [CanBeNull] object Test() => null;
@@ -53,7 +53,7 @@ namespace JetBrains.Annotations;
 internal sealed class CanBeNullAttribute : Attribute;
 
 /// <summary>
-/// Indicates that the value of the marked element can never be <c>null</c>.
+/// Indicates that the value of the marked element can never be <see langword="null" />.
 /// </summary>
 /// <example><code>
 /// [NotNull] object Foo() {

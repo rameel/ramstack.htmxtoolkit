@@ -12,7 +12,8 @@ using Microsoft.AspNetCore.Routing;
 namespace Ramstack.HtmxToolkit.TagHelpers;
 
 /// <summary>
-/// Represents a <see cref="TagHelper"/> implementation that targets elements to generate URIs for htmx actions.
+/// Represents a <see cref="TagHelper"/> implementation
+/// used to generate URIs for htmx actions on matching elements.
 /// </summary>
 /// <param name="factory">The <see cref="IUrlHelperFactory"/>.</param>
 [HtmlTargetElement(Attributes = ActionAttributeName)]
@@ -40,7 +41,7 @@ public sealed class HtmxUrlTagHelper(IUrlHelperFactory factory) : TagHelper
     private const string RouteValuesDictionaryName = "hx-all-route-data";
     private const string RouteValuesPrefix = "hx-route-";
 
-    private static readonly string[] _methods = ["hx-get", "hx-post", "hx-delete", "hx-put", "hx-patch"];
+    private static readonly string[] s_methods = ["hx-get", "hx-post", "hx-delete", "hx-put", "hx-patch"];
 
     private RouteValueDictionary? _routeValues;
 
@@ -51,7 +52,7 @@ public sealed class HtmxUrlTagHelper(IUrlHelperFactory factory) : TagHelper
     /// Gets or sets the name of the route.
     /// </summary>
     /// <remarks>
-    /// Must be <c>null</c> if one of <see cref="Action"/>, <see cref="Controller"/>, <see cref="Area"/> or <see cref="Page"/> is non-<c>null</c>.
+    /// Must be <see langword="null" /> if one of <see cref="Action"/>, <see cref="Controller"/>, <see cref="Area"/> or <see cref="Page"/> is non-<see langword="null" />.
     /// </remarks>
     [HtmlAttributeName(RouteAttributeName)]
     public string? Route { get; set; }
@@ -60,7 +61,7 @@ public sealed class HtmxUrlTagHelper(IUrlHelperFactory factory) : TagHelper
     /// Gets or sets the name of the area.
     /// </summary>
     /// <remarks>
-    /// Must be <c>null</c> if <see cref="Route"/> is non-<c>null</c>.
+    /// Must be <see langword="null" /> if <see cref="Route"/> is non-<see langword="null" />.
     /// </remarks>
     [AspMvcArea]
     [HtmlAttributeName(AreaAttributeName)]
@@ -70,7 +71,7 @@ public sealed class HtmxUrlTagHelper(IUrlHelperFactory factory) : TagHelper
     /// Gets or sets the name of the controller.
     /// </summary>
     /// <remarks>
-    /// Must be <c>null</c> if <see cref="Route"/> or <see cref="Page"/> is non-<c>null</c>.
+    /// Must be <see langword="null" /> if <see cref="Route"/> or <see cref="Page"/> is non-<see langword="null" />.
     /// </remarks>
     [AspMvcController]
     [HtmlAttributeName(ControllerAttributeName)]
@@ -80,7 +81,7 @@ public sealed class HtmxUrlTagHelper(IUrlHelperFactory factory) : TagHelper
     /// Gets or sets the name of the action.
     /// </summary>
     /// <remarks>
-    /// Must be <c>null</c> if <see cref="Route"/> or <see cref="Page"/> is non-<c>null</c>.
+    /// Must be <see langword="null" /> if <see cref="Route"/> or <see cref="Page"/> is non-<see langword="null" />.
     /// </remarks>
     [AspMvcAction]
     [HtmlAttributeName(ActionAttributeName)]
@@ -90,7 +91,7 @@ public sealed class HtmxUrlTagHelper(IUrlHelperFactory factory) : TagHelper
     /// Gets or sets the name of the page.
     /// </summary>
     /// <remarks>
-    /// Must be <c>null</c> if one of <see cref="Route"/>, <see cref="Action"/> or <see cref="Controller"/> is non-<c>null</c>.
+    /// Must be <see langword="null" /> if one of <see cref="Route"/>, <see cref="Action"/> or <see cref="Controller"/> is non-<see langword="null" />.
     /// </remarks>
     [AspMvcView]
     [HtmlAttributeName(PageAttributeName)]
@@ -100,13 +101,13 @@ public sealed class HtmxUrlTagHelper(IUrlHelperFactory factory) : TagHelper
     /// Gets or sets the name of the page handler.
     /// </summary>
     /// <remarks>
-    /// Must be <c>null</c> if one of <see cref="Route"/>, <see cref="Action"/> or <see cref="Controller"/> is non-<c>null</c>.
+    /// Must be <see langword="null" /> if one of <see cref="Route"/>, <see cref="Action"/> or <see cref="Controller"/> is non-<see langword="null" />.
     /// </remarks>
     [HtmlAttributeName(PageHandlerAttributeName)]
     public string? PageHandler { get; set; }
 
     /// <summary>
-    /// Gets or sets the protocol for the URL, such as &quot;http&quot; or &quot;https&quot;.
+    /// Gets or sets the protocol for the URL, such as "http" or "https".
     /// </summary>
     [HtmlAttributeName(ProtocolAttributeName)]
     public string? Protocol { get; set; }
@@ -138,7 +139,7 @@ public sealed class HtmxUrlTagHelper(IUrlHelperFactory factory) : TagHelper
     /// </summary>
     [ViewContext]
     [HtmlAttributeNotBound]
-    public ViewContext ViewContext { get; set; } = default!;
+    public ViewContext ViewContext { get; set; } = null!;
 
     /// <inheritdoc />
     public override Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
@@ -191,7 +192,7 @@ public sealed class HtmxUrlTagHelper(IUrlHelperFactory factory) : TagHelper
 
         string? definedMethod = null;
 
-        foreach (var method in _methods)
+        foreach (var method in s_methods)
         {
             if (output.Attributes[method] is null)
                 continue;
@@ -211,19 +212,19 @@ public sealed class HtmxUrlTagHelper(IUrlHelperFactory factory) : TagHelper
     [DoesNotReturn]
     private static void Error_CannotDetermineUrl()
     {
-        const string message = $"""
+        const string Message = $"""
             Cannot determine the URL for the element. The following attributes are mutually exclusive:
             {RouteAttributeName},
             {ControllerAttributeName}, {ActionAttributeName},
             {PageAttributeName}, {PageHandlerAttributeName}
             """;
-        throw new InvalidOperationException(message);
+        throw new InvalidOperationException(Message);
     }
 
     [DoesNotReturn]
     private static void Error_AmbiguousMethods()
     {
-        const string message = "Ambiguous htmx method. Only one of the following methods is allowed: hx-get, hx-post, hx-delete, hx-put, hx-patch";
-        throw new InvalidOperationException(message);
+        const string Message = "Ambiguous htmx method. Only one of the following methods is allowed: hx-get, hx-post, hx-delete, hx-put, hx-patch";
+        throw new InvalidOperationException(Message);
     }
 }

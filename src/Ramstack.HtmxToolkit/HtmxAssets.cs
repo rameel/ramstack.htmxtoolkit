@@ -19,10 +19,10 @@ public static class HtmxAssets
     public static readonly string Script = GetResource("htmx-toolkit.min.js");
 
     /// <summary>
-    /// The hash of the current javascript.
+    /// The hash of the current script.
     /// </summary>
     public static readonly string Hash = Convert
-        .ToHexString(SHA1.HashData(Encoding.UTF8.GetBytes(DebugScript)))
+        .ToHexString(SHA1.HashData(Encoding.UTF8.GetBytes(DebugScript)).AsSpan(0, 8))
         .ToLowerInvariant();
 
     private static string GetResource(string name)

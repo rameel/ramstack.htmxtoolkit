@@ -1,5 +1,5 @@
-document.body._r_htmx ??= (htmx => {
-    addEventListener("htmx:afterOnLoad", e => {
+document.body._r_htmx ??= ((document, htmx) => {
+    document.addEventListener("htmx:afterOnLoad", e => {
         if (e.detail.boosted) {
             const html = new DOMParser().parseFromString(e.detail.xhr.responseText, "text/html");
             const meta = html.querySelector("meta[name='htmx-config']");
@@ -8,7 +8,7 @@ document.body._r_htmx ??= (htmx => {
         }
     });
 
-    addEventListener("htmx:configRequest", e => {
+    document.addEventListener("htmx:configRequest", e => {
         if (!/^get$/i.test(e.detail.verb)) {
             const {
                 headerName,
@@ -25,4 +25,4 @@ document.body._r_htmx ??= (htmx => {
     });
 
     return true;
-})(htmx);
+})(document, htmx);

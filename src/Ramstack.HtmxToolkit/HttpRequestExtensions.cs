@@ -12,7 +12,8 @@ public static class HttpRequestExtensions
     /// </summary>
     /// <param name="request">The HTTP request.</param>
     /// <returns>
-    /// <c>true</c> if the specified HTTP request is htmx request; otherwise, <c>false</c>.
+    /// <see langword="true" /> if the specified HTTP request is htmx request;
+    /// otherwise, <see langword="false" />.
     /// </returns>
     public static bool IsHtmxRequest(this HttpRequest request) =>
         request.Headers.ContainsKey(HtmxRequestHeaderNames.Request);
@@ -21,10 +22,10 @@ public static class HttpRequestExtensions
     /// Determines whether the specified HTTP request is htmx request.
     /// </summary>
     /// <param name="request">The HTTP request.</param>
-    /// <param name="headers">When this methods returns, contains the <see cref="HtmxRequestHeaders"/>
+    /// <param name="headers">When this method returns, contains the <see cref="HtmxRequestHeaders"/>
     /// that provides well-known htmx headers.</param>
     /// <returns>
-    /// <c>true</c> if the specified HTTP request is htmx request; otherwise, <c>false</c>.
+    /// <see langword="true" /> if the specified HTTP request is htmx request; otherwise, <see langword="false" />.
     /// </returns>
     public static bool IsHtmxRequest(this HttpRequest request, out HtmxRequestHeaders headers)
     {
@@ -33,12 +34,11 @@ public static class HttpRequestExtensions
     }
 
     /// <summary>
-    /// Determines whether the specified HTTP request was made using AJAX
-    /// instead of a normal navigation.
+    /// Determines whether the specified HTTP request was made using AJAX instead of a normal navigation.
     /// </summary>
     /// <param name="request">The HTTP request.</param>
     /// <returns>
-    /// <c>true</c> if the specified HTTP request is boosted; otherwise, <c>false</c>.
+    /// <see langword="true" /> if the specified HTTP request is boosted; otherwise, <see langword="false" />.
     /// </returns>
     public static bool IsHtmxBoosted(this HttpRequest request) =>
         request.Headers.TryGetValue(HtmxRequestHeaderNames.Boosted, out var value) && value is ["true"];
@@ -48,10 +48,10 @@ public static class HttpRequestExtensions
     /// instead of a normal navigation.
     /// </summary>
     /// <param name="request">The HTTP request.</param>
-    /// <param name="headers">When this methods returns, contains the <see cref="HtmxRequestHeaders"/>
+    /// <param name="headers">When this method returns, contains the <see cref="HtmxRequestHeaders"/>
     /// that provides well-known htmx headers.</param>
     /// <returns>
-    /// <c>true</c> if the specified HTTP request is boosted; otherwise, <c>false</c>.
+    /// <see langword="true" /> if the specified HTTP request is boosted; otherwise, <see langword="false" />.
     /// </returns>
     public static bool IsHtmxBoosted(this HttpRequest request, out HtmxRequestHeaders headers)
     {

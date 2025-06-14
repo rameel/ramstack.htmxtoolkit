@@ -24,12 +24,13 @@ public static class HtmxRequestHeaderNames
     public const string HistoryRestoreRequest = "HX-History-Restore-Request";
 
     /// <summary>
-    /// The <c>HX-Prompt</c> header contains the user response to an hx-prompt.
+    /// The <c>HX-Prompt</c> header contains the user response to "hx-prompt".
     /// </summary>
     public const string Prompt = "HX-Prompt";
 
     /// <summary>
-    /// The <c>HX-Request</c> header is a general header sent with every htmx request. Always "true".
+    /// The <c>HX-Request</c> header is a general header sent with every htmx request.
+    /// Always <c>"true"</c>.
     /// </summary>
     public const string Request = "HX-Request";
 

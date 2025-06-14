@@ -8,8 +8,7 @@ using Ramstack.HtmxToolkit.Internal;
 namespace Ramstack.HtmxToolkit.TagHelpers
 {
     /// <summary>
-    /// Represents a <see cref="TagHelper"/> implementation
-    /// that targets elements to generate <c>hx-headers</c> attribute.
+    /// Represents a <see cref="TagHelper"/> implementation that applies the <c>hx-headers</c> attribute to matching elements.
     /// </summary>
     /// <remarks>
     /// <list type="bullet">
@@ -25,7 +24,7 @@ namespace Ramstack.HtmxToolkit.TagHelpers
         private const string HeadersDictionaryName = "hx-all-headers";
 
         /// <summary>
-        /// Gets or sets the the <c>hx-header</c> attribute values.
+        /// Gets or sets the <c>hx-header</c> attribute values.
         /// </summary>
         [HtmlAttributeName(HeadersDictionaryName, DictionaryAttributePrefix = HeadersPrefix)]
         public Dictionary<string, string> Headers { get; set; } = new();

@@ -15,15 +15,14 @@ public readonly struct HtmxRequestHeaders
     private readonly IHeaderDictionary _headers;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="HtmxRequestHeaders"/>.
+    /// Initializes a new instance of the <see cref="HtmxRequestHeaders"/> structure.
     /// </summary>
     /// <param name="request">The HTTP request.</param>
     internal HtmxRequestHeaders(HttpRequest request) =>
         _headers = request.Headers;
 
     /// <summary>
-    /// Gets a value indicating whether the request was made using AJAX
-    /// instead of a normal navigation.
+    /// Gets a value indicating whether the request was made using AJAX instead of a normal navigation.
     /// </summary>
     /// <remarks><see cref="HtmxRequestHeaderNames.Boosted"/></remarks>
     public bool Boosted => GetBoolean(_headers, HtmxRequestHeaderNames.Boosted);
@@ -41,7 +40,7 @@ public readonly struct HtmxRequestHeaders
     public bool HistoryRestoreRequest => GetBoolean(_headers, HtmxRequestHeaderNames.HistoryRestoreRequest);
 
     /// <summary>
-    /// Gets the user response to an hx-prompt on the client.
+    /// Gets the user response to "hx-prompt" on the client.
     /// </summary>
     /// <remarks><see cref="HtmxRequestHeaderNames.Prompt"/></remarks>
     public string? Prompt => GetString(_headers, HtmxRequestHeaderNames.Prompt);

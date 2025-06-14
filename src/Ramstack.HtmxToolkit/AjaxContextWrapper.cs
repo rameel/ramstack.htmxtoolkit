@@ -5,7 +5,7 @@ using Ramstack.HtmxToolkit.Internal;
 namespace Ramstack.HtmxToolkit;
 
 /// <summary>
-/// Represents a wrapper for the <see cref="AjaxContext"/> class, used for serialization purposes.
+/// Represents a wrapper for the <see cref="AjaxContext"/> class, used for serialization.
 /// </summary>
 internal readonly struct AjaxContextWrapper
 {
