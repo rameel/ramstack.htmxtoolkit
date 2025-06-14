@@ -6,12 +6,12 @@ using Microsoft.AspNetCore.Routing;
 namespace Ramstack.HtmxToolkit.Builder;
 
 /// <summary>
-/// Provides extension methods for the <see cref="IEndpointRouteBuilder"/> interface to add htmxtoolkit endpoints.
+/// Provides extension methods for the <see cref="IEndpointRouteBuilder"/> interface to add "htmxtoolkit" endpoints.
 /// </summary>
 public static class EndpointRouteBuilderExtensions
 {
     /// <summary>
-    /// Gets the default path to the htmx anti-forgery javascript asset.
+    /// Gets the default path to the htmx anti-forgery script asset.
     /// </summary>
     internal static string AssetPath { get; private set; } = $"/htmxtoolkit/{HtmxAssets.Hash}";
 
@@ -36,7 +36,7 @@ public static class EndpointRouteBuilderExtensions
         builder.MapHtmxAntiforgeryScript(AssetPath);
 
     /// <summary>
-    /// Maps a GET request to the specified path for the htmx anti-forgery javascript.
+    /// Maps a GET request to the specified path for the htmx anti-forgery script.
     /// </summary>
     /// <remarks>
     /// Ensure to include the following script tag in your <c>Layout.cshtml</c> or <c>Razor view</c>:

@@ -12,7 +12,8 @@ using Ramstack.HtmxToolkit.Internal;
 namespace Ramstack.HtmxToolkit.TagHelpers;
 
 /// <summary>
-/// Represents the <see cref="ITagHelper" /> implementation targeting &lt;meta&gt; elements to set htmx options declaratively.
+/// Represents the <see cref="ITagHelper" /> implementation that applies to &lt;meta&gt; element
+/// to declaratively define htmx options.
 /// </summary>
 [HtmlTargetElement("meta", Attributes = "htmx-config", TagStructure = TagStructure.WithoutEndTag)]
 [HtmlTargetElement("htmx-config", TagStructure = TagStructure.WithoutEndTag)]
@@ -20,8 +21,9 @@ public sealed class HtmxConfigTagHelper(IAntiforgery antiforgery) : TagHelper
 {
     /// <summary>
     /// Gets or sets a value indicating whether history is enabled.
-    /// Defaults to <c>true</c>. This is mainly useful for testing.
+    /// Defaults to <see langword="true" />.
     /// </summary>
+    /// <remarks>This is mainly useful for testing.</remarks>
     [HtmlAttributeName("history-enabled")]
     public bool? HistoryEnabled { get; set; }
 
@@ -33,13 +35,15 @@ public sealed class HtmxConfigTagHelper(IAntiforgery antiforgery) : TagHelper
 
     /// <summary>
     /// Gets or sets a value indicating whether a full page refresh
-    /// should be issued on history misses rather than using an AJAX request. Defaults to <c>false</c>.
+    /// should be issued on history misses rather than using an AJAX request.
+    /// Defaults to <see langword="false" />.
     /// </summary>
     [HtmlAttributeName("refresh-on-history-miss")]
     public bool? RefreshOnHistoryMiss { get; set; }
 
     /// <summary>
-    /// Gets or sets the default swap style. Defaults to <see cref="HtmxSwap.InnerHtml"/>.
+    /// Gets or sets the default swap style.
+    /// Defaults to <see cref="HtmxSwap.InnerHtml"/>.
     /// </summary>
     [HtmlAttributeName("default-swap-style")]
     public HtmxSwap? DefaultSwapStyle { get; set; }
@@ -57,7 +61,8 @@ public sealed class HtmxConfigTagHelper(IAntiforgery antiforgery) : TagHelper
     public int? DefaultSettleDelay { get; set; }
 
     /// <summary>
-    /// Gets or sets a value indicating whether the indicator styles are loaded. Defaults to <c>true</c>.
+    /// Gets or sets a value indicating whether the indicator styles are loaded.
+    /// Defaults to <see langword="true" />.
     /// </summary>
     [HtmlAttributeName("include-indicator-styles")]
     public bool? IncludeIndicatorStyles { get; set; }
@@ -94,14 +99,14 @@ public sealed class HtmxConfigTagHelper(IAntiforgery antiforgery) : TagHelper
 
     /// <summary>
     /// Gets or sets a value indicating whether eval is allowed.
-    /// Defaults to <c>true</c>.
+    /// Defaults to <see langword="true" />.
     /// </summary>
     [HtmlAttributeName("allow-eval")]
     public bool? AllowEval { get; set; }
 
     /// <summary>
     /// Gets or sets a value indicating whether script tags should be processed in new content.
-    /// Defaults to <c>true</c>.
+    /// Defaults to <see langword="true" />.
     /// </summary>
     [HtmlAttributeName("allow-script-tags")]
     public bool? AllowScriptTags { get; set; }
@@ -122,7 +127,7 @@ public sealed class HtmxConfigTagHelper(IAntiforgery antiforgery) : TagHelper
 
     /// <summary>
     /// Gets or sets a value indicating whether HTML template tags should be used for parsing content.
-    /// Defaults to <c>false</c>.
+    /// Defaults to <see langword="false" />.
     /// </summary>
     [HtmlAttributeName("use-template-fragments")]
     public bool? UseTemplateFragments { get; set; }
@@ -141,7 +146,7 @@ public sealed class HtmxConfigTagHelper(IAntiforgery antiforgery) : TagHelper
     public HtmxBinaryType? WsBinaryType { get; set; }
 
     /// <summary>
-    /// Gets or sets the disable selector.
+    /// Gets or sets the "disable" selector.
     /// Defaults to <c>[disable-htmx], [data-disable-htmx]</c>.
     /// HTMX will not process elements with this attribute on it or a parent.
     /// </summary>
@@ -151,7 +156,7 @@ public sealed class HtmxConfigTagHelper(IAntiforgery antiforgery) : TagHelper
     /// <summary>
     /// Gets or sets the value that allows cross-site <c>Access-Control</c> requests
     /// using credentials such as cookies, authorization headers or TLS client certificates.
-    /// Defaults to <c>false</c>.
+    /// Defaults to <see langword="false" />.
     /// </summary>
     [HtmlAttributeName("with-credentials")]
     public bool? WithCredentials { get; set; }
@@ -172,15 +177,15 @@ public sealed class HtmxConfigTagHelper(IAntiforgery antiforgery) : TagHelper
 
     /// <summary>
     /// Gets or sets a value indicating whether the focused element should be scrolled into view.
-    /// Defaults to <c>false</c> and can be overridden using the <c>focus-scroll</c> swap modifier.
+    /// Defaults to <see langword="false" /> and can be overridden using the <c>focus-scroll</c> swap modifier.
     /// </summary>
     [HtmlAttributeName("default-focus-scroll")]
     public bool? DefaultFocusScroll { get; set; }
 
     /// <summary>
-    /// Gets or sets a value indicating whether a cache-busting parameter
+    /// Gets or sets a value indicating whether a cache‑busting parameter
     /// should be included in GET requests to avoid caching partial responses by the browser.
-    /// Defaults to <c>false</c>.
+    /// Defaults to <see langword="false" />.
     /// </summary>
     [HtmlAttributeName("get-cache-buster-param")]
     public bool? GetCacheBusterParam { get; set; }
@@ -189,15 +194,14 @@ public sealed class HtmxConfigTagHelper(IAntiforgery antiforgery) : TagHelper
     /// Gets or sets a value indicating whether the
     /// <a href="https://developer.mozilla.org/en-US/docs/Web/API/View_Transitions_API">View Transition API</a>
     /// should be used when swapping in new content.
+    /// Defaults to <see langword="false" />.
     /// </summary>
     [HtmlAttributeName("global-view-transitions")]
     public bool? GlobalViewTransitions { get; set; }
 
     /// <summary>
-    /// Gets or sets a value indicating whether HTMX should format requests
-    /// with this method by encoding their parameters in the URL, not the request body.
-    /// Defaults to <c>["get"]</c>.
-    /// Allowed values: <c>"get"</c>, <c>"head"</c>, <c>"post"</c>, <c>"put"</c>,
+    /// Gets or sets a list of HTTP methods that use URL parameters.
+    /// Defaults to <c>["get"]</c>. Allowed values: <c>"get"</c>, <c>"head"</c>, <c>"post"</c>, <c>"put"</c>,
     /// <c>"delete"</c>, <c>"connect"</c>, <c>"options"</c>, <c>"trace"</c>, <c>"patch"</c>.
     /// </summary>
     [HtmlAttributeName("methods-that-use-url-params")]
@@ -205,39 +209,39 @@ public sealed class HtmxConfigTagHelper(IAntiforgery antiforgery) : TagHelper
 
     /// <summary>
     /// Gets or sets a value indicating whether AJAX requests should be allowed only
-    /// to the same domain as the current document. Defaults to <c>false</c>.
+    /// to the same domain as the current document. Defaults to <see langword="false" />.
     /// </summary>
     [HtmlAttributeName("self-requests-only")]
     public bool? SelfRequestsOnly { get; set; }
 
     /// <summary>
     /// Gets or sets a value indicating whether htmx should not update the title of the document
-    /// when a title tag is found in new content. Defaults to <c>false</c>.
+    /// when a title tag is found in new content. Defaults to <see langword="false" />.
     /// </summary>
     [HtmlAttributeName("ignore-title")]
     public bool? IgnoreTitle { get; set; }
 
     /// <summary>
-    /// Gets or sets a value indicating whether or not the target of a boosted element
+    /// Gets or sets a value indicating whether the target of a boosted element
     /// is scrolled into the viewport. If <c>hx-target</c> is omitted on a boosted element,
     /// the target defaults to body, causing the page to scroll to the top.
-    /// Defaults to <c>true</c>.
+    /// Defaults to <see langword="true" />.
     /// </summary>
     [HtmlAttributeName("scroll-into-view-on-boost")]
     public bool? ScrollIntoViewOnBoost { get; set; }
 
     /// <summary>
-    /// Gets or sets a value the cache to store evaluated trigger specifications into,
+    /// Gets or sets the cache to store evaluated trigger specifications into,
     /// improving parsing performance at the cost of more memory usage.
-    /// You may define a simple object to use a never-clearing cache,
-    /// or implement your own system using a proxy object. Defaults to <c>null</c>.
+    /// You may define a simple object to use a never-clearing cache or implement your own system
+    /// using a proxy object. Defaults to <see langword="null" />.
     /// </summary>
     [HtmlAttributeName("trigger-specs-cache")]
     public string? TriggerSpecsCache { get; set; }
 
     /// <summary>
-    /// Gets or sets a value indicating whether antiforgery should be included.
-    /// Default to <c>false</c>.
+    /// Gets or sets a value indicating whether an antiforgery token should be included.
+    /// Defaults to <see langword="false" />.
     /// </summary>
     [HtmlAttributeName("include-antiforgery-token")]
     public bool IncludeAntiForgeryToken { get; set; }
@@ -274,7 +278,6 @@ public sealed class HtmxConfigTagHelper(IAntiforgery antiforgery) : TagHelper
 
     /// <summary>
     /// Represents a proxy structure for the <see cref="HtmxConfigTagHelper"/> class.
-    /// This structure is used to allow the JSON serializer to serialize only the necessary properties.
     /// </summary>
     [SuppressMessage("ReSharper", "UnusedMember.Local")]
     private readonly struct HtmxConfiguration(HtmxConfigTagHelper helper, IAntiforgery antiforgery)
@@ -324,7 +327,6 @@ public sealed class HtmxConfigTagHelper(IAntiforgery antiforgery) : TagHelper
 
     /// <summary>
     /// Represents a proxy structure for the <see cref="AntiforgeryTokenSet"/> class.
-    /// This structure is used to allow the JSON serializer to serialize only the necessary properties.
     /// </summary>
     [SuppressMessage("ReSharper", "UnusedMember.Local")]
     private readonly struct AntiForgeryTokenData(AntiforgeryTokenSet antiforgery)

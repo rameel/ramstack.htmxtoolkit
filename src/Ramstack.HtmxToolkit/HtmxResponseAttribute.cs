@@ -16,7 +16,7 @@ public sealed class HtmxResponseAttribute : Attribute, IResultFilter
     private readonly List<(string Key, string Value)> _headers = [];
 
     /// <summary>
-    /// Gets or sets the <c>HX-Refresh</c> header that is used to a client-side redirect that does not do a full page reload.
+    /// Gets or sets the <c>HX-Refresh</c> header to perform a full page refresh.
     /// </summary>
     public bool Refresh
     {
@@ -25,7 +25,7 @@ public sealed class HtmxResponseAttribute : Attribute, IResultFilter
     }
 
     /// <summary>
-    /// Gets or sets the <c>HX-Reswap</c> header that allows to specify how the response will be swapped.
+    /// Gets or sets the <c>HX-Reswap</c> header to specify how the response will be swapped into the DOM.
     /// </summary>
     public HtmxSwap Reswap
     {
@@ -38,7 +38,7 @@ public sealed class HtmxResponseAttribute : Attribute, IResultFilter
     }
 
     /// <summary>
-    /// Gets or sets the <c>HX-Reswap</c> header that allows to specify how the response will be swapped.
+    /// Gets or sets the <c>HX-Reswap</c> header to specify how the response will be swapped into the DOM.
     /// </summary>
     [MaybeNull]
     public string ReswapExpression
@@ -48,7 +48,7 @@ public sealed class HtmxResponseAttribute : Attribute, IResultFilter
     }
 
     /// <summary>
-    /// Gets or sets the <c>HX-Retarget</c> header with a CSS selector that is used to update
+    /// Gets or sets the <c>HX-Retarget</c> header that specifies a selector to change
     /// the target of the content update to a different element on the page.
     /// </summary>
     [MaybeNull]
@@ -59,8 +59,8 @@ public sealed class HtmxResponseAttribute : Attribute, IResultFilter
     }
 
     /// <summary>
-    /// Gets or sets the <c>HX-Reselect</c> header with a CSS selector that is used to choose
-    /// which part of the response is used to be swapped in.
+    /// Gets or sets the <c>HX-Reselect</c> header that specifies a selector
+    /// to choose which part of the response content will be swapped in.
     /// </summary>
     [MaybeNull]
     public string Reselect
@@ -70,7 +70,7 @@ public sealed class HtmxResponseAttribute : Attribute, IResultFilter
     }
 
     /// <summary>
-    /// Gets or sets a value that indicates whether to set the special HTTP status code to stop the polling.
+    /// Gets or sets a value indicating whether a special HTTP status code should be set to stop polling.
     /// </summary>
     public bool StopPolling { get; set; }
 
@@ -105,7 +105,7 @@ public sealed class HtmxResponseAttribute : Attribute, IResultFilter
 
     private void SetValue(string key, string value)
     {
-        if (value.Length != 0)
+        if (!string.IsNullOrEmpty(value))
             _headers.Add((key, value));
     }
 }

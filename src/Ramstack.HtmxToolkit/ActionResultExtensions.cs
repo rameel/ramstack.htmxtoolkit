@@ -8,25 +8,25 @@ namespace Ramstack.HtmxToolkit;
 public static class ActionResultExtensions
 {
     /// <summary>
-    /// Configures the htmx response headers for the provided <see cref="IActionResult"/>.
+    /// Configures htmx response headers for the specified <see cref="IActionResult"/>.
     /// </summary>
     /// <param name="result">The <see cref="IActionResult"/> to configure.</param>
-    /// <param name="configure">The function to configure the htmx response headers.</param>
+    /// <param name="configure">A delegate to configure the htmx response headers.</param>
     /// <returns>
-    /// A <see cref="HtmxResult"/>.
+    /// An <see cref="HtmxResult"/> that wraps the original result with htmx configuration.
     /// </returns>
     public static HtmxResult Htmx(this IActionResult result, Action<HtmxResponse> configure) =>
         new(result, configure);
 
     /// <summary>
-    /// Configures the htmx response headers for the provided <see cref="IActionResult"/> with a state object.
+    /// Configures htmx response headers for the specified <see cref="IActionResult"/> using a state object.
     /// </summary>
-    /// <typeparam name="TState">The type of the value to pass to the function.</typeparam>
+    /// <typeparam name="TState">The type of the state object passed to the configuration delegate.</typeparam>
     /// <param name="result">The <see cref="IActionResult"/> to configure.</param>
-    /// <param name="configure">The function to configure the htmx response headers.</param>
-    /// <param name="state">The value to pass to the <paramref name="configure"/>.</param>
+    /// <param name="configure">A delegate to configure the htmx response headers using the state object.</param>
+    /// <param name="state">The state object passed to the <paramref name="configure"/> delegate.</param>
     /// <returns>
-    /// A <see cref="HtmxResult{TState}"/>.
+    /// An <see cref="HtmxResult{TState}"/> that wraps the original result with htmx configuration.
     /// </returns>
     public static HtmxResult<TState> Htmx<TState>(this IActionResult result, Action<HtmxResponse, TState> configure, TState state) =>
         new(result, configure, state);

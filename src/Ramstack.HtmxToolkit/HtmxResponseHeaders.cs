@@ -17,14 +17,14 @@ public sealed class HtmxResponseHeaders
     private readonly IHeaderDictionary _headers;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="HtmxResponseHeaders"/>.
+    /// Initializes a new instance of the <see cref="HtmxResponseHeaders"/> structure.
     /// </summary>
     /// <param name="response">The HTTP response.</param>
     internal HtmxResponseHeaders(HttpResponse response) =>
         _headers = response.Headers;
 
     /// <summary>
-    /// Gets or sets the <c>HX-Location</c> header to a client-side redirect that does not do a full page reload.
+    /// Gets or sets the <c>HX-Location</c> header to perform a client-side redirect without a full page reload.
     /// </summary>
     [MaybeNull]
     public string Location
@@ -34,7 +34,7 @@ public sealed class HtmxResponseHeaders
     }
 
     /// <summary>
-    /// Gets or sets the <c>HX-Push-Url</c> header to push a new URL into the history stack.
+    /// Gets or sets the <c>HX-Push-Url</c> header to push a new URL into the browser's history stack.
     /// </summary>
     [MaybeNull]
     public string PushUrl
@@ -44,7 +44,7 @@ public sealed class HtmxResponseHeaders
     }
 
     /// <summary>
-    /// Gets or sets the <c>HX-Redirect</c> header to a clent-side redirect to a new location.
+    /// Gets or sets the <c>HX-Redirect</c> header to perform a client-side redirect to a new location.
     /// </summary>
     [MaybeNull]
     public string Redirect
@@ -54,7 +54,7 @@ public sealed class HtmxResponseHeaders
     }
 
     /// <summary>
-    /// Gets or sets the <c>HX-Refresh</c> header to full refresh of the page.
+    /// Gets or sets the <c>HX-Refresh</c> header to perform a full page refresh.
     /// </summary>
     public bool Refresh
     {
@@ -63,7 +63,8 @@ public sealed class HtmxResponseHeaders
     }
 
     /// <summary>
-    /// Gets or Sets the <c>HX-Replace-Url</c> header to replace the current URL.
+    /// Gets or Sets the <c>HX-Replace-Url</c> header to replace the current URL
+    /// without pushing a new entry to the browser's history stack.
     /// </summary>
     [MaybeNull]
     public string ReplaceUrl
@@ -73,7 +74,7 @@ public sealed class HtmxResponseHeaders
     }
 
     /// <summary>
-    /// Gets or sets the <c>HX-Reswap</c> header to specify how the response will be swapped.
+    /// Gets or sets the <c>HX-Reswap</c> header to specify how the response will be swapped into the DOM.
     /// </summary>
     [DisallowNull]
     public HtmxSwap? Reswap
@@ -83,7 +84,7 @@ public sealed class HtmxResponseHeaders
     }
 
     /// <summary>
-    /// Gets or sets the <c>HX-Reswap</c> header to specify how the response will be swapped.
+    /// Gets or sets the <c>HX-Reswap</c> header to specify how the response will be swapped into the DOM.
     /// </summary>
     [MaybeNull]
     public string ReswapExpression
@@ -93,7 +94,7 @@ public sealed class HtmxResponseHeaders
     }
 
     /// <summary>
-    /// Gets or sets the <c>HX-Retarget</c> header to update
+    /// Gets or sets the <c>HX-Retarget</c> header that specifies a selector to change
     /// the target of the content update to a different element on the page.
     /// </summary>
     [MaybeNull]
@@ -104,7 +105,8 @@ public sealed class HtmxResponseHeaders
     }
 
     /// <summary>
-    /// Gets or sets the <c>HX-Reselect</c> header to choose which part of the response is used to be swapped in.
+    /// Gets or sets the <c>HX-Reselect</c> header that specifies a selector
+    /// to choose which part of the response content will be swapped in.
     /// </summary>
     [MaybeNull]
     public string Reselect
@@ -114,8 +116,8 @@ public sealed class HtmxResponseHeaders
     }
 
     /// <summary>
-    /// Gets or sets the <c>HX-Trigger</c> header to trigger a client-side event
-    /// after the server response is processed.
+    /// Gets or sets the <c>HX-Trigger</c> header, which specifies a dictionary of client-side events
+    /// to trigger after the server response is processed.
     /// </summary>
     [MaybeNull]
     public IReadOnlyDictionary<string, object> Trigger
@@ -125,8 +127,8 @@ public sealed class HtmxResponseHeaders
     }
 
     /// <summary>
-    /// Gets or sets the <c>HX-Trigger-After-Settle</c> header to trigger a client-side event
-    /// after the htmx request has settled.
+    /// Gets or sets the <c>HX-Trigger-After-Settle</c> header, which specifies a dictionary of client-side events
+    /// to trigger after the htmx request has settled.
     /// </summary>
     [MaybeNull]
     public IReadOnlyDictionary<string, object> TriggerAfterSettle
@@ -136,8 +138,8 @@ public sealed class HtmxResponseHeaders
     }
 
     /// <summary>
-    /// Gets or sets the <c>HX-Trigger-After-Settle</c> header to trigger a client-side event
-    /// after the htmx request has been swapped.
+    /// Gets or sets the <c>HX-Trigger-After-Swap</c> header, which specifies a dictionary of client-side events
+    /// to trigger after the response content has been swapped into the DOM.
     /// </summary>
     [MaybeNull]
     public IReadOnlyDictionary<string, object> TriggerAfterSwap

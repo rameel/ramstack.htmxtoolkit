@@ -27,7 +27,7 @@ public readonly struct HtmxResponse
     public HtmxResponseHeaders Headers => new(_response);
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="HtmxResponse"/>.
+    /// Initializes a new instance of the <see cref="HtmxResponse"/> structure.
     /// </summary>
     /// <param name="response">The HTTP response.</param>
     internal HtmxResponse(HttpResponse response) =>
@@ -77,7 +77,7 @@ public readonly struct HtmxResponse
     ///     as per <a href="https://developer.mozilla.org/en-US/docs/Web/API/History/pushState">history.pushState()</a>.
     ///   </item>
     ///   <item>
-    ///     <c>false</c>, which prevents the browser's history being updated.
+    ///     <see langword="false" />, which prevents the browser's history being updated.
     ///   </item>
     /// </list>
     /// </remarks>
@@ -85,7 +85,7 @@ public readonly struct HtmxResponse
         SetHeader(this, HtmxResponseHeaderNames.PushUrl, value);
 
     /// <summary>
-    /// Sets the <c>HX-Push-Url</c> header to <c>false</c> that prevents the browser's history being updated.
+    /// Sets the <c>HX-Push-Url</c> header to <see langword="false" /> that prevents the browser's history being updated.
     /// </summary>
     /// <returns>
     /// The current <see cref="HtmxResponse"/> instance.
@@ -94,7 +94,7 @@ public readonly struct HtmxResponse
         SetHeader(this, HtmxResponseHeaderNames.PushUrl, "false");
 
     /// <summary>
-    /// Sets the <c>HX-Redirect</c> header to a clent-side redirect to a new location.
+    /// Sets the <c>HX-Redirect</c> header to a client-side redirect to a new location.
     /// </summary>
     /// <param name="value">The header value to set.</param>
     /// <returns>
@@ -128,7 +128,7 @@ public readonly struct HtmxResponse
     ///     but must have the same origin as the current URL.
     ///   </item>
     ///   <item>
-    ///     <c>false</c>, which prevents the browser's current URL from being updated.
+    ///     <see langword="false" />, which prevents the browser's current URL from being updated.
     ///   </item>
     /// </list>
     /// </remarks>
@@ -136,7 +136,7 @@ public readonly struct HtmxResponse
         SetHeader(this, HtmxResponseHeaderNames.ReplaceUrl, value);
 
     /// <summary>
-    /// Sets the <c>HX-Replace-Url</c> header to <c>false</c> that prevents the browser's history being updated.
+    /// Sets the <c>HX-Replace-Url</c> header to <see langword="false" /> that prevents the browser's history being updated.
     /// </summary>
     /// <returns>
     /// The current <see cref="HtmxResponse"/> instance.
@@ -199,9 +199,10 @@ public readonly struct HtmxResponse
     /// <summary>
     /// Sets one of <c>HX-Trigger</c> headers to trigger a client-side event.
     /// </summary>
-    /// <param name="eventName">The event name to trigegr.</param>
+    /// <param name="eventName">The event name to trigger.</param>
     /// <param name="detail">The event detail.</param>
-    /// <param name="timing">The time at which an event will be triggered. Defaults to <see cref="HtmxTriggerTiming.Receive"/>.</param>
+    /// <param name="timing">The time at which an event will be triggered.
+    /// Defaults to <see cref="HtmxTriggerTiming.Receive"/>.</param>
     /// <returns>
     /// The current <see cref="HtmxResponse"/> instance.
     /// </returns>
@@ -214,10 +215,11 @@ public readonly struct HtmxResponse
     }
 
     /// <summary>
-    /// Sets one of <c>HX-Trigger</c> headers to trigger a client-side events.
+    /// Sets one of <c>HX-Trigger</c> headers to trigger client-side events.
     /// </summary>
     /// <param name="events">A dictionary containing event names as keys and event details as values.</param>
-    /// <param name="timing">The time at which an event will be triggered. Defaults to <see cref="HtmxTriggerTiming.Receive"/>.</param>
+    /// <param name="timing">The time at which an event will be triggered.
+    /// Defaults to <see cref="HtmxTriggerTiming.Receive"/>.</param>
     /// <returns>
     /// The current <see cref="HtmxResponse"/> instance.
     /// </returns>
