@@ -12,7 +12,10 @@ Provides HTMX integration for ASP.NET Core applications.
     * [HtmxHeaderTagHelper](#htmxheadertaghelper)
     * [HtmxConfigTagHelper](#htmxconfigtaghelper)
   * [Antiforgery Token](#antiforgery-token)
+  * [Supported Versions](#supported-versions)
+  * [Contributions](#contributions)
   * [Changelog](#changelog)
+    * [1.2.2](#122)
     * [1.2.1](#121)
     * [1.2.0](#120)
     * [1.1.0](#110)
@@ -680,7 +683,20 @@ The presence of this parameter determines the loading of the debug version:
 The `debug` parameter determines whether to load the minimized version (used by default)
 or the debug version of the script.
 
+## Supported Versions
+
+|      | Version    |
+|------|------------|
+| .NET | 6, 7, 8, 9 |
+
+## Contributions
+
+Bug reports and contributions are welcome.
+
 ## Changelog
+
+### 1.2.2
+Explicitly pass `document` object to event listeners in `htmx-toolkit.js` to improve compatibility
 
 ### 1.2.1
 Add `[DisallowNull]` attribute to `Reswap` property to disallow null input
@@ -688,11 +704,12 @@ Add `[DisallowNull]` attribute to `Reswap` property to disallow null input
 ### 1.2.0
 * Add `AjaxContext` to align with the capabilities provided by htmx
 * Add method overloads for `PushUrl` and `ReplaceUrl` that prevents URL changes (`PreventPushUrl` / `PreventReplaceUrl`)
-* Add support "htmx-config" element as a standalone HTML element
+* Add support `<htmx-config />` element as a standalone HTML element
 
 ### 1.1.0
 * Add overloads for IsHtmxRequest and IsHtmxBoosted methods enabling retrieval of htmx request headers
 * Improve HtmxRequestAttribute
 
 ## License
-This package is released under the **MIT License**.
+This package is released as open source under the **MIT License**.
+See the [LICENSE](https://github.com/rameel/ramstack.htmxtoolkit/blob/main/LICENSE) file for more details.
