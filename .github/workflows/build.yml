@@ -1,0 +1,26 @@
+﻿name: Build
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  publish:
+    name: Build packages
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Build (Debug)
+        run: dotnet build -c Debug
+
+      - name: Build (Release)
+        run: dotnet build -c Release
