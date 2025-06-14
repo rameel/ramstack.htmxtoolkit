@@ -1,4 +1,7 @@
 # HtmxToolkit
+[![NuGet](https://img.shields.io/nuget/v/Ramstack.HtmxToolkit.svg)](https://nuget.org/packages/Ramstack.HtmxToolkit)
+[![MIT](https://img.shields.io/github/license/rameel/ramstack.htmxtoolkit)](https://github.com/rameel/ramstack.htmxtoolkit/blob/main/LICENSE)
+
 Provides HTMX integration for ASP.NET Core applications.
 
 <!-- TOC -->
