@@ -8,7 +8,7 @@ indent_style = space
 insert_final_newline = true
 trim_trailing_whitespace = true
 
-[*.{props,targets,csproj}]
+[*.{yml,props,targets,csproj}]
 indent_size = 2
 
 [*.min.js]
