@@ -1,6 +1,7 @@
 {
   "name": "@ramstack/htmxtoolkit",
   "private": true,
+  "type": "module",
   "version": "1.0.0",
   "description": "",
   "scripts": {
@@ -10,8 +11,8 @@
   "license": "MIT",
   "devDependencies": {
     "@rollup/plugin-terser": "^0.4.4",
-    "rollup": "^4.43.0",
+    "rollup": "^4.57.1",
     "rollup-plugin-bundle-size": "^1.0.3",
-    "terser": "^5.42.0"
+    "terser": "^5.46.0"
   }
 }
