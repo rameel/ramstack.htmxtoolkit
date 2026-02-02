@@ -1,4 +1,4 @@
-import path from "path";
+import path from "node:path";
 import size from "rollup-plugin-bundle-size";
 import terser from "@rollup/plugin-terser";
 
