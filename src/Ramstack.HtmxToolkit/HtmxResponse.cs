@@ -11,6 +11,10 @@ namespace Ramstack.HtmxToolkit;
 /// <summary>
 /// Represents HTTP response to set htmx response headers.
 /// </summary>
+/// <remarks>
+/// Like <see cref="HttpContext"/> and <see cref="HttpResponse"/> themselves, this type is not thread-safe.
+/// Its members should not be called concurrently from multiple threads for the same request.
+/// </remarks>
 [DebuggerTypeProxy(typeof(HtmxResponseDebugView))]
 public readonly struct HtmxResponse
 {
@@ -258,16 +262,60 @@ public readonly struct HtmxResponse
 
     private static HtmxResponse SetEvents(HtmxResponse response, IReadOnlyDictionary<string, object> events, HtmxTriggerTiming timing)
     {
-        var key = timing switch
+        var context = response._response.HttpContext;
+        if (context.Items[typeof(PendingEvents)] is not PendingEvents pending)
         {
-            HtmxTriggerTiming.Receive => HtmxResponseHeaderNames.Trigger,
-            HtmxTriggerTiming.AfterSettle => HtmxResponseHeaderNames.TriggerAfterSettle,
-            _ => HtmxResponseHeaderNames.TriggerAfterSwap
-        };
+            pending = new PendingEvents(response._response);
+            context.Items[typeof(PendingEvents)] = pending;
 
-        if (response._response.Headers.TryGetValue(key, out var values))
+            response._response.OnStarting(static o =>
+            {
+                var state = (PendingEvents)o;
+                state.Flush();
+                return Task.CompletedTask;
+            }, pending);
+        }
+
+        pending.AddEvents(timing, events);
+        return response;
+    }
+
+    #region Inner type: HtmxResponseDebugView
+
+    private sealed class HtmxResponseDebugView(HtmxResponse response)
+    {
+        [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
+        public KeyValuePair<string, string>[] Items => DebugHelpers.GetHeaders(response._response.Headers);
+    }
+
+    #endregion
+
+    #region Inner type: PendingEvents
+
+    /// <summary>
+    /// Accumulates htmx events per <see cref="HtmxTriggerTiming"/> for a single request,
+    /// deferring header serialization until the response is about to start.
+    /// </summary>
+    private sealed class PendingEvents(HttpResponse response)
+    {
+        private Dictionary<string, object>? _receive;
+        private Dictionary<string, object>? _afterSettle;
+        private Dictionary<string, object>? _afterSwap;
+
+        /// <summary>
+        /// Adds the specified events to the pending set for the given <paramref name="timing"/>,
+        /// creating the underlying dictionary on first use. Keys already present are preserved.
+        /// </summary>
+        /// <param name="timing">The time at which the events will be triggered.</param>
+        /// <param name="events">A dictionary containing event names as keys and event details as values.</param>
+        public void AddEvents(HtmxTriggerTiming timing, IReadOnlyDictionary<string, object> events)
         {
-            var current = JsonSerializer.Deserialize<Dictionary<string, object>>(values.ToString())!;
+            var current = timing switch
+            {
+                HtmxTriggerTiming.Receive => _receive ??= new Dictionary<string, object>(),
+                HtmxTriggerTiming.AfterSettle => _afterSettle ??= new Dictionary<string, object>(),
+                _ => _afterSwap ??= new Dictionary<string, object>()
+            };
 
             if (events is Dictionary<string, object> dictionary)
             {
@@ -279,20 +327,29 @@ public readonly struct HtmxResponse
                 foreach (var (k, v) in events)
                     current.TryAdd(k, v);
             }
-
-            events = current;
         }
 
-        response._response.Headers[key] = JsonSerializer.Serialize(events, JsonOptions.CamelCase);
-        return response;
-    }
+        /// <summary>
+        /// Serializes the accumulated events, if any, into the corresponding <c>HX-Trigger</c> response headers.
+        /// </summary>
+        public void Flush()
+        {
+            SetHeader(HtmxResponseHeaderNames.Trigger, _receive);
+            SetHeader(HtmxResponseHeaderNames.TriggerAfterSettle, _afterSettle);
+            SetHeader(HtmxResponseHeaderNames.TriggerAfterSwap, _afterSwap);
+        }
 
-    #region Inner type: HtmxResponseDebugView
-
-    private sealed class HtmxResponseDebugView(HtmxResponse response)
-    {
-        [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
-        public KeyValuePair<string, string>[] Items => DebugHelpers.GetHeaders(response._response.Headers);
+        /// <summary>
+        /// Serializes the specified events into the response header with the given name,
+        /// if the dictionary is not <see langword="null"/>.
+        /// </summary>
+        /// <param name="name">The name of the header to set.</param>
+        /// <param name="events">The accumulated event names and their details, or <see langword="null"/> if none were set.</param>
+        private void SetHeader(string name, Dictionary<string, object>? events)
+        {
+            if (events is not null)
+                response.Headers[name] = JsonSerializer.Serialize(events, JsonOptions.CamelCase);
+        }
     }
 
     #endregion
