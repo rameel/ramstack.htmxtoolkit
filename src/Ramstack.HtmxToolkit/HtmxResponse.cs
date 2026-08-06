@@ -11,6 +11,10 @@ namespace Ramstack.HtmxToolkit;
 /// <summary>
 /// Represents HTTP response to set htmx response headers.
 /// </summary>
+/// <remarks>
+/// Like <see cref="HttpContext"/> and <see cref="HttpResponse"/> themselves, this type is not thread-safe.
+/// Its members should not be called concurrently from multiple threads for the same request.
+/// </remarks>
 [DebuggerTypeProxy(typeof(HtmxResponseDebugView))]
 public readonly struct HtmxResponse
 {
@@ -211,7 +215,7 @@ public readonly struct HtmxResponse
         return TriggerEventImpl(this, eventName, detail, timing);
 
         static HtmxResponse TriggerEventImpl(HtmxResponse response, string eventName, object detail, HtmxTriggerTiming timing) =>
-            SetEvents(response, new Dictionary<string, object> { [eventName] = detail }, timing);
+            AddEvents(response, new Dictionary<string, object> { [eventName] = detail }, timing);
     }
 
     /// <summary>
@@ -224,7 +228,7 @@ public readonly struct HtmxResponse
     /// The current <see cref="HtmxResponse"/> instance.
     /// </returns>
     public HtmxResponse TriggerEvents(IReadOnlyDictionary<string, object> events, HtmxTriggerTiming timing = HtmxTriggerTiming.Receive) =>
-        SetEvents(this, events, timing);
+        AddEvents(this, events, timing);
 
     /// <summary>
     /// Sets the special HTTP status code <c>286</c> that is used to stop the polling.
@@ -256,34 +260,9 @@ public readonly struct HtmxResponse
         return response;
     }
 
-    private static HtmxResponse SetEvents(HtmxResponse response, IReadOnlyDictionary<string, object> events, HtmxTriggerTiming timing)
+    private static HtmxResponse AddEvents(HtmxResponse response, IReadOnlyDictionary<string, object> events, HtmxTriggerTiming timing)
     {
-        var key = timing switch
-        {
-            HtmxTriggerTiming.Receive => HtmxResponseHeaderNames.Trigger,
-            HtmxTriggerTiming.AfterSettle => HtmxResponseHeaderNames.TriggerAfterSettle,
-            _ => HtmxResponseHeaderNames.TriggerAfterSwap
-        };
-
-        if (response._response.Headers.TryGetValue(key, out var values))
-        {
-            var current = JsonSerializer.Deserialize<Dictionary<string, object>>(values.ToString())!;
-
-            if (events is Dictionary<string, object> dictionary)
-            {
-                foreach (var (k, v) in dictionary)
-                    current.TryAdd(k, v);
-            }
-            else
-            {
-                foreach (var (k, v) in events)
-                    current.TryAdd(k, v);
-            }
-
-            events = current;
-        }
-
-        response._response.Headers[key] = JsonSerializer.Serialize(events, JsonOptions.CamelCase);
+        PendingEvents.GetOrCreate(response._response).AddEvents(timing, events);
         return response;
     }
 
