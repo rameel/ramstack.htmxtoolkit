@@ -215,7 +215,7 @@ public readonly struct HtmxResponse
         return TriggerEventImpl(this, eventName, detail, timing);
 
         static HtmxResponse TriggerEventImpl(HtmxResponse response, string eventName, object detail, HtmxTriggerTiming timing) =>
-            SetEvents(response, new Dictionary<string, object> { [eventName] = detail }, timing);
+            AddEvents(response, new Dictionary<string, object> { [eventName] = detail }, timing);
     }
 
     /// <summary>
@@ -228,7 +228,7 @@ public readonly struct HtmxResponse
     /// The current <see cref="HtmxResponse"/> instance.
     /// </returns>
     public HtmxResponse TriggerEvents(IReadOnlyDictionary<string, object> events, HtmxTriggerTiming timing = HtmxTriggerTiming.Receive) =>
-        SetEvents(this, events, timing);
+        AddEvents(this, events, timing);
 
     /// <summary>
     /// Sets the special HTTP status code <c>286</c> that is used to stop the polling.
@@ -260,23 +260,9 @@ public readonly struct HtmxResponse
         return response;
     }
 
-    private static HtmxResponse SetEvents(HtmxResponse response, IReadOnlyDictionary<string, object> events, HtmxTriggerTiming timing)
+    private static HtmxResponse AddEvents(HtmxResponse response, IReadOnlyDictionary<string, object> events, HtmxTriggerTiming timing)
     {
-        var context = response._response.HttpContext;
-        if (context.Items[typeof(PendingEvents)] is not PendingEvents pending)
-        {
-            pending = new PendingEvents(response._response);
-            context.Items[typeof(PendingEvents)] = pending;
-
-            response._response.OnStarting(static o =>
-            {
-                var state = (PendingEvents)o;
-                state.Flush();
-                return Task.CompletedTask;
-            }, pending);
-        }
-
-        pending.AddEvents(timing, events);
+        PendingEvents.GetOrCreate(response._response).AddEvents(timing, events);
         return response;
     }
 
@@ -286,70 +272,6 @@ public readonly struct HtmxResponse
     {
         [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
         public KeyValuePair<string, string>[] Items => DebugHelpers.GetHeaders(response._response.Headers);
-    }
-
-    #endregion
-
-    #region Inner type: PendingEvents
-
-    /// <summary>
-    /// Accumulates htmx events per <see cref="HtmxTriggerTiming"/> for a single request,
-    /// deferring header serialization until the response is about to start.
-    /// </summary>
-    private sealed class PendingEvents(HttpResponse response)
-    {
-        private Dictionary<string, object>? _receive;
-        private Dictionary<string, object>? _afterSettle;
-        private Dictionary<string, object>? _afterSwap;
-
-        /// <summary>
-        /// Adds the specified events to the pending set for the given <paramref name="timing"/>,
-        /// creating the underlying dictionary on first use. Keys already present are preserved.
-        /// </summary>
-        /// <param name="timing">The time at which the events will be triggered.</param>
-        /// <param name="events">A dictionary containing event names as keys and event details as values.</param>
-        public void AddEvents(HtmxTriggerTiming timing, IReadOnlyDictionary<string, object> events)
-        {
-            var current = timing switch
-            {
-                HtmxTriggerTiming.Receive => _receive ??= new Dictionary<string, object>(),
-                HtmxTriggerTiming.AfterSettle => _afterSettle ??= new Dictionary<string, object>(),
-                _ => _afterSwap ??= new Dictionary<string, object>()
-            };
-
-            if (events is Dictionary<string, object> dictionary)
-            {
-                foreach (var (k, v) in dictionary)
-                    current.TryAdd(k, v);
-            }
-            else
-            {
-                foreach (var (k, v) in events)
-                    current.TryAdd(k, v);
-            }
-        }
-
-        /// <summary>
-        /// Serializes the accumulated events, if any, into the corresponding <c>HX-Trigger</c> response headers.
-        /// </summary>
-        public void Flush()
-        {
-            SetHeader(HtmxResponseHeaderNames.Trigger, _receive);
-            SetHeader(HtmxResponseHeaderNames.TriggerAfterSettle, _afterSettle);
-            SetHeader(HtmxResponseHeaderNames.TriggerAfterSwap, _afterSwap);
-        }
-
-        /// <summary>
-        /// Serializes the specified events into the response header with the given name,
-        /// if the dictionary is not <see langword="null"/>.
-        /// </summary>
-        /// <param name="name">The name of the header to set.</param>
-        /// <param name="events">The accumulated event names and their details, or <see langword="null"/> if none were set.</param>
-        private void SetHeader(string name, Dictionary<string, object>? events)
-        {
-            if (events is not null)
-                response.Headers[name] = JsonSerializer.Serialize(events, JsonOptions.CamelCase);
-        }
     }
 
     #endregion
