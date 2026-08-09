@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices;
 using System.Text.Json;
 
 using Microsoft.AspNetCore.Http;
@@ -12,13 +13,15 @@ namespace Ramstack.HtmxToolkit;
 /// </summary>
 internal sealed class PendingEvents(HttpResponse response)
 {
+    private const string ProxyEventName = "_r_proxy";
+
     private Dictionary<string, object>? _receive;
     private Dictionary<string, object>? _afterSwap;
     private Dictionary<string, object>? _afterSettle;
 
     /// <summary>
     /// Adds the specified events to the pending set for the given <paramref name="timing"/>.
-    /// Keys already present are preserved.
+    /// When a key already exists, the duplicate event is accumulated under a <c>_r_proxy</c> key and replayed client-side.
     /// </summary>
     /// <param name="timing">The time at which the events will be triggered.</param>
     /// <param name="events">A dictionary containing event names as keys and event details as values.</param>
@@ -31,15 +34,16 @@ internal sealed class PendingEvents(HttpResponse response)
             _ => _afterSettle ??= new Dictionary<string, object>(),
         };
 
-        if (events is Dictionary<string, object> dictionary)
+        foreach (var (k, v) in events)
         {
-            foreach (var (k, v) in dictionary)
-                current.TryAdd(k, v);
-        }
-        else
-        {
-            foreach (var (k, v) in events)
-                current.TryAdd(k, v);
+            if (current.TryAdd(k, v))
+                continue;
+
+            ref var value = ref CollectionsMarshal.GetValueRefOrAddDefault(current, ProxyEventName, out _);
+            if (value is not List<KeyValuePair<string, object>> collection)
+                value = collection = [];
+
+            collection.Add(new KeyValuePair<string, object>(k, v));
         }
     }
 
