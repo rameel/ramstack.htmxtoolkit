@@ -3,8 +3,6 @@ using System.Text.Json;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 
-using Ramstack.HtmxToolkit.Internal;
-
 namespace Ramstack.HtmxToolkit.TagHelpers;
 
 /// <summary>
@@ -33,7 +31,7 @@ public sealed class HtmxHeaderTagHelper : TagHelper
     public override Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
     {
         var headers = new HtmlString(
-            JsonSerializer.Serialize(Headers, JsonOptions.PreserveKeyCase));
+            JsonSerializer.Serialize(Headers, HtmxHeaderJsonSerializerContext.Default.DictionaryStringString));
 
         output.Attributes.SetAttribute(
             new TagHelperAttribute("hx-headers", headers, HtmlAttributeValueStyle.SingleQuotes));
