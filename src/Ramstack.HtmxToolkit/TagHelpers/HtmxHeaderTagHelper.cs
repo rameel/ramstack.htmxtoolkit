@@ -25,13 +25,13 @@ public sealed class HtmxHeaderTagHelper : TagHelper
     /// Gets or sets the <c>hx-header</c> attribute values.
     /// </summary>
     [HtmlAttributeName(HeadersDictionaryName, DictionaryAttributePrefix = HeadersPrefix)]
-    public Dictionary<string, string> Headers { get; set; } = new();
+    public IDictionary<string, string> Headers { get; set; } = new Dictionary<string, string>();
 
     /// <inheritdoc />
     public override Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
     {
         var headers = new HtmlString(
-            JsonSerializer.Serialize(Headers, HtmxHeaderJsonSerializerContext.Default.DictionaryStringString));
+            JsonSerializer.Serialize(Headers, HtmxHeaderJsonSerializerContext.Default.IDictionaryStringString));
 
         output.Attributes.SetAttribute(
             new TagHelperAttribute("hx-headers", headers, HtmlAttributeValueStyle.SingleQuotes));

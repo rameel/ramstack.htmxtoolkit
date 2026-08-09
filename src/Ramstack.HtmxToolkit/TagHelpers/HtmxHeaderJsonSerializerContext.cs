@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace Ramstack.HtmxToolkit.TagHelpers;
 
-[JsonSerializable(typeof(Dictionary<string, string>))]
+[JsonSerializable(typeof(IDictionary<string, string>))]
 [JsonSourceGenerationOptions(
     WriteIndented = false,
     GenerationMode = JsonSourceGenerationMode.Serialization)]
