@@ -42,8 +42,9 @@ public sealed class AjaxContext
 
     /// <summary>
     /// Gets or sets the headers to include with the request.
+    /// Header values must be strings; complex data should be passed as a pre-serialized JSON string.
     /// </summary>
-    public object? Headers { get; set; }
+    public IDictionary<string, string>? Headers { get; set; }
 
     /// <summary>
     /// Gets or sets a selector used to filter the content to swap from the response.

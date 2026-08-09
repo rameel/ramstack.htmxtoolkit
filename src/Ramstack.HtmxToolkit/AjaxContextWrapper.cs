@@ -29,6 +29,6 @@ internal readonly struct AjaxContextWrapper
     [JsonPropertyName("target")]  public string? Target => _context.Target;
     [JsonPropertyName("swap")]    public string? Swap => _context.Swap.GetSwapValue();
     [JsonPropertyName("values")]  public object? Values => _context.Values;
-    [JsonPropertyName("headers")] public object? Headers => _context.Headers;
+    [JsonPropertyName("headers")] public IDictionary<string, string>? Headers => _context.Headers;
     [JsonPropertyName("select")]  public string? Select => _context.Select;
 }
