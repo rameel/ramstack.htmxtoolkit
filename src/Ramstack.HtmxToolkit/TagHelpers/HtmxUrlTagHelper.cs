@@ -43,7 +43,7 @@ public sealed class HtmxUrlTagHelper(IUrlHelperFactory factory) : TagHelper
 
     private static readonly string[] s_methods = ["hx-get", "hx-post", "hx-delete", "hx-put", "hx-patch"];
 
-    private RouteValueDictionary? _routeValues;
+    private IDictionary<string, string>? _routeValues;
 
     /// <inheritdoc />
     public override int Order => -1000;
@@ -128,9 +128,9 @@ public sealed class HtmxUrlTagHelper(IUrlHelperFactory factory) : TagHelper
     /// Gets or sets the additional parameters for the route.
     /// </summary>
     [HtmlAttributeName(RouteValuesDictionaryName, DictionaryAttributePrefix = RouteValuesPrefix)]
-    public RouteValueDictionary RouteValues
+    public IDictionary<string, string> RouteValues
     {
-        get => _routeValues ??= [];
+        get => _routeValues ??= new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         set => _routeValues = value;
     }
 
@@ -148,13 +148,18 @@ public sealed class HtmxUrlTagHelper(IUrlHelperFactory factory) : TagHelper
         var actionLink = Controller != null || Action != null;
         var pageLink = Page != null || PageHandler != null;
 
-        if ((routeLink && actionLink) || (routeLink && pageLink) || (actionLink && pageLink))
+        if ((routeLink && (actionLink || pageLink)) || (actionLink && pageLink))
             Error_CannotDetermineUrl();
+
+        RouteValueDictionary? routeValues = null;
+        if (_routeValues is { Count: > 0 })
+            routeValues = new RouteValueDictionary(_routeValues!);
 
         if (Area is not null)
         {
             // Unconditionally replace any value from hx-area
-            RouteValues["area"] = Area;
+            routeValues ??= new RouteValueDictionary();
+            routeValues["area"] = Area;
         }
 
         var generator = factory.GetUrlHelper(ViewContext);
@@ -165,7 +170,7 @@ public sealed class HtmxUrlTagHelper(IUrlHelperFactory factory) : TagHelper
             url = generator.Page(
                 pageName: Page,
                 pageHandler: PageHandler,
-                values: RouteValues,
+                values: routeValues,
                 protocol: Protocol,
                 host: Host,
                 fragment: Fragment);
@@ -174,7 +179,7 @@ public sealed class HtmxUrlTagHelper(IUrlHelperFactory factory) : TagHelper
         {
             url = generator.RouteUrl(
                 routeName: Route,
-                values: RouteValues,
+                values: routeValues,
                 protocol: Protocol,
                 host: Host,
                 fragment: Fragment);
@@ -184,7 +189,7 @@ public sealed class HtmxUrlTagHelper(IUrlHelperFactory factory) : TagHelper
             url = generator.Action(
                 action: Action,
                 controller: Controller,
-                values: RouteValues,
+                values: routeValues,
                 protocol: Protocol,
                 host: Host,
                 fragment: Fragment);
