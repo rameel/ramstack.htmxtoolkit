@@ -57,7 +57,7 @@ public sealed class HtmxConfigTagHelper(IAntiforgery antiforgery) : TagHelper
     public int? DefaultSwapDelay { get; set; }
 
     /// <summary>
-    /// Gets or sets the default settle delay. Defaults to <c>100</c>.
+    /// Gets or sets the default settle delay. Defaults to <c>20</c>.
     /// </summary>
     [HtmlAttributeName("default-settle-delay")]
     public int? DefaultSettleDelay { get; set; }
