@@ -6,7 +6,7 @@
     <File Path="LICENSE" />
     <File Path="package.json" />
     <File Path="README.md" />
-    <File Path="rollup.config.mjs" />
+    <File Path="rollup.config.js" />
   </Folder>
   <Project Path="src/Ramstack.HtmxToolkit/Ramstack.HtmxToolkit.csproj" />
 </Solution>

@@ -1,4 +1,4 @@
-document.body._r_htmx ??= ((document, htmx) => {
+document._r_htmx ||= ((document, htmx) => {
     document.addEventListener("htmx:afterOnLoad", e => {
         if (e.detail.boosted) {
             const html = new DOMParser().parseFromString(e.detail.xhr.responseText, "text/html");

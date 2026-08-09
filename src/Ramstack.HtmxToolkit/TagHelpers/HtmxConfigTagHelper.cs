@@ -19,6 +19,8 @@ namespace Ramstack.HtmxToolkit.TagHelpers;
 [HtmlTargetElement("htmx-config", TagStructure = TagStructure.WithoutEndTag)]
 public sealed class HtmxConfigTagHelper(IAntiforgery antiforgery) : TagHelper
 {
+    private readonly IAntiforgery _antiforgery = antiforgery;
+
     /// <summary>
     /// Gets or sets a value indicating whether history is enabled.
     /// Defaults to <see langword="true" />.
@@ -55,7 +57,7 @@ public sealed class HtmxConfigTagHelper(IAntiforgery antiforgery) : TagHelper
     public int? DefaultSwapDelay { get; set; }
 
     /// <summary>
-    /// Gets or sets the default settle delay. Defaults to <c>100</c>.
+    /// Gets or sets the default settle delay. Defaults to <c>20</c>.
     /// </summary>
     [HtmlAttributeName("default-settle-delay")]
     public int? DefaultSettleDelay { get; set; }
@@ -263,10 +265,17 @@ public sealed class HtmxConfigTagHelper(IAntiforgery antiforgery) : TagHelper
 
         output.Attributes.SetAttribute("name", "htmx-config");
 
+        #if NET8_0_OR_GREATER
         var config = new HtmlString(
             JsonSerializer.Serialize(
-                new HtmxConfiguration(this, antiforgery),
+                new HtmxConfiguration(this),
+                HtmxConfigJsonSerializerContext.Default.HtmxConfiguration));
+        #else
+        var config = new HtmlString(
+            JsonSerializer.Serialize(
+                new HtmxConfiguration(this),
                 JsonOptions.CamelCase));
+        #endif
 
         output.Attributes.SetAttribute(
             new TagHelperAttribute("content", config, HtmlAttributeValueStyle.SingleQuotes));
@@ -280,7 +289,7 @@ public sealed class HtmxConfigTagHelper(IAntiforgery antiforgery) : TagHelper
     /// Represents a proxy structure for the <see cref="HtmxConfigTagHelper"/> class.
     /// </summary>
     [SuppressMessage("ReSharper", "UnusedMember.Local")]
-    private readonly struct HtmxConfiguration(HtmxConfigTagHelper helper, IAntiforgery antiforgery)
+    internal readonly struct HtmxConfiguration(HtmxConfigTagHelper helper)
     {
         public bool? HistoryEnabled => helper.HistoryEnabled;
         public int? HistoryCacheSize => helper.HistoryCacheSize;
@@ -313,11 +322,11 @@ public sealed class HtmxConfigTagHelper(IAntiforgery antiforgery) : TagHelper
         public bool? IgnoreTitle => helper.IgnoreTitle;
         public bool? ScrollIntoViewOnBoost => helper.ScrollIntoViewOnBoost;
         public string? TriggerSpecsCache => helper.TriggerSpecsCache;
-        public AntiForgeryTokenData? AntiForgery => GetAntiForgeryToken();
+        public AntiForgeryTokenData? AntiForgery => GetAntiForgeryToken(helper);
 
-        private AntiForgeryTokenData? GetAntiForgeryToken() =>
-            helper.IncludeAntiForgeryToken
-                ? new AntiForgeryTokenData(antiforgery.GetAndStoreTokens(helper.ViewContext.HttpContext))
+        private static AntiForgeryTokenData? GetAntiForgeryToken(HtmxConfigTagHelper h) =>
+            h.IncludeAntiForgeryToken
+                ? new AntiForgeryTokenData(h._antiforgery.GetAndStoreTokens(h.ViewContext.HttpContext))
                 : null;
     }
 
@@ -329,7 +338,7 @@ public sealed class HtmxConfigTagHelper(IAntiforgery antiforgery) : TagHelper
     /// Represents a proxy structure for the <see cref="AntiforgeryTokenSet"/> class.
     /// </summary>
     [SuppressMessage("ReSharper", "UnusedMember.Local")]
-    private readonly struct AntiForgeryTokenData(AntiforgeryTokenSet antiforgery)
+    internal readonly struct AntiForgeryTokenData(AntiforgeryTokenSet antiforgery)
     {
         public string? HeaderName => antiforgery.HeaderName;
         public string FormFieldName => antiforgery.FormFieldName;
