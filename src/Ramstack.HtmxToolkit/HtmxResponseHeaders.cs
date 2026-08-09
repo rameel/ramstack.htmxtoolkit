@@ -129,21 +129,6 @@ public readonly struct HtmxResponseHeaders
     }
 
     /// <summary>
-    /// Gets or sets the <c>HX-Trigger-After-Settle</c> header, which specifies a dictionary of client-side events
-    /// to trigger after the htmx request has settled.
-    /// </summary>
-    /// <remarks>
-    /// Event values are accumulated for the current response and serialized into the header immediately
-    /// before the response starts.
-    /// </remarks>
-    [MaybeNull]
-    public IReadOnlyDictionary<string, object> TriggerAfterSettle
-    {
-        get => PendingEvents.TryGet(_response)?.GetEvents(HtmxTriggerTiming.AfterSettle);
-        set => PendingEvents.GetOrCreate(_response).SetEvents(HtmxTriggerTiming.AfterSettle, value);
-    }
-
-    /// <summary>
     /// Gets or sets the <c>HX-Trigger-After-Swap</c> header, which specifies a dictionary of client-side events
     /// to trigger after the response content has been swapped into the DOM.
     /// </summary>
@@ -156,6 +141,21 @@ public readonly struct HtmxResponseHeaders
     {
         get => PendingEvents.TryGet(_response)?.GetEvents(HtmxTriggerTiming.AfterSwap);
         set => PendingEvents.GetOrCreate(_response).SetEvents(HtmxTriggerTiming.AfterSwap, value);
+    }
+
+    /// <summary>
+    /// Gets or sets the <c>HX-Trigger-After-Settle</c> header, which specifies a dictionary of client-side events
+    /// to trigger after the htmx request has settled.
+    /// </summary>
+    /// <remarks>
+    /// Event values are accumulated for the current response and serialized into the header immediately
+    /// before the response starts.
+    /// </remarks>
+    [MaybeNull]
+    public IReadOnlyDictionary<string, object> TriggerAfterSettle
+    {
+        get => PendingEvents.TryGet(_response)?.GetEvents(HtmxTriggerTiming.AfterSettle);
+        set => PendingEvents.GetOrCreate(_response).SetEvents(HtmxTriggerTiming.AfterSettle, value);
     }
 
     private static string? GetHeader(IHeaderDictionary headers, string key)

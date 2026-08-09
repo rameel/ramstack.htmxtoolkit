@@ -13,8 +13,8 @@ namespace Ramstack.HtmxToolkit;
 internal sealed class PendingEvents(HttpResponse response)
 {
     private Dictionary<string, object>? _receive;
-    private Dictionary<string, object>? _afterSettle;
     private Dictionary<string, object>? _afterSwap;
+    private Dictionary<string, object>? _afterSettle;
 
     /// <summary>
     /// Adds the specified events to the pending set for the given <paramref name="timing"/>.
@@ -27,8 +27,8 @@ internal sealed class PendingEvents(HttpResponse response)
         var current = timing switch
         {
             HtmxTriggerTiming.Receive => _receive ??= new Dictionary<string, object>(),
-            HtmxTriggerTiming.AfterSettle => _afterSettle ??= new Dictionary<string, object>(),
-            _ => _afterSwap ??= new Dictionary<string, object>()
+            HtmxTriggerTiming.AfterSwap => _afterSwap ??= new Dictionary<string, object>(),
+            _ => _afterSettle ??= new Dictionary<string, object>(),
         };
 
         if (events is Dictionary<string, object> dictionary)
@@ -55,8 +55,8 @@ internal sealed class PendingEvents(HttpResponse response)
         return timing switch
         {
             HtmxTriggerTiming.Receive => _receive,
-            HtmxTriggerTiming.AfterSettle => _afterSettle,
-            _ => _afterSwap
+            HtmxTriggerTiming.AfterSwap => _afterSwap,
+            _ => _afterSettle,
         };
     }
 
@@ -73,11 +73,11 @@ internal sealed class PendingEvents(HttpResponse response)
             case HtmxTriggerTiming.Receive:
                 _receive = replacement;
                 break;
-            case HtmxTriggerTiming.AfterSettle:
-                _afterSettle = replacement;
+            case HtmxTriggerTiming.AfterSwap:
+                _afterSwap = replacement;
                 break;
             default:
-                _afterSwap = replacement;
+                _afterSettle = replacement;
                 break;
         }
     }
@@ -88,8 +88,8 @@ internal sealed class PendingEvents(HttpResponse response)
     public void Flush()
     {
         SetHeader(HtmxResponseHeaderNames.Trigger, _receive);
-        SetHeader(HtmxResponseHeaderNames.TriggerAfterSettle, _afterSettle);
         SetHeader(HtmxResponseHeaderNames.TriggerAfterSwap, _afterSwap);
+        SetHeader(HtmxResponseHeaderNames.TriggerAfterSettle, _afterSettle);
     }
 
     /// <summary>

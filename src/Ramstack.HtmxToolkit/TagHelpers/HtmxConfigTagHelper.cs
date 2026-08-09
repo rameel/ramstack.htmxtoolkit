@@ -88,16 +88,16 @@ public sealed class HtmxConfigTagHelper(IAntiforgery antiforgery) : TagHelper
     public string? AddedClass { get; set; }
 
     /// <summary>
-    /// Gets or sets the settling class. Defaults to <c>htmx-settling</c>.
-    /// </summary>
-    [HtmlAttributeName("settling-class")]
-    public string? SettlingClass { get; set; }
-
-    /// <summary>
     /// Gets or sets the swapping class. Defaults to <c>htmx-swapping</c>.
     /// </summary>
     [HtmlAttributeName("swapping-class")]
     public string? SwappingClass { get; set; }
+
+    /// <summary>
+    /// Gets or sets the settling class. Defaults to <c>htmx-settling</c>.
+    /// </summary>
+    [HtmlAttributeName("settling-class")]
+    public string? SettlingClass { get; set; }
 
     /// <summary>
     /// Gets or sets a value indicating whether eval is allowed.
