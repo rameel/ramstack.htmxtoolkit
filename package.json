@@ -10,9 +10,9 @@
   "author": "rameel <rameel-b@hotmail.com>",
   "license": "MIT",
   "devDependencies": {
-    "@rollup/plugin-terser": "^0.4.4",
-    "rollup": "^4.57.1",
+    "@rollup/plugin-terser": "^1.0.0",
+    "rollup": "^4.62.4",
     "rollup-plugin-bundle-size": "^1.0.3",
-    "terser": "^5.46.0"
+    "terser": "^5.49.2"
   }
 }
