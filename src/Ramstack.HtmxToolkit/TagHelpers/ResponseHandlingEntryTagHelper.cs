@@ -56,24 +56,22 @@ public sealed class ResponseHandlingEntryTagHelper : TagHelper
     /// <inheritdoc />
     public override void Process(TagHelperContext context, TagHelperOutput output)
     {
-        if (!context.Items.TryGetValue(HtmxConfigTagHelper.ResponseHandlingEntriesKey, out var value))
+        if (context.Items.TryGetValue(typeof(HtmxConfigTagHelper), out var value))
         {
-            value = new List<ResponseHandlingEntry>();
-            context.Items[HtmxConfigTagHelper.ResponseHandlingEntriesKey] = value;
-        }
-
-        if (value is List<ResponseHandlingEntry> entries)
-        {
-            entries.Add(new ResponseHandlingEntry
+            if (value is HtmxConfigTagHelper config)
             {
-                Code = Code,
-                Swap = Swap,
-                Error = Error,
-                IgnoreTitle = IgnoreTitle,
-                Select = Select,
-                Target = Target,
-                SwapOverride = SwapOverride
-            });
+                config.ResponseHandling ??= new List<ResponseHandlingEntry>();
+                config.ResponseHandling.Add(new ResponseHandlingEntry
+                {
+                    Code = Code,
+                    Swap = Swap,
+                    Error = Error,
+                    IgnoreTitle = IgnoreTitle,
+                    Select = Select,
+                    Target = Target,
+                    SwapOverride = SwapOverride
+                });
+            }
         }
 
         output.SuppressOutput();

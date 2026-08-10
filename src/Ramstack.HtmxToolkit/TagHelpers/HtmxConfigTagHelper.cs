@@ -22,12 +22,6 @@ public sealed class HtmxConfigTagHelper(IAntiforgery antiforgery) : TagHelper
     private readonly IAntiforgery _antiforgery = antiforgery;
 
     /// <summary>
-    /// The key used to pass <see cref="ResponseHandlingEntry"/> items between
-    /// <see cref="ResponseHandlingEntryTagHelper"/> and this tag helper via <see cref="TagHelperContext.Items"/>.
-    /// </summary>
-    internal const string ResponseHandlingEntriesKey = "Htmx_ResponseHandlingEntries";
-
-    /// <summary>
     /// Gets or sets a value indicating whether history is enabled.
     /// Defaults to <see langword="true" />.
     /// </summary>
@@ -372,11 +366,8 @@ public sealed class HtmxConfigTagHelper(IAntiforgery antiforgery) : TagHelper
         output.TagMode = TagMode.SelfClosing;
         output.Attributes.SetAttribute("name", "htmx-config");
 
+        context.Items[typeof(HtmxConfigTagHelper)] = this;
         await output.GetChildContentAsync();
-
-        if (context.Items.TryGetValue(ResponseHandlingEntriesKey, out var value))
-            if (value is List<ResponseHandlingEntry> entries && entries.Count != 0)
-                ResponseHandling = entries;
 
         #if NET8_0_OR_GREATER
         var config = new HtmlString(
