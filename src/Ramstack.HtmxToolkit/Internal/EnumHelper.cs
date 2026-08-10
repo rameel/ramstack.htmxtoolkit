@@ -20,10 +20,17 @@ internal static class EnumHelper
     /// </summary>
     /// <param name="value">The <see cref="HtmxScrollBehavior"/> value.</param>
     /// <returns>
-    /// The string representation: either "auto" or "smooth".
+    /// The string representation: "auto", "smooth" or "instant".
     /// </returns>
-    public static string GetScrollBehaviorValue(this HtmxScrollBehavior value) =>
-        value == HtmxScrollBehavior.Auto ? "auto" : "smooth";
+    public static string GetScrollBehaviorValue(this HtmxScrollBehavior value)
+    {
+        return value switch
+        {
+            HtmxScrollBehavior.Auto => "auto",
+            HtmxScrollBehavior.Smooth => "smooth",
+            _ => "instant"
+        };
+    }
 
     /// <summary>
     /// Converts a <see cref="HtmxSwap"/> value to its corresponding string representation,
@@ -47,17 +54,17 @@ internal static class EnumHelper
     /// </returns>
     public static string GetSwapValue(this HtmxSwap value)
     {
-        switch (value)
+        return value switch
         {
-            case HtmxSwap.InnerHtml: return "innerHTML";
-            case HtmxSwap.OuterHtml: return "outerHTML";
-            case HtmxSwap.BeforeBegin: return "beforebegin";
-            case HtmxSwap.AfterBegin: return "afterbegin";
-            case HtmxSwap.BeforeEnd: return "beforeend";
-            case HtmxSwap.AfterEnd: return "afterend";
-            case HtmxSwap.Delete: return "delete";
-            default: return "none";
-        }
+            HtmxSwap.InnerHtml => "innerHTML",
+            HtmxSwap.OuterHtml => "outerHTML",
+            HtmxSwap.BeforeBegin => "beforebegin",
+            HtmxSwap.AfterBegin => "afterbegin",
+            HtmxSwap.BeforeEnd => "beforeend",
+            HtmxSwap.AfterEnd => "afterend",
+            HtmxSwap.Delete => "delete",
+            _ => "none"
+        };
     }
 
     /// <summary>

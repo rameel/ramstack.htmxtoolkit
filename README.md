@@ -5,6 +5,7 @@
 Provides HTMX integration for ASP.NET Core applications.
 
 <!-- TOC -->
+* [HtmxToolkit](#htmxtoolkit)
   * [Getting Started](#getting-started)
   * [HttpRequest](#httprequest)
     * [HtmxRequestAttribute](#htmxrequestattribute)
@@ -14,6 +15,7 @@ Provides HTMX integration for ASP.NET Core applications.
     * [HtmxUrlTagHelper](#htmxurltaghelper)
     * [HtmxHeaderTagHelper](#htmxheadertaghelper)
     * [HtmxConfigTagHelper](#htmxconfigtaghelper)
+      * [Response Handling Configuration](#response-handling-configuration)
   * [Antiforgery Token](#antiforgery-token)
   * [Supported Versions](#supported-versions)
   * [Contributions](#contributions)
@@ -616,6 +618,61 @@ If desired or for the purpose of semantics, you can use `htmx-config` as the sta
              use-template-fragments="true"
              scroll-behavior="HtmxScrollBehavior.Smooth"
              include-antiforgery-token="true" />
+```
+
+#### Response Handling Configuration
+
+HTMX 2.x introduces the [`responseHandling`](https://htmx.org/docs/#response-handling) configuration option,
+allowing you to define how htmx should handle responses based on HTTP status codes.
+The library provides a child tag helper `<response-handling>` that can be placed inside `<htmx-config>`
+to declaratively configure response handling rules.
+
+```html
+<htmx-config>
+    <!-- 204 No Content — do not swap, but not an error -->
+    <response-handling code="204" swap="false" />
+
+    <!-- 2xx & 3xx — swap into DOM -->
+    <response-handling code="[23].." swap="true" />
+
+    <!-- 422 Unprocessable Entity — swap (e.g. validation errors) -->
+    <response-handling code="422" swap="true" />
+
+    <!-- 4xx & 5xx — do not swap, treat as error -->
+    <response-handling code="[45].." swap="false" error="true" />
+
+    <!-- Catch-all for any other response code -->
+    <response-handling code="..." swap="true" />
+</htmx-config>
+```
+
+The following code will be generated:
+
+```html
+<meta name="htmx-config"
+      content='{"responseHandling":[{"code":"204","swap":false},{"code":"[23]..","swap":true},{"code":"422","swap":true},{"code":"[45]..","swap":false,"error":true},{"code":"...","swap":true}]}' />
+```
+
+The `<response-handling>` element supports the following attributes:
+
+| Attribute       | Type     | Description                                                      |
+|-----------------|----------|------------------------------------------------------------------|
+| `code`          | `string` | Regular expression tested against response status codes          |
+| `swap`          | `bool?`  | Whether the response should be swapped into the DOM              |
+| `error`         | `bool?`  | Whether htmx should treat this response as an error              |
+| `ignore-title`  | `bool?`  | Whether to ignore title tags in the response                     |
+| `select`        | `string` | CSS selector to select content from the response                 |
+| `target`        | `string` | CSS selector specifying an alternative target for the response   |
+| `swap-override` | `string` | Alternative swap mechanism for the response                      |
+
+Alternatively, you can set the entire response handling configuration directly as a Razor expression:
+
+```html
+<htmx-config response-handling="@new [] {
+    new ResponseHandlingEntry { Code = "204", Swap = false },
+    new ResponseHandlingEntry { Code = "[23]..", Swap = true },
+    new ResponseHandlingEntry { Code = "[45]..", Swap = false, Error = true }
+}" />
 ```
 
 ## Antiforgery Token

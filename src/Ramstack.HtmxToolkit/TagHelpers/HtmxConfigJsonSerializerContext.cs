@@ -9,6 +9,7 @@ namespace Ramstack.HtmxToolkit.TagHelpers;
     DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
     GenerationMode = JsonSourceGenerationMode.Serialization)]
 [JsonSerializable(typeof(HtmxConfigTagHelper.HtmxConfiguration))]
-[JsonSerializable(typeof(HtmxConfigTagHelper.AntiForgeryTokenData))]
+[JsonSerializable(typeof(HtmxConfigTagHelper.AntiForgeryTokenData?))]
+[JsonSerializable(typeof(IList<ResponseHandlingEntry>))]
 internal partial class HtmxConfigJsonSerializerContext : JsonSerializerContext;
 #endif
