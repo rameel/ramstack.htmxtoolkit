@@ -9,4 +9,5 @@
     <File Path="rollup.config.js" />
   </Folder>
   <Project Path="src/Ramstack.HtmxToolkit/Ramstack.HtmxToolkit.csproj" />
+  <Project Path="samples/Ramstack.HtmxToolkit.Demo/Ramstack.HtmxToolkit.Demo.csproj" />
 </Solution>
