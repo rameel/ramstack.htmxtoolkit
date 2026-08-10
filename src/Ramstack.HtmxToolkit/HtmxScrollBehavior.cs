@@ -13,5 +13,11 @@ public enum HtmxScrollBehavior
     /// <summary>
     /// Specifies smooth scrolling to the top of the page.
     /// </summary>
-    Smooth
+    Smooth,
+
+    /// <summary>
+    /// Specifies instant scrolling with no animation.
+    /// Supported only in HTMX 2.x.
+    /// </summary>
+    Instant
 }
