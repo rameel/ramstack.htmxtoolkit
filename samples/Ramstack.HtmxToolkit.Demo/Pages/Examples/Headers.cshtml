@@ -1,0 +1,33 @@
+@page
+@model HeadersModel
+@{
+  ViewData["Title"] = "Request headers";
+}
+
+<article class="example-page">
+  <header class="page-heading">
+    <p class="eyebrow">Example 03</p>
+    <h1>Request headers</h1>
+    <p>Define custom HTMX headers declaratively in Razor</p>
+  </header>
+
+  <section class="demo-card">
+    <div class="demo-card__header">
+      <h2><code>hx-header-*</code></h2>
+      <p>The handler reads the header and triggers two client events.</p>
+    </div>
+    <div class="demo-actions">
+      <button
+        hx-get
+        hx-page="/Examples/Headers"
+        hx-page-handler="CustomHeader"
+        hx-header-Custom-Header="MyValue"
+        hx-target="#header-result">
+        Send custom header
+      </button>
+    </div>
+
+    <div id="header-result" class="result">No request has been sent.</div>
+    <div id="event-log" class="event-log"></div>
+  </section>
+</article>

@@ -1,0 +1,40 @@
+@page
+@model UrlTagHelperModel
+@{
+  ViewData["Title"] = "URL Tag Helper";
+}
+
+<article class="example-page">
+  <header class="page-heading">
+    <p class="eyebrow">Example 01</p>
+    <h1>URL Tag Helper</h1>
+    <p>Generate HTMX URLs with familiar Razor Pages routing attributes</p>
+  </header>
+
+  <section class="demo-card">
+    <div class="demo-card__header">
+      <h2><code>hx-page</code> + <code>hx-page-handler</code></h2>
+      <p>The toolkit generates the request URL and uses <code>hx-get</code> by default.</p>
+    </div>
+
+    <div class="demo-actions">
+      <button
+        hx-page="/Examples/UrlTagHelper"
+        hx-page-handler="ServerTime"
+        hx-target="#result">
+        Get server time
+      </button>
+      <button
+        class="button-secondary"
+        hx-page="/Examples/UrlTagHelper"
+        hx-page-handler="Hello"
+        hx-target="#result">
+        Say hello
+      </button>
+    </div>
+
+    <div id="result" class="result">
+      Run an action to see the response.
+    </div>
+  </section>
+</article>

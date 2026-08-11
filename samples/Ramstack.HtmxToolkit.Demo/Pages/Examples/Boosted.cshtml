@@ -1,0 +1,34 @@
+@page
+@model BoostedModel
+@{
+  ViewData["Title"] = "Boosted requests";
+}
+
+<article class="example-page">
+  <header class="page-heading">
+    <p class="eyebrow">Example 08</p>
+    <h1>Detect boosted navigation</h1>
+    <p>Identify a request initiated by an <code>hx-boost</code> link</p>
+  </header>
+
+  <section class="demo-card">
+    <div class="demo-card__header">
+      <h2><code>IsHtmxBoosted()</code></h2>
+      <p>The link is progressively enhanced and its response is placed into the result panel.</p>
+    </div>
+
+    <div class="demo-actions">
+      <a class="button"
+         asp-page="/Examples/Boosted"
+         asp-page-handler="BoostedCheck"
+         hx-boost="true"
+         hx-target="#boosted-result">
+        Run boosted request
+      </a>
+    </div>
+
+    <div id="boosted-result" class="result">
+      The handler has not been called.
+    </div>
+  </section>
+</article>

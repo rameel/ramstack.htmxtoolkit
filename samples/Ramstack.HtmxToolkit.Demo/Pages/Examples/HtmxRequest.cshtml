@@ -1,0 +1,41 @@
+@page
+@model HtmxRequestModel
+@{
+  ViewData["Title"] = "HTMX requests";
+}
+
+<article class="example-page">
+  <header class="page-heading">
+    <p class="eyebrow">Example 06</p>
+    <h1>Detect HTMX requests</h1>
+    <p>Return an appropriate representation when the handler is called asynchronously or directly</p>
+  </header>
+
+  <section class="demo-card">
+    <div class="demo-card__header">
+      <h2><code>Request.IsHtmxRequest()</code></h2>
+      <p>Compare a normal browser navigation with an HTMX request to the same handler.</p>
+    </div>
+
+    <div class="demo-actions">
+      <button
+        hx-get
+        hx-page="/Examples/HtmxRequest"
+        hx-page-handler="PartialOrFull"
+        hx-target="#partial-result">
+        Fetch via HTMX
+      </button>
+      <a
+        class="button button-secondary"
+        asp-page="/Examples/HtmxRequest"
+        asp-page-handler="PartialOrFull"
+        target="_blank">
+        Open full request
+      </a>
+    </div>
+
+    <div id="partial-result" class="result">
+      Choose a request type.
+    </div>
+  </section>
+</article>

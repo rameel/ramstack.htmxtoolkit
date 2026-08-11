@@ -1,135 +1,23 @@
 @page
 @model IndexModel
 
-<section>
-    <h2>1. HtmxUrlTagHelper — <code>hx-page</code> + <code>hx-page-handler</code></h2>
-    <p>Uses <code>hx-page</code> and <code>hx-page-handler</code> attributes to generate HTMX URLs:</p>
-    <button hx-page="/Index"
-            hx-page-handler="ServerTime"
-            hx-target="#result">Get Server Time</button>
-    <button hx-page="/Index"
-            hx-page-handler="Hello"
-            hx-target="#result">Say Hello</button>
-    <div id="result" class="result"></div>
-</section>
+<article class="example-page">
+    <header class="page-heading">
+        <p class="eyebrow">Interactive documentation</p>
+        <h1>HTMX integration for ASP.NET Core</h1>
+        <p>Explore the Ramstack.HtmxToolkit API through focused, runnable Razor Pages examples.</p>
+    </header>
 
-<section>
-    <h2>2. HtmxUrlTagHelper — route parameters via <code>hx-route-*</code> and <code>hx-all-route-data</code></h2>
-    <button hx-get
-            hx-page="/Index"
-            hx-page-handler="Greet"
-            hx-route-name="World"
-            hx-target="#greet-result">Greet via <b>hx-route-*</b></button>
-    <button hx-get
-            hx-page="/Index"
-            hx-page-handler="Greet"
-            hx-all-route-data="@(new Dictionary<string, string> { { "name", "HTMX" } })"
-            hx-target="#greet-result">Greet via <b>hx-all-route-data</b></button>
-    <div id="greet-result" class="result"></div>
-</section>
-
-<section>
-    <h2>3. HtmxHeaderTagHelper — <code>hx-header-*</code> attributes</h2>
-    <p>Custom headers added via <code>hx-header-*</code> attributes. The server reads them and triggers client-side events:</p>
-    <button hx-get
-            hx-page="/Index"
-            hx-page-handler="CustomHeader"
-            hx-header-Custom-Header="MyValue"
-            hx-target="#header-result">Send with Custom Header</button>
-    <div id="header-result" class="result"></div>
-
-    <script>
-        document.addEventListener("customEvent", e => console.log("customEvent:", e.detail.message));
-        document.addEventListener("logEvent", e => console.log("logEvent:", e.detail.message));
-    </script>
-</section>
-
-<section>
-    <h2>4. Fluent API — <code>Response.Htmx()</code></h2>
-    <p>Setting HTMX response headers via the fluent API in the page handler:</p>
-    <div style="display:flex; gap:8px; flex-wrap:wrap;">
-        <button hx-get
-                hx-page="/Index"
-                hx-page-handler="Reswap"
-                hx-target="#fluent-result"
-                hx-swap="outerHTML">
-            Reswap (AfterBegin)
-        </button>
-        <button hx-get
-                hx-page="/Index"
-                hx-page-handler="Retarget"
-                hx-target="#this-should-be-ignored">
-            Retarget to #result
-        </button>
-        <span id="this-should-be-ignored" style="display:none;"></span>
+    <div class="overview-grid">
+        <a class="overview-card" asp-page="/Examples/UrlTagHelper"><h2>01. URL Tag Helper</h2><p>Generate handler URLs declaratively.</p></a>
+        <a class="overview-card" asp-page="/Examples/RouteData"><h2>02. Route data</h2><p>Pass route values without query-string assembly.</p></a>
+        <a class="overview-card" asp-page="/Examples/Headers"><h2>03. Request headers</h2><p>Attach custom HTMX headers in Razor.</p></a>
+        <a class="overview-card" asp-page="/Examples/FluentResponse"><h2>04. Fluent responses</h2><p>Configure response directives on the server.</p></a>
+        <a class="overview-card" asp-page="/Examples/Polling"><h2>05. Polling</h2><p>Stop repeated requests from a handler.</p></a>
+        <a class="overview-card" asp-page="/Examples/HtmxRequest"><h2>06. HTMX requests</h2><p>Detect asynchronous requests.</p></a>
+        <a class="overview-card" asp-page="/Examples/ResponseHeaders"><h2>07. Response headers</h2><p>Override the requested swap strategy.</p></a>
+        <a class="overview-card" asp-page="/Examples/Boosted"><h2>08. Boosted navigation</h2><p>Detect links enhanced by HTMX.</p></a>
+        <a class="overview-card" asp-page="/Examples/Random"><h2>09. On-demand content</h2><p>Request and swap a small response.</p></a>
+        <a class="overview-card" asp-page="/Examples/Antiforgery"><h2>10. Antiforgery</h2><p>Post a protected form via HTMX.</p></a>
     </div>
-    <div id="fluent-result" class="result"></div>
-</section>
-
-<section>
-    <h2>5. Polling with <code>StopPolling()</code></h2>
-    <p hx-get
-       hx-page="/Index"
-       hx-page-handler="StopPolling"
-       hx-target="#poll-result"
-       hx-trigger="every 1s"
-       hx-swap="innerHTML">The server randomly stops polling via <code>h.StopPolling(condition)</code>:</p>
-    <div id="poll-result" class="result"></div>
-</section>
-
-<section>
-    <h2>6. <code>IsHtmxRequest()</code> — detect HTMX vs full page requests</h2>
-    <p>Use <code>Request.IsHtmxRequest()</code> in handlers to return different content:</p>
-    <button hx-get
-            hx-page="/Index"
-            hx-page-handler="PartialOrFull"
-            hx-target="#partial-result">Fetch via HTMX</button>
-    <a asp-page="/Index" asp-page-handler="PartialOrFull" target="_blank">Open as full page request</a>
-    <div id="partial-result" class="result"></div>
-</section>
-
-<section>
-    <h2>7. <code>Response.Htmx()</code> — imperative response headers</h2>
-    <p>Setting <code>h.Reswap(HtmxSwap.InnerHtml)</code> programmatically in the handler:</p>
-    <button hx-get
-            hx-page="/Index"
-            hx-page-handler="DeclarativeReswap"
-            hx-target="#declarative-result"
-            hx-swap="outerHTML">Fetch (swaps with InnerHtml)</button>
-    <div id="declarative-result" class="result"></div>
-</section>
-
-<section>
-    <h2>8. <code>IsHtmxBoosted()</code> — detect boosted links</h2>
-    <p>Use <code>hx-boost=&quot;true&quot;</code> on a link to make it an AJAX request:</p>
-    <a asp-page="/Index" asp-page-handler="BoostedCheck" hx-boost="true" hx-target="#boosted-result">Click this boosted link</a>
-    <div id="boosted-result" class="result"></div>
-</section>
-
-<section>
-    <h2>9. Random number (click to load)</h2>
-    <button hx-get
-            hx-page="/Index"
-            hx-page-handler="Random"
-            hx-target="#random-result">Get Random Number</button>
-    <div id="random-result" class="result"></div>
-</section>
-
-<section>
-    <h2>10. Antiforgery Token — form submission via <code>hx-post</code></h2>
-    <p>The antiforgery token is automatically included in every HTMX request by
-       <code>&lt;meta htmx-config include-antiforgery-token="true" /&gt;</code>
-       and the auto-loaded <code>htmx-toolkit.js</code> script
-       (<code>@@Html.HtmxAntiforgeryScriptPath()</code>).
-       No manual token handling required in the form.</p>
-    <form hx-post
-          hx-page="/Index"
-          hx-page-handler="FormSubmit"
-          hx-target="#form-result">
-        <p><label><b>Name:</b><br/><input type="text" name="name" placeholder="John Doe" /></label></p>
-        <p><label><b>Email:</b><br/><input type="email" name="email" placeholder="john@example.com" /></label></p>
-        <p><label><b>Message:</b><br/><textarea name="message" rows="3" placeholder="Your message..."></textarea></label></p>
-        <button type="submit">Submit via HTMX</button>
-    </form>
-    <div id="form-result" class="result"></div>
-</section>
+</article>
