@@ -8,6 +8,7 @@
 
   <htmx-config
     include-antiforgery-token="true"
+    methods-that-use-url-params="[HttpVerb.Get, HttpVerb.Delete]"
     default-swap-style="HtmxSwap.InnerHtml">
     <response-handling code="204" swap="false"/>
     <response-handling code="422" swap="true"/>

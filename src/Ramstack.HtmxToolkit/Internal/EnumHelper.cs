@@ -68,6 +68,29 @@ internal static class EnumHelper
     }
 
     /// <summary>
+    /// Converts a <see cref="HttpVerb"/> value to its corresponding lowercase HTTP method string.
+    /// </summary>
+    /// <param name="value">The <see cref="HttpVerb"/> value.</param>
+    /// <returns>
+    /// The lowercase string representation, such as "get", "post", "delete", etc.
+    /// </returns>
+    public static string GetHttpVerbValue(this HttpVerb value)
+    {
+        return value switch
+        {
+            HttpVerb.Get => "get",
+            HttpVerb.Head => "head",
+            HttpVerb.Post => "post",
+            HttpVerb.Put => "put",
+            HttpVerb.Delete => "delete",
+            HttpVerb.Connect => "connect",
+            HttpVerb.Options => "options",
+            HttpVerb.Trace => "trace",
+            _ => "patch"
+        };
+    }
+
+    /// <summary>
     /// Parses a string into a <see cref="HtmxSwap"/> value.
     /// </summary>
     /// <param name="expression">The string to parse.</param>
