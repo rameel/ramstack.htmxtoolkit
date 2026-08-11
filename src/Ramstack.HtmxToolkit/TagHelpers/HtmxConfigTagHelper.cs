@@ -369,18 +369,12 @@ public sealed class HtmxConfigTagHelper(IAntiforgery antiforgery) : TagHelper
     /// Gets or sets a list of HTTP methods that use URL parameters.
     /// Defaults to <c>["get"]</c> in HTMX 1.x and <c>["get", "delete"]</c> in HTMX 2.x.
     /// </summary>
-    /// <remarks>
-    /// Supported in HTMX 1.x and 2.x.
-    /// <para>
-    /// Allowed values: <c>"get"</c>, <c>"head"</c>, <c>"post"</c>, <c>"put"</c>,
-    /// <c>"delete"</c>, <c>"connect"</c>, <c>"options"</c>, <c>"trace"</c>, <c>"patch"</c>.
-    /// </para>
-    /// </remarks>
+    /// <remarks>Supported in HTMX 1.x and 2.x.</remarks>
     [HtmlAttributeName("methods-that-use-url-params")]
-    public string[]? MethodsThatUseUrlParams
+    public HttpVerb[]? MethodsThatUseUrlParams
     {
-        get => _config.MethodsThatUseUrlParams;
-        set => _config.MethodsThatUseUrlParams = value;
+        get => _config.MethodsThatUseUrlParams.GetValueOrDefault().Values;
+        set => _config.MethodsThatUseUrlParams = new HttpVerbArray(value);
     }
 
     /// <summary>
@@ -566,7 +560,7 @@ public sealed class HtmxConfigTagHelper(IAntiforgery antiforgery) : TagHelper
         public bool? DefaultFocusScroll { get; set; }
         public bool? GetCacheBusterParam { get; set; }
         public bool? GlobalViewTransitions { get; set; }
-        public string[]? MethodsThatUseUrlParams { get; set; }
+        public HttpVerbArray? MethodsThatUseUrlParams { get; set; }
         public bool? SelfRequestsOnly { get; set; }
         public bool? IgnoreTitle { get; set; }
         public bool? ScrollIntoViewOnBoost { get; set; }
