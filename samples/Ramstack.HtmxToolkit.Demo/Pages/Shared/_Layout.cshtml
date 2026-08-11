@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>@(ViewData["Title"] ?? "Home") — Ramstack.HtmxToolkit</title>
+  <link rel="stylesheet" href="~/css/demo.css"/>
+
+  <htmx-config
+    include-antiforgery-token="true"
+    default-swap-style="HtmxSwap.InnerHtml">
+    <response-handling code="204" swap="false"/>
+    <response-handling code="422" swap="true"/>
+    <response-handling code="[23].." swap="true"/>
+    <response-handling code="[45].." swap="false" error="true"/>
+    <response-handling code="..." swap="true"/>
+  </htmx-config>
+</head>
+
+<body>
+<div class="app-shell">
+  <aside class="sidebar">
+    <a class="brand" asp-page="/Index">
+      <img class="brand-mark" src="~/Icon.png" alt="Ramstack.HtmxToolkit"/>
+      <span>HtmxToolkit</span>
+    </a>
+
+    <nav>
+      <p class="nav-label">Examples</p>
+      <a class="nav-link" asp-page="/Examples/UrlTagHelper">01. URL Tag Helper</a>
+      <a class="nav-link" asp-page="/Examples/RouteData">02. Route parameters</a>
+      <a class="nav-link" asp-page="/Examples/Headers">03. Request headers</a>
+      <a class="nav-link" asp-page="/Examples/FluentResponse">04. Fluent responses</a>
+      <a class="nav-link" asp-page="/Examples/Polling">05. Polling</a>
+      <a class="nav-link" asp-page="/Examples/HtmxRequest">06. HTMX requests</a>
+      <a class="nav-link" asp-page="/Examples/ResponseHeaders">07. Response headers</a>
+      <a class="nav-link" asp-page="/Examples/Boosted">08. Boosted navigation</a>
+      <a class="nav-link" asp-page="/Examples/Random">09. On-demand content</a>
+      <a class="nav-link" asp-page="/Examples/Antiforgery">10. Antiforgery</a>
+    </nav>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <button class="menu-toggle" data-menu-toggle>Menu</button>
+      <span>Razor Pages &mdash; HTMX 2</span>
+    </header>
+
+    <div class="content">@RenderBody()</div>
+  </main>
+</div>
+
+<script src="https://unpkg.com/htmx.org@2"></script>
+<script src="@Html.HtmxAntiforgeryScriptPath()"></script>
+<script src="~/js/demo.js"></script>
+</body>
+</html>

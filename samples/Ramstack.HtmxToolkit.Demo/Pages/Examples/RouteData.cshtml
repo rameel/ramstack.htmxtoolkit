@@ -1,0 +1,44 @@
+@page
+@model RouteDataModel
+@{
+  ViewData["Title"] = "Route parameters";
+}
+
+<article class="example-page">
+  <header class="page-heading">
+    <p class="eyebrow">Example 02</p>
+    <h1>Route parameters</h1>
+    <p>Pass route data with individual attributes or one Razor dictionary</p>
+  </header>
+
+  <section class="demo-card">
+    <div class="demo-card__header">
+      <h2><code>hx-route-*</code> and <code>hx-all-route-data</code></h2>
+      <p>Both forms produce a typed Razor Pages URL without composing a query string manually.</p>
+    </div>
+
+    <div class="demo-actions">
+      <button
+        hx-get
+        hx-page="/Examples/RouteData"
+        hx-page-handler="Greet"
+        hx-route-name="World"
+        hx-target="#greet-result">
+        Greet via route attribute
+      </button>
+      <button
+        hx-get
+        hx-page="/Examples/RouteData"
+        hx-page-handler="Greet"
+        hx-all-route-data="@(new Dictionary<string, string> { { "name", "HTMX" } })"
+        hx-target="#greet-result"
+        class="button-secondary">
+        Greet via route data
+      </button>
+    </div>
+
+    <div id="greet-result" class="result">
+      Choose a route-data strategy.
+    </div>
+  </section>
+</article>

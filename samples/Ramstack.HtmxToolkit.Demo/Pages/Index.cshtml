@@ -1,0 +1,23 @@
+@page
+@model IndexModel
+
+<article class="example-page">
+    <header class="page-heading">
+        <p class="eyebrow">Interactive documentation</p>
+        <h1>HTMX integration for ASP.NET Core</h1>
+        <p>Explore the Ramstack.HtmxToolkit API through focused, runnable Razor Pages examples.</p>
+    </header>
+
+    <div class="overview-grid">
+        <a class="overview-card" asp-page="/Examples/UrlTagHelper"><h2>01. URL Tag Helper</h2><p>Generate handler URLs declaratively.</p></a>
+        <a class="overview-card" asp-page="/Examples/RouteData"><h2>02. Route data</h2><p>Pass route values without query-string assembly.</p></a>
+        <a class="overview-card" asp-page="/Examples/Headers"><h2>03. Request headers</h2><p>Attach custom HTMX headers in Razor.</p></a>
+        <a class="overview-card" asp-page="/Examples/FluentResponse"><h2>04. Fluent responses</h2><p>Configure response directives on the server.</p></a>
+        <a class="overview-card" asp-page="/Examples/Polling"><h2>05. Polling</h2><p>Stop repeated requests from a handler.</p></a>
+        <a class="overview-card" asp-page="/Examples/HtmxRequest"><h2>06. HTMX requests</h2><p>Detect asynchronous requests.</p></a>
+        <a class="overview-card" asp-page="/Examples/ResponseHeaders"><h2>07. Response headers</h2><p>Override the requested swap strategy.</p></a>
+        <a class="overview-card" asp-page="/Examples/Boosted"><h2>08. Boosted navigation</h2><p>Detect links enhanced by HTMX.</p></a>
+        <a class="overview-card" asp-page="/Examples/Random"><h2>09. On-demand content</h2><p>Request and swap a small response.</p></a>
+        <a class="overview-card" asp-page="/Examples/Antiforgery"><h2>10. Antiforgery</h2><p>Post a protected form via HTMX.</p></a>
+    </div>
+</article>

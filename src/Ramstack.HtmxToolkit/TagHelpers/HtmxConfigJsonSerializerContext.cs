@@ -1,4 +1,3 @@
-#if NET8_0_OR_GREATER
 using System.Text.Json.Serialization;
 
 namespace Ramstack.HtmxToolkit.TagHelpers;
@@ -8,8 +7,5 @@ namespace Ramstack.HtmxToolkit.TagHelpers;
     PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase,
     DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
     GenerationMode = JsonSourceGenerationMode.Serialization)]
-[JsonSerializable(typeof(HtmxConfigTagHelper.HtmxConfiguration))]
-[JsonSerializable(typeof(HtmxConfigTagHelper.AntiForgeryTokenData?))]
-[JsonSerializable(typeof(IList<ResponseHandlingEntry>))]
+[JsonSerializable(typeof(HtmxConfigTagHelper.HtmxConfigData))]
 internal partial class HtmxConfigJsonSerializerContext : JsonSerializerContext;
-#endif

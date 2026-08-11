@@ -25,9 +25,9 @@ document._r_htmx ||= ((document, htmx) => {
     });
 
     document.addEventListener("_r_proxy", e => {
-        for (let kvp of e.detail)
+        for (let kvp of e.detail.value) {
             htmx.trigger(e.target, kvp.key, kvp.value);
+        }
     });
-
     return true;
 })(document, htmx);

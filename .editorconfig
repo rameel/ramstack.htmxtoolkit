@@ -8,14 +8,11 @@ indent_style = space
 insert_final_newline = true
 trim_trailing_whitespace = true
 
-[*.{yml,props,targets,csproj}]
+[*.{cshtml,css,yml,props,targets,csproj}]
 indent_size = 2
 
 [*.min.js]
 insert_final_newline = false
-
-[*.{tt,ttinclude}]
-end_of_line = crlf
 
 [*.{cs,cshtml}]
 resharper_csharp_max_line_length = 160
