@@ -21,9 +21,9 @@ internal sealed class PendingEvents
     private Dictionary<string, object>? _afterSettle;
 
     /// <summary>
-    /// Accumulates htmx events per <see cref="HtmxTriggerTiming"/> for a single request,
-    /// deferring header serialization until the response is about to start.
+    /// Initializes a new instance of the <see cref="PendingEvents"/> class.
     /// </summary>
+    /// <param name="response">The HTTP response to which the events belong.</param>
     private PendingEvents(HttpResponse response) =>
         _response = response;
 
