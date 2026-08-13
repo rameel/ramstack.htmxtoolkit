@@ -9,9 +9,9 @@ namespace Ramstack.HtmxToolkit.TagHelpers;
 /// </summary>
 /// <remarks>Supported only in HTMX 2.x.</remarks>
 [HtmlTargetElement("response-handling", ParentTag = "htmx-config", TagStructure = TagStructure.WithoutEndTag)]
-public sealed class ResponseHandlingEntryTagHelper : TagHelper
+public sealed class ResponseHandlingTagHelper : TagHelper
 {
-    private readonly ResponseHandlingEntry _entry = new();
+    private readonly ResponseHandlingConfig _config = new();
 
     /// <summary>
     /// Gets or sets a regular expression that will be tested against response status codes.
@@ -19,8 +19,8 @@ public sealed class ResponseHandlingEntryTagHelper : TagHelper
     [HtmlAttributeName("code")]
     public string? Code
     {
-        get => _entry.Code;
-        set => _entry.Code = value;
+        get => _config.Code;
+        set => _config.Code = value;
     }
 
     /// <summary>
@@ -29,8 +29,8 @@ public sealed class ResponseHandlingEntryTagHelper : TagHelper
     [HtmlAttributeName("swap")]
     public bool? Swap
     {
-        get => _entry.Swap;
-        set => _entry.Swap = value;
+        get => _config.Swap;
+        set => _config.Swap = value;
     }
 
     /// <summary>
@@ -39,8 +39,8 @@ public sealed class ResponseHandlingEntryTagHelper : TagHelper
     [HtmlAttributeName("error")]
     public bool? Error
     {
-        get => _entry.Error;
-        set => _entry.Error = value;
+        get => _config.Error;
+        set => _config.Error = value;
     }
 
     /// <summary>
@@ -49,8 +49,8 @@ public sealed class ResponseHandlingEntryTagHelper : TagHelper
     [HtmlAttributeName("ignore-title")]
     public bool? IgnoreTitle
     {
-        get => _entry.IgnoreTitle;
-        set => _entry.IgnoreTitle = value;
+        get => _config.IgnoreTitle;
+        set => _config.IgnoreTitle = value;
     }
 
     /// <summary>
@@ -59,8 +59,8 @@ public sealed class ResponseHandlingEntryTagHelper : TagHelper
     [HtmlAttributeName("select")]
     public string? Select
     {
-        get => _entry.Select;
-        set => _entry.Select = value;
+        get => _config.Select;
+        set => _config.Select = value;
     }
 
     /// <summary>
@@ -69,8 +69,8 @@ public sealed class ResponseHandlingEntryTagHelper : TagHelper
     [HtmlAttributeName("target")]
     public string? Target
     {
-        get => _entry.Target;
-        set => _entry.Target = value;
+        get => _config.Target;
+        set => _config.Target = value;
     }
 
     /// <summary>
@@ -79,22 +79,29 @@ public sealed class ResponseHandlingEntryTagHelper : TagHelper
     [HtmlAttributeName("swap-override")]
     public string? SwapOverride
     {
-        get => _entry.SwapOverride;
-        set => _entry.SwapOverride = value;
+        get => _config.SwapOverride;
+        set => _config.SwapOverride = value;
     }
 
     /// <inheritdoc />
-    public override void Process(TagHelperContext context, TagHelperOutput output)
+    public override Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
     {
-        if (context.Items.TryGetValue(typeof(HtmxConfigTagHelper), out var value))
+        if (context.Items.TryGetValue(typeof(HtmxConfigTagHelper), out var value) && value is HtmxConfigTagHelper config)
         {
-            if (value is HtmxConfigTagHelper config)
-            {
-                config.ResponseHandling ??= new List<ResponseHandlingEntry>();
-                config.ResponseHandling.Add(_entry);
-            }
+            config.ResponseHandling ??= new List<ResponseHandlingConfig>();
+            config.ResponseHandling.Add(_config);
+
+            output.SuppressOutput();
+            return Task.CompletedTask;
         }
 
-        output.SuppressOutput();
+        Error_NotNested();
+        return Task.CompletedTask;
+    }
+
+    private static void Error_NotNested()
+    {
+        const string Message = "The 'response-handling' tag helper can only be used inside the 'htmx-config' tag helper.";
+        throw new InvalidOperationException(Message);
     }
 }

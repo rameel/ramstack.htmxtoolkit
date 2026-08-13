@@ -1,10 +1,9 @@
 namespace Ramstack.HtmxToolkit.TagHelpers;
 
 /// <summary>
-/// Represents a single entry in the htmx response handling configuration.
-/// Each entry defines how htmx should handle responses matching a specific HTTP status code pattern.
+/// Represents the response handling configuration for responses matching a specific HTTP status code pattern.
 /// </summary>
-public sealed class ResponseHandlingEntry
+public sealed class ResponseHandlingConfig
 {
     /// <summary>
     /// Gets or sets a regular expression that will be tested against response status codes.
