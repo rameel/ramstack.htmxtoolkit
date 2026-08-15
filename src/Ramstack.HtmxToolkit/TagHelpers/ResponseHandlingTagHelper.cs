@@ -101,7 +101,7 @@ public sealed class ResponseHandlingTagHelper : TagHelper
 
     private static void Error_NotNested()
     {
-        const string Message = "The 'response-handling' tag helper can only be used inside the 'htmx-config' tag helper.";
+        const string Message = "The '<response-handling>' tag helper can only be used inside the '<htmx-config>' tag helper";
         throw new InvalidOperationException(Message);
     }
 }
