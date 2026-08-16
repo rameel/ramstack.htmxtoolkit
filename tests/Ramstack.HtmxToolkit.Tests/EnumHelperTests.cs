@@ -48,26 +48,42 @@ public class EnumHelperTests
     public void ParseHtmxSwap_ReturnsNull_ForNullExpression() =>
         Assert.That(EnumHelper.ParseHtmxSwap(null), Is.Null);
 
-    [TestCase(HttpVerb.Get)]
-    [TestCase(HttpVerb.Head)]
-    [TestCase(HttpVerb.Post)]
-    [TestCase(HttpVerb.Put)]
-    [TestCase(HttpVerb.Delete)]
-    [TestCase(HttpVerb.Connect)]
-    [TestCase(HttpVerb.Options)]
-    [TestCase(HttpVerb.Trace)]
-    [TestCase(HttpVerb.Patch)]
-    public void GetHttpVerbValue_ReturnsExpectedString(HttpVerb value) =>
-        Assert.That(value.GetHttpVerbValue(), Is.EqualTo(value.ToString().ToLower()));
+    [TestCase(HttpVerb.Get, "get")]
+    [TestCase(HttpVerb.Head, "head")]
+    [TestCase(HttpVerb.Post, "post")]
+    [TestCase(HttpVerb.Put, "put")]
+    [TestCase(HttpVerb.Delete, "delete")]
+    [TestCase(HttpVerb.Connect, "connect")]
+    [TestCase(HttpVerb.Options, "options")]
+    [TestCase(HttpVerb.Trace, "trace")]
+    [TestCase(HttpVerb.Patch, "patch")]
+    public void GetHttpVerbValue_ReturnsExpectedString(HttpVerb value, string expected) =>
+        Assert.That(value.GetHttpVerbValue(), Is.EqualTo(expected));
 
-    [TestCase(HtmxBinaryType.Blob)]
-    [TestCase(HtmxBinaryType.ArrayBuffer)]
-    public void GetWsBinaryTypeValue_ReturnsExpectedString(HtmxBinaryType value) =>
-        Assert.That(value.GetWsBinaryTypeValue(), Is.EqualTo(value.ToString().ToLower()));
+    [TestCase(HtmxBinaryType.Blob, "blob")]
+    [TestCase(HtmxBinaryType.ArrayBuffer, "arraybuffer")]
+    public void GetWsBinaryTypeValue_ReturnsExpectedString(HtmxBinaryType value, string expected) =>
+        Assert.That(value.GetWsBinaryTypeValue(), Is.EqualTo(expected));
 
-    [TestCase(HtmxScrollBehavior.Auto)]
-    [TestCase(HtmxScrollBehavior.Smooth)]
-    [TestCase(HtmxScrollBehavior.Instant)]
-    public void GetScrollBehaviorValue_ReturnsExpectedString(HtmxScrollBehavior value) =>
-        Assert.That(value.GetScrollBehaviorValue(), Is.EqualTo(value.ToString().ToLower()));
+    [TestCase(HtmxScrollBehavior.Auto, "auto")]
+    [TestCase(HtmxScrollBehavior.Smooth, "smooth")]
+    [TestCase(HtmxScrollBehavior.Instant, "instant")]
+    public void GetScrollBehaviorValue_ReturnsExpectedString(HtmxScrollBehavior value, string expected) =>
+        Assert.That(value.GetScrollBehaviorValue(), Is.EqualTo(expected));
+
+    [Test]
+    public void GetSwapValue_ReturnsNone_ForUndefinedValue() =>
+        Assert.That(((HtmxSwap)999).GetSwapValue(), Is.EqualTo("none"));
+
+    [Test]
+    public void GetHttpVerbValue_ReturnsPatch_ForUndefinedValue() =>
+        Assert.That(((HttpVerb)999).GetHttpVerbValue(), Is.EqualTo("patch"));
+
+    [Test]
+    public void GetScrollBehaviorValue_ReturnsInstant_ForUndefinedValue() =>
+        Assert.That(((HtmxScrollBehavior)999).GetScrollBehaviorValue(), Is.EqualTo("instant"));
+
+    [Test]
+    public void GetWsBinaryTypeValue_ReturnsArrayBuffer_ForUndefinedValue() =>
+        Assert.That(((HtmxBinaryType)999).GetWsBinaryTypeValue(), Is.EqualTo("arraybuffer"));
 }
