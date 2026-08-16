@@ -86,10 +86,10 @@ public sealed class ResponseHandlingTagHelper : TagHelper
     /// <inheritdoc />
     public override Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
     {
-        if (context.Items.TryGetValue(typeof(HtmxConfigTagHelper), out var value) && value is HtmxConfigTagHelper config)
+        if (context.Items.TryGetValue(typeof(HtmxConfigTagHelper), out var value) && value is HtmxConfigTagHelper parent)
         {
-            config.ResponseHandling ??= new List<ResponseHandlingConfig>();
-            config.ResponseHandling.Add(_config);
+            parent.ResponseHandling ??= new List<ResponseHandlingConfig>();
+            parent.ResponseHandling.Add(_config);
 
             output.SuppressOutput();
             return Task.CompletedTask;
