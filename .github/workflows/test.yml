@@ -7,7 +7,7 @@ on:
 
 jobs:
   build-and-test:
-    name: Build packages
+    name: Build & Test
     runs-on: ubuntu-latest
     steps:
       - name: Install .NET
