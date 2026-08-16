@@ -10,4 +10,5 @@
   </Folder>
   <Project Path="src/Ramstack.HtmxToolkit/Ramstack.HtmxToolkit.csproj" />
   <Project Path="samples/Ramstack.HtmxToolkit.Demo/Ramstack.HtmxToolkit.Demo.csproj" />
+  <Project Path="tests/Ramstack.HtmxToolkit.Tests/Ramstack.HtmxToolkit.Tests.csproj" />
 </Solution>

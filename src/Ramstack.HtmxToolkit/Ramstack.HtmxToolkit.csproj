@@ -56,6 +56,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <InternalsVisibleTo Include="Ramstack.HtmxToolkit.Tests" />
+  </ItemGroup>
+
+  <ItemGroup>
     <EmbeddedResource Include="Assets\htmx-toolkit.js" LogicalName="htmx-toolkit.js" />
     <EmbeddedResource Include="Assets\htmx-toolkit.min.js" LogicalName="htmx-toolkit.min.js" />
   </ItemGroup>

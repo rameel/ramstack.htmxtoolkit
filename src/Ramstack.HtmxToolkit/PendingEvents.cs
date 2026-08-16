@@ -11,13 +11,21 @@ namespace Ramstack.HtmxToolkit;
 /// Accumulates htmx events per <see cref="HtmxTriggerTiming"/> for a single request,
 /// deferring header serialization until the response is about to start.
 /// </summary>
-internal sealed class PendingEvents(HttpResponse response)
+internal sealed class PendingEvents
 {
     private const string ProxyEventName = "_r_proxy";
 
+    private readonly HttpResponse _response;
     private Dictionary<string, object>? _receive;
     private Dictionary<string, object>? _afterSwap;
     private Dictionary<string, object>? _afterSettle;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="PendingEvents"/> class.
+    /// </summary>
+    /// <param name="response">The HTTP response to which the events belong.</param>
+    private PendingEvents(HttpResponse response) =>
+        _response = response;
 
     /// <summary>
     /// Adds the specified events to the pending set for the given <paramref name="timing"/>.
@@ -135,6 +143,6 @@ internal sealed class PendingEvents(HttpResponse response)
     private void SetHeader(string name, Dictionary<string, object>? events)
     {
         if (events is not null)
-            response.Headers[name] = JsonSerializer.Serialize(events, JsonOptions.CamelCase);
+            _response.Headers[name] = JsonSerializer.Serialize(events, JsonOptions.CamelCase);
     }
 }

@@ -432,12 +432,12 @@ public sealed class HtmxConfigTagHelper(IAntiforgery antiforgery) : TagHelper
 
     /// <summary>
     /// Gets or sets the default response handling behavior for HTTP response status codes.
-    /// Accepts an array of <see cref="ResponseHandlingEntry"/> objects that define
+    /// Accepts an array of <see cref="ResponseHandlingConfig"/> objects that define
     /// how htmx should handle responses matching specific status code patterns.
     /// </summary>
     /// <remarks>Supported only in HTMX 2.x.</remarks>
     [HtmlAttributeName("response-handling")]
-    public IList<ResponseHandlingEntry>? ResponseHandling
+    public IList<ResponseHandlingConfig>? ResponseHandling
     {
         get => _config.ResponseHandling;
         set => _config.ResponseHandling = value;
@@ -565,7 +565,7 @@ public sealed class HtmxConfigTagHelper(IAntiforgery antiforgery) : TagHelper
         public bool? IgnoreTitle { get; set; }
         public bool? ScrollIntoViewOnBoost { get; set; }
         public string? TriggerSpecsCache { get; set; }
-        public IList<ResponseHandlingEntry>? ResponseHandling { get; set; }
+        public IList<ResponseHandlingConfig>? ResponseHandling { get; set; }
         public bool? AllowNestedOobSwaps { get; set; }
         public bool? HistoryRestoreAsHxRequest { get; set; }
         public bool? ReportValidityOfForms { get; set; }

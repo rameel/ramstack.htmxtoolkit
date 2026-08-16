@@ -669,9 +669,9 @@ Alternatively, you can set the entire response handling configuration directly a
 
 ```html
 <htmx-config response-handling="@new [] {
-    new ResponseHandlingEntry { Code = "204", Swap = false },
-    new ResponseHandlingEntry { Code = "[23]..", Swap = true },
-    new ResponseHandlingEntry { Code = "[45]..", Swap = false, Error = true }
+    new ResponseHandlingConfig { Code = "204", Swap = false },
+    new ResponseHandlingConfig { Code = "[23]..", Swap = true },
+    new ResponseHandlingConfig { Code = "[45]..", Swap = false, Error = true }
 }" />
 ```
 
