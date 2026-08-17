@@ -16,14 +16,9 @@ Provides HTMX integration for ASP.NET Core applications.
     * [HtmxHeaderTagHelper](#htmxheadertaghelper)
     * [HtmxConfigTagHelper](#htmxconfigtaghelper)
       * [Response Handling Configuration](#response-handling-configuration)
-  * [Antiforgery Token](#antiforgery-token)
+  * [Toolkit Script](#toolkit-script)
   * [Supported Versions](#supported-versions)
   * [Contributions](#contributions)
-  * [Changelog](#changelog)
-    * [1.2.2](#122)
-    * [1.2.1](#121)
-    * [1.2.0](#120)
-    * [1.1.0](#110)
   * [License](#license)
 <!-- TOC -->
 
@@ -675,18 +670,18 @@ Alternatively, you can set the entire response handling configuration directly a
 }" />
 ```
 
-## Antiforgery Token
+## Toolkit Script
 
-If you have enabled the generation of the **Antiforgery** token in the configuration
-(`include-antiforgery-token="true"`), then you need to include a small JavaScript file
-that will ensure this token is present in form parameters or headers
-and refresh it in a timely manner.
+The toolkit script provides antiforgery support and HTMX compatibility behavior.
+If you have enabled **Antiforgery** token generation in the configuration
+(`include-antiforgery-token="true"`), include it to ensure the token is present in form
+parameters or headers and refreshed in a timely manner.
 
-To do this, you can directly include the contents of the JavaScript file on the page:
+To do this, you can directly include the contents of the script file on the page:
 
 ```html
 <script>
-  @Html.HtmxAntiforgeryScript()
+  @Html.HtmxToolkitScript()
 </script>
 ```
 
@@ -695,7 +690,7 @@ you can pass the debug parameter with a value of `true`:
 
 ```html
 <script>
-  @Html.HtmxAntiforgeryScript(debug: true)
+  @Html.HtmxToolkitScript(debug: true)
 </script>
 ```
 
@@ -710,7 +705,7 @@ Alternatively, you can register the corresponding endpoint for the script by cal
 ```csharp
 app.UseAuthorization();
 ...
-app.MapHtmxAntiforgeryScript();
+app.MapHtmxToolkitScript();
 app.MapControllers();
 ```
 
@@ -723,13 +718,13 @@ when the script content is modified.
 If you want to change the path to your own, specify this path in the parameter.
 
 ```csharp
-app.MapHtmxAntiforgeryScript("/my-path");
+app.MapHtmxToolkitScript("/my-path");
 ```
 
 Now, include it on the page.
 
 ```html
-<script src="@Html.HtmxAntiforgeryScriptPath()"></script>
+<script src="@Html.HtmxToolkitScriptPath()"></script>
 ```
 
 Alternatively, to retrieve the debug version of the script, you can pass the `debug` parameter
@@ -737,7 +732,7 @@ with a value of `true`, which instructs to include a query parameter `?debug` in
 The presence of this parameter determines the loading of the debug version:
 
 ```html
-<script src="@Html.HtmxAntiforgeryScriptPath(debug: true)"></script>
+<script src="@Html.HtmxToolkitScriptPath(debug: true)"></script>
 ```
 
 The `debug` parameter determines whether to load the minimized version (used by default)
@@ -745,30 +740,13 @@ or the debug version of the script.
 
 ## Supported Versions
 
-|      | Version    |
-|------|------------|
-| .NET | 6, 7, 8, 9 |
+|      | Version        |
+|------|----------------|
+| .NET | 6, 7, 8, 9, 10 |
 
 ## Contributions
 
 Bug reports and contributions are welcome.
-
-## Changelog
-
-### 1.2.2
-Explicitly pass `document` object to event listeners in `htmx-toolkit.js` to improve compatibility
-
-### 1.2.1
-Add `[DisallowNull]` attribute to `Reswap` property to disallow null input
-
-### 1.2.0
-* Add `AjaxContext` to align with the capabilities provided by htmx
-* Add method overloads for `PushUrl` and `ReplaceUrl` that prevents URL changes (`PreventPushUrl` / `PreventReplaceUrl`)
-* Add support `<htmx-config />` element as a standalone HTML element
-
-### 1.1.0
-* Add overloads for IsHtmxRequest and IsHtmxBoosted methods enabling retrieval of htmx request headers
-* Improve HtmxRequestAttribute
 
 ## License
 This package is released as open source under the **MIT License**.
