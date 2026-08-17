@@ -9,16 +9,22 @@ jobs:
   publish:
     name: Publish packages
     runs-on: ubuntu-latest
+    environment: publish
+
+    permissions:
+      contents: read
+      id-token: write
+
     steps:
       - name: Install .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: 9.0.x
+          dotnet-version: 10.x
 
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          fetch-depth: 2
+          fetch-depth: 1
 
       - name: Build
         run: dotnet build -c Release
@@ -26,8 +32,14 @@ jobs:
       - name: Create NuGet Packages
         run: dotnet pack -c Release -o ./nuget --no-build
 
+      - name: NuGet login (OIDC)
+        id: login
+        uses: NuGet/login@v1
+        with:
+          user: ${{ secrets.NUGET_USER }}
+
       - name: Publish NuGet Packages
-        run: dotnet nuget push ./nuget/*.nupkg --api-key ${{secrets.NUGET_API_KEY}} --skip-duplicate -s https://api.nuget.org/v3/index.json
+        run: dotnet nuget push ./nuget/*.nupkg --api-key ${{ steps.login.outputs.NUGET_API_KEY }} --skip-duplicate -s https://api.nuget.org/v3/index.json
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
