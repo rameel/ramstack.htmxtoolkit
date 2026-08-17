@@ -22,7 +22,7 @@ public sealed class HtmxHeaderTagHelper : TagHelper
     private const string HeadersDictionaryName = "hx-all-headers";
 
     /// <summary>
-    /// Gets or sets the <c>hx-header</c> attribute values.
+    /// Gets or sets the <c>hx-headers</c> attribute values.
     /// </summary>
     [HtmlAttributeName(HeadersDictionaryName, DictionaryAttributePrefix = HeadersPrefix)]
     public IDictionary<string, string> Headers

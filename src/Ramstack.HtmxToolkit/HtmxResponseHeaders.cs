@@ -61,7 +61,7 @@ public readonly struct HtmxResponseHeaders
     }
 
     /// <summary>
-    /// Gets or Sets the <c>HX-Replace-Url</c> header to replace the current URL
+    /// Gets or sets the <c>HX-Replace-Url</c> header to replace the current URL
     /// without pushing a new entry to the browser's history stack.
     /// </summary>
     [MaybeNull]
