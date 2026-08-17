@@ -16,44 +16,24 @@ public static class EndpointRouteBuilderExtensions
     internal static string AssetPath { get; private set; } = $"/htmxtoolkit/{HtmxAssets.Hash}";
 
     /// <summary>
-    /// Maps a GET request to the default path for the htmx anti-forgery script.
+    /// Maps an endpoint that serves the HTMX toolkit script at the default path.
     /// </summary>
-    /// <remarks>
-    /// Ensure to include the following script tag in your <c>Layout.cshtml</c> or <c>Razor view</c>:
-    /// <code>
-    /// <![CDATA[
-    /// <script src="@Html.HtmxAntiforgeryScriptPath()"></script>
-    /// or
-    /// <script src="@Html.HtmxAntiforgeryScriptPath(debug: true)"></script>
-    /// ]]>
-    /// </code>
-    /// </remarks>
-    /// <param name="builder">The <see cref="IEndpointRouteBuilder"/> to add the route to.</param>
+    /// <param name="builder">The endpoint route builder.</param>
     /// <returns>
-    /// An <see cref="IEndpointConventionBuilder"/> that can be used to further configure the endpoint.
+    /// The endpoint convention builder for the mapped script endpoint.
     /// </returns>
-    public static IEndpointConventionBuilder MapHtmxAntiforgeryScript(this IEndpointRouteBuilder builder) =>
-        builder.MapHtmxAntiforgeryScript(AssetPath);
+    public static IEndpointConventionBuilder MapHtmxToolkitScript(this IEndpointRouteBuilder builder) =>
+        builder.MapHtmxToolkitScript(AssetPath);
 
     /// <summary>
-    /// Maps a GET request to the specified path for the htmx anti-forgery script.
+    /// Maps an endpoint that serves the HTMX toolkit script at the specified path.
     /// </summary>
-    /// <remarks>
-    /// Ensure to include the following script tag in your <c>Layout.cshtml</c> or <c>Razor view</c>:
-    /// <code>
-    /// <![CDATA[
-    /// <script src="@Html.HtmxAntiforgeryScriptPath()"></script>
-    /// or
-    /// <script src="@Html.HtmxAntiforgeryScriptPath(debug: true)"></script>
-    /// ]]>
-    /// </code>
-    /// </remarks>
-    /// <param name="builder">The <see cref="IEndpointRouteBuilder"/> to add the route to.</param>
-    /// <param name="path">The path to map the GET request to.</param>
+    /// <param name="builder">The endpoint route builder.</param>
+    /// <param name="path">The path at which to serve the script.</param>
     /// <returns>
-    /// An <see cref="IEndpointConventionBuilder"/> that can be used to further configure the endpoint.
+    /// The endpoint convention builder for the mapped script endpoint.
     /// </returns>
-    public static IEndpointConventionBuilder MapHtmxAntiforgeryScript(this IEndpointRouteBuilder builder, string path)
+    public static IEndpointConventionBuilder MapHtmxToolkitScript(this IEndpointRouteBuilder builder, string path)
     {
         if (path.Length == 0)
             throw new ArgumentException(

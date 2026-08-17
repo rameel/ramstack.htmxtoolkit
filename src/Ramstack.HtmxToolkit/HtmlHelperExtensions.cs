@@ -24,26 +24,24 @@ public static class HtmlHelperExtensions
     internal static HtmlString DebugPath { get; set; } = new(EndpointRouteBuilderExtensions.AssetPath + "?debug");
 
     /// <summary>
-    /// Returns an HTML string containing the script for htmx to integrate with the anti-forgery feature of ASP.NET Core.
+    /// Returns the HTMX toolkit script content.
     /// </summary>
-    /// <param name="_">The <see cref="IHtmlHelper"/> instance that this method extends.</param>
-    /// <param name="debug">A boolean value indicating whether to use the debug version of the script.
-    /// Defaults to <see langword="false" />.</param>
+    /// <param name="_">The HTML helper.</param>
+    /// <param name="debug">Whether to return the debug version of the script.</param>
     /// <returns>
-    /// An HTML string of the script.
+    /// The HTMX toolkit script content.
     /// </returns>
-    public static IHtmlContent HtmxAntiforgeryScript(this IHtmlHelper _, bool debug = false) =>
+    public static IHtmlContent HtmxToolkitScript(this IHtmlHelper _, bool debug = false) =>
         debug ? s_debugScript : s_script;
 
     /// <summary>
-    /// Returns an HTML string of the path to the script to integrate with the anti-forgery feature of ASP.NET Core.
+    /// Returns the path to the HTMX toolkit script endpoint.
     /// </summary>
-    /// <param name="_">The <see cref="IHtmlHelper"/> instance that this method extends.</param>
-    /// <param name="debug">A boolean value indicating whether to use the debug version of the script.
-    /// Defaults to <see langword="false" />.</param>
+    /// <param name="_">The HTML helper.</param>
+    /// <param name="debug">Whether to return the debug version of the script.</param>
     /// <returns>
-    /// An HTML string of the path to the script.
+    /// The HTMX toolkit script endpoint path.
     /// </returns>
-    public static IHtmlContent HtmxAntiforgeryScriptPath(this IHtmlHelper _, bool debug = false) =>
+    public static IHtmlContent HtmxToolkitScriptPath(this IHtmlHelper _, bool debug = false) =>
         debug ? DebugPath : Path;
 }

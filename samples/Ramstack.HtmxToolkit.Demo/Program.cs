@@ -13,7 +13,7 @@ if (!app.Environment.IsDevelopment())
 
 app.UseStaticFiles();
 app.UseRouting();
-app.MapHtmxAntiforgeryScript();
+app.MapHtmxToolkitScript();
 app.MapRazorPages();
 
 app.Run();
