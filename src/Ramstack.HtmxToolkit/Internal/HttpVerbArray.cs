@@ -4,9 +4,7 @@ using System.Runtime.CompilerServices;
 namespace Ramstack.HtmxToolkit.Internal;
 
 /// <summary>
-/// A lightweight wrapper over an array of <see cref="HttpVerb"/> values
-/// that implements <see cref="IEnumerable{T}"/> to lazily produce lowercase
-/// HTTP method strings without allocating an intermediate <see cref="string"/> array.
+/// Represents a lightweight wrapper over an array of <see cref="HttpVerb"/> values.
 /// </summary>
 internal readonly struct HttpVerbArray : IEnumerable<string>
 {

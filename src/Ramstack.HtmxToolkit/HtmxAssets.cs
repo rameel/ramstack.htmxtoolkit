@@ -4,22 +4,22 @@ using System.Text;
 namespace Ramstack.HtmxToolkit;
 
 /// <summary>
-/// Provides access to embedded javascript assets.
+/// Provides access to the embedded HTMX toolkit script assets.
 /// </summary>
 public static class HtmxAssets
 {
     /// <summary>
-    /// The debug version of the script to integrate with the anti-forgery feature of ASP.NET Core.
+    /// The unminified HTMX toolkit script.
     /// </summary>
     public static readonly string DebugScript = GetResource("htmx-toolkit.js");
 
     /// <summary>
-    /// The minified version of the script to integrate with the anti-forgery feature of ASP.NET Core.
+    /// The minified HTMX toolkit script.
     /// </summary>
     public static readonly string Script = GetResource("htmx-toolkit.min.js");
 
     /// <summary>
-    /// The hash of the current script.
+    /// The content hash of the HTMX toolkit script.
     /// </summary>
     public static readonly string Hash = Convert
         .ToHexString(SHA1.HashData(Encoding.UTF8.GetBytes(DebugScript)).AsSpan(0, 8))

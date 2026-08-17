@@ -9,7 +9,7 @@ using Ramstack.HtmxToolkit.Internal;
 namespace Ramstack.HtmxToolkit;
 
 /// <summary>
-/// Represents HTTP response to set htmx response headers.
+/// Represents an HTTP response whose HTMX response headers can be configured.
 /// </summary>
 /// <remarks>
 /// Like <see cref="HttpContext"/> and <see cref="HttpResponse"/> themselves, this type is not thread-safe.

@@ -46,7 +46,7 @@ public readonly struct HtmxRequestHeaders
     public string? Prompt => GetString(_headers, HtmxRequestHeaderNames.Prompt);
 
     /// <summary>
-    /// Gets a value indicating whether the current request is htmx request.
+    /// Gets a value indicating whether the current request is an HTMX request.
     /// </summary>
     /// <remarks><see cref="HtmxRequestHeaderNames.Request"/></remarks>
     public bool Request => GetBoolean(_headers, HtmxRequestHeaderNames.Request);

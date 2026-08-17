@@ -13,7 +13,7 @@ public enum HtmxTriggerTiming
 
     /// <summary>
     /// Maps to the <c>HX-Trigger-After-Swap</c> header that is used to trigger an event
-    /// on the client side after the htmx request has been swapped.
+    /// on the client side after the response content has been swapped into the DOM.
     /// </summary>
     AfterSwap,
 
