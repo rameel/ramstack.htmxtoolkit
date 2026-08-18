@@ -36,7 +36,7 @@ public sealed class HtmxHeaderTagHelper : TagHelper
     {
         if (Headers is { Count: > 0 })
         {
-            var info = HtmxHeaderJsonSerializerContext.Default.IDictionaryStringString;
+            var info = HtmxDictionaryJsonSerializerContext.Default.IDictionaryStringString;
             var headers = new HtmlString(JsonSerializer.Serialize(Headers, info));
 
             output.Attributes.SetAttribute(
