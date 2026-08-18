@@ -42,7 +42,7 @@ public class PendingEventsTests
 
         Assert.That(events.Count, Is.EqualTo(2));
         Assert.That(events["message"], Is.EqualTo("first"));
-        Assert.That(events["_r_proxy"], Is.EqualTo(new[] { KeyValuePair.Create("message", "second") }));
+        Assert.That(events["rs:events"], Is.EqualTo(new[] { KeyValuePair.Create("message", "second") }));
     }
 
     [Test]
