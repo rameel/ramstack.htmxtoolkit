@@ -14,6 +14,7 @@ Provides HTMX integration for ASP.NET Core applications.
   * [TagHelpers](#taghelpers)
     * [HtmxUrlTagHelper](#htmxurltaghelper)
     * [HtmxHeaderTagHelper](#htmxheadertaghelper)
+    * [HtmxRequestTagHelper](#htmxrequesttaghelper)
     * [HtmxConfigTagHelper](#htmxconfigtaghelper)
       * [Response Handling Configuration](#response-handling-configuration)
   * [Toolkit Script](#toolkit-script)
@@ -437,11 +438,12 @@ allowing you to flexibly configure the `swap` header you need.
 
 ## TagHelpers
 
-The library provides 3 tag helpers:
+The library provides 4 tag helpers:
 
 * `HtmxUrlTagHelper`
 * `HtmxHeaderTagHelper`
 * `HtmxConfigTagHelper`
+* `HtmxRequestTagHelper`
 
 To make them available in your project, add the `@addTagHelper` directive in the Razor view.
 
@@ -579,6 +581,29 @@ you can assign them to the `hx-all-headers` attribute:
 ```
 
 The `HtmxHeaderTagHelper` will take care of all the remaining work regarding JSON serialization and escaping.
+
+### HtmxRequestTagHelper
+
+The `HtmxRequestTagHelper` configures the htmx request options supported by HTMX 1.x and 2.x.
+Use the typed `hx-request-*` attributes instead of writing JSON manually:
+
+```html
+<button hx-get="/reports"
+        hx-request-timeout="5000"
+        hx-request-credentials="true"
+        hx-request-no-headers="false">
+    Load report
+</button>
+```
+
+The following HTML will be generated:
+
+```html
+<button hx-get="/reports"
+        hx-request='{"timeout":5000,"credentials":true,"noHeaders":false}'>
+    Load report
+</button>
+```
 
 ### HtmxConfigTagHelper
 
