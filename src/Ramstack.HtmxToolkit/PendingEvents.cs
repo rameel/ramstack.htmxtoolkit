@@ -13,7 +13,7 @@ namespace Ramstack.HtmxToolkit;
 /// </summary>
 internal sealed class PendingEvents
 {
-    private const string ProxyEventName = "_r_proxy";
+    private const string ProxyEventName = "rs:events";
 
     private readonly HttpResponse _response;
     private Dictionary<string, object>? _receive;
@@ -29,7 +29,7 @@ internal sealed class PendingEvents
 
     /// <summary>
     /// Adds the specified events to the pending set for the given <paramref name="timing"/>.
-    /// When a key already exists, the duplicate event is accumulated under a <c>_r_proxy</c> key and replayed client-side.
+    /// When a key already exists, the duplicate event is accumulated under a <c>rs:events</c> key and replayed client-side.
     /// </summary>
     /// <param name="timing">The time at which the events will be triggered.</param>
     /// <param name="events">A dictionary containing event names as keys and event details as values.</param>
