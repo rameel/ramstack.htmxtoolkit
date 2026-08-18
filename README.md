@@ -14,6 +14,7 @@ Provides HTMX integration for ASP.NET Core applications.
   * [TagHelpers](#taghelpers)
     * [HtmxUrlTagHelper](#htmxurltaghelper)
     * [HtmxHeaderTagHelper](#htmxheadertaghelper)
+    * [HtmxValsTagHelper](#htmxvalstaghelper)
     * [HtmxRequestTagHelper](#htmxrequesttaghelper)
     * [HtmxConfigTagHelper](#htmxconfigtaghelper)
       * [Response Handling Configuration](#response-handling-configuration)
@@ -292,7 +293,7 @@ that control HTMX behavior.
 /// <summary>
 /// Represents strongly typed HTMX response headers.
 /// </summary>
-public sealed class HtmxResponseHeaders
+public readonly struct HtmxResponseHeaders
 {
     /// <summary>
     /// Gets or sets the <c>HX-Location</c> header to a client-side redirect
