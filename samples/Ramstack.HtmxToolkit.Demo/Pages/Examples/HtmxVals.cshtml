@@ -1,0 +1,45 @@
+@page
+@model HtmxValsModel
+@{
+  ViewData["Title"] = "HTMX values";
+}
+
+<article class="example-page">
+  <header class="page-heading">
+    <p class="eyebrow">Example 11</p>
+    <h1>Send values with HTMX</h1>
+    <p>Add request parameters declaratively without assembling JSON by hand</p>
+  </header>
+
+  <section class="demo-card">
+    <div class="demo-card__header">
+      <h2><code>hx-val-*</code> and <code>hx-all-vals</code></h2>
+      <p>Both forms send values with the request and create an <code>hx-vals</code> attribute.</p>
+    </div>
+
+    <div class="demo-actions">
+      <button
+        hx-get
+        hx-page="/Examples/HtmxVals"
+        hx-page-handler="Show"
+        hx-val-category="science"
+        hx-val-format="summary"
+        hx-target="#values-result">
+        Send individual values
+      </button>
+      <button
+        class="button button-secondary"
+        hx-get
+        hx-page="/Examples/HtmxVals"
+        hx-page-handler="Show"
+        hx-all-vals="@(new Dictionary<string, string> { { "category", "history" }, { "format", "full" } })"
+        hx-target="#values-result">
+        Send values dictionary
+      </button>
+    </div>
+
+    <div id="values-result" class="result">
+      Choose a value declaration.
+    </div>
+  </section>
+</article>

@@ -582,6 +582,30 @@ you can assign them to the `hx-all-headers` attribute:
 
 The `HtmxHeaderTagHelper` will take care of all the remaining work regarding JSON serialization and escaping.
 
+### HtmxValsTagHelper
+
+The `HtmxValsTagHelper` adds values that HTMX includes with a request. Use `hx-val-*`
+attributes instead of writing JSON manually:
+
+```html
+<button hx-get="/books"
+        hx-val-category="science"
+        hx-val-format="summary">
+    Browse books
+</button>
+```
+
+The following HTML will be generated:
+
+```html
+<button hx-get="/books"
+        hx-vals='{"category":"science","format":"summary"}'>
+    Browse books
+</button>
+```
+
+You can also provide the values as a dictionary with the `hx-all-vals` attribute.
+
 ### HtmxRequestTagHelper
 
 The `HtmxRequestTagHelper` configures the htmx request options supported by HTMX 1.x and 2.x.
