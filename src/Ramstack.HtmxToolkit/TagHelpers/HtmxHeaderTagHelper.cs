@@ -3,6 +3,8 @@ using System.Text.Json;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 
+using Ramstack.HtmxToolkit.Collections;
+
 namespace Ramstack.HtmxToolkit.TagHelpers;
 
 /// <summary>
@@ -27,7 +29,7 @@ public sealed class HtmxHeaderTagHelper : TagHelper
     [HtmlAttributeName(HeadersDictionaryName, DictionaryAttributePrefix = HeadersPrefix)]
     public IDictionary<string, string> Headers
     {
-        get => field ??= new Dictionary<string, string>();
+        get => field ??= new SmallDictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         set;
     }
 
