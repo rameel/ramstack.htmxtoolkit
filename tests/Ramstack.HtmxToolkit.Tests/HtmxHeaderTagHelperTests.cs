@@ -7,14 +7,9 @@ public class HtmxHeaderTagHelperTests
     public async Task ProcessAsync_SerializesHeaders()
     {
         var output = TestHelper.CreateTagHelperOutput();
-        var helper = new HtmxHeaderTagHelper
-        {
-            Headers = new Dictionary<string, string>
-            {
-                ["X-Requested-With"] = "XMLHttpRequest",
-                ["X-Custom"] = "value"
-            }
-        };
+        var helper = new HtmxHeaderTagHelper();
+        helper.Headers["X-Requested-With"] = "XMLHttpRequest";
+        helper.Headers["X-Custom"] = "value";
 
         await helper.ProcessAsync(TestHelper.CreateTagHelperContext(), output);
         var attribute = output.Attributes["hx-headers"];
@@ -27,13 +22,21 @@ public class HtmxHeaderTagHelperTests
     }
 
     [Test]
+    public void Headers_TreatsNamesAsCaseInsensitive()
+    {
+        var helper = new HtmxHeaderTagHelper();
+        helper.Headers["X-Custom"] = "first";
+        helper.Headers["x-custom"] = "second";
+
+        Assert.That(helper.Headers, Has.Count.EqualTo(1));
+        Assert.That(helper.Headers["X-CUSTOM"], Is.EqualTo("second"));
+    }
+
+    [Test]
     public async Task ProcessAsync_SerializesEmptyDictionary()
     {
         var output = TestHelper.CreateTagHelperOutput();
-        var helper = new HtmxHeaderTagHelper
-        {
-            Headers = new Dictionary<string, string>()
-        };
+        var helper = new HtmxHeaderTagHelper();
 
         await helper.ProcessAsync(TestHelper.CreateTagHelperContext(), output);
 

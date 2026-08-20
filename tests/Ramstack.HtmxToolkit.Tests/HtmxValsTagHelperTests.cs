@@ -7,14 +7,9 @@ public class HtmxValsTagHelperTests
     public async Task ProcessAsync_SerializesValues()
     {
         var output = TestHelper.CreateTagHelperOutput();
-        var helper = new HtmxValsTagHelper
-        {
-            Values = new Dictionary<string, string>
-            {
-                ["category"] = "books",
-                ["sort"] = "title"
-            }
-        };
+        var helper = new HtmxValsTagHelper();
+        helper.Values["category"] = "books";
+        helper.Values["sort"] = "title";
 
         await helper.ProcessAsync(TestHelper.CreateTagHelperContext(), output);
         var attribute = output.Attributes["hx-vals"];
@@ -30,10 +25,7 @@ public class HtmxValsTagHelperTests
     public async Task ProcessAsync_OmitsEmptyDictionary()
     {
         var output = TestHelper.CreateTagHelperOutput();
-        var helper = new HtmxValsTagHelper
-        {
-            Values = new Dictionary<string, string>()
-        };
+        var helper = new HtmxValsTagHelper();
 
         await helper.ProcessAsync(TestHelper.CreateTagHelperContext(), output);
 
