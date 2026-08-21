@@ -184,8 +184,8 @@ internal sealed class SmallDictionary<TKey, TValue> : IDictionary<TKey, TValue>,
             var count = _count;
             if (count != 0)
                 Array.Clear(_items, 0, count);
-
         }
+
         _count = 0;
     }
 
