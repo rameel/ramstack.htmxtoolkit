@@ -1,8 +1,8 @@
-using System.Runtime.InteropServices;
 using System.Text.Json;
 
 using Microsoft.AspNetCore.Http;
 
+using Ramstack.HtmxToolkit.Collections;
 using Ramstack.HtmxToolkit.Internal;
 
 namespace Ramstack.HtmxToolkit;
@@ -16,9 +16,9 @@ internal sealed class PendingEvents
     private const string ProxyEventName = "rs:events";
 
     private readonly HttpResponse _response;
-    private Dictionary<string, object>? _receive;
-    private Dictionary<string, object>? _afterSwap;
-    private Dictionary<string, object>? _afterSettle;
+    private SmallDictionary<string, object>? _receive;
+    private SmallDictionary<string, object>? _afterSwap;
+    private SmallDictionary<string, object>? _afterSettle;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="PendingEvents"/> class.
@@ -37,9 +37,9 @@ internal sealed class PendingEvents
     {
         var current = timing switch
         {
-            HtmxTriggerTiming.Receive => _receive ??= new Dictionary<string, object>(),
-            HtmxTriggerTiming.AfterSwap => _afterSwap ??= new Dictionary<string, object>(),
-            _ => _afterSettle ??= new Dictionary<string, object>()
+            HtmxTriggerTiming.Receive => _receive ??= new SmallDictionary<string, object>(StringComparer.Ordinal),
+            HtmxTriggerTiming.AfterSwap => _afterSwap ??= new SmallDictionary<string, object>(StringComparer.Ordinal),
+            _ => _afterSettle ??= new SmallDictionary<string, object>(StringComparer.Ordinal)
         };
 
         foreach (var (k, v) in events)
@@ -47,9 +47,11 @@ internal sealed class PendingEvents
             if (current.TryAdd(k, v))
                 continue;
 
-            ref var value = ref CollectionsMarshal.GetValueRefOrAddDefault(current, ProxyEventName, out _);
-            if (value is not List<KeyValuePair<string, object>> collection)
-                value = collection = [];
+            if (!current.TryGetValue(ProxyEventName, out var value) || value is not List<KeyValuePair<string, object>> collection)
+            {
+                collection = [];
+                current[ProxyEventName] = collection;
+            }
 
             collection.Add(new KeyValuePair<string, object>(k, v));
         }
@@ -79,7 +81,7 @@ internal sealed class PendingEvents
     /// <param name="events">A dictionary containing event names as keys and event details as values.</param>
     public void SetEvents(HtmxTriggerTiming timing, IReadOnlyDictionary<string, object> events)
     {
-        var replacement = new Dictionary<string, object>(events);
+        var replacement = new SmallDictionary<string, object>(events, StringComparer.Ordinal);
         switch (timing)
         {
             case HtmxTriggerTiming.Receive:
@@ -140,7 +142,7 @@ internal sealed class PendingEvents
         return pending;
     }
 
-    private void SetHeader(string name, Dictionary<string, object>? events)
+    private void SetHeader(string name, SmallDictionary<string, object>? events)
     {
         if (events is not null)
             _response.Headers[name] = JsonSerializer.Serialize(events, JsonOptions.CamelCase);
