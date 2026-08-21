@@ -38,7 +38,8 @@ public sealed class HtmxValsTagHelper : TagHelper
     {
         if (Values is { Count: > 0 } values)
         {
-            var json = JsonSerializer.Serialize(values, HtmxDictionaryJsonSerializerContext.Default.IDictionaryStringString);
+            var info = HtmxDictionaryJsonSerializerContext.Default.IDictionaryStringString;
+            var json = JsonSerializer.Serialize(values, info);
             var attribute = new TagHelperAttribute("hx-vals", new HtmlString(json), HtmlAttributeValueStyle.SingleQuotes);
 
             output.Attributes.SetAttribute(attribute);

@@ -42,8 +42,7 @@ public sealed class HtmxHeaderTagHelper : TagHelper
             var headers = new HtmlString(JsonSerializer.Serialize(Headers, info));
 
             output.Attributes.SetAttribute(
-                new TagHelperAttribute("hx-headers", headers, HtmlAttributeValueStyle.SingleQuotes)
-                );
+                new TagHelperAttribute("hx-headers", headers, HtmlAttributeValueStyle.SingleQuotes));
         }
 
         return Task.CompletedTask;
