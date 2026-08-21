@@ -256,7 +256,7 @@ public readonly struct HtmxResponse
 
     private static HtmxResponse SetHeader(HtmxResponse response, string key, string value)
     {
-        response._response.Headers[key] = new StringValues(value);
+        response._response.Headers[key] = [with(value)];
         return response;
     }
 
