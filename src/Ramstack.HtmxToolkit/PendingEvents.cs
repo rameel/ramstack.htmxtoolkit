@@ -39,7 +39,7 @@ internal sealed class PendingEvents
         {
             HtmxTriggerTiming.Receive => _receive ??= new Dictionary<string, object>(),
             HtmxTriggerTiming.AfterSwap => _afterSwap ??= new Dictionary<string, object>(),
-            _ => _afterSettle ??= new Dictionary<string, object>(),
+            _ => _afterSettle ??= new Dictionary<string, object>()
         };
 
         foreach (var (k, v) in events)
@@ -68,7 +68,7 @@ internal sealed class PendingEvents
         {
             HtmxTriggerTiming.Receive => _receive,
             HtmxTriggerTiming.AfterSwap => _afterSwap,
-            _ => _afterSettle,
+            _ => _afterSettle
         };
     }
 
