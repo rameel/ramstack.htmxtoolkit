@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Html;
+
 namespace Ramstack.HtmxToolkit.Tests;
 
 [TestFixture]
@@ -18,8 +20,9 @@ public class HtmxRequestTagHelperTests
         var attribute = output.Attributes["hx-request"];
 
         Assert.That(attribute, Is.Not.Null);
+        Assert.That(attribute!.Value, Is.TypeOf<HtmlString>());
 
-        var json = JsonHelper.ParseJson(attribute!.Value.ToString()!);
+        var json = JsonHelper.ParseJson(attribute.Value.ToString()!);
         Assert.That(json["timeout"].GetInt32(), Is.EqualTo(500));
         Assert.That(json["credentials"].GetBoolean(), Is.True);
         Assert.That(json["noHeaders"].GetBoolean(), Is.False);

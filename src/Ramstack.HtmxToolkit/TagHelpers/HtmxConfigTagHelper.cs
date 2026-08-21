@@ -516,10 +516,8 @@ public sealed class HtmxConfigTagHelper(IAntiforgery antiforgery) : TagHelper
         if (IncludeAntiForgeryToken)
             _config.AntiForgery = antiforgery.GetAndStoreTokens(ViewContext.HttpContext);
 
-        var config = new HtmlString(
-            JsonSerializer.Serialize(
-                _config,
-                HtmxConfigJsonSerializerContext.Default.HtmxConfigData));
+        var info = HtmxConfigJsonSerializerContext.Default.HtmxConfigData;
+        var config = new HtmlString(JsonSerializer.Serialize(_config, info));
 
         output.Attributes.SetAttribute(
             new TagHelperAttribute("content", config, HtmlAttributeValueStyle.SingleQuotes));

@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Antiforgery;
+using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Razor.TagHelpers;
@@ -60,7 +61,7 @@ public class HtmxConfigTagHelperTests
             DefaultSwapDelay = 250,
             DefaultSettleDelay = 300,
             IncludeIndicatorStyles = false,
-            IndicatorClass = "my-indicator",
+            IndicatorClass = "индикатор's",
             RequestClass = "my-request",
             AddedClass = "my-added",
             SwappingClass = "my-swapping",
@@ -94,7 +95,13 @@ public class HtmxConfigTagHelperTests
         var output = TestHelper.CreateTagHelperOutput();
         await helper.ProcessAsync(TestHelper.CreateTagHelperContext(), output);
 
-        var json = JsonHelper.ParseJson(GetContent(output));
+        Assert.That(output.Attributes["content"]!.Value, Is.TypeOf<HtmlString>());
+
+        var content = GetContent(output);
+        Assert.That(content, Does.Contain("\"индикатор\\u0027s\""));
+        Assert.That(content, Does.Not.Contain("'"));
+
+        var json = JsonHelper.ParseJson(content);
 
         Assert.That(json["historyEnabled"].GetBoolean(), Is.False);
         Assert.That(json["historyCacheSize"].GetInt32(), Is.EqualTo(42));
@@ -103,7 +110,7 @@ public class HtmxConfigTagHelperTests
         Assert.That(json["defaultSwapDelay"].GetInt32(), Is.EqualTo(250));
         Assert.That(json["defaultSettleDelay"].GetInt32(), Is.EqualTo(300));
         Assert.That(json["includeIndicatorStyles"].GetBoolean(), Is.False);
-        Assert.That(json["indicatorClass"].GetString(), Is.EqualTo("my-indicator"));
+        Assert.That(json["indicatorClass"].GetString(), Is.EqualTo("индикатор's"));
         Assert.That(json["requestClass"].GetString(), Is.EqualTo("my-request"));
         Assert.That(json["addedClass"].GetString(), Is.EqualTo("my-added"));
         Assert.That(json["swappingClass"].GetString(), Is.EqualTo("my-swapping"));

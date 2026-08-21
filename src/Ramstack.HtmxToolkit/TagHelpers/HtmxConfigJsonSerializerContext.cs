@@ -1,11 +1,26 @@
 using System.Text.Json.Serialization;
 
+using Ramstack.HtmxToolkit.Internal;
+
 namespace Ramstack.HtmxToolkit.TagHelpers;
 
+/// <summary>
+/// Provides source-generated JSON serialization metadata for HTMX configuration data.
+/// </summary>
 [JsonSourceGenerationOptions(
     WriteIndented = false,
     PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase,
     DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-    GenerationMode = JsonSourceGenerationMode.Serialization)]
+    GenerationMode = JsonSourceGenerationMode.Default)]
 [JsonSerializable(typeof(HtmxConfigTagHelper.HtmxConfigData))]
-internal partial class HtmxConfigJsonSerializerContext : JsonSerializerContext;
+internal partial class HtmxConfigJsonSerializerContext : JsonSerializerContext
+{
+    /// <summary>
+    /// Initializes the default serializer context with HTML-safe Unicode encoding.
+    /// </summary>
+    static HtmxConfigJsonSerializerContext()
+    {
+        JsonOptions.ConfigureHtmlSafeUnicode(s_defaultOptions);
+        s_defaultContext = new HtmxConfigJsonSerializerContext(s_defaultOptions);
+    }
+}

@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Html;
+
 namespace Ramstack.HtmxToolkit.Tests;
 
 [TestFixture]
@@ -7,26 +9,38 @@ public class HtmxHeaderTagHelperTests
     public async Task ProcessAsync_SerializesHeaders()
     {
         var output = TestHelper.CreateTagHelperOutput();
-        var helper = new HtmxHeaderTagHelper();
-        helper.Headers["X-Requested-With"] = "XMLHttpRequest";
-        helper.Headers["X-Custom"] = "value";
+        var helper = new HtmxHeaderTagHelper
+        {
+            Headers =
+            {
+                ["X-Requested-With"] = "XMLHttpRequest",
+                ["X-Custom"] = "value's"
+            }
+        };
 
         await helper.ProcessAsync(TestHelper.CreateTagHelperContext(), output);
         var attribute = output.Attributes["hx-headers"];
 
         Assert.That(attribute, Is.Not.Null);
+        Assert.That(attribute!.Value, Is.TypeOf<HtmlString>());
+        Assert.That(attribute.Value.ToString(), Is.EqualTo("{\"X-Requested-With\":\"XMLHttpRequest\",\"X-Custom\":\"value\\u0027s\"}"));
 
-        var json = JsonHelper.ParseJson(attribute!.Value.ToString()!);
+        var json = JsonHelper.ParseJson(attribute.Value.ToString()!);
         Assert.That(json["X-Requested-With"].GetString(), Is.EqualTo("XMLHttpRequest"));
-        Assert.That(json["X-Custom"].GetString(), Is.EqualTo("value"));
+        Assert.That(json["X-Custom"].GetString(), Is.EqualTo("value's"));
     }
 
     [Test]
     public void Headers_TreatsNamesAsCaseInsensitive()
     {
-        var helper = new HtmxHeaderTagHelper();
-        helper.Headers["X-Custom"] = "first";
-        helper.Headers["x-custom"] = "second";
+        var helper = new HtmxHeaderTagHelper
+        {
+            Headers =
+            {
+                ["X-Custom"] = "first",
+                ["x-custom"] = "second"
+            }
+        };
 
         Assert.That(helper.Headers, Has.Count.EqualTo(1));
         Assert.That(helper.Headers["X-CUSTOM"], Is.EqualTo("second"));
