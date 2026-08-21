@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Html;
+using Microsoft.AspNetCore.Razor.TagHelpers;
 
 namespace Ramstack.HtmxToolkit.Tests;
 
@@ -47,6 +48,20 @@ public class HtmxRequestTagHelperTests
         Assert.That(json["timeout"].GetInt32(), Is.EqualTo(500));
         Assert.That(json.ContainsKey("credentials"), Is.False);
         Assert.That(json.ContainsKey("noHeaders"), Is.False);
+    }
+
+    [Test]
+    public async Task ProcessAsync_UsesSingleQuotesForJsonAttribute()
+    {
+        var output = TestHelper.CreateTagHelperOutput();
+        var helper = new HtmxRequestTagHelper
+        {
+            Timeout = 500
+        };
+
+        await helper.ProcessAsync(TestHelper.CreateTagHelperContext(), output);
+
+        Assert.That(output.Attributes["hx-request"]!.ValueStyle, Is.EqualTo(HtmlAttributeValueStyle.SingleQuotes));
     }
 
     [Test]

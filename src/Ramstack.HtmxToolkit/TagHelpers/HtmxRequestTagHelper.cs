@@ -62,7 +62,9 @@ public sealed class HtmxRequestTagHelper : TagHelper
         {
             var info = HtmxRequestJsonSerializerContext.Default.HtmxRequestData;
             var request = new HtmlString(JsonSerializer.Serialize(_request, info));
-            output.Attributes.SetAttribute(new TagHelperAttribute("hx-request", request));
+
+            output.Attributes.SetAttribute(
+                new TagHelperAttribute("hx-request", request, HtmlAttributeValueStyle.SingleQuotes));
         }
 
         return Task.CompletedTask;

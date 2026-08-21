@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Html;
+using Microsoft.AspNetCore.Razor.TagHelpers;
 
 namespace Ramstack.HtmxToolkit.Tests;
 
@@ -44,6 +45,23 @@ public class HtmxHeaderTagHelperTests
 
         Assert.That(helper.Headers, Has.Count.EqualTo(1));
         Assert.That(helper.Headers["X-CUSTOM"], Is.EqualTo("second"));
+    }
+
+    [Test]
+    public async Task ProcessAsync_UsesSingleQuotesForJsonAttribute()
+    {
+        var output = TestHelper.CreateTagHelperOutput();
+        var helper = new HtmxHeaderTagHelper
+        {
+            Headers =
+            {
+                ["X-Custom"] = "value"
+            }
+        };
+
+        await helper.ProcessAsync(TestHelper.CreateTagHelperContext(), output);
+
+        Assert.That(output.Attributes["hx-headers"]!.ValueStyle, Is.EqualTo(HtmlAttributeValueStyle.SingleQuotes));
     }
 
     [Test]
