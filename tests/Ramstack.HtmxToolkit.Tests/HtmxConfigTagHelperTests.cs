@@ -50,6 +50,17 @@ public class HtmxConfigTagHelperTests
     }
 
     [Test]
+    public async Task ProcessAsync_UsesSingleQuotesForJsonAttribute()
+    {
+        var output = TestHelper.CreateTagHelperOutput();
+        var helper = new HtmxConfigTagHelper(new StubAntiforgery());
+
+        await helper.ProcessAsync(TestHelper.CreateTagHelperContext(), output);
+
+        Assert.That(output.Attributes["content"]!.ValueStyle, Is.EqualTo(HtmlAttributeValueStyle.SingleQuotes));
+    }
+
+    [Test]
     public async Task ProcessAsync_SerializesConfiguredOptions()
     {
         var helper = new HtmxConfigTagHelper(new StubAntiforgery())

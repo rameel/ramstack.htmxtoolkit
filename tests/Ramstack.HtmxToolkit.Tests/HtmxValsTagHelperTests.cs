@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Html;
+using Microsoft.AspNetCore.Razor.TagHelpers;
 
 namespace Ramstack.HtmxToolkit.Tests;
 
@@ -35,6 +36,23 @@ public class HtmxValsTagHelperTests
         var json = JsonHelper.ParseJson(serialized);
         Assert.That(json["категория"].GetString(), Is.EqualTo("Детские книги '<script>\" &"));
         Assert.That(json["sort"].GetString(), Is.EqualTo("title"));
+    }
+
+    [Test]
+    public async Task ProcessAsync_UsesSingleQuotesForJsonAttribute()
+    {
+        var output = TestHelper.CreateTagHelperOutput();
+        var helper = new HtmxValsTagHelper
+        {
+            Values =
+            {
+                ["sort"] = "title"
+            }
+        };
+
+        await helper.ProcessAsync(TestHelper.CreateTagHelperContext(), output);
+
+        Assert.That(output.Attributes["hx-vals"]!.ValueStyle, Is.EqualTo(HtmlAttributeValueStyle.SingleQuotes));
     }
 
     [Test]
