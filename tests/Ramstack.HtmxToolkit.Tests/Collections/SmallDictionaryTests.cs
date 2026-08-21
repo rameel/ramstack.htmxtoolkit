@@ -22,6 +22,95 @@ public class SmallDictionaryTests
     }
 
     [Test]
+    public void Constructor_FromCollection_CopiesEntries()
+    {
+        var source = new[]
+        {
+            KeyValuePair.Create(1, "one"),
+            KeyValuePair.Create(2, "two"),
+            KeyValuePair.Create(3, "three")
+        };
+
+        var dictionary = new SmallDictionary<int, string>(source, Comparer<int>.Default);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(dictionary.Count, Is.EqualTo(3));
+            Assert.That(dictionary, Is.EquivalentTo(source));
+            Assert.That(dictionary[2], Is.EqualTo("two"));
+        });
+    }
+
+    [Test]
+    public void Constructor_FromDictionary_CopiesEntries()
+    {
+        var source = new Dictionary<int, string>
+        {
+            [1] = "one",
+            [2] = "two",
+            [3] = "three"
+        };
+
+        var dictionary = new SmallDictionary<int, string>(source, Comparer<int>.Default);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(dictionary.Count, Is.EqualTo(3));
+            Assert.That(dictionary, Is.EquivalentTo(source));
+        });
+    }
+
+    [Test]
+    public void Constructor_FromSmallDictionary_CopiesEntries()
+    {
+        var source = CreateDictionary();
+        source.Add(3, "three");
+        source.Add(1, "one");
+        source.Add(2, "two");
+
+        var dictionary = new SmallDictionary<int, string>(source, Comparer<int>.Default);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(dictionary.Count, Is.EqualTo(3));
+            Assert.That(dictionary, Is.EquivalentTo(source));
+        });
+    }
+
+    [Test]
+    public void Constructor_FromSmallDictionary_WithDifferentComparer_ReSortsEntries()
+    {
+        var source = new SmallDictionary<string, int>(StringComparer.Ordinal);
+        foreach (var key in new[] { "Bravo", "alpha", "Delta", "charlie", "Echo", "foxtrot" })
+            source.Add(key, source.Count + 1);
+
+        var dictionary = new SmallDictionary<string, int>(source, StringComparer.OrdinalIgnoreCase);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(dictionary.Count, Is.EqualTo(source.Count));
+            Assert.That(dictionary, Is.EquivalentTo(source));
+            Assert.That(dictionary["ALPHA"], Is.EqualTo(source["alpha"]));
+            Assert.That(dictionary["echo"], Is.EqualTo(source["Echo"]));
+            Assert.That(dictionary["FOXTROT"], Is.EqualTo(source["foxtrot"]));
+        });
+    }
+
+    [Test]
+    public void Constructor_NullCollection_ThrowsArgumentNullException()
+    {
+        Assert.Throws<ArgumentNullException>(
+            () => new SmallDictionary<int, string>(null!, Comparer<int>.Default));
+    }
+
+    [Test]
+    public void Constructor_NullComparer_ThrowsArgumentNullException()
+    {
+        Assert.Throws<ArgumentNullException>(
+            () => new SmallDictionary<int, string>([], null!));
+    }
+
+    [Test]
     public void Add_NewKey_StoresEntry_UpdatesAllViews()
     {
         var dictionary = CreateDictionary();
@@ -59,6 +148,52 @@ public class SmallDictionaryTests
         dictionary.Add("existing", 1);
 
         Assert.Throws<ArgumentNullException>(() => dictionary.Add(null!, 0));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(dictionary.Count, Is.EqualTo(1));
+            Assert.That(dictionary["existing"], Is.EqualTo(1));
+        });
+    }
+
+    [Test]
+    public void TryAdd_NewKey_ReturnsTrue_AddsEntry()
+    {
+        var dictionary = new SmallDictionary<int, string>(Comparer<int>.Default);
+
+        var added = dictionary.TryAdd(7, "seven");
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(added, Is.True);
+            Assert.That(dictionary.Count, Is.EqualTo(1));
+            Assert.That(dictionary[7], Is.EqualTo("seven"));
+        });
+    }
+
+    [Test]
+    public void TryAdd_ExistingKey_ReturnsFalse_PreservesExistingEntry()
+    {
+        var dictionary = new SmallDictionary<int, string>(Comparer<int>.Default);
+        dictionary.Add(7, "original");
+
+        var added = dictionary.TryAdd(7, "replacement");
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(added, Is.False);
+            Assert.That(dictionary.Count, Is.EqualTo(1));
+            Assert.That(dictionary[7], Is.EqualTo("original"));
+        });
+    }
+
+    [Test]
+    public void TryAdd_NullKey_ThrowsArgumentNullException_PreservesState()
+    {
+        var dictionary = new SmallDictionary<string, int>(StringComparer.Ordinal);
+        dictionary.Add("existing", 1);
+
+        Assert.Throws<ArgumentNullException>(() => dictionary.TryAdd(null!, 0));
 
         Assert.Multiple(() =>
         {
