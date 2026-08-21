@@ -80,6 +80,40 @@ internal sealed class SmallDictionary<TKey, TValue> : IDictionary<TKey, TValue>,
         _comparer = comparer;
     }
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="SmallDictionary{TKey,TValue}"/> class that contains
+    /// entries copied from the specified collection and uses the specified key comparer.
+    /// </summary>
+    /// <param name="collection">The collection whose entries are copied to the new dictionary.</param>
+    /// <param name="comparer">The comparer to use when comparing keys.</param>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="collection"/> or <paramref name="comparer"/> is <see langword="null"/>.
+    /// </exception>
+    public SmallDictionary(IEnumerable<KeyValuePair<TKey, TValue>> collection, IComparer<TKey> comparer) : this(comparer)
+    {
+        ArgumentNullException.ThrowIfNull(collection);
+
+        if (collection is Dictionary<TKey, TValue> dictionary)
+        {
+            _items = new KeyValuePair<TKey, TValue>[dictionary.Count];
+            foreach (var pair in dictionary)
+                Add(pair.Key, pair.Value);
+        }
+        else if (collection is SmallDictionary<TKey, TValue> small)
+        {
+            _count = small._count;
+            _items = [..small._items];
+
+            if (_count > LinearSearchThreshold && !ReferenceEquals(_comparer, small._comparer))
+                Array.Sort(_items, 0, _count, new KeyValuePairComparer(_comparer));
+        }
+        else
+        {
+            foreach (var pair in collection)
+                Add(pair.Key, pair.Value);
+        }
+    }
+
     /// <inherited />
     public bool ContainsKey(TKey key) =>
         IndexOf(key) >= 0;
@@ -109,6 +143,26 @@ internal sealed class SmallDictionary<TKey, TValue> : IDictionary<TKey, TValue>,
         }
 
         Insert(~index, key, value);
+    }
+
+    /// <summary>
+    /// Attempts to add the specified key and value to the dictionary.
+    /// </summary>
+    /// <param name="key">The key of the entry to add.</param>
+    /// <param name="value">The value of the entry to add.</param>
+    /// <returns>
+    /// <see langword="true"/> if the key/value pair was added to the dictionary;
+    /// otherwise, <see langword="false"/>.
+    /// </returns>
+    /// <exception cref="ArgumentNullException"><paramref name="key"/> is <see langword="null"/>.</exception>
+    public bool TryAdd(TKey key, TValue value)
+    {
+        var index = IndexOf(key);
+        if (index >= 0)
+            return false;
+
+        Insert(~index, key, value);
+        return true;
     }
 
     /// <inherited />
