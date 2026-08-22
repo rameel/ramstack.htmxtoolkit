@@ -55,8 +55,8 @@ internal sealed class SmallDictionary<TKey, TValue> : IDictionary<TKey, TValue>,
         }
         set
         {
-            var items = _items;
             var index = IndexOf(key);
+            var items = _items;
 
             if ((uint)index < (uint)items.Length)
             {
@@ -241,8 +241,8 @@ internal sealed class SmallDictionary<TKey, TValue> : IDictionary<TKey, TValue>,
     /// <inherited />
     bool ICollection<KeyValuePair<TKey, TValue>>.Remove(KeyValuePair<TKey, TValue> item)
     {
-        var items = _items;
         var index = IndexOf(item.Key);
+        var items = _items;
 
         if ((uint)index >= (uint)items.Length)
             return false;

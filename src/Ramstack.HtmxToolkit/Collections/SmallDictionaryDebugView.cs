@@ -35,7 +35,8 @@ internal sealed class SmallDictionaryDebugView<TKey, TValue>(SmallDictionary<TKe
     /// <summary>
     /// Represents a class that contains the key/value pairs of the dictionary entry for displaying by a debugger.
     /// </summary>
-    /// <param name="key">The value of the entry.</param>
+    /// <param name="key">The key of the entry.</param>
+    /// <param name="value">The value of the entry.</param>
     [DebuggerDisplay("{Value}", Name = "[{Key}]")]
     public readonly struct DictionaryEntry(TKey key, TValue value)
     {
