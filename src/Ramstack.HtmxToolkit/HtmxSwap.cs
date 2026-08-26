@@ -16,6 +16,26 @@ public enum HtmxSwap
     OuterHtml,
 
     /// <summary>
+    /// Morphs the inner HTML of the target element.
+    /// </summary>
+    InnerMorph,
+
+    /// <summary>
+    /// Morphs the target element itself.
+    /// </summary>
+    OuterMorph,
+
+    /// <summary>
+    /// Synchronizes the target element with the response.
+    /// </summary>
+    OuterSync,
+
+    /// <summary>
+    /// Replaces the text content of the target element.
+    /// </summary>
+    TextContent,
+
+    /// <summary>
     /// Inserts the response before the target element.
     /// </summary>
     BeforeBegin,

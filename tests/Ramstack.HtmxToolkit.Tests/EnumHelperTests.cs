@@ -5,6 +5,10 @@ public class EnumHelperTests
 {
     [TestCase(HtmxSwap.InnerHtml, "innerHTML")]
     [TestCase(HtmxSwap.OuterHtml, "outerHTML")]
+    [TestCase(HtmxSwap.InnerMorph, "innerMorph")]
+    [TestCase(HtmxSwap.OuterMorph, "outerMorph")]
+    [TestCase(HtmxSwap.OuterSync, "outerSync")]
+    [TestCase(HtmxSwap.TextContent, "textContent")]
     [TestCase(HtmxSwap.BeforeBegin, "beforebegin")]
     [TestCase(HtmxSwap.AfterBegin, "afterbegin")]
     [TestCase(HtmxSwap.BeforeEnd, "beforeend")]
@@ -23,6 +27,10 @@ public class EnumHelperTests
 
     [TestCase("innerHTML", HtmxSwap.InnerHtml)]
     [TestCase("outerHTML", HtmxSwap.OuterHtml)]
+    [TestCase("innerMorph", HtmxSwap.InnerMorph)]
+    [TestCase("outerMorph", HtmxSwap.OuterMorph)]
+    [TestCase("outerSync", HtmxSwap.OuterSync)]
+    [TestCase("textContent", HtmxSwap.TextContent)]
     [TestCase("beforebegin", HtmxSwap.BeforeBegin)]
     [TestCase("afterbegin", HtmxSwap.AfterBegin)]
     [TestCase("beforeend", HtmxSwap.BeforeEnd)]

@@ -12,7 +12,8 @@ namespace Ramstack.HtmxToolkit.TagHelpers;
     PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase,
     DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
     GenerationMode = JsonSourceGenerationMode.Default)]
-[JsonSerializable(typeof(HtmxRequestTagHelper.HtmxRequestData))]
+[JsonSerializable(typeof(HtmxRequestTagHelper.HtmxRequestDataLegacy))]
+[JsonSerializable(typeof(HtmxRequestTagHelper.HtmxRequestDataV4))]
 internal partial class HtmxRequestJsonSerializerContext : JsonSerializerContext
 {
     /// <summary>

@@ -9,7 +9,8 @@
   <htmx-config
     include-antiforgery-token="true"
     methods-that-use-url-params="[HttpVerb.Get, HttpVerb.Delete]"
-    default-swap-style="HtmxSwap.InnerHtml">
+    default-swap-style="HtmxSwap.InnerHtml"
+    no-swap="@(["204", "304", "4xx", "5xx"])">
     <response-handling code="204" swap="false"/>
     <response-handling code="422" swap="true"/>
     <response-handling code="[23].." swap="true"/>
