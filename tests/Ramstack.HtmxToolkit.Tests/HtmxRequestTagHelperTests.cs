@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Razor.TagHelpers;
+using Microsoft.Extensions.Options;
 
 namespace Ramstack.HtmxToolkit.Tests;
 
@@ -7,15 +8,15 @@ namespace Ramstack.HtmxToolkit.Tests;
 public class HtmxRequestTagHelperTests
 {
     [Test]
-    public async Task ProcessAsync_SerializesRequestConfiguration()
+    [TestCase(HtmxTargetVersion.V1)]
+    [TestCase(HtmxTargetVersion.V2)]
+    public async Task ProcessAsync_SerializesLegacyRequestConfiguration(HtmxTargetVersion version)
     {
         var output = TestHelper.CreateTagHelperOutput();
-        var helper = new HtmxRequestTagHelper
-        {
-            Timeout = 500,
-            Credentials = true,
-            NoHeaders = false
-        };
+        var helper = CreateHelper(version);
+        helper.Timeout = 500;
+        helper.Credentials = HtmxRequestCredentials.Include;
+        helper.NoHeaders = false;
 
         await helper.ProcessAsync(TestHelper.CreateTagHelperContext(), output);
         var attribute = output.Attributes["hx-request"];
@@ -30,13 +31,11 @@ public class HtmxRequestTagHelperTests
     }
 
     [Test]
-    public async Task ProcessAsync_OmitsUnsetProperties()
+    public async Task ProcessAsync_OmitsUnsetLegacyProperties()
     {
         var output = TestHelper.CreateTagHelperOutput();
-        var helper = new HtmxRequestTagHelper
-        {
-            Timeout = 500
-        };
+        var helper = CreateHelper(HtmxTargetVersion.V2);
+        helper.Timeout = 500;
 
         await helper.ProcessAsync(TestHelper.CreateTagHelperContext(), output);
         var attribute = output.Attributes["hx-request"];
@@ -51,13 +50,60 @@ public class HtmxRequestTagHelperTests
     }
 
     [Test]
+    public async Task ProcessAsync_SerializesHtmx4RequestConfiguration()
+    {
+        var output = TestHelper.CreateTagHelperOutput();
+        var helper = CreateHelper(HtmxTargetVersion.V4);
+        helper.Timeout = 500;
+        helper.Credentials = HtmxRequestCredentials.Omit;
+        helper.NoHeaders = true;
+        helper.Cache = "no-cache";
+        helper.Redirect = "manual";
+        helper.Referrer = "no-referrer";
+        helper.Integrity = "sha384-example";
+        helper.Validate = true;
+
+        await helper.ProcessAsync(TestHelper.CreateTagHelperContext(), output);
+        var attribute = output.Attributes["hx-config"];
+
+        Assert.That(attribute, Is.Not.Null);
+        Assert.That(attribute!.Value, Is.TypeOf<HtmlString>());
+
+        var json = JsonHelper.ParseJson(attribute.Value.ToString()!);
+        Assert.That(json["timeout"].GetInt32(), Is.EqualTo(500));
+        Assert.That(json["credentials"].GetString(), Is.EqualTo("omit"));
+        Assert.That(json["cache"].GetString(), Is.EqualTo("no-cache"));
+        Assert.That(json["redirect"].GetString(), Is.EqualTo("manual"));
+        Assert.That(json["referrer"].GetString(), Is.EqualTo("no-referrer"));
+        Assert.That(json["integrity"].GetString(), Is.EqualTo("sha384-example"));
+        Assert.That(json["validate"].GetBoolean(), Is.True);
+        Assert.That(json.ContainsKey("noHeaders"), Is.False);
+        Assert.That(output.Attributes["hx-request"], Is.Null);
+    }
+
+    [Test]
+    public async Task ProcessAsync_OmitsHtmx4OnlyCredentialsModeForLegacyVersions()
+    {
+        var output = TestHelper.CreateTagHelperOutput();
+        var helper = CreateHelper(HtmxTargetVersion.V2);
+        helper.Timeout = 500;
+        helper.Credentials = HtmxRequestCredentials.Omit;
+
+        await helper.ProcessAsync(TestHelper.CreateTagHelperContext(), output);
+        var attribute = output.Attributes["hx-request"];
+
+        Assert.That(attribute, Is.Not.Null);
+
+        var json = JsonHelper.ParseJson(attribute!.Value.ToString()!);
+        Assert.That(json.ContainsKey("credentials"), Is.False);
+    }
+
+    [Test]
     public async Task ProcessAsync_UsesSingleQuotesForJsonAttribute()
     {
         var output = TestHelper.CreateTagHelperOutput();
-        var helper = new HtmxRequestTagHelper
-        {
-            Timeout = 500
-        };
+        var helper = CreateHelper(HtmxTargetVersion.V2);
+        helper.Timeout = 500;
 
         await helper.ProcessAsync(TestHelper.CreateTagHelperContext(), output);
 
@@ -68,10 +114,13 @@ public class HtmxRequestTagHelperTests
     public async Task ProcessAsync_OmitsUnsetConfiguration()
     {
         var output = TestHelper.CreateTagHelperOutput();
-        var helper = new HtmxRequestTagHelper();
+        var helper = CreateHelper(HtmxTargetVersion.V2);
 
         await helper.ProcessAsync(TestHelper.CreateTagHelperContext(), output);
 
         Assert.That(output.Attributes["hx-request"], Is.Null);
     }
+
+    private static HtmxRequestTagHelper CreateHelper(HtmxTargetVersion version) =>
+        new(Options.Create(new HtmxToolkitOptions { TargetVersion = version }));
 }
