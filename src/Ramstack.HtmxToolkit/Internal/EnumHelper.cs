@@ -58,6 +58,10 @@ internal static class EnumHelper
         {
             HtmxSwap.InnerHtml => "innerHTML",
             HtmxSwap.OuterHtml => "outerHTML",
+            HtmxSwap.InnerMorph => "innerMorph",
+            HtmxSwap.OuterMorph => "outerMorph",
+            HtmxSwap.OuterSync => "outerSync",
+            HtmxSwap.TextContent => "textContent",
             HtmxSwap.BeforeBegin => "beforebegin",
             HtmxSwap.AfterBegin => "afterbegin",
             HtmxSwap.BeforeEnd => "beforeend",
@@ -87,6 +91,42 @@ internal static class EnumHelper
             HttpVerb.Options => "options",
             HttpVerb.Trace => "trace",
             _ => "patch"
+        };
+    }
+
+    /// <summary>
+    /// Converts a <see cref="HtmxFetchMode"/> value to its corresponding Fetch API request mode string.
+    /// </summary>
+    /// <param name="value">The <see cref="HtmxFetchMode"/> value.</param>
+    /// <returns>
+    /// The string representation: "same-origin", "cors" or "no-cors".
+    /// </returns>
+    public static string GetFetchModeValue(this HtmxFetchMode value)
+    {
+        return value switch
+        {
+            HtmxFetchMode.SameOrigin => "same-origin",
+            HtmxFetchMode.Cors => "cors",
+            _ => "no-cors"
+        };
+    }
+
+    /// <summary>
+    /// Parses a string into a <see cref="HtmxFetchMode"/> value.
+    /// </summary>
+    /// <param name="expression">The string to parse.</param>
+    /// <returns>
+    /// The parsed <see cref="HtmxFetchMode"/> value if successful;
+    /// otherwise, <see langword="null" />.
+    /// </returns>
+    public static HtmxFetchMode? ParseHtmxFetchMode(string? expression)
+    {
+        return expression switch
+        {
+            "same-origin" => HtmxFetchMode.SameOrigin,
+            "cors" => HtmxFetchMode.Cors,
+            "no-cors" => HtmxFetchMode.NoCors,
+            _ => null
         };
     }
 
