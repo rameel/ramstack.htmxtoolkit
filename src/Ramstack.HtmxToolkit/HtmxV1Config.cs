@@ -3,9 +3,9 @@ using System.Text.Json.Serialization;
 namespace Ramstack.HtmxToolkit;
 
 /// <summary>
-/// Represents configuration options for HTMX 1.x.
+/// Represents the configuration for HTMX 1.x.
 /// </summary>
-public sealed class HtmxV1Options() : HtmxOptions(HtmxTargetVersion.V1)
+public sealed class HtmxV1Config() : HtmxConfig(HtmxTargetVersion.V1)
 {
     /// <summary>
     /// Gets or sets a value indicating whether HTMX history support is enabled.

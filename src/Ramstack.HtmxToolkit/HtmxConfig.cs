@@ -5,7 +5,7 @@ namespace Ramstack.HtmxToolkit;
 /// <summary>
 /// Represents configuration for a specific major version of HTMX.
 /// </summary>
-public abstract class HtmxOptions
+public abstract class HtmxConfig
 {
     /// <summary>
     /// Gets the configured HTMX major version.
@@ -14,9 +14,9 @@ public abstract class HtmxOptions
     public HtmxTargetVersion TargetVersion { get; }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="HtmxOptions"/> class with the specified target HTMX version.
+    /// Initializes a new instance of the <see cref="HtmxConfig"/> class with the specified target HTMX version.
     /// </summary>
     /// <param name="version">The target major version of HTMX that this configuration applies to.</param>
-    internal HtmxOptions(HtmxTargetVersion version) =>
+    internal HtmxConfig(HtmxTargetVersion version) =>
         TargetVersion = version;
 }

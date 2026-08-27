@@ -40,11 +40,11 @@ public sealed class HtmxConfigTagHelper(IAntiforgery antiforgery, IOptions<HtmxT
         output.TagMode = TagMode.SelfClosing;
         output.Attributes.SetAttribute("name", "htmx-config");
 
-        var json = options.Value.Htmx switch
+        var json = options.Value.HtmxConfig switch
         {
-            HtmxV1Options value => JsonSerializer.Serialize(value, HtmxConfigJsonSerializerContext.Default.HtmxV1Options),
-            HtmxV2Options value => JsonSerializer.Serialize(value, HtmxConfigJsonSerializerContext.Default.HtmxV2Options),
-            var value => JsonSerializer.Serialize((HtmxV4Options)value, HtmxConfigJsonSerializerContext.Default.HtmxV4Options),
+            HtmxV1Config value => JsonSerializer.Serialize(value, HtmxConfigJsonSerializerContext.Default.HtmxV1Config),
+            HtmxV2Config value => JsonSerializer.Serialize(value, HtmxConfigJsonSerializerContext.Default.HtmxV2Config),
+            var value => JsonSerializer.Serialize((HtmxV4Config)value, HtmxConfigJsonSerializerContext.Default.HtmxV4Config)
         };
 
         output.Attributes.SetAttribute(

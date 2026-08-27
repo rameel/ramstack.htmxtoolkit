@@ -16,57 +16,57 @@ public class HtmxToolkitOptionsTests
         Assert.Multiple(() =>
         {
             Assert.That(options.TargetVersion, Is.EqualTo(HtmxTargetVersion.V2));
-            Assert.That(options.Htmx, Is.TypeOf<HtmxV2Options>());
+            Assert.That(options.HtmxConfig, Is.TypeOf<HtmxV2Config>());
         });
     }
 
     [Test]
-    public void UseHtmxV1_StoresInspectableOptions()
+    public void UseHtmxV1_StoresInspectableConfig()
     {
         var options = new HtmxToolkitOptions();
 
-        options.UseHtmxV1(htmx => htmx.Timeout = 2500);
+        options.UseHtmxV1(config => config.Timeout = 2500);
 
-        var htmx = options.GetHtmxOptions<HtmxV1Options>();
+        var config = options.GetHtmxConfig<HtmxV1Config>();
         Assert.Multiple(() =>
         {
             Assert.That(options.TargetVersion, Is.EqualTo(HtmxTargetVersion.V1));
-            Assert.That(options.Htmx, Is.SameAs(htmx));
-            Assert.That(htmx.Timeout, Is.EqualTo(2500));
+            Assert.That(options.HtmxConfig, Is.SameAs(config));
+            Assert.That(config.Timeout, Is.EqualTo(2500));
         });
     }
 
     [Test]
-    public void UseHtmxV4_StoresInspectableOptions()
+    public void UseHtmxV4_StoresInspectableConfig()
     {
         var options = new HtmxToolkitOptions();
 
-        options.UseHtmxV4(htmx => htmx.DefaultTimeout = 5000);
+        options.UseHtmxV4(config => config.DefaultTimeout = 5000);
 
-        var htmx = options.GetHtmxOptions<HtmxV4Options>();
+        var config = options.GetHtmxConfig<HtmxV4Config>();
         Assert.Multiple(() =>
         {
             Assert.That(options.TargetVersion, Is.EqualTo(HtmxTargetVersion.V4));
-            Assert.That(options.Htmx, Is.SameAs(htmx));
-            Assert.That(htmx.DefaultTimeout, Is.EqualTo(5000));
+            Assert.That(options.HtmxConfig, Is.SameAs(config));
+            Assert.That(config.DefaultTimeout, Is.EqualTo(5000));
         });
     }
 
     [Test]
-    public void UseHtmxV2_RepeatedCallsComposeOnSameOptions()
+    public void UseHtmxV2_RepeatedCallsComposeOnSameConfig()
     {
         var options = new HtmxToolkitOptions();
 
-        options.UseHtmxV2(htmx => htmx.Timeout = 1000);
-        var first = options.Htmx;
-        options.UseHtmxV2(htmx => htmx.DefaultSettleDelay = 20);
+        options.UseHtmxV2(config => config.Timeout = 1000);
+        var first = options.HtmxConfig;
+        options.UseHtmxV2(config => config.DefaultSettleDelay = 20);
 
-        var htmx = options.GetHtmxOptions<HtmxV2Options>();
+        var config = options.GetHtmxConfig<HtmxV2Config>();
         Assert.Multiple(() =>
         {
-            Assert.That(htmx, Is.SameAs(first));
-            Assert.That(htmx.Timeout, Is.EqualTo(1000));
-            Assert.That(htmx.DefaultSettleDelay, Is.EqualTo(20));
+            Assert.That(config, Is.SameAs(first));
+            Assert.That(config.Timeout, Is.EqualTo(1000));
+            Assert.That(config.DefaultSettleDelay, Is.EqualTo(20));
         });
     }
 
@@ -83,15 +83,15 @@ public class HtmxToolkitOptionsTests
     }
 
     [Test]
-    public void GetHtmxOptions_ForDifferentVersion_Throws()
+    public void GetHtmxConfig_ForDifferentVersion_Throws()
     {
         var options = new HtmxToolkitOptions();
         options.UseHtmxV4();
 
         Assert.That(
-            () => options.GetHtmxOptions<HtmxV2Options>(),
+            () => options.GetHtmxConfig<HtmxV2Config>(),
             Throws.TypeOf<InvalidOperationException>()
-                  .With.Message.EqualTo("HTMX configuration version 'V4' does not match the requested options type.")
+                  .With.Message.EqualTo("HTMX configuration version 'V4' does not match the requested configuration type.")
         );
     }
 
@@ -99,13 +99,13 @@ public class HtmxToolkitOptionsTests
     public void UseHtmxV4_AfterReadingDefault_ThrowsInvalidOperationException()
     {
         var options = new HtmxToolkitOptions();
-        var defaultHtmxOptions = options.Htmx;
+        var defaultHtmxConfig = options.HtmxConfig;
 
         Assert.Multiple(() =>
         {
-            Assert.That(defaultHtmxOptions, Is.TypeOf<HtmxV2Options>());
+            Assert.That(defaultHtmxConfig, Is.TypeOf<HtmxV2Config>());
             Assert.That(
-                () => options.UseHtmxV4(htmx => htmx.DefaultTimeout = 5000),
+                () => options.UseHtmxV4(config => config.DefaultTimeout = 5000),
                 Throws.TypeOf<InvalidOperationException>()
                       .With.Message.EqualTo("HTMX has already been configured for version V2. Cannot reconfigure to V4.")
             );
@@ -120,17 +120,17 @@ public class HtmxToolkitOptionsTests
         services.AddHtmxToolkit(options =>
         {
             options.IncludeAntiforgeryToken = true;
-            options.UseHtmxV4(htmx => htmx.DefaultTimeout = 5000);
+            options.UseHtmxV4(config => config.DefaultTimeout = 5000);
         });
 
         using var provider = services.BuildServiceProvider();
         var options = provider.GetRequiredService<IOptions<HtmxToolkitOptions>>().Value;
-        var htmx = options.GetHtmxOptions<HtmxV4Options>();
+        var config = options.GetHtmxConfig<HtmxV4Config>();
 
         Assert.Multiple(() =>
         {
             Assert.That(options.IncludeAntiforgeryToken, Is.True);
-            Assert.That(htmx.DefaultTimeout, Is.EqualTo(5000));
+            Assert.That(config.DefaultTimeout, Is.EqualTo(5000));
         });
     }
 
@@ -146,7 +146,7 @@ public class HtmxToolkitOptionsTests
         Assert.Multiple(() =>
         {
             Assert.That(options.TargetVersion, Is.EqualTo(HtmxTargetVersion.V2));
-            Assert.That(options.Htmx, Is.TypeOf<HtmxV2Options>());
+            Assert.That(options.HtmxConfig, Is.TypeOf<HtmxV2Config>());
             Assert.That(options.IncludeAntiforgeryToken, Is.False);
         });
     }

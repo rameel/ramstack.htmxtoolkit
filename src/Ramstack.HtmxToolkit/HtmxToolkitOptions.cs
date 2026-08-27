@@ -8,7 +8,7 @@ namespace Ramstack.HtmxToolkit;
 /// </summary>
 public sealed class HtmxToolkitOptions
 {
-    private HtmxOptions? _options;
+    private HtmxConfig? _config;
 
     /// <summary>
     /// Gets the configuration for the selected HTMX major version.
@@ -16,14 +16,14 @@ public sealed class HtmxToolkitOptions
     /// <remarks>
     /// If no version has been explicitly configured, this property defaults to HTMX 2.x.
     /// </remarks>
-    public HtmxOptions Htmx
+    public HtmxConfig HtmxConfig
     {
         get
         {
-            if (_options is null)
+            if (_config is null)
                 UseHtmxV2();
 
-            return _options;
+            return _config;
         }
     }
 
@@ -35,7 +35,7 @@ public sealed class HtmxToolkitOptions
     /// <summary>
     /// Gets the HTMX major version used for version-sensitive generated markup.
     /// </summary>
-    public HtmxTargetVersion TargetVersion => Htmx.TargetVersion;
+    public HtmxTargetVersion TargetVersion => HtmxConfig.TargetVersion;
 
     /// <summary>
     /// Selects and configures HTMX 1.x.
@@ -44,11 +44,11 @@ public sealed class HtmxToolkitOptions
     /// <returns>
     /// The current options instance.
     /// </returns>
-    [MemberNotNull(nameof(_options))]
-    public HtmxToolkitOptions UseHtmxV1(Action<HtmxV1Options>? configure = null)
+    [MemberNotNull(nameof(_config))]
+    public HtmxToolkitOptions UseHtmxV1(Action<HtmxV1Config>? configure = null)
     {
-        var options = SelectVersion(HtmxTargetVersion.V1, static () => new HtmxV1Options());
-        configure?.Invoke(options);
+        var config = SelectVersion(HtmxTargetVersion.V1, static () => new HtmxV1Config());
+        configure?.Invoke(config);
         return this;
     }
 
@@ -59,11 +59,11 @@ public sealed class HtmxToolkitOptions
     /// <returns>
     /// The current options instance.
     /// </returns>
-    [MemberNotNull(nameof(_options))]
-    public HtmxToolkitOptions UseHtmxV2(Action<HtmxV2Options>? configure = null)
+    [MemberNotNull(nameof(_config))]
+    public HtmxToolkitOptions UseHtmxV2(Action<HtmxV2Config>? configure = null)
     {
-        var options = SelectVersion(HtmxTargetVersion.V2, static () => new HtmxV2Options());
-        configure?.Invoke(options);
+        var config = SelectVersion(HtmxTargetVersion.V2, static () => new HtmxV2Config());
+        configure?.Invoke(config);
         return this;
     }
 
@@ -74,54 +74,54 @@ public sealed class HtmxToolkitOptions
     /// <returns>
     /// The current options instance.
     /// </returns>
-    [MemberNotNull(nameof(_options))]
-    public HtmxToolkitOptions UseHtmxV4(Action<HtmxV4Options>? configure = null)
+    [MemberNotNull(nameof(_config))]
+    public HtmxToolkitOptions UseHtmxV4(Action<HtmxV4Config>? configure = null)
     {
-        var options = SelectVersion(HtmxTargetVersion.V4, static () => new HtmxV4Options());
-        configure?.Invoke(options);
+        var config = SelectVersion(HtmxTargetVersion.V4, static () => new HtmxV4Config());
+        configure?.Invoke(config);
         return this;
     }
 
     /// <summary>
     /// Returns the selected version-specific HTMX configuration,
-    /// and throws an exception if the requested options type does not match the configured HTMX target version.
+    /// and throws an exception if the requested configuration type does not match the configured HTMX target version.
     /// </summary>
-    /// <typeparam name="TOptions">The expected configuration type.</typeparam>
+    /// <typeparam name="TConfig">The expected configuration type.</typeparam>
     /// <returns>
     /// The requested configuration instance.
     /// </returns>
-    public TOptions GetHtmxOptions<TOptions>() where TOptions : HtmxOptions
+    public TConfig GetHtmxConfig<TConfig>() where TConfig : HtmxConfig
     {
-        if (Htmx is TOptions options)
-            return options;
+        if (HtmxConfig is TConfig config)
+            return config;
 
-        Error_OptionsTypeMismatch(TargetVersion);
+        Error_ConfigTypeMismatch(TargetVersion);
         return null;
     }
 
     /// <summary>
     /// Selects an HTMX major version and registers its configuration instance.
     /// </summary>
-    /// <typeparam name="TOptions">The version-specific configuration type.</typeparam>
+    /// <typeparam name="TConfig">The version-specific configuration type.</typeparam>
     /// <param name="version">The HTMX major version to select.</param>
     /// <param name="factory">The factory used to create the configuration instance.</param>
     /// <returns>
     /// The configuration instance for the selected version.
     /// </returns>
-    [MemberNotNull(nameof(_options))]
-    private TOptions SelectVersion<TOptions>(HtmxTargetVersion version, Func<TOptions> factory) where TOptions : HtmxOptions
+    [MemberNotNull(nameof(_config))]
+    private TConfig SelectVersion<TConfig>(HtmxTargetVersion version, Func<TConfig> factory) where TConfig : HtmxConfig
     {
         EnsureCanSelectVersion(version);
 
-        _options ??= factory();
+        _config ??= factory();
 
-        Debug.Assert(_options.TargetVersion == version);
+        Debug.Assert(_config.TargetVersion == version);
         Debug.Assert(
-            version == HtmxTargetVersion.V1 && _options is HtmxV1Options
-            || version == HtmxTargetVersion.V2 && _options is HtmxV2Options
-            || version == HtmxTargetVersion.V4 && _options is HtmxV4Options);
+            version == HtmxTargetVersion.V1 && _config is HtmxV1Config
+            || version == HtmxTargetVersion.V2 && _config is HtmxV2Config
+            || version == HtmxTargetVersion.V4 && _config is HtmxV4Config);
 
-        return (TOptions)_options;
+        return (TConfig)_config;
     }
 
     /// <summary>
@@ -130,20 +130,20 @@ public sealed class HtmxToolkitOptions
     /// <param name="version">The HTMX target version to validate.</param>
     private void EnsureCanSelectVersion(HtmxTargetVersion version)
     {
-        if (_options is { TargetVersion: var current })
+        if (_config is { TargetVersion: var current })
             if (current != version)
                 Error_ReconfigureTargetVersion(current, version);
     }
 
     /// <summary>
-    /// Throws an <see cref="InvalidOperationException"/> when the requested HTMX options type
+    /// Throws an <see cref="InvalidOperationException"/> when the requested HTMX configuration type
     /// does not match the configured target version.
     /// </summary>
     /// <param name="version">The current HTMX target version.</param>
     /// <exception cref="InvalidOperationException">Always thrown.</exception>
     [DoesNotReturn]
-    private static void Error_OptionsTypeMismatch(HtmxTargetVersion version) =>
-        throw new InvalidOperationException($"HTMX configuration version '{version}' does not match the requested options type.");
+    private static void Error_ConfigTypeMismatch(HtmxTargetVersion version) =>
+        throw new InvalidOperationException($"HTMX configuration version '{version}' does not match the requested configuration type.");
 
     /// <summary>
     /// Throws an <see cref="InvalidOperationException"/> when attempting to reconfigure the HTMX target version.

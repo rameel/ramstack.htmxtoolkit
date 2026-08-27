@@ -5,9 +5,9 @@ using Ramstack.HtmxToolkit.TagHelpers;
 namespace Ramstack.HtmxToolkit;
 
 /// <summary>
-/// Represents configuration options for HTMX 2.x.
+/// Represents the configuration for HTMX 2.x.
 /// </summary>
-public sealed class HtmxV2Options() : HtmxOptions(HtmxTargetVersion.V2)
+public sealed class HtmxV2Config() : HtmxConfig(HtmxTargetVersion.V2)
 {
     /// <summary>
     /// Gets or sets a value indicating whether HTMX history support is enabled.

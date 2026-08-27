@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 using Ramstack.HtmxToolkit.Internal;
 
-namespace Ramstack.HtmxToolkit.TagHelpers;
+namespace Ramstack.HtmxToolkit;
 
 /// <summary>
 /// Represents source-generated JSON serialization metadata for HTMX configuration data.
@@ -12,9 +12,9 @@ namespace Ramstack.HtmxToolkit.TagHelpers;
     PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase,
     DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
     GenerationMode = JsonSourceGenerationMode.Default)]
-[JsonSerializable(typeof(HtmxV1Options))]
-[JsonSerializable(typeof(HtmxV2Options))]
-[JsonSerializable(typeof(HtmxV4Options))]
+[JsonSerializable(typeof(HtmxV1Config))]
+[JsonSerializable(typeof(HtmxV2Config))]
+[JsonSerializable(typeof(HtmxV4Config))]
 internal partial class HtmxConfigJsonSerializerContext : JsonSerializerContext
 {
     /// <summary>

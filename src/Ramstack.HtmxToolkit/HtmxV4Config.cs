@@ -3,9 +3,9 @@ using System.Text.Json.Serialization;
 namespace Ramstack.HtmxToolkit;
 
 /// <summary>
-/// Represents configuration options for HTMX 4.x.
+/// Represents the configuration for HTMX 4.x.
 /// </summary>
-public sealed class HtmxV4Options() : HtmxOptions(HtmxTargetVersion.V4)
+public sealed class HtmxV4Config() : HtmxConfig(HtmxTargetVersion.V4)
 {
     /// <summary>
     /// Gets or sets a value indicating whether all HTMX events are logged to the console.

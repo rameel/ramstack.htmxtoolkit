@@ -39,11 +39,11 @@ Register the toolkit and select the HTMX version used by the application:
 builder.Services.AddHtmxToolkit(options =>
 {
     options.IncludeAntiforgeryToken = true;
-    options.UseHtmxV2(htmx =>
+    options.UseHtmxV2(config =>
     {
-        htmx.DefaultSwapStyle = HtmxSwap.OuterHtml;
-        htmx.Timeout = 5000;
-        htmx.GlobalViewTransitions = true;
+        config.DefaultSwapStyle = HtmxSwap.OuterHtml;
+        config.Timeout = 5000;
+        config.GlobalViewTransitions = true;
     });
 });
 ```
@@ -661,11 +661,11 @@ The version-specific callback exposes only settings supported by the selected HT
 builder.Services.AddHtmxToolkit(options =>
 {
     options.IncludeAntiforgeryToken = true;
-    options.UseHtmxV2(htmx =>
+    options.UseHtmxV2(config =>
     {
-        htmx.DefaultSwapStyle = HtmxSwap.OuterHtml;
-        htmx.Timeout = 5000;
-        htmx.GlobalViewTransitions = true;
+        config.DefaultSwapStyle = HtmxSwap.OuterHtml;
+        config.Timeout = 5000;
+        config.GlobalViewTransitions = true;
     });
 });
 ```
@@ -697,7 +697,7 @@ The marker can also be written as a `meta` element:
 ```
 
 HTMX 2.x is selected by default. Use `UseHtmxV1`, `UseHtmxV2`, or `UseHtmxV4` to select a
-version explicitly. Each option type follows the names used by that HTMX version, so HTMX 1.9.x
+version explicitly. Each configuration type follows the names used by that HTMX version, so HTMX 1.9.x
 and 2.x expose `DefaultSwapStyle` and `Timeout`, while HTMX 4.x exposes `DefaultSwap` and
 `DefaultTimeout`. Selecting different versions in the same configuration throws an exception.
 
@@ -707,12 +707,12 @@ settings:
 ```csharp
 builder.Services.AddHtmxToolkit(options =>
 {
-    options.UseHtmxV4(htmx =>
+    options.UseHtmxV4(config =>
     {
-        htmx.DefaultSwap = HtmxSwap.OuterHtml;
-        htmx.DefaultTimeout = 5000;
-        htmx.Transitions = true;
-        htmx.NoSwap = ["204", "304", "4xx", "5xx"];
+        config.DefaultSwap = HtmxSwap.OuterHtml;
+        config.DefaultTimeout = 5000;
+        config.Transitions = true;
+        config.NoSwap = ["204", "304", "4xx", "5xx"];
     });
 });
 ```
@@ -722,8 +722,8 @@ The configured values remain available through dependency injection:
 ```csharp
 public sealed class ConfigurationInspector(IOptions<HtmxToolkitOptions> options)
 {
-    public HtmxV2Options Htmx =>
-        options.Value.GetHtmxOptions<HtmxV2Options>();
+    public HtmxV2Config HtmxConfig =>
+        options.Value.GetHtmxConfig<HtmxV2Config>();
 }
 ```
 
@@ -731,14 +731,14 @@ public sealed class ConfigurationInspector(IOptions<HtmxToolkitOptions> options)
 
 HTMX 2.x introduces the [`responseHandling`](https://htmx.org/docs/#response-handling) configuration option,
 allowing you to define how htmx should handle responses based on HTTP status codes. Rules are
-configured in order through `HtmxV2Options`:
+configured in order through `HtmxV2Config`:
 
 ```csharp
 builder.Services.AddHtmxToolkit(options =>
 {
-    options.UseHtmxV2(htmx =>
+    options.UseHtmxV2(config =>
     {
-        htmx.ResponseHandling =
+        config.ResponseHandling =
         [
             new() { Code = "204", Swap = false },
             new() { Code = "[23]..", Swap = true },
