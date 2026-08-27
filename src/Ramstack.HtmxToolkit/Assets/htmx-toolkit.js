@@ -3,13 +3,24 @@ document._r_htmx ||= ((document, htmx) => {
         document.addEventListener(type, listener);
     };
 
+    const read_antiforgery = doc => {
+        let data = doc.querySelector("meta[name='htmx-config']")?.dataset || {};
+        return {
+            headerName: data.antiforgeryHeaderName,
+            formFieldName: data.antiforgeryFormFieldName,
+            requestToken: data.antiforgeryRequestToken
+        };
+    };
+
+    let antiforgery = read_antiforgery(document);
+
     const add_antiforgery = (method, headers, parameters) => {
         if (!/^get$/i.test(method)) {
             const {
                 headerName,
                 formFieldName,
                 requestToken
-            } = htmx.config.antiForgery ?? {};
+            } = antiforgery;
 
             if (requestToken) {
                 if (!parameters.has?.(formFieldName) && !parameters[formFieldName])
@@ -29,9 +40,9 @@ document._r_htmx ||= ((document, htmx) => {
     };
 
     const update_antiforgery = content => {
-        let html = new DOMParser().parseFromString(content || "", "text/html");
-        let meta = html.querySelector("meta[name='htmx-config']");
-        meta && (htmx.config.antiForgery = JSON.parse(meta.content).antiForgery);
+        let doc = new DOMParser().parseFromString(content || "", "text/html");
+        let val = read_antiforgery(doc);
+        val && (antiforgery = val);
     };
 
     listen("htmx:afterOnLoad", e => {
