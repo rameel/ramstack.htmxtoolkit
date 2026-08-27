@@ -35,9 +35,10 @@ public static class EndpointRouteBuilderExtensions
     /// </returns>
     public static IEndpointConventionBuilder MapHtmxToolkitScript(this IEndpointRouteBuilder builder, string path)
     {
-        if (path.Length == 0)
+        if (string.IsNullOrEmpty(path))
             throw new ArgumentException(
-                "The 'path' parameter cannot be null or empty.", nameof(path));
+                $"The '{nameof(path)}' parameter cannot be null or empty.",
+                nameof(path));
 
         if (AssetPath != path)
         {
@@ -49,10 +50,10 @@ public static class EndpointRouteBuilderExtensions
             HtmlHelperExtensions.DebugPath = new HtmlString(path + "?debug");
         }
 
-        return builder.MapGet(path, context =>
+        return builder.MapGet(path, static context =>
         {
             context.Response.ContentType = "text/javascript";
-            context.Response.Headers["Cache-Control"] = "public,max-age=31536000";
+            context.Response.Headers.CacheControl = "public,max-age=31536000";
 
             return context.Response.WriteAsync(
                 context.Request.QueryString.Value == "?debug"
