@@ -5,14 +5,16 @@ using Ramstack.HtmxToolkit.Internal;
 namespace Ramstack.HtmxToolkit.TagHelpers;
 
 /// <summary>
-/// Provides source-generated JSON serialization metadata for HTMX configuration data.
+/// Represents source-generated JSON serialization metadata for HTMX configuration data.
 /// </summary>
 [JsonSourceGenerationOptions(
     WriteIndented = false,
     PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase,
     DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
     GenerationMode = JsonSourceGenerationMode.Default)]
-[JsonSerializable(typeof(HtmxConfigTagHelper.HtmxConfigData))]
+[JsonSerializable(typeof(HtmxV1Options))]
+[JsonSerializable(typeof(HtmxV2Options))]
+[JsonSerializable(typeof(HtmxV4Options))]
 internal partial class HtmxConfigJsonSerializerContext : JsonSerializerContext
 {
     /// <summary>

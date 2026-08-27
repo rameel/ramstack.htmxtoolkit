@@ -31,6 +31,40 @@ public class HtmxRequestTagHelperTests
     }
 
     [Test]
+    [TestCase(HtmxTargetVersion.V1)]
+    [TestCase(HtmxTargetVersion.V2)]
+    public async Task ProcessAsync_SerializesSameOriginCredentialsAsFalse(HtmxTargetVersion version)
+    {
+        var output = TestHelper.CreateTagHelperOutput();
+        var helper = CreateHelper(version);
+        helper.Credentials = HtmxRequestCredentials.SameOrigin;
+
+        await helper.ProcessAsync(TestHelper.CreateTagHelperContext(), output);
+        var attribute = output.Attributes["hx-request"];
+
+        Assert.That(attribute, Is.Not.Null);
+
+        var json = JsonHelper.ParseJson(attribute!.Value.ToString()!);
+        Assert.That(json["credentials"].GetBoolean(), Is.False);
+    }
+
+    [Test]
+    public async Task ProcessAsync_SerializesNoHeadersWhenTrue()
+    {
+        var output = TestHelper.CreateTagHelperOutput();
+        var helper = CreateHelper(HtmxTargetVersion.V2);
+        helper.NoHeaders = true;
+
+        await helper.ProcessAsync(TestHelper.CreateTagHelperContext(), output);
+        var attribute = output.Attributes["hx-request"];
+
+        Assert.That(attribute, Is.Not.Null);
+
+        var json = JsonHelper.ParseJson(attribute!.Value.ToString()!);
+        Assert.That(json["noHeaders"].GetBoolean(), Is.True);
+    }
+
+    [Test]
     public async Task ProcessAsync_OmitsUnsetLegacyProperties()
     {
         var output = TestHelper.CreateTagHelperOutput();
@@ -82,6 +116,25 @@ public class HtmxRequestTagHelperTests
     }
 
     [Test]
+    [TestCase(HtmxRequestCredentials.SameOrigin, "same-origin")]
+    [TestCase(HtmxRequestCredentials.Include, "include")]
+    [TestCase(HtmxRequestCredentials.Omit, "omit")]
+    public async Task ProcessAsync_SerializesHtmx4CredentialsMode(HtmxRequestCredentials credentials, string expected)
+    {
+        var output = TestHelper.CreateTagHelperOutput();
+        var helper = CreateHelper(HtmxTargetVersion.V4);
+        helper.Credentials = credentials;
+
+        await helper.ProcessAsync(TestHelper.CreateTagHelperContext(), output);
+        var attribute = output.Attributes["hx-config"];
+
+        Assert.That(attribute, Is.Not.Null);
+
+        var json = JsonHelper.ParseJson(attribute!.Value.ToString()!);
+        Assert.That(json["credentials"].GetString(), Is.EqualTo(expected));
+    }
+
+    [Test]
     public async Task ProcessAsync_OmitsHtmx4OnlyCredentialsModeForLegacyVersions()
     {
         var output = TestHelper.CreateTagHelperOutput();
@@ -121,6 +174,25 @@ public class HtmxRequestTagHelperTests
         Assert.That(output.Attributes["hx-request"], Is.Null);
     }
 
-    private static HtmxRequestTagHelper CreateHelper(HtmxTargetVersion version) =>
-        new(Options.Create(new HtmxToolkitOptions { TargetVersion = version }));
+    private static HtmxRequestTagHelper CreateHelper(HtmxTargetVersion version)
+    {
+        var options = new HtmxToolkitOptions();
+
+        switch (version)
+        {
+            case HtmxTargetVersion.V1:
+                options.UseHtmxV1();
+                break;
+            case HtmxTargetVersion.V2:
+                options.UseHtmxV2();
+                break;
+            case HtmxTargetVersion.V4:
+                options.UseHtmxV4();
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(version));
+        }
+
+        return new HtmxRequestTagHelper(Options.Create(options));
+    }
 }

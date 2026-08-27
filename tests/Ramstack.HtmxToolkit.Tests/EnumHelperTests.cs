@@ -79,6 +79,12 @@ public class EnumHelperTests
     public void GetScrollBehaviorValue_ReturnsExpectedString(HtmxScrollBehavior value, string expected) =>
         Assert.That(value.GetScrollBehaviorValue(), Is.EqualTo(expected));
 
+    [TestCase(HtmxFetchMode.SameOrigin, "same-origin")]
+    [TestCase(HtmxFetchMode.Cors, "cors")]
+    [TestCase(HtmxFetchMode.NoCors, "no-cors")]
+    public void GetFetchModeValue_ReturnsExpectedString(HtmxFetchMode value, string expected) =>
+        Assert.That(value.GetFetchModeValue(), Is.EqualTo(expected));
+
     [Test]
     public void GetSwapValue_ReturnsNone_ForUndefinedValue() =>
         Assert.That(((HtmxSwap)999).GetSwapValue(), Is.EqualTo("none"));
@@ -94,4 +100,8 @@ public class EnumHelperTests
     [Test]
     public void GetWsBinaryTypeValue_ReturnsArrayBuffer_ForUndefinedValue() =>
         Assert.That(((HtmxBinaryType)999).GetWsBinaryTypeValue(), Is.EqualTo("arraybuffer"));
+
+    [Test]
+    public void GetFetchModeValue_ReturnsNoCors_ForUndefinedValue() =>
+        Assert.That(((HtmxFetchMode)999).GetFetchModeValue(), Is.EqualTo("no-cors"));
 }

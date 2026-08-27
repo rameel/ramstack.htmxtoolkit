@@ -10,7 +10,8 @@ namespace Ramstack.HtmxToolkit.TagHelpers;
 /// Represents a <see cref="TagHelper"/> implementation that applies request configuration to matching elements.
 /// </summary>
 /// <remarks>
-/// HTMX 1.x and 2.x use merge-inherited <c>hx-request</c>; HTMX 4.x uses <c>hx-config</c>.
+/// <para>HTMX 1.x and 2.x use merge-inherited <c>hx-request</c></para>
+/// <para>HTMX 4.x uses <c>hx-config</c></para>
 /// </remarks>
 [HtmlTargetElement(Attributes = RequestTimeoutAttributeName)]
 [HtmlTargetElement(Attributes = RequestCredentialsAttributeName)]
