@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Razor.TagHelpers;
+using Microsoft.Extensions.Options;
 
 namespace Ramstack.HtmxToolkit.Tests;
 
@@ -13,13 +14,16 @@ public class HtmxConfigTagHelperTests
     public async Task ProcessAsync_RendersMetaTag()
     {
         var output = TestHelper.CreateTagHelperOutput();
-        var helper = new HtmxConfigTagHelper(new StubAntiforgery());
+        var helper = CreateHelper(new HtmxToolkitOptions());
 
         await helper.ProcessAsync(TestHelper.CreateTagHelperContext(), output);
 
-        Assert.That(output.TagName, Is.EqualTo("meta"));
-        Assert.That(output.TagMode, Is.EqualTo(TagMode.SelfClosing));
-        Assert.That(output.Attributes["name"]!.Value, Is.EqualTo("htmx-config"));
+        Assert.Multiple(() =>
+        {
+            Assert.That(output.TagName, Is.EqualTo("meta"));
+            Assert.That(output.TagMode, Is.EqualTo(TagMode.SelfClosing));
+            Assert.That(output.Attributes["name"]!.Value, Is.EqualTo("htmx-config"));
+        });
     }
 
     [Test]
@@ -31,7 +35,7 @@ public class HtmxConfigTagHelperTests
         };
 
         var output = TestHelper.CreateTagHelperOutput("meta", attributes);
-        var helper = new HtmxConfigTagHelper(new StubAntiforgery());
+        var helper = CreateHelper(new HtmxToolkitOptions());
 
         await helper.ProcessAsync(TestHelper.CreateTagHelperContext("meta", attributes), output);
 
@@ -39,10 +43,10 @@ public class HtmxConfigTagHelperTests
     }
 
     [Test]
-    public async Task ProcessAsync_WithDefaults_SerializesEmptyObject()
+    public async Task ProcessAsync_WithDefaults_SerializesEmptyHtmx2Object()
     {
         var output = TestHelper.CreateTagHelperOutput();
-        var helper = new HtmxConfigTagHelper(new StubAntiforgery());
+        var helper = CreateHelper(new HtmxToolkitOptions());
 
         await helper.ProcessAsync(TestHelper.CreateTagHelperContext(), output);
 
@@ -53,7 +57,7 @@ public class HtmxConfigTagHelperTests
     public async Task ProcessAsync_UsesSingleQuotesForJsonAttribute()
     {
         var output = TestHelper.CreateTagHelperOutput();
-        var helper = new HtmxConfigTagHelper(new StubAntiforgery());
+        var helper = CreateHelper(new HtmxToolkitOptions());
 
         await helper.ProcessAsync(TestHelper.CreateTagHelperContext(), output);
 
@@ -61,190 +65,304 @@ public class HtmxConfigTagHelperTests
     }
 
     [Test]
-    public async Task ProcessAsync_SerializesConfiguredOptions()
+    public async Task ProcessAsync_SerializesEmptyMethodsThatUseUrlParams_AsEmptyArray()
     {
-        var helper = new HtmxConfigTagHelper(new StubAntiforgery())
+        var options = new HtmxToolkitOptions();
+        options.UseHtmxV2(htmx => htmx.MethodsThatUseUrlParams = []);
+
+        var json = await RenderJson(options);
+
+        Assert.That(json["methodsThatUseUrlParams"].GetRawText(), Is.EqualTo("[]"));
+    }
+
+    [Test]
+    public async Task ProcessAsync_SerializesFullResponseHandlingConfig()
+    {
+        var options = new HtmxToolkitOptions();
+        options.UseHtmxV2(htmx => htmx.ResponseHandling =
+        [
+            new ResponseHandlingConfig
+            {
+                Code = "404",
+                Swap = false,
+                Error = true,
+                IgnoreTitle = true,
+                Select = "#content",
+                Target = "#target",
+                SwapOverride = "innerHTML"
+            }
+        ]);
+
+        var json = await RenderJson(options);
+
+        var entry = json["responseHandling"].EnumerateArray().Single();
+        Assert.Multiple(() =>
         {
-            LogAll = true,
-            Prefix = "data-custom-",
-            MetaCharacter = "-",
-            History = HtmxHistoryMode.Disabled,
-            HistoryCacheSize = 42,
-            RefreshOnHistoryMiss = true,
-            DefaultSwapStyle = HtmxSwap.OuterHtml,
-            DefaultSwapEmpty = true,
-            DefaultSwapDelay = 250,
-            DefaultSettleDelay = 300,
-            IncludeIndicatorStyles = false,
-            IndicatorClass = "индикатор's",
-            RequestClass = "my-request",
-            AddedClass = "my-added",
-            SwappingClass = "my-swapping",
-            SettlingClass = "my-settling",
-            AllowEval = false,
-            AllowScriptTags = false,
-            InlineScriptNonce = "nonce",
-            Extensions = "sse, ws",
-            InlineStyleNonce = "style-nonce",
-            AttributesToSettle = ["class", "style"],
-            UseTemplateFragments = true,
-            WsReconnectDelay = "exponential",
-            WsBinaryType = HtmxBinaryType.ArrayBuffer,
-            DisableSelector = "[data-disable]",
-            WithCredentials = true,
-            DisableInheritance = true,
-            DefaultTimeout = 5000,
-            Mode = HtmxFetchMode.Cors,
-            ScrollBehavior = HtmxScrollBehavior.Instant,
-            DefaultFocusScroll = true,
-            GetCacheBusterParam = true,
-            GlobalViewTransitions = true,
-            MorphIgnore = ["data-htmx-powered", "data-preserve"],
-            MorphSkip = "[data-skip]",
-            MorphSkipChildren = "[data-skip-children]",
-            MorphScanLimit = 20,
-            NoSwap = ["204", "4xx"],
-            MethodsThatUseUrlParams = [HttpVerb.Get, HttpVerb.Delete],
-            IgnoreTitle = true,
-            ScrollIntoViewOnBoost = false,
-            TriggerSpecsCacheEnabled = true,
-            AllowNestedOobSwaps = true,
-            HistoryRestoreAsHxRequest = false,
-            ReportValidityOfForms = true
-        };
+            Assert.That(entry.GetProperty("code").GetString(), Is.EqualTo("404"));
+            Assert.That(entry.GetProperty("swap").GetBoolean(), Is.False);
+            Assert.That(entry.GetProperty("error").GetBoolean(), Is.True);
+            Assert.That(entry.GetProperty("ignoreTitle").GetBoolean(), Is.True);
+            Assert.That(entry.GetProperty("select").GetString(), Is.EqualTo("#content"));
+            Assert.That(entry.GetProperty("target").GetString(), Is.EqualTo("#target"));
+            Assert.That(entry.GetProperty("swapOverride").GetString(), Is.EqualTo("innerHTML"));
+        });
+    }
 
-        var output = TestHelper.CreateTagHelperOutput();
-        await helper.ProcessAsync(TestHelper.CreateTagHelperContext(), output);
+    [Test]
+    public async Task ProcessAsync_SerializesOnlyHtmx1Options()
+    {
+        var options = new HtmxToolkitOptions();
+        options.UseHtmxV1(htmx =>
+        {
+            htmx.HistoryEnabled = false;
+            htmx.HistoryCacheSize = 42;
+            htmx.RefreshOnHistoryMiss = true;
+            htmx.DefaultSwapStyle = HtmxSwap.OuterHtml;
+            htmx.DefaultSwapDelay = 250;
+            htmx.DefaultSettleDelay = 300;
+            htmx.IncludeIndicatorStyles = false;
+            htmx.IndicatorClass = "indicator";
+            htmx.RequestClass = "request";
+            htmx.AddedClass = "added";
+            htmx.SwappingClass = "swapping";
+            htmx.SettlingClass = "settling";
+            htmx.AllowEval = false;
+            htmx.AllowScriptTags = false;
+            htmx.InlineScriptNonce = "script-nonce";
+            htmx.AttributesToSettle = ["class", "style"];
+            htmx.UseTemplateFragments = true;
+            htmx.WsReconnectDelay = "exponential";
+            htmx.WsBinaryType = HtmxBinaryType.ArrayBuffer;
+            htmx.DisableSelector = "[data-disable]";
+            htmx.WithCredentials = true;
+            htmx.Timeout = 5000;
+            htmx.SelfRequestsOnly = false;
+            htmx.ScrollBehavior = HtmxScrollBehavior.Smooth;
+            htmx.DefaultFocusScroll = true;
+            htmx.GetCacheBusterParam = true;
+            htmx.GlobalViewTransitions = true;
+            htmx.MethodsThatUseUrlParams = [HttpVerb.Get, HttpVerb.Delete];
+            htmx.IgnoreTitle = true;
+            htmx.ScrollIntoViewOnBoost = false;
+            htmx.TriggerSpecsCacheEnabled = true;
+        });
 
-        Assert.That(output.Attributes["content"]!.Value, Is.TypeOf<HtmlString>());
+        var json = await RenderJson(options);
 
-        var content = GetContent(output);
-        Assert.That(content, Does.Contain("\"индикатор\\u0027s\""));
-        Assert.That(content, Does.Not.Contain("'"));
-
-        var json = JsonHelper.ParseJson(content);
-
-        Assert.That(json["logAll"].GetBoolean(), Is.True);
-        Assert.That(json["prefix"].GetString(), Is.EqualTo("data-custom-"));
-        Assert.That(json["metaCharacter"].GetString(), Is.EqualTo("-"));
-        Assert.That(json["historyEnabled"].GetBoolean(), Is.False);
-        Assert.That(json["history"].GetBoolean(), Is.False);
-        Assert.That(json["historyCacheSize"].GetInt32(), Is.EqualTo(42));
-        Assert.That(json["refreshOnHistoryMiss"].GetBoolean(), Is.True);
+        Assert.That(json.Keys, Is.EquivalentTo(new[]
+        {
+            "historyEnabled", "historyCacheSize", "refreshOnHistoryMiss", "defaultSwapStyle",
+            "defaultSwapDelay", "defaultSettleDelay", "includeIndicatorStyles", "indicatorClass",
+            "requestClass", "addedClass", "swappingClass", "settlingClass", "allowEval",
+            "allowScriptTags", "inlineScriptNonce", "attributesToSettle", "useTemplateFragments",
+            "wsReconnectDelay", "wsBinaryType", "disableSelector", "withCredentials", "timeout",
+            "selfRequestsOnly", "scrollBehavior", "defaultFocusScroll", "getCacheBusterParam",
+            "globalViewTransitions", "methodsThatUseUrlParams", "ignoreTitle", "scrollIntoViewOnBoost",
+            "triggerSpecsCache"
+        }));
         Assert.That(json["defaultSwapStyle"].GetString(), Is.EqualTo("outerHTML"));
-        Assert.That(json["defaultSwap"].GetString(), Is.EqualTo("outerHTML"));
-        Assert.That(json["defaultSwapEmpty"].GetBoolean(), Is.True);
-        Assert.That(json["defaultSwapDelay"].GetInt32(), Is.EqualTo(250));
-        Assert.That(json["defaultSettleDelay"].GetInt32(), Is.EqualTo(300));
-        Assert.That(json["includeIndicatorStyles"].GetBoolean(), Is.False);
-        Assert.That(json["indicatorClass"].GetString(), Is.EqualTo("индикатор's"));
-        Assert.That(json["includeIndicatorCSS"].GetBoolean(), Is.False);
-        Assert.That(json["requestClass"].GetString(), Is.EqualTo("my-request"));
-        Assert.That(json["addedClass"].GetString(), Is.EqualTo("my-added"));
-        Assert.That(json["swappingClass"].GetString(), Is.EqualTo("my-swapping"));
-        Assert.That(json["settlingClass"].GetString(), Is.EqualTo("my-settling"));
-        Assert.That(json["allowEval"].GetBoolean(), Is.False);
-        Assert.That(json["allowScriptTags"].GetBoolean(), Is.False);
-        Assert.That(json["inlineScriptNonce"].GetString(), Is.EqualTo("nonce"));
-        Assert.That(json["extensions"].GetString(), Is.EqualTo("sse, ws"));
-        Assert.That(json["inlineStyleNonce"].GetString(), Is.EqualTo("style-nonce"));
-        Assert.That(json["attributesToSettle"].GetRawText(), Is.EqualTo("[\"class\",\"style\"]"));
-        Assert.That(json["useTemplateFragments"].GetBoolean(), Is.True);
-        Assert.That(json["wsReconnectDelay"].GetString(), Is.EqualTo("exponential"));
         Assert.That(json["wsBinaryType"].GetString(), Is.EqualTo("arraybuffer"));
-        Assert.That(json["disableSelector"].GetString(), Is.EqualTo("[data-disable]"));
-        Assert.That(json["withCredentials"].GetBoolean(), Is.True);
-        Assert.That(json["disableInheritance"].GetBoolean(), Is.True);
-        Assert.That(json["implicitInheritance"].GetBoolean(), Is.False);
-        Assert.That(json["timeout"].GetInt32(), Is.EqualTo(5000));
-        Assert.That(json["defaultTimeout"].GetInt32(), Is.EqualTo(5000));
-        Assert.That(json["mode"].GetString(), Is.EqualTo("cors"));
-        Assert.That(json["scrollBehavior"].GetString(), Is.EqualTo("instant"));
-        Assert.That(json["defaultFocusScroll"].GetBoolean(), Is.True);
-        Assert.That(json["getCacheBusterParam"].GetBoolean(), Is.True);
-        Assert.That(json["globalViewTransitions"].GetBoolean(), Is.True);
-        Assert.That(json["transitions"].GetBoolean(), Is.True);
-        Assert.That(json["morphIgnore"].GetRawText(), Is.EqualTo("[\"data-htmx-powered\",\"data-preserve\"]"));
-        Assert.That(json["morphSkip"].GetString(), Is.EqualTo("[data-skip]"));
-        Assert.That(json["morphSkipChildren"].GetString(), Is.EqualTo("[data-skip-children]"));
-        Assert.That(json["morphScanLimit"].GetInt32(), Is.EqualTo(20));
-        Assert.That(json["noSwap"].GetRawText(), Is.EqualTo("[\"204\",\"4xx\"]"));
+        Assert.That(json["scrollBehavior"].GetString(), Is.EqualTo("smooth"));
         Assert.That(json["methodsThatUseUrlParams"].GetRawText(), Is.EqualTo("[\"get\",\"delete\"]"));
-        Assert.That(json["selfRequestsOnly"].GetBoolean(), Is.False);
-        Assert.That(json["ignoreTitle"].GetBoolean(), Is.True);
-        Assert.That(json["scrollIntoViewOnBoost"].GetBoolean(), Is.False);
         Assert.That(json["triggerSpecsCache"].GetRawText(), Is.EqualTo("{}"));
-        Assert.That(json["allowNestedOobSwaps"].GetBoolean(), Is.True);
-        Assert.That(json["historyRestoreAsHxRequest"].GetBoolean(), Is.False);
-        Assert.That(json["reportValidityOfForms"].GetBoolean(), Is.True);
+    }
+
+    [Test]
+    public async Task ProcessAsync_SerializesOnlyHtmx2Options_InResponseHandlingOrder()
+    {
+        var options = new HtmxToolkitOptions();
+        options.UseHtmxV2(htmx =>
+        {
+            htmx.HistoryEnabled = true;
+            htmx.HistoryCacheSize = 42;
+            htmx.RefreshOnHistoryMiss = true;
+            htmx.DefaultSwapStyle = HtmxSwap.InnerHtml;
+            htmx.DefaultSwapDelay = 250;
+            htmx.DefaultSettleDelay = 300;
+            htmx.IncludeIndicatorStyles = false;
+            htmx.IndicatorClass = "indicator";
+            htmx.RequestClass = "request";
+            htmx.AddedClass = "added";
+            htmx.SwappingClass = "swapping";
+            htmx.SettlingClass = "settling";
+            htmx.AllowEval = false;
+            htmx.AllowScriptTags = false;
+            htmx.InlineScriptNonce = "script-nonce";
+            htmx.InlineStyleNonce = "style-nonce";
+            htmx.AttributesToSettle = ["class", "style"];
+            htmx.WsReconnectDelay = "exponential";
+            htmx.WsBinaryType = HtmxBinaryType.Blob;
+            htmx.DisableSelector = "[data-disable]";
+            htmx.WithCredentials = true;
+            htmx.DisableInheritance = true;
+            htmx.Timeout = 5000;
+            htmx.SelfRequestsOnly = true;
+            htmx.ScrollBehavior = HtmxScrollBehavior.Instant;
+            htmx.DefaultFocusScroll = true;
+            htmx.GetCacheBusterParam = true;
+            htmx.GlobalViewTransitions = true;
+            htmx.MethodsThatUseUrlParams = [HttpVerb.Get, HttpVerb.Delete];
+            htmx.IgnoreTitle = true;
+            htmx.ScrollIntoViewOnBoost = false;
+            htmx.TriggerSpecsCacheEnabled = true;
+            htmx.ResponseHandling =
+            [
+                new ResponseHandlingConfig { Code = "204", Swap = false },
+                new ResponseHandlingConfig { Code = "[45]..", Swap = false, Error = true }
+            ];
+            htmx.AllowNestedOobSwaps = true;
+            htmx.HistoryRestoreAsHxRequest = false;
+            htmx.ReportValidityOfForms = true;
+        });
+
+        var json = await RenderJson(options);
+
+        Assert.That(json.Keys, Is.EquivalentTo(new[]
+        {
+            "historyEnabled", "historyCacheSize", "refreshOnHistoryMiss", "defaultSwapStyle",
+            "defaultSwapDelay", "defaultSettleDelay", "includeIndicatorStyles", "indicatorClass",
+            "requestClass", "addedClass", "swappingClass", "settlingClass", "allowEval",
+            "allowScriptTags", "inlineScriptNonce", "inlineStyleNonce", "attributesToSettle",
+            "wsReconnectDelay", "wsBinaryType", "disableSelector", "withCredentials",
+            "disableInheritance", "timeout", "selfRequestsOnly", "scrollBehavior", "defaultFocusScroll",
+            "getCacheBusterParam", "globalViewTransitions", "methodsThatUseUrlParams", "ignoreTitle",
+            "scrollIntoViewOnBoost", "triggerSpecsCache", "responseHandling", "allowNestedOobSwaps",
+            "historyRestoreAsHxRequest", "reportValidityOfForms"
+        }));
+        Assert.That(json["defaultSwapStyle"].GetString(), Is.EqualTo("innerHTML"));
+        Assert.That(json["scrollBehavior"].GetString(), Is.EqualTo("instant"));
+
+        var responseHandling = json["responseHandling"].EnumerateArray().ToArray();
+        Assert.That(responseHandling[0].GetProperty("code").GetString(), Is.EqualTo("204"));
+        Assert.That(responseHandling[1].GetProperty("code").GetString(), Is.EqualTo("[45].."));
+    }
+
+    [Test]
+    public async Task ProcessAsync_SerializesOnlyHtmx4Options()
+    {
+        var options = new HtmxToolkitOptions();
+        options.UseHtmxV4(htmx =>
+        {
+            htmx.LogAll = true;
+            htmx.Prefix = "data-custom-";
+            htmx.MetaCharacter = "-";
+            htmx.History = HtmxHistoryMode.Reload;
+            htmx.DefaultSwap = HtmxSwap.OuterMorph;
+            htmx.DefaultSwapEmpty = true;
+            htmx.DefaultSettleDelay = 1;
+            htmx.IncludeIndicatorCss = false;
+            htmx.IndicatorClass = "indicator";
+            htmx.RequestClass = "request";
+            htmx.InlineScriptNonce = "nonce";
+            htmx.Extensions = "sse, ws";
+            htmx.ImplicitInheritance = false;
+            htmx.DefaultTimeout = 5000;
+            htmx.Mode = HtmxFetchMode.NoCors;
+            htmx.DefaultFocusScroll = true;
+            htmx.Transitions = true;
+            htmx.MorphIgnore = ["data-htmx-powered"];
+            htmx.MorphSkip = "[data-skip]";
+            htmx.MorphSkipChildren = "[data-skip-children]";
+            htmx.MorphScanLimit = 20;
+            htmx.NoSwap = ["204", "4xx"];
+        });
+
+        var json = await RenderJson(options);
+
+        Assert.That(json.Keys, Is.EquivalentTo(new[]
+        {
+            "logAll", "prefix", "metaCharacter", "history", "defaultSwap", "defaultSwapEmpty",
+            "defaultSettleDelay", "includeIndicatorCSS", "indicatorClass", "requestClass",
+            "inlineScriptNonce", "extensions", "implicitInheritance", "defaultTimeout", "mode",
+            "defaultFocusScroll", "transitions", "morphIgnore", "morphSkip", "morphSkipChildren",
+            "morphScanLimit", "noSwap"
+        }));
+        Assert.That(json["history"].GetString(), Is.EqualTo("reload"));
+        Assert.That(json["defaultSwap"].GetString(), Is.EqualTo("outerMorph"));
+        Assert.That(json["mode"].GetString(), Is.EqualTo("no-cors"));
+        Assert.That(json.ContainsKey("timeout"), Is.False);
+        Assert.That(json.ContainsKey("defaultSwapStyle"), Is.False);
+    }
+
+    [Test]
+    [TestCase(HtmxHistoryMode.Enabled, "true")]
+    [TestCase(HtmxHistoryMode.Disabled, "false")]
+    [TestCase(HtmxHistoryMode.Reload, "\"reload\"")]
+    public async Task ProcessAsync_SerializesHtmx4HistoryMode(HtmxHistoryMode mode, string expected)
+    {
+        var options = new HtmxToolkitOptions();
+        options.UseHtmxV4(htmx => htmx.History = mode);
+
+        var json = await RenderJson(options);
+
+        Assert.That(json["history"].GetRawText(), Is.EqualTo(expected));
     }
 
     [Test]
     public async Task ProcessAsync_EscapesHtmlSensitiveCharacters()
     {
-        var helper = new HtmxConfigTagHelper(new StubAntiforgery())
-        {
-            RequestClass = "<a> & \"b\" 'c'"
-        };
+        var options = new HtmxToolkitOptions();
+        options.UseHtmxV2(htmx => htmx.RequestClass = "<a> & \"b\" 'c'");
 
         var output = TestHelper.CreateTagHelperOutput();
-        await helper.ProcessAsync(TestHelper.CreateTagHelperContext(), output);
+        await CreateHelper(options).ProcessAsync(TestHelper.CreateTagHelperContext(), output);
 
-        var content = GetContent(output);
-        Assert.That(content, Is.EqualTo("{\"requestClass\":\"\\u003Ca\\u003E \\u0026 \\u0022b\\u0022 \\u0027c\\u0027\"}"));
+        Assert.That(
+            GetContent(output),
+            Is.EqualTo("{\"requestClass\":\"\\u003Ca\\u003E \\u0026 \\u0022b\\u0022 \\u0027c\\u0027\"}"));
     }
 
     [Test]
-    public async Task ProcessAsync_IncludeAntiForgeryToken_SerializesTokens()
+    public async Task ProcessAsync_IncludeAntiforgeryToken_RendersDataAttributes()
     {
         var antiforgery = new StubAntiforgery();
         var httpContext = new DefaultHttpContext();
-        var helper = new HtmxConfigTagHelper(antiforgery)
-        {
-            IncludeAntiForgeryToken = true,
-            ViewContext = new ViewContext
-            {
-                HttpContext = httpContext
-            }
-        };
+        var options = new HtmxToolkitOptions { IncludeAntiforgeryToken = true };
+        var helper = CreateHelper(options, antiforgery);
+        helper.ViewContext = new ViewContext { HttpContext = httpContext };
 
         var output = TestHelper.CreateTagHelperOutput();
         await helper.ProcessAsync(TestHelper.CreateTagHelperContext(), output);
 
-        Assert.That(antiforgery.StoredHttpContext, Is.SameAs(httpContext));
-
-        var json = JsonHelper.ParseJson(GetContent(output));
-        var antiForgery = json["antiForgery"];
-
-        Assert.That(antiForgery.GetProperty("requestToken").GetString(), Is.EqualTo("request-token"));
-        Assert.That(antiForgery.GetProperty("headerName").GetString(), Is.EqualTo("RequestVerificationToken"));
-        Assert.That(antiForgery.GetProperty("cookieToken").GetString(), Is.EqualTo("cookie-token"));
+        Assert.Multiple(() =>
+        {
+            Assert.That(antiforgery.StoredHttpContext, Is.SameAs(httpContext));
+            Assert.That(output.Attributes["data-antiforgery-request-token"]!.Value, Is.EqualTo("request-token"));
+            Assert.That(output.Attributes["data-antiforgery-header-name"]!.Value, Is.EqualTo("RequestVerificationToken"));
+            Assert.That(output.Attributes["data-antiforgery-form-field-name"]!.Value, Is.EqualTo("__RequestVerificationToken"));
+            Assert.That(output.Attributes.Any(attribute => attribute.Name.Contains("cookie", StringComparison.OrdinalIgnoreCase)), Is.False);
+            Assert.That(GetContent(output), Is.EqualTo("{}"));
+        });
     }
 
     [Test]
-    public async Task ProcessAsync_ExecutesChildContent_CollectsResponseHandlingEntries()
+    public async Task ProcessAsync_AntiforgeryDisabled_DoesNotRequestOrRenderTokens()
     {
-        var items = new Dictionary<object, object>();
-        var context = TestHelper.CreateTagHelperContext("htmx-config", null, items);
-        var child = new ResponseHandlingTagHelper
-        {
-            Code = "404",
-            Swap = false
-        };
+        var antiforgery = new StubAntiforgery();
+        var output = TestHelper.CreateTagHelperOutput();
 
-        var output = new TagHelperOutput("htmx-config", [], async (_, _) =>
+        await CreateHelper(new HtmxToolkitOptions(), antiforgery)
+            .ProcessAsync(TestHelper.CreateTagHelperContext(), output);
+
+        Assert.Multiple(() =>
         {
-            await child.ProcessAsync(context, TestHelper.CreateTagHelperOutput("response-handling"));
-            return new DefaultTagHelperContent();
+            Assert.That(antiforgery.StoredHttpContext, Is.Null);
+            Assert.That(output.Attributes["data-antiforgery-request-token"], Is.Null);
+            Assert.That(output.Attributes["data-antiforgery-header-name"], Is.Null);
+            Assert.That(output.Attributes["data-antiforgery-form-field-name"], Is.Null);
         });
-
-        var helper = new HtmxConfigTagHelper(new StubAntiforgery());
-        await helper.ProcessAsync(context, output);
-
-        Assert.That(helper.ResponseHandling!.Count, Is.EqualTo(1));
-        Assert.That(helper.ResponseHandling[0].Code, Is.EqualTo("404"));
-        Assert.That(helper.ResponseHandling[0].Swap, Is.False);
     }
+
+    private static async Task<Dictionary<string, System.Text.Json.JsonElement>> RenderJson(HtmxToolkitOptions options)
+    {
+        var output = TestHelper.CreateTagHelperOutput();
+        await CreateHelper(options).ProcessAsync(TestHelper.CreateTagHelperContext(), output);
+        Assert.That(output.Attributes["content"]!.Value, Is.TypeOf<HtmlString>());
+        return JsonHelper.ParseJson(GetContent(output));
+    }
+
+    private static HtmxConfigTagHelper CreateHelper(HtmxToolkitOptions options, IAntiforgery? antiforgery = null) =>
+        new(antiforgery ?? new StubAntiforgery(), Options.Create(options));
 
     private static string GetContent(TagHelperOutput output) =>
         output.Attributes["content"]!.Value!.ToString()!;

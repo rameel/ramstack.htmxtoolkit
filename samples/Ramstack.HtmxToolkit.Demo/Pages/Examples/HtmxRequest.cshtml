@@ -51,7 +51,7 @@
         hx-page="/Examples/HtmxRequest"
         hx-page-handler="Delayed"
         hx-request-timeout="1000"
-        hx-on::timeout="document.querySelector('#timeout-result').textContent = 'Request timed out'"
+        hx-on::error="document.querySelector('#timeout-result').textContent = 'Request timed out'"
         hx-target="#timeout-result">
         Request with 1000 ms timeout
       </button>

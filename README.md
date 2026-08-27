@@ -33,6 +33,28 @@ use the following command
 dotnet add package Ramstack.HtmxToolkit
 ```
 
+Register the toolkit and select the HTMX version used by the application:
+
+```csharp
+builder.Services.AddHtmxToolkit(options =>
+{
+    options.IncludeAntiforgeryToken = true;
+    options.UseHtmxV2(config =>
+    {
+        config.DefaultSwapStyle = HtmxSwap.OuterHtml;
+        config.Timeout = 5000;
+        config.GlobalViewTransitions = true;
+    });
+});
+```
+
+HTMX 2.x is used by default. Calling `UseHtmxV2` is optional when no version-specific
+settings are required:
+
+```csharp
+builder.Services.AddHtmxToolkit();
+```
+
 ## HttpRequest
 
 The library provides a set of classes for working with `HttpRequest`.
@@ -609,7 +631,7 @@ You can also provide the values as a dictionary with the `hx-all-vals` attribute
 
 ### HtmxRequestTagHelper
 
-The `HtmxRequestTagHelper` configures the htmx request options supported by HTMX 1.x and 2.x.
+The `HtmxRequestTagHelper` configures the htmx request options supported by HTMX 1.9.x and 2.x.
 Use the typed `hx-request-*` attributes instead of writing JSON manually:
 
 ```html
@@ -632,99 +654,110 @@ The following HTML will be generated:
 
 ### HtmxConfigTagHelper
 
-As with `hx-headers`, configuring `htmx` settings requires a JSON representation.
-For working with configuration, the `HtmxConfigTagHelper` class is provided.
+HTMX configuration is defined at application startup through `AddHtmxToolkit`.
+The version-specific callback exposes only settings supported by the selected HTMX version:
+
+```csharp
+builder.Services.AddHtmxToolkit(options =>
+{
+    options.IncludeAntiforgeryToken = true;
+    options.UseHtmxV2(config =>
+    {
+        config.DefaultSwapStyle = HtmxSwap.OuterHtml;
+        config.Timeout = 5000;
+        config.GlobalViewTransitions = true;
+    });
+});
+```
+
+Use the tag helper as a marker where the configuration meta element should be rendered:
 
 ```html
-<!DOCTYPE html>
-<html lang="en">
 <head>
-    <meta htmx-config
-          default-swap-style="HtmxSwap.OuterHtml"
-          use-template-fragments="true"
-          scroll-behavior="HtmxScrollBehavior.Smooth"
-          include-antiforgery-token="true" />
+    <htmx-config />
 </head>
 ```
-The following code will be generated:
+
+The following markup will be generated:
 
 ```html
-<!DOCTYPE html>
-<html lang="en">
 <head>
     <meta name="htmx-config"
-          content='{"defaultSwapStyle":"outerHTML","useTemplateFragments":true,"scrollBehavior":"smooth","antiForgery":{"headerName":"RequestVerificationToken","formFieldName":"__RequestVerificationToken","requestToken":"..."}}' />
+          content='{"defaultSwapStyle":"outerHTML","timeout":5000,"globalViewTransitions":true}'
+          data-antiforgery-request-token="..."
+          data-antiforgery-header-name="RequestVerificationToken"
+          data-antiforgery-form-field-name="__RequestVerificationToken" />
 </head>
 ```
 
-If desired or for the purpose of semantics, you can use `htmx-config` as the standalone name of the element:
+The marker can also be written as a `meta` element:
+
 ```html
-<htmx-config default-swap-style="HtmxSwap.OuterHtml"
-             use-template-fragments="true"
-             scroll-behavior="HtmxScrollBehavior.Smooth"
-             include-antiforgery-token="true" />
+<meta htmx-config />
+```
+
+HTMX 2.x is selected by default. Use `UseHtmxV1`, `UseHtmxV2`, or `UseHtmxV4` to select a
+version explicitly. Each configuration type follows the names used by that HTMX version, so HTMX 1.9.x
+and 2.x expose `DefaultSwapStyle` and `Timeout`, while HTMX 4.x exposes `DefaultSwap` and
+`DefaultTimeout`. Selecting different versions in the same configuration throws an exception.
+
+HTMX 4.x is currently in beta. To target it, select it explicitly and use its version-specific
+settings:
+
+```csharp
+builder.Services.AddHtmxToolkit(options =>
+{
+    options.UseHtmxV4(config =>
+    {
+        config.DefaultSwap = HtmxSwap.OuterHtml;
+        config.DefaultTimeout = 5000;
+        config.Transitions = true;
+        config.NoSwap = ["204", "304", "4xx", "5xx"];
+    });
+});
+```
+
+The configured values remain available through dependency injection:
+
+```csharp
+public sealed class ConfigurationInspector(IOptions<HtmxToolkitOptions> options)
+{
+    public HtmxV2Config HtmxConfig =>
+        options.Value.GetHtmxConfig<HtmxV2Config>();
+}
 ```
 
 #### Response Handling Configuration
 
 HTMX 2.x introduces the [`responseHandling`](https://htmx.org/docs/#response-handling) configuration option,
-allowing you to define how htmx should handle responses based on HTTP status codes.
-The library provides a child tag helper `<response-handling>` that can be placed inside `<htmx-config>`
-to declaratively configure response handling rules.
+allowing you to define how htmx should handle responses based on HTTP status codes. Rules are
+configured in order through `HtmxV2Config`:
 
-```html
-<htmx-config>
-    <!-- 204 No Content — do not swap, but not an error -->
-    <response-handling code="204" swap="false" />
-
-    <!-- 2xx & 3xx — swap into DOM -->
-    <response-handling code="[23].." swap="true" />
-
-    <!-- 422 Unprocessable Entity — swap (e.g. validation errors) -->
-    <response-handling code="422" swap="true" />
-
-    <!-- 4xx & 5xx — do not swap, treat as error -->
-    <response-handling code="[45].." swap="false" error="true" />
-
-    <!-- Catch-all for any other response code -->
-    <response-handling code="..." swap="true" />
-</htmx-config>
+```csharp
+builder.Services.AddHtmxToolkit(options =>
+{
+    options.UseHtmxV2(config =>
+    {
+        config.ResponseHandling =
+        [
+            new() { Code = "204", Swap = false },
+            new() { Code = "[23]..", Swap = true },
+            new() { Code = "422", Swap = true },
+            new() { Code = "[45]..", Swap = false, Error = true },
+            new() { Code = "...", Swap = true }
+        ];
+    });
+});
 ```
 
-The following code will be generated:
-
-```html
-<meta name="htmx-config"
-      content='{"responseHandling":[{"code":"204","swap":false},{"code":"[23]..","swap":true},{"code":"422","swap":true},{"code":"[45]..","swap":false,"error":true},{"code":"...","swap":true}]}' />
-```
-
-The `<response-handling>` element supports the following attributes:
-
-| Attribute       | Type     | Description                                                      |
-|-----------------|----------|------------------------------------------------------------------|
-| `code`          | `string` | Regular expression tested against response status codes          |
-| `swap`          | `bool?`  | Whether the response should be swapped into the DOM              |
-| `error`         | `bool?`  | Whether htmx should treat this response as an error              |
-| `ignore-title`  | `bool?`  | Whether to ignore title tags in the response                     |
-| `select`        | `string` | CSS selector to select content from the response                 |
-| `target`        | `string` | CSS selector specifying an alternative target for the response   |
-| `swap-override` | `string` | Alternative swap mechanism for the response                      |
-
-Alternatively, you can set the entire response handling configuration directly as a Razor expression:
-
-```html
-<htmx-config response-handling="@new [] {
-    new ResponseHandlingConfig { Code = "204", Swap = false },
-    new ResponseHandlingConfig { Code = "[23]..", Swap = true },
-    new ResponseHandlingConfig { Code = "[45]..", Swap = false, Error = true }
-}" />
-```
+HTMX 4.x removes `responseHandling`. To retain HTMX 2.x behavior that does not swap error
+responses, configure `NoSwap` as shown in the HTMX 4.x example above.
 
 ## Toolkit Script
 
 The toolkit script provides antiforgery support and HTMX compatibility behavior.
 If you have enabled **Antiforgery** token generation in the configuration
-(`include-antiforgery-token="true"`), include it to ensure the token is present in form
+(`IncludeAntiforgeryToken = true`), include it to ensure the token is present in form
 parameters or headers and refreshed in a timely manner.
 
 To do this, you can directly include the contents of the script file on the page:
@@ -790,9 +823,12 @@ or the debug version of the script.
 
 ## Supported Versions
 
-|      | Version        |
-|------|----------------|
-| .NET | 6, 7, 8, 9, 10 |
+All releases in the following HTMX version lines are supported:
+
+|      | Version                          |
+|------|----------------------------------|
+| .NET | 6, 7, 8, 9, 10, 11               |
+| HTMX | 1.9.x, 2.x (default), 4.x (beta) |
 
 ## Contributions
 
