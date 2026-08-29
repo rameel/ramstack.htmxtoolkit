@@ -9,9 +9,10 @@ namespace Ramstack.HtmxToolkit;
 /// </summary>
 [JsonSourceGenerationOptions(
     WriteIndented = false,
+    PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase,
     DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
     GenerationMode = JsonSourceGenerationMode.Default)]
-[JsonSerializable(typeof(AjaxContextWrapper))]
+[JsonSerializable(typeof(AjaxContext))]
 internal partial class AjaxContextJsonSerializerContext : JsonSerializerContext
 {
     /// <summary>

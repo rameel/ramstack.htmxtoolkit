@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace Ramstack.HtmxToolkit;
 
 /// <summary>
@@ -8,7 +10,7 @@ public sealed class AjaxContext
     /// <summary>
     /// Gets or sets the path used for the AJAX request.
     /// </summary>
-    internal string? Path { get; set; }
+    public string? Path { get; internal set; }
 
     /// <summary>
     /// Gets or sets the source element that initiated the request.
@@ -33,6 +35,7 @@ public sealed class AjaxContext
     /// <summary>
     /// Gets or sets how the response will be swapped relative to the target element.
     /// </summary>
+    [JsonConverter(typeof(HtmxSwapJsonConverter))]
     public HtmxSwap? Swap { get; set; }
 
     /// <summary>
