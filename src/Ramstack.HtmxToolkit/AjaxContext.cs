@@ -41,7 +41,7 @@ public sealed class AjaxContext
     /// <summary>
     /// Gets or sets the values to submit with the request.
     /// </summary>
-    public IDictionary<string, HtmxValue>? Values { get; set; }
+    public IDictionary<string, HtmxValues>? Values { get; set; }
 
     /// <summary>
     /// Gets or sets the headers to include with the request.

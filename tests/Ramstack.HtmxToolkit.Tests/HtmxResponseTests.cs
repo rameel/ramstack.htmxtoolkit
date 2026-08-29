@@ -57,7 +57,7 @@ public class HtmxResponseTests
         context.Response.Htmx(r => r.Location("/bar", new AjaxContext
         {
             Handler = "handleResponse",
-            Values = new Dictionary<string, HtmxValue>
+            Values = new Dictionary<string, HtmxValues>
             {
                 ["id"] = "42",
                 ["tags"] = ["dotnet", "web"]

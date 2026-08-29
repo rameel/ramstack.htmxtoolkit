@@ -5,16 +5,16 @@ using System.Text.Json.Serialization;
 namespace Ramstack.HtmxToolkit;
 
 /// <summary>
-/// Represents a JSON converter for <see cref="HtmxValue"/>.
+/// Represents a JSON converter for <see cref="HtmxValues"/>.
 /// </summary>
-internal sealed class HtmxValueJsonConverter : JsonConverter<HtmxValue>
+internal sealed class HtmxValuesJsonConverter : JsonConverter<HtmxValues>
 {
     /// <inheritdoc />
-    public override HtmxValue Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) =>
+    public override HtmxValues Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) =>
         throw new NotSupportedException();
 
     /// <inheritdoc />
-    public override void Write(Utf8JsonWriter writer, HtmxValue value, JsonSerializerOptions options)
+    public override void Write(Utf8JsonWriter writer, HtmxValues value, JsonSerializerOptions options)
     {
         var values = value.Values;
         switch (values)
