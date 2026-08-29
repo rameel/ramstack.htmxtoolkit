@@ -57,25 +57,19 @@ public readonly struct HtmxFieldValues : IReadOnlyList<string>
     /// <summary>
     /// Gets the underlying value representation.
     /// </summary>
-    /// <value>
-    /// <see langword="null"/> when the collection is empty, a <see cref="string"/>
-    /// when it contains one value, or a string array when it contains multiple values.
-    /// </value>
     public object? Values => _values;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="HtmxFieldValues"/> structure with a single value.
     /// </summary>
     /// <param name="value">The value to store.</param>
-    public HtmxFieldValues(string value) =>
+    public HtmxFieldValues(string? value) =>
         _values = value;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="HtmxFieldValues"/> structure with the specified values.
     /// </summary>
-    /// <param name="values">
-    /// The values to store, or <see langword="null"/> to create an empty instance.
-    /// </param>
+    /// <param name="values">The values to store.</param>
     /// <remarks>
     /// The specified array is stored directly and is not copied.
     /// </remarks>
