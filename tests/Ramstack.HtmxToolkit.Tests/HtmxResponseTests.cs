@@ -13,10 +13,10 @@ public class HtmxResponseTests
     }
 
     [Test]
-    public void Location_WithContext_SerializesJson()
+    public void Location_WithOptions_SerializesJson()
     {
         var context = TestHelper.CreateHtmxRequestContext();
-        context.Response.Htmx(r => r.Location("/bar", new AjaxContext
+        context.Response.Htmx(r => r.Location("/bar", new HtmxLocationOptions
         {
             Source = "button",
             Event = "click",
@@ -37,10 +37,10 @@ public class HtmxResponseTests
     }
 
     [Test]
-    public void Location_WithContext_OmitsNullProperties()
+    public void Location_WithOptions_OmitsNullProperties()
     {
         var context = TestHelper.CreateHtmxRequestContext();
-        context.Response.Htmx(r => r.Location("/bar", new AjaxContext()));
+        context.Response.Htmx(r => r.Location("/bar", new HtmxLocationOptions()));
 
         var header = context.Response.Headers[HtmxResponseHeaderNames.Location].ToString();
         var json = JsonHelper.ParseJson(header);
@@ -51,10 +51,10 @@ public class HtmxResponseTests
     }
 
     [Test]
-    public void Location_WithContext_SerializesHandlerValuesAndHeaders()
+    public void Location_WithOptions_SerializesHandlerValuesAndHeaders()
     {
         var context = TestHelper.CreateHtmxRequestContext();
-        context.Response.Htmx(r => r.Location("/bar", new AjaxContext
+        context.Response.Htmx(r => r.Location("/bar", new HtmxLocationOptions
         {
             Handler = "handleResponse",
             Values = new Dictionary<string, HtmxFieldValues>

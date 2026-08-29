@@ -5,22 +5,22 @@ using Ramstack.HtmxToolkit.Internal;
 namespace Ramstack.HtmxToolkit;
 
 /// <summary>
-/// Provides source-generated JSON serialization metadata for AJAX context data.
+/// Provides source-generated JSON serialization metadata for <c>HX-Location</c> options.
 /// </summary>
 [JsonSourceGenerationOptions(
     WriteIndented = false,
     PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase,
     DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
     GenerationMode = JsonSourceGenerationMode.Default)]
-[JsonSerializable(typeof(AjaxContext))]
-internal partial class AjaxContextJsonSerializerContext : JsonSerializerContext
+[JsonSerializable(typeof(HtmxLocationOptions))]
+internal partial class HtmxLocationOptionsJsonSerializerContext : JsonSerializerContext
 {
     /// <summary>
     /// Initializes the default serializer context with HTML-safe Unicode encoding.
     /// </summary>
-    static AjaxContextJsonSerializerContext()
+    static HtmxLocationOptionsJsonSerializerContext()
     {
         JsonOptions.ConfigureHtmlSafeUnicode(s_defaultOptions);
-        s_defaultContext = new AjaxContextJsonSerializerContext(s_defaultOptions);
+        s_defaultContext = new HtmxLocationOptionsJsonSerializerContext(s_defaultOptions);
     }
 }

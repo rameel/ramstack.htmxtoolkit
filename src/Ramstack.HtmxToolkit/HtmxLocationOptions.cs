@@ -3,9 +3,9 @@ using System.Text.Json.Serialization;
 namespace Ramstack.HtmxToolkit;
 
 /// <summary>
-/// Represents the context for an AJAX request.
+/// Represents the options for an <c>HX-Location</c> request.
 /// </summary>
-public sealed class AjaxContext
+public sealed class HtmxLocationOptions
 {
     /// <summary>
     /// Gets or sets the path used for the AJAX request.
