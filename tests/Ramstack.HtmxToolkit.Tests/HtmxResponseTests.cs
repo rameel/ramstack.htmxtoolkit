@@ -78,6 +78,25 @@ public class HtmxResponseTests
     }
 
     [Test]
+    public void Location_WithOptions_SerializesHistoryAndOutOfBandOptions()
+    {
+        var context = TestHelper.CreateHtmxRequestContext();
+        context.Response.Htmx(r => r.Location("/bar", new HtmxLocationOptions
+        {
+            SelectOOB = "#alerts",
+            Push = "false",
+            Replace = "/replaced"
+        }));
+
+        var header = context.Response.Headers[HtmxResponseHeaderNames.Location].ToString();
+        var json = JsonHelper.ParseJson(header);
+
+        Assert.That(json["selectOOB"].GetString(), Is.EqualTo("#alerts"));
+        Assert.That(json["push"].GetString(), Is.EqualTo("false"));
+        Assert.That(json["replace"].GetString(), Is.EqualTo("/replaced"));
+    }
+
+    [Test]
     public void PushUrl_SetsHeader()
     {
         var context = TestHelper.CreateHtmxRequestContext();

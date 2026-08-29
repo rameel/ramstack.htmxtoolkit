@@ -53,4 +53,20 @@ public sealed class HtmxLocationOptions
     /// Gets or sets a selector used to filter the content to swap from the response.
     /// </summary>
     public string? Select { get; set; }
+
+    /// <summary>
+    /// Gets or sets a selector used to select content for out-of-band swaps from the response.
+    /// </summary>
+    public string? SelectOOB { get; set; }
+
+    /// <summary>
+    /// Gets or sets the path to push into the browser history.
+    /// Set to <c>false</c> to prevent the URL from being pushed.
+    /// </summary>
+    public string? Push { get; set; }
+
+    /// <summary>
+    /// Gets or sets the path that replaces the current URL in the browser history.
+    /// </summary>
+    public string? Replace { get; set; }
 }
