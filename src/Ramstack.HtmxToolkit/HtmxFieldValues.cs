@@ -57,7 +57,7 @@ public readonly struct HtmxFieldValues : IReadOnlyList<string>
     /// <summary>
     /// Gets the underlying value representation.
     /// </summary>
-    public object? Values => _values;
+    internal object? Values => _values;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="HtmxFieldValues"/> structure with a single value.
