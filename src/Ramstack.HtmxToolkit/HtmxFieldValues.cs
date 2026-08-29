@@ -62,14 +62,14 @@ public readonly struct HtmxFieldValues : IReadOnlyList<string>
     /// <summary>
     /// Initializes a new instance of the <see cref="HtmxFieldValues"/> structure with a single value.
     /// </summary>
-    /// <param name="value">The value to store.</param>
+    /// <param name="value">The value to store, or <see langword="null"/> to represent no values.</param>
     public HtmxFieldValues(string? value) =>
         _values = value;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="HtmxFieldValues"/> structure with the specified values.
     /// </summary>
-    /// <param name="values">The values to store.</param>
+    /// <param name="values">The values to store, or <see langword="null"/> to represent no values.</param>
     /// <remarks>
     /// The specified array is stored directly and is not copied.
     /// </remarks>
@@ -96,15 +96,15 @@ public readonly struct HtmxFieldValues : IReadOnlyList<string>
     /// <summary>
     /// Converts a string to an <see cref="HtmxFieldValues"/>.
     /// </summary>
-    /// <param name="value">The value to convert.</param>
-    public static implicit operator HtmxFieldValues(string value) =>
+    /// <param name="value">The value to convert, or <see langword="null"/> to represent no values.</param>
+    public static implicit operator HtmxFieldValues(string? value) =>
         new(value);
 
     /// <summary>
     /// Converts an array of strings to an <see cref="HtmxFieldValues"/>.
     /// </summary>
-    /// <param name="values">The values to convert.</param>
-    public static implicit operator HtmxFieldValues(string[] values) =>
+    /// <param name="values">The values to convert, or <see langword="null"/> to represent no values.</param>
+    public static implicit operator HtmxFieldValues(string[]? values) =>
         new(values);
 
     /// <summary>

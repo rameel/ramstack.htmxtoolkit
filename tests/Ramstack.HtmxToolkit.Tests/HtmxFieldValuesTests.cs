@@ -76,13 +76,19 @@ public class HtmxFieldValuesTests
     [Test]
     public void Constructor_NullArray_IsEmpty()
     {
-        var values = new HtmxFieldValues((string[]?)null);
+        var single = new HtmxFieldValues((string?)null);
+        var multiple = new HtmxFieldValues((string[]?)null);
 
         Assert.Multiple(() =>
         {
-            Assert.That(values.Count, Is.Zero);
-            Assert.That(values.Values, Is.Null);
-            Assert.That(values, Is.Empty);
+            Assert.That(single.Count, Is.Zero);
+            Assert.That(multiple.Count, Is.Zero);
+
+            Assert.That(single.Values, Is.Null);
+            Assert.That(multiple.Values, Is.Null);
+
+            Assert.That(single, Is.Empty);
+            Assert.That(multiple, Is.Empty);
         });
     }
 
@@ -162,6 +168,25 @@ public class HtmxFieldValuesTests
             Assert.That(single, Is.EqualTo(["value"]));
             Assert.That(multiple.Values, Is.SameAs(array));
             Assert.That(multiple, Is.EqualTo(array));
+        });
+    }
+
+    [Test]
+    public void ImplicitConversions_NullSources_AreEmpty()
+    {
+        HtmxFieldValues single = (string?)null;
+        HtmxFieldValues multiple = (string[]?)null;
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(single.Count, Is.Zero);
+            Assert.That(multiple.Count, Is.Zero);
+
+            Assert.That(single.Values, Is.Null);
+            Assert.That(multiple.Values, Is.Null);
+
+            Assert.That(single, Is.Empty);
+            Assert.That(multiple, Is.Empty);
         });
     }
 
