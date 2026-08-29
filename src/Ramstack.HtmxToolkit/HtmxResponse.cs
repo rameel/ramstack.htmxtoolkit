@@ -2,7 +2,6 @@ using System.Diagnostics;
 using System.Text.Json;
 
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Primitives;
 
 using Ramstack.HtmxToolkit.Internal;
 
@@ -61,7 +60,10 @@ public readonly struct HtmxResponse
 
         static HtmxResponse LocationImpl(HtmxResponse response, string path, AjaxContext context)
         {
-            var value = JsonSerializer.Serialize(new AjaxContextWrapper(path, context), JsonOptions.PreserveKeyCase);
+            var value = JsonSerializer.Serialize(
+                new AjaxContextWrapper(path, context),
+                AjaxContextJsonSerializerContext.Default.AjaxContextWrapper);
+
             return SetHeader(response, HtmxResponseHeaderNames.Location, value);
         }
     }

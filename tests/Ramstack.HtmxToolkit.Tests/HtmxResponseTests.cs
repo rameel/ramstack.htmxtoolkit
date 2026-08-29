@@ -57,15 +57,23 @@ public class HtmxResponseTests
         context.Response.Htmx(r => r.Location("/bar", new AjaxContext
         {
             Handler = "handleResponse",
-            Values = new Dictionary<string, object> { ["id"] = 42 },
-            Headers = new Dictionary<string, string> { ["X-Test"] = "abc" }
+            Values = new Dictionary<string, HtmxValue>
+            {
+                ["id"] = "42",
+                ["tags"] = ["dotnet", "web"]
+            },
+            Headers = new Dictionary<string, string>
+            {
+                ["X-Test"] = "abc"
+            }
         }));
 
         var header = context.Response.Headers[HtmxResponseHeaderNames.Location].ToString();
         var json = JsonHelper.ParseJson(header);
 
         Assert.That(json["handler"].GetString(), Is.EqualTo("handleResponse"));
-        Assert.That(json["values"].GetProperty("id").GetInt32(), Is.EqualTo(42));
+        Assert.That(json["values"].GetProperty("id").GetString(), Is.EqualTo("42"));
+        Assert.That(json["values"].GetProperty("tags").GetRawText(), Is.EqualTo("[\"dotnet\",\"web\"]"));
         Assert.That(json["headers"].GetProperty("X-Test").GetString(), Is.EqualTo("abc"));
     }
 
