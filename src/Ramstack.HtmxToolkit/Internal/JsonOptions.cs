@@ -34,14 +34,4 @@ internal static class JsonOptions
         DictionaryKeyPolicy = JsonNamingPolicy.CamelCase,
         WriteIndented = false
     };
-
-    /// <summary>
-    /// JSON serializer options that preserve original property and key casing
-    /// while ignoring properties with <see langword="null"/> values.
-    /// </summary>
-    public static readonly JsonSerializerOptions PreserveKeyCase = new()
-    {
-        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-        WriteIndented = false
-    };
 }

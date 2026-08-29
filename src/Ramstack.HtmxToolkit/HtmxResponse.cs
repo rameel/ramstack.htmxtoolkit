@@ -2,7 +2,6 @@ using System.Diagnostics;
 using System.Text.Json;
 
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Primitives;
 
 using Ramstack.HtmxToolkit.Internal;
 
@@ -51,17 +50,19 @@ public readonly struct HtmxResponse
     /// Sets the <c>HX-Location</c> header to a client-side redirect that does not do a full page reload.
     /// </summary>
     /// <param name="path">The path of the request.</param>
-    /// <param name="context">The AJAX context of the request.</param>
+    /// <param name="options">The options for the <c>HX-Location</c> request.</param>
     /// <returns>
     /// The current <see cref="HtmxResponse"/> instance.
     /// </returns>
-    public HtmxResponse Location(string path, AjaxContext context)
+    public HtmxResponse Location(string path, HtmxLocationOptions options)
     {
-        return LocationImpl(this, path, context);
+        return LocationImpl(this, path, options);
 
-        static HtmxResponse LocationImpl(HtmxResponse response, string path, AjaxContext context)
+        static HtmxResponse LocationImpl(HtmxResponse response, string path, HtmxLocationOptions options)
         {
-            var value = JsonSerializer.Serialize(new AjaxContextWrapper(path, context), JsonOptions.PreserveKeyCase);
+            options.Path = path;
+
+            var value = JsonSerializer.Serialize(options, HtmxLocationOptionsJsonSerializerContext.Default.HtmxLocationOptions);
             return SetHeader(response, HtmxResponseHeaderNames.Location, value);
         }
     }
