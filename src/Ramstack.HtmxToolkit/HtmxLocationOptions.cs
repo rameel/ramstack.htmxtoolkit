@@ -55,7 +55,8 @@ public sealed class HtmxLocationOptions
     /// Gets or sets a selector used to select content for out-of-band swaps from the response.
     /// </summary>
     /// <remarks>Supported in HTMX 2.x and HTMX 4.x.</remarks>
-    public string? SelectOOB { get; set; }
+    [JsonPropertyName("selectOOB")]
+    public string? SelectOob { get; set; }
 
     /// <summary>
     /// Gets or sets the path to push into the browser history.

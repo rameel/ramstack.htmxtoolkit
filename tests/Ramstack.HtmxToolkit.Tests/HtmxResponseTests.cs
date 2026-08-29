@@ -79,7 +79,7 @@ public class HtmxResponseTests
         var context = TestHelper.CreateHtmxRequestContext();
         context.Response.Htmx(r => r.Location("/bar", new HtmxLocationOptions
         {
-            SelectOOB = "#alerts",
+            SelectOob = "#alerts",
             Push = "false",
             Replace = "/replaced"
         }));
