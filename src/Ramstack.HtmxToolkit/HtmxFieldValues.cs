@@ -163,30 +163,21 @@ public readonly struct HtmxFieldValues : IReadOnlyList<string>
         public readonly string Current => _current!;
 
         /// <summary>
-        /// Initializes a new enumerator for the specified underlying value representation.
+        /// Initializes a new enumerator for the specified <see cref="HtmxFieldValues"/>.
         /// </summary>
-        /// <param name="value">A single string, an array of strings,
-        /// or <see langword="null"/> for an empty sequence.</param>
-        private Enumerator(object? value)
+        /// <param name="value">The value whose strings to enumerate.</param>
+        public Enumerator(HtmxFieldValues value)
         {
-            if (value is string s)
+            if (value.Values is string s)
             {
                 (_values, _current) = (null, s);
             }
             else
             {
-                (_values, _current) = (Unsafe.As<string[]?>(value), null);
+                (_values, _current) = (Unsafe.As<string[]?>(value.Values), null);
             }
 
             _index = 0;
-        }
-
-        /// <summary>
-        /// Initializes a new enumerator for the specified <see cref="HtmxFieldValues"/>.
-        /// </summary>
-        /// <param name="value">The value whose strings to enumerate.</param>
-        public Enumerator(HtmxFieldValues value) : this(value._values)
-        {
         }
 
         /// <inheritdoc />
