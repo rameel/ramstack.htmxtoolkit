@@ -19,7 +19,6 @@ public class HtmxResponseTests
         context.Response.Htmx(r => r.Location("/bar", new HtmxLocationOptions
         {
             Source = "button",
-            Event = "click",
             Target = "#content",
             Swap = HtmxSwap.OuterHtml,
             Select = "#list"
@@ -30,7 +29,6 @@ public class HtmxResponseTests
 
         Assert.That(json["path"].GetString(), Is.EqualTo("/bar"));
         Assert.That(json["source"].GetString(), Is.EqualTo("button"));
-        Assert.That(json["event"].GetString(), Is.EqualTo("click"));
         Assert.That(json["target"].GetString(), Is.EqualTo("#content"));
         Assert.That(json["swap"].GetString(), Is.EqualTo("outerHTML"));
         Assert.That(json["select"].GetString(), Is.EqualTo("#list"));
@@ -51,12 +49,11 @@ public class HtmxResponseTests
     }
 
     [Test]
-    public void Location_WithOptions_SerializesHandlerValuesAndHeaders()
+    public void Location_WithOptions_SerializesValuesAndHeaders()
     {
         var context = TestHelper.CreateHtmxRequestContext();
         context.Response.Htmx(r => r.Location("/bar", new HtmxLocationOptions
         {
-            Handler = "handleResponse",
             Values = new Dictionary<string, HtmxFieldValues>
             {
                 ["id"] = "42",
@@ -71,7 +68,6 @@ public class HtmxResponseTests
         var header = context.Response.Headers[HtmxResponseHeaderNames.Location].ToString();
         var json = JsonHelper.ParseJson(header);
 
-        Assert.That(json["handler"].GetString(), Is.EqualTo("handleResponse"));
         Assert.That(json["values"].GetProperty("id").GetString(), Is.EqualTo("42"));
         Assert.That(json["values"].GetProperty("tags").GetRawText(), Is.EqualTo("[\"dotnet\",\"web\"]"));
         Assert.That(json["headers"].GetProperty("X-Test").GetString(), Is.EqualTo("abc"));

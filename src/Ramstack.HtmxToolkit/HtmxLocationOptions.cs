@@ -20,16 +20,6 @@ public sealed class HtmxLocationOptions
     public string? Source { get; set; }
 
     /// <summary>
-    /// Gets or sets the event that triggered the request.
-    /// </summary>
-    public string? Event { get; set; }
-
-    /// <summary>
-    /// Gets or sets the name of the client-side callback function that will handle the response HTML.
-    /// </summary>
-    public string? Handler { get; set; }
-
-    /// <summary>
     /// Gets or sets the target element into which the response will be swapped.
     /// </summary>
     /// <remarks>Supported in HTMX 1.9.x, HTMX 2.x, and HTMX 4.x.</remarks>
