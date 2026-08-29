@@ -5,14 +5,14 @@ using System.Text.Json.Serialization;
 namespace Ramstack.HtmxToolkit;
 
 /// <summary>
-/// Represents one or more string values for an HTMX request parameter.
+/// Represents one or more values for a form field submitted with an HTMX request.
 /// </summary>
 /// <remarks>
 /// A single value can be assigned from a string. Multiple values can be specified with a collection expression.
 /// </remarks>
-[CollectionBuilder(typeof(HtmxValues), nameof(Create))]
-[JsonConverter(typeof(HtmxValuesJsonConverter))]
-public readonly struct HtmxValues : IReadOnlyList<string>
+[JsonConverter(typeof(HtmxFieldValuesJsonConverter))]
+[CollectionBuilder(typeof(HtmxFieldValues), nameof(Create))]
+public readonly struct HtmxFieldValues : IReadOnlyList<string>
 {
     private readonly object? _values;
 
@@ -64,14 +64,14 @@ public readonly struct HtmxValues : IReadOnlyList<string>
     public object? Values => _values;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="HtmxValues"/> structure with a single value.
+    /// Initializes a new instance of the <see cref="HtmxFieldValues"/> structure with a single value.
     /// </summary>
     /// <param name="value">The value to store.</param>
-    public HtmxValues(string value) =>
+    public HtmxFieldValues(string value) =>
         _values = value;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="HtmxValues"/> structure with the specified values.
+    /// Initializes a new instance of the <see cref="HtmxFieldValues"/> structure with the specified values.
     /// </summary>
     /// <param name="values">
     /// The values to store, or <see langword="null"/> to create an empty instance.
@@ -79,38 +79,38 @@ public readonly struct HtmxValues : IReadOnlyList<string>
     /// <remarks>
     /// The specified array is stored directly and is not copied.
     /// </remarks>
-    public HtmxValues(string[]? values) =>
+    public HtmxFieldValues(string[]? values) =>
         _values = values;
 
     /// <summary>
-    /// Creates an <see cref="HtmxValues"/> from the specified values.
+    /// Creates an <see cref="HtmxFieldValues"/> from the specified values.
     /// </summary>
     /// <param name="values">The values to include.</param>
     /// <returns>
-    /// An <see cref="HtmxValues"/> containing the specified values.
+    /// An <see cref="HtmxFieldValues"/> containing the specified values.
     /// </returns>
-    public static HtmxValues Create(ReadOnlySpan<string> values)
+    public static HtmxFieldValues Create(ReadOnlySpan<string> values)
     {
         return values.Length switch
         {
-            0 => new HtmxValues([]),
-            1 => new HtmxValues(values[0]),
-            _ => new HtmxValues(CreateArray(values))
+            0 => new HtmxFieldValues([]),
+            1 => new HtmxFieldValues(values[0]),
+            _ => new HtmxFieldValues(CreateArray(values))
         };
     }
 
     /// <summary>
-    /// Converts a string to an <see cref="HtmxValues"/>.
+    /// Converts a string to an <see cref="HtmxFieldValues"/>.
     /// </summary>
     /// <param name="value">The value to convert.</param>
-    public static implicit operator HtmxValues(string value) =>
+    public static implicit operator HtmxFieldValues(string value) =>
         new(value);
 
     /// <summary>
-    /// Converts an array of strings to an <see cref="HtmxValues"/>.
+    /// Converts an array of strings to an <see cref="HtmxFieldValues"/>.
     /// </summary>
     /// <param name="values">The values to convert.</param>
-    public static implicit operator HtmxValues(string[] values) =>
+    public static implicit operator HtmxFieldValues(string[] values) =>
         new(values);
 
     /// <summary>
@@ -157,7 +157,7 @@ public readonly struct HtmxValues : IReadOnlyList<string>
     #region Inner type: Enumerator
 
     /// <summary>
-    /// Enumerates the strings represented by an <see cref="HtmxValues"/>.
+    /// Enumerates the strings represented by an <see cref="HtmxFieldValues"/>.
     /// </summary>
     public struct Enumerator : IEnumerator<string>
     {
@@ -188,10 +188,10 @@ public readonly struct HtmxValues : IReadOnlyList<string>
         }
 
         /// <summary>
-        /// Initializes a new enumerator for the specified <see cref="HtmxValues"/>.
+        /// Initializes a new enumerator for the specified <see cref="HtmxFieldValues"/>.
         /// </summary>
         /// <param name="value">The value whose strings to enumerate.</param>
-        public Enumerator(HtmxValues value) : this(value._values)
+        public Enumerator(HtmxFieldValues value) : this(value._values)
         {
         }
 

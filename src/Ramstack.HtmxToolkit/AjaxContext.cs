@@ -39,9 +39,9 @@ public sealed class AjaxContext
     public HtmxSwap? Swap { get; set; }
 
     /// <summary>
-    /// Gets or sets the values to submit with the request.
+    /// Gets or sets the form field values to submit with the request.
     /// </summary>
-    public IDictionary<string, HtmxValues>? Values { get; set; }
+    public IDictionary<string, HtmxFieldValues>? Values { get; set; }
 
     /// <summary>
     /// Gets or sets the headers to include with the request.
