@@ -1,3 +1,4 @@
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace Ramstack.HtmxToolkit;
@@ -197,4 +198,8 @@ public sealed class HtmxV1Config() : HtmxConfig(HtmxTargetVersion.V1)
     [JsonPropertyName("triggerSpecsCache")]
     [JsonConverter(typeof(HtmxTriggerSpecsCacheJsonConverter))]
     public bool? TriggerSpecsCacheEnabled { get; set; }
+
+    /// <inheritdoc />
+    internal override string ToJson() =>
+        JsonSerializer.Serialize(this, HtmxConfigJsonSerializerContext.Default.HtmxV1Config);
 }

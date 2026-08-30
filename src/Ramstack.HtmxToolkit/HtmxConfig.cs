@@ -19,4 +19,12 @@ public abstract class HtmxConfig
     /// <param name="version">The target major version of HTMX that this configuration applies to.</param>
     internal HtmxConfig(HtmxTargetVersion version) =>
         TargetVersion = version;
+
+    /// <summary>
+    /// Serializes this configuration to JSON.
+    /// </summary>
+    /// <returns>
+    /// A string containing this configuration serialized as JSON.
+    /// </returns>
+    internal abstract string ToJson();
 }

@@ -1,3 +1,4 @@
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace Ramstack.HtmxToolkit;
@@ -145,4 +146,8 @@ public sealed class HtmxV4Config() : HtmxConfig(HtmxTargetVersion.V4)
     /// at runtime and supports wildcard patterns such as <c>"4xx"</c> and <c>"44x"</c>.
     /// </remarks>
     public string[]? NoSwap { get; set; }
+
+    /// <inheritdoc />
+    internal override string ToJson() =>
+        JsonSerializer.Serialize(this, HtmxConfigJsonSerializerContext.Default.HtmxV4Config);
 }
