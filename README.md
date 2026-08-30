@@ -38,7 +38,6 @@ Register the toolkit and select the HTMX version used by the application:
 ```csharp
 builder.Services.AddHtmxToolkit(options =>
 {
-    options.IncludeAntiforgeryToken = true;
     options.UseHtmxV2(config =>
     {
         config.DefaultSwapStyle = HtmxSwap.OuterHtml;
@@ -660,7 +659,6 @@ The version-specific callback exposes only settings supported by the selected HT
 ```csharp
 builder.Services.AddHtmxToolkit(options =>
 {
-    options.IncludeAntiforgeryToken = true;
     options.UseHtmxV2(config =>
     {
         config.DefaultSwapStyle = HtmxSwap.OuterHtml;
@@ -756,9 +754,21 @@ responses, configure `NoSwap` as shown in the HTMX 4.x example above.
 ## Toolkit Script
 
 The toolkit script provides antiforgery support and HTMX compatibility behavior.
-If you have enabled **Antiforgery** token generation in the configuration
-(`IncludeAntiforgeryToken = true`), include it to ensure the token is present in form
-parameters or headers and refreshed in a timely manner.
+Antiforgery metadata generation is enabled by default. Include the script to ensure the
+token is added to non-GET request form parameters or headers and refreshed in a timely manner.
+
+Sending the token does not enable server-side validation by itself. Configure antiforgery
+validation for the corresponding ASP.NET Core endpoints as appropriate.
+
+To disable antiforgery metadata generation—for example, when the application handles
+antiforgery separately or does not issue unsafe HTMX requests—set the option to `false`:
+
+```csharp
+builder.Services.AddHtmxToolkit(options =>
+{
+    options.IncludeAntiforgeryToken = false;
+});
+```
 
 To do this, you can directly include the contents of the script file on the page:
 

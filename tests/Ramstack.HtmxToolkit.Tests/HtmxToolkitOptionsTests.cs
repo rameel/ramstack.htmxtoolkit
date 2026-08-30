@@ -147,7 +147,7 @@ public class HtmxToolkitOptionsTests
         {
             Assert.That(options.TargetVersion, Is.EqualTo(HtmxTargetVersion.V2));
             Assert.That(options.HtmxConfig, Is.TypeOf<HtmxV2Config>());
-            Assert.That(options.IncludeAntiforgeryToken, Is.False);
+            Assert.That(options.IncludeAntiforgeryToken, Is.True);
         });
     }
 }

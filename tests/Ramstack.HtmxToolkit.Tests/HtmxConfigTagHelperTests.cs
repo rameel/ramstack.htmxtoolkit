@@ -313,11 +313,11 @@ public class HtmxConfigTagHelperTests
     }
 
     [Test]
-    public async Task ProcessAsync_IncludeAntiforgeryToken_RendersDataAttributes()
+    public async Task ProcessAsync_AntiforgeryEnabledByDefault_RendersDataAttributes()
     {
         var antiforgery = new StubAntiforgery();
         var httpContext = new DefaultHttpContext();
-        var options = new HtmxToolkitOptions { IncludeAntiforgeryToken = true };
+        var options = new HtmxToolkitOptions();
         var helper = CreateHelper(options, antiforgery);
         helper.ViewContext = new ViewContext { HttpContext = httpContext };
 
@@ -341,7 +341,7 @@ public class HtmxConfigTagHelperTests
         var antiforgery = new StubAntiforgery();
         var output = TestHelper.CreateTagHelperOutput();
 
-        await CreateHelper(new HtmxToolkitOptions(), antiforgery)
+        await CreateHelper(new HtmxToolkitOptions { IncludeAntiforgeryToken = false }, antiforgery)
             .ProcessAsync(TestHelper.CreateTagHelperContext(), output);
 
         Assert.Multiple(() =>
@@ -362,7 +362,10 @@ public class HtmxConfigTagHelperTests
     }
 
     private static HtmxConfigTagHelper CreateHelper(HtmxToolkitOptions options, IAntiforgery? antiforgery = null) =>
-        new(antiforgery ?? new StubAntiforgery(), Options.Create(options));
+        new(antiforgery ?? new StubAntiforgery(), Options.Create(options))
+        {
+            ViewContext = new ViewContext { HttpContext = new DefaultHttpContext() }
+        };
 
     private static string GetContent(TagHelperOutput output) =>
         output.Attributes["content"]!.Value!.ToString()!;
