@@ -29,8 +29,9 @@ public sealed class HtmxToolkitOptions
 
     /// <summary>
     /// Gets or sets a value indicating whether antiforgery request metadata is rendered by the configuration tag helper.
+    /// Defaults to <see langword="true"/>.
     /// </summary>
-    public bool IncludeAntiforgeryToken { get; set; }
+    public bool IncludeAntiforgeryToken { get; set; } = true;
 
     /// <summary>
     /// Gets the HTMX major version used for version-sensitive generated markup.
