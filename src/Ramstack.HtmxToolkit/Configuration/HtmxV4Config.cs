@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 using Ramstack.HtmxToolkit.Serialization;
 
-namespace Ramstack.HtmxToolkit;
+namespace Ramstack.HtmxToolkit.Configuration;
 
 /// <summary>
 /// Represents the configuration for HTMX 4.x.

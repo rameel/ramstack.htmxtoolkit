@@ -1,4 +1,4 @@
-namespace Ramstack.HtmxToolkit;
+namespace Ramstack.HtmxToolkit.Configuration;
 
 /// <summary>
 /// Defines the HTTP methods that can be used in HTMX configuration.

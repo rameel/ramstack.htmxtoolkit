@@ -1,9 +1,10 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
+using Ramstack.HtmxToolkit.Configuration;
 using Ramstack.HtmxToolkit.Hosting;
 
-namespace Ramstack.HtmxToolkit.Tests;
+namespace Ramstack.HtmxToolkit.Tests.Configuration;
 
 [TestFixture]
 public class HtmxToolkitOptionsTests

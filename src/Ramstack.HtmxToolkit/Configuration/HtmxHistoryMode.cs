@@ -1,4 +1,4 @@
-namespace Ramstack.HtmxToolkit;
+namespace Ramstack.HtmxToolkit.Configuration;
 
 /// <summary>
 /// Specifies how HTMX history restoration is handled.

@@ -1,4 +1,4 @@
-namespace Ramstack.HtmxToolkit;
+namespace Ramstack.HtmxToolkit.Configuration;
 
 /// <summary>
 /// Specifies the request mode used by HTMX.

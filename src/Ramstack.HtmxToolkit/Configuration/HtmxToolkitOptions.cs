@@ -1,7 +1,7 @@
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 
-namespace Ramstack.HtmxToolkit;
+namespace Ramstack.HtmxToolkit.Configuration;
 
 /// <summary>
 /// Represents configuration options for services provided by HTMX Toolkit.

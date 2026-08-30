@@ -1,5 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 
+using Ramstack.HtmxToolkit.Configuration;
+
 namespace Ramstack.HtmxToolkit.Hosting;
 
 /// <summary>

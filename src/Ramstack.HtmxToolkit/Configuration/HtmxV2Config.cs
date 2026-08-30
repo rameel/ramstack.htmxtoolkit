@@ -1,10 +1,9 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-using Ramstack.HtmxToolkit.TagHelpers;
 using Ramstack.HtmxToolkit.Serialization;
 
-namespace Ramstack.HtmxToolkit;
+namespace Ramstack.HtmxToolkit.Configuration;
 
 /// <summary>
 /// Represents the configuration for HTMX 2.x.

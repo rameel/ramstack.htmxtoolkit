@@ -1,4 +1,4 @@
-namespace Ramstack.HtmxToolkit;
+namespace Ramstack.HtmxToolkit.Configuration;
 
 /// <summary>
 /// Specifies the HTMX major version targeted by generated markup.

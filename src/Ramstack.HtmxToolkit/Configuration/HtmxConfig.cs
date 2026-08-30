@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 using Microsoft.AspNetCore.Html;
 
-namespace Ramstack.HtmxToolkit;
+namespace Ramstack.HtmxToolkit.Configuration;
 
 /// <summary>
 /// Represents configuration for a specific major version of HTMX.

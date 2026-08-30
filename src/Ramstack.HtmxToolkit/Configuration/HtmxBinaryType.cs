@@ -1,4 +1,4 @@
-namespace Ramstack.HtmxToolkit;
+namespace Ramstack.HtmxToolkit.Configuration;
 
 /// <summary>
 /// Specifies how binary data received over a WebSocket connection is represented.

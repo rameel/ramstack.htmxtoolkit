@@ -1,4 +1,4 @@
-namespace Ramstack.HtmxToolkit.TagHelpers;
+namespace Ramstack.HtmxToolkit.Configuration;
 
 /// <summary>
 /// Represents the response handling configuration for responses that match

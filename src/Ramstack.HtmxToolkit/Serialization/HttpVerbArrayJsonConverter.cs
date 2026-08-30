@@ -1,6 +1,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
+using Ramstack.HtmxToolkit.Configuration;
 using Ramstack.HtmxToolkit.Internal;
 
 namespace Ramstack.HtmxToolkit.Serialization;
