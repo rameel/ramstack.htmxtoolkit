@@ -1,8 +1,10 @@
 using System.Text.Json;
 
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Options;
 
 using Ramstack.HtmxToolkit.Collections;
+using Ramstack.HtmxToolkit.Configuration;
 using Ramstack.HtmxToolkit.Serialization;
 
 namespace Ramstack.HtmxToolkit;
@@ -16,6 +18,8 @@ internal sealed class PendingEvents
     private const string ProxyEventName = "rs:events";
 
     private readonly HttpResponse _response;
+    private readonly HtmxTargetVersion _version;
+
     private SmallDictionary<string, object>? _receive;
     private SmallDictionary<string, object>? _afterSwap;
     private SmallDictionary<string, object>? _afterSettle;
@@ -25,7 +29,7 @@ internal sealed class PendingEvents
     /// </summary>
     /// <param name="response">The HTTP response to which the events belong.</param>
     private PendingEvents(HttpResponse response) =>
-        _response = response;
+        (_response, _version) = (response, GetTargetVersion(response));
 
     /// <summary>
     /// Adds the specified events to the pending set for <paramref name="timing" />.
@@ -36,6 +40,8 @@ internal sealed class PendingEvents
     /// <param name="events">The event names and their associated details.</param>
     public void AddEvents(HtmxTriggerTiming timing, IReadOnlyDictionary<string, object> events)
     {
+        timing = NormalizeTiming(timing);
+
         var current = timing switch
         {
             HtmxTriggerTiming.Receive => _receive ??= new SmallDictionary<string, object>(StringComparer.Ordinal),
@@ -67,6 +73,8 @@ internal sealed class PendingEvents
     /// </returns>
     public IReadOnlyDictionary<string, object>? GetEvents(HtmxTriggerTiming timing)
     {
+        timing = NormalizeTiming(timing);
+
         return timing switch
         {
             HtmxTriggerTiming.Receive => _receive,
@@ -82,6 +90,8 @@ internal sealed class PendingEvents
     /// <param name="events">The replacement event names and their associated details.</param>
     public void SetEvents(HtmxTriggerTiming timing, IReadOnlyDictionary<string, object> events)
     {
+        timing = NormalizeTiming(timing);
+
         var replacement = new SmallDictionary<string, object>(events, StringComparer.Ordinal);
         switch (timing)
         {
@@ -155,5 +165,33 @@ internal sealed class PendingEvents
     {
         if (events is not null)
             _response.Headers[name] = JsonSerializer.Serialize(events, JsonOptions.CamelCase);
+    }
+
+    /// <summary>
+    /// Normalizes unsupported HTMX 4.x trigger timings to the primary trigger header.
+    /// </summary>
+    /// <param name="timing">The requested event timing.</param>
+    /// <returns>
+    /// The timing supported by the configured HTMX version.
+    /// </returns>
+    private HtmxTriggerTiming NormalizeTiming(HtmxTriggerTiming timing) =>
+        _version == HtmxTargetVersion.V4
+            ? HtmxTriggerTiming.Receive
+            : timing;
+
+    /// <summary>
+    /// Returns the configured HTMX target version, defaulting to HTMX 2.x
+    /// when toolkit services are unavailable.
+    /// </summary>
+    /// <param name="response">The response whose request services are inspected.</param>
+    /// <returns>
+    /// The configured HTMX target version.
+    /// </returns>
+    private static HtmxTargetVersion GetTargetVersion(HttpResponse response)
+    {
+        var p = response.HttpContext.RequestServices;
+        var options = p?.GetService(typeof(IOptions<HtmxToolkitOptions>)) as IOptions<HtmxToolkitOptions>;
+
+        return options?.Value.TargetVersion ?? HtmxTargetVersion.V2;
     }
 }

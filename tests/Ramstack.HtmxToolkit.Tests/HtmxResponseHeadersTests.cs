@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Http;
 
+using Ramstack.HtmxToolkit.Configuration;
+
 namespace Ramstack.HtmxToolkit.Tests;
 
 [TestFixture]
@@ -112,5 +114,31 @@ public class HtmxResponseHeadersTests
         Assert.That(headers.Trigger, Is.Null);
         Assert.That(headers.TriggerAfterSwap, Is.Null);
         Assert.That(headers.TriggerAfterSettle, Is.Null);
+    }
+
+    [Test]
+    public void TriggerTimingProperties_Htmx4_AliasReceiveTrigger()
+    {
+        var context = TestHelper.CreateHtmxRequestContext(HtmxTargetVersion.V4);
+        var headers = context.Response.GetHtmxHeaders();
+        var events = new Dictionary<string, object> { ["swapped"] = true };
+
+        headers.TriggerAfterSwap = events;
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(headers.Trigger, Is.EqualTo(events));
+            Assert.That(headers.TriggerAfterSwap, Is.EqualTo(events));
+            Assert.That(headers.TriggerAfterSettle, Is.EqualTo(events));
+        });
+
+        PendingEvents.GetOrCreate(context.Response).Flush();
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(context.Response.Headers.ContainsKey(HtmxResponseHeaderNames.Trigger), Is.True);
+            Assert.That(context.Response.Headers.ContainsKey(HtmxResponseHeaderNames.TriggerAfterSwap), Is.False);
+            Assert.That(context.Response.Headers.ContainsKey(HtmxResponseHeaderNames.TriggerAfterSettle), Is.False);
+        });
     }
 }

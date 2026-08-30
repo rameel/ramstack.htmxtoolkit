@@ -1,5 +1,9 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Razor.TagHelpers;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+
+using Ramstack.HtmxToolkit.Configuration;
 
 namespace Ramstack.HtmxToolkit.Tests;
 
@@ -40,6 +44,43 @@ internal static class TestHelper
 
         if (boosted)
             context.Request.Headers[HtmxRequestHeaderNames.Boosted] = "true";
+
+        return context;
+    }
+
+    /// <summary>
+    /// Creates a <see cref="HttpContext"/> whose request is an htmx request
+    /// and whose services target the specified HTMX major version.
+    /// </summary>
+    /// <param name="version">The HTMX major version to configure.</param>
+    /// <param name="boosted"><see langword="true"/> to mark the request as boosted;
+    /// otherwise, <see langword="false"/>.</param>
+    /// <returns>
+    /// The configured <see cref="HttpContext"/>.
+    /// </returns>
+    public static HttpContext CreateHtmxRequestContext(HtmxTargetVersion version, bool boosted = false)
+    {
+        var context = CreateHtmxRequestContext(boosted);
+        var options = new HtmxToolkitOptions();
+
+        switch (version)
+        {
+            case HtmxTargetVersion.V1:
+                options.UseHtmxV1();
+                break;
+            case HtmxTargetVersion.V2:
+                options.UseHtmxV2();
+                break;
+            case HtmxTargetVersion.V4:
+                options.UseHtmxV4();
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(version));
+        }
+
+        context.RequestServices = new ServiceCollection()
+            .AddSingleton(Options.Create(options))
+            .BuildServiceProvider();
 
         return context;
     }

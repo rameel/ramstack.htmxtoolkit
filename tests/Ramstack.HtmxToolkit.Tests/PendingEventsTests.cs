@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Http;
 
+using Ramstack.HtmxToolkit.Configuration;
+
 namespace Ramstack.HtmxToolkit.Tests;
 
 [TestFixture]
@@ -56,6 +58,85 @@ public class PendingEventsTests
         Assert.That(pending.GetEvents(HtmxTriggerTiming.Receive), Is.EqualTo(CreateDictionary(("r", 1))));
         Assert.That(pending.GetEvents(HtmxTriggerTiming.AfterSettle), Is.EqualTo(CreateDictionary(("t", 3))));
         Assert.That(pending.GetEvents(HtmxTriggerTiming.AfterSwap), Is.EqualTo(CreateDictionary(("s", 2))));
+    }
+
+    [TestCase(HtmxTargetVersion.V1)]
+    [TestCase(HtmxTargetVersion.V2)]
+    public void AddEvents_LegacyVersions_WriteEachTimingToItsOwnHeader(HtmxTargetVersion targetVersion)
+    {
+        var context = TestHelper.CreateHtmxRequestContext(targetVersion);
+        var pending = PendingEvents.GetOrCreate(context.Response);
+
+        pending.AddEvents(HtmxTriggerTiming.Receive, CreateDictionary(("received", 1)));
+        pending.AddEvents(HtmxTriggerTiming.AfterSwap, CreateDictionary(("swapped", 2)));
+        pending.AddEvents(HtmxTriggerTiming.AfterSettle, CreateDictionary(("settled", 3)));
+        pending.Flush();
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(
+                context.Response.Headers[HtmxResponseHeaderNames.Trigger].ToString(),
+                Is.EqualTo("{\"received\":1}"));
+
+            Assert.That(
+                context.Response.Headers[HtmxResponseHeaderNames.TriggerAfterSwap].ToString(),
+                Is.EqualTo("{\"swapped\":2}"));
+
+            Assert.That(
+                context.Response.Headers[HtmxResponseHeaderNames.TriggerAfterSettle].ToString(),
+                Is.EqualTo("{\"settled\":3}"));
+        });
+    }
+
+    [Test]
+    public void AddEvents_Htmx4_NormalizesAllTimingsToReceive()
+    {
+        var context = TestHelper.CreateHtmxRequestContext(HtmxTargetVersion.V4);
+        var pending = PendingEvents.GetOrCreate(context.Response);
+
+        pending.AddEvents(HtmxTriggerTiming.Receive, CreateDictionary(("received", 1)));
+        pending.AddEvents(HtmxTriggerTiming.AfterSwap, CreateDictionary(("swapped", 2)));
+        pending.AddEvents(HtmxTriggerTiming.AfterSettle, CreateDictionary(("settled", 3)));
+
+        var events = pending.GetEvents(HtmxTriggerTiming.Receive)!;
+        pending.Flush();
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(events.Keys, Is.EqualTo(["received", "swapped", "settled"]));
+            Assert.That(pending.GetEvents(HtmxTriggerTiming.AfterSwap), Is.SameAs(events));
+            Assert.That(pending.GetEvents(HtmxTriggerTiming.AfterSettle), Is.SameAs(events));
+
+            Assert.That(
+                context.Response.Headers[HtmxResponseHeaderNames.Trigger].ToString(),
+                Is.EqualTo("{\"received\":1,\"swapped\":2,\"settled\":3}"));
+
+            Assert.That(context.Response.Headers.ContainsKey(HtmxResponseHeaderNames.TriggerAfterSwap), Is.False);
+            Assert.That(context.Response.Headers.ContainsKey(HtmxResponseHeaderNames.TriggerAfterSettle), Is.False);
+        });
+    }
+
+    [Test]
+    public void AddEvents_Htmx4_PreservesDuplicatesAcrossRequestedTimings()
+    {
+        var context = TestHelper.CreateHtmxRequestContext(HtmxTargetVersion.V4);
+        var pending = PendingEvents.GetOrCreate(context.Response);
+
+        pending.AddEvents(HtmxTriggerTiming.Receive, CreateDictionary(("message", "first")));
+        pending.AddEvents(HtmxTriggerTiming.AfterSwap, CreateDictionary(("message", "second")));
+        pending.AddEvents(HtmxTriggerTiming.AfterSettle, CreateDictionary(("message", "third")));
+
+        var events = pending.GetEvents(HtmxTriggerTiming.Receive)!;
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(events["message"], Is.EqualTo("first"));
+            Assert.That(events["rs:events"], Is.EqualTo(new[]
+            {
+                KeyValuePair.Create<string, object>("message", "second"),
+                KeyValuePair.Create<string, object>("message", "third")
+            }));
+        });
     }
 
     [Test]
