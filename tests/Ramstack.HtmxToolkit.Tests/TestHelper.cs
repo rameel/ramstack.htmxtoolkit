@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 
 using Ramstack.HtmxToolkit.Configuration;
+using Ramstack.HtmxToolkit.Hosting;
 
 namespace Ramstack.HtmxToolkit.Tests;
 
@@ -21,7 +21,7 @@ internal static class TestHelper
     /// </returns>
     public static HttpContext CreateHttpContext(params (string Name, string Value)[] headers)
     {
-        var context = new DefaultHttpContext();
+        var context = CreateContext(HtmxTargetVersion.V2);
 
         foreach (var (name, value) in headers)
             context.Request.Headers[name] = value;
@@ -39,7 +39,7 @@ internal static class TestHelper
     /// </returns>
     public static HttpContext CreateHtmxRequestContext(bool boosted = false)
     {
-        var context = new DefaultHttpContext();
+        var context = CreateContext(HtmxTargetVersion.V2);
         context.Request.Headers[HtmxRequestHeaderNames.Request] = "true";
 
         if (boosted)
@@ -60,29 +60,49 @@ internal static class TestHelper
     /// </returns>
     public static HttpContext CreateHtmxRequestContext(HtmxTargetVersion version, bool boosted = false)
     {
-        var context = CreateHtmxRequestContext(boosted);
-        var options = new HtmxToolkitOptions();
+        var context = CreateContext(version);
+        context.Request.Headers[HtmxRequestHeaderNames.Request] = "true";
 
-        switch (version)
-        {
-            case HtmxTargetVersion.V1:
-                options.UseHtmxV1();
-                break;
-            case HtmxTargetVersion.V2:
-                options.UseHtmxV2();
-                break;
-            case HtmxTargetVersion.V4:
-                options.UseHtmxV4();
-                break;
-            default:
-                throw new ArgumentOutOfRangeException(nameof(version));
-        }
-
-        context.RequestServices = new ServiceCollection()
-            .AddSingleton(Options.Create(options))
-            .BuildServiceProvider();
+        if (boosted)
+            context.Request.Headers[HtmxRequestHeaderNames.Boosted] = "true";
 
         return context;
+    }
+
+    /// <summary>
+    /// Creates an HTTP context whose request services contain the toolkit
+    /// configuration for the specified HTMX major version.
+    /// </summary>
+    /// <param name="version">The HTMX major version to configure.</param>
+    /// <returns>
+    /// The configured HTTP context.
+    /// </returns>
+    private static HttpContext CreateContext(HtmxTargetVersion version)
+    {
+        var services = new ServiceCollection();
+
+        services.AddHtmxToolkit(options =>
+        {
+            switch (version)
+            {
+                case HtmxTargetVersion.V1:
+                    options.UseHtmxV1();
+                    break;
+                case HtmxTargetVersion.V2:
+                    options.UseHtmxV2();
+                    break;
+                case HtmxTargetVersion.V4:
+                    options.UseHtmxV4();
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(version));
+            }
+        });
+
+        return new DefaultHttpContext
+        {
+            RequestServices = services.BuildServiceProvider()
+        };
     }
 
     /// <summary>

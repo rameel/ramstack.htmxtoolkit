@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Http;
-
 using Ramstack.HtmxToolkit.Configuration;
 
 namespace Ramstack.HtmxToolkit.Tests;
@@ -10,7 +8,7 @@ public class PendingEventsTests
     [Test]
     public void AddEvents_StoresDistinctKeys()
     {
-        var context = new DefaultHttpContext();
+        var context = TestHelper.CreateHttpContext();
         var pending = PendingEvents.GetOrCreate(context.Response);
 
         pending.AddEvents(
@@ -27,7 +25,7 @@ public class PendingEventsTests
     [Test]
     public void AddEvents_AccumulatesDuplicateKeys_UnderProxy()
     {
-        var context = new DefaultHttpContext();
+        var context = TestHelper.CreateHttpContext();
         var pending = PendingEvents.GetOrCreate(context.Response);
 
         pending.AddEvents(
@@ -48,7 +46,7 @@ public class PendingEventsTests
     [Test]
     public void AddEvents_TracksTimingsIndependently()
     {
-        var context = new DefaultHttpContext();
+        var context = TestHelper.CreateHttpContext();
         var pending = PendingEvents.GetOrCreate(context.Response);
 
         pending.AddEvents(HtmxTriggerTiming.Receive, CreateDictionary(("r", 1)));
@@ -142,7 +140,7 @@ public class PendingEventsTests
     [Test]
     public void GetEvents_ReturnsNull_WhenNothingRegistered()
     {
-        var context = new DefaultHttpContext();
+        var context = TestHelper.CreateHttpContext();
         var pending = PendingEvents.GetOrCreate(context.Response);
 
         Assert.That(pending.GetEvents(HtmxTriggerTiming.Receive), Is.Null);
@@ -153,7 +151,7 @@ public class PendingEventsTests
     [Test]
     public void SetEvents_ReplacesExisting()
     {
-        var context = new DefaultHttpContext();
+        var context = TestHelper.CreateHttpContext();
         var pending = PendingEvents.GetOrCreate(context.Response);
 
         pending.AddEvents(HtmxTriggerTiming.Receive, CreateDictionary(("old", 1)));
@@ -167,7 +165,7 @@ public class PendingEventsTests
     [Test]
     public void Flush_WritesCamelCaseJsonToHeaders()
     {
-        var context = new DefaultHttpContext();
+        var context = TestHelper.CreateHttpContext();
         var pending = PendingEvents.GetOrCreate(context.Response);
 
         pending.AddEvents(
@@ -184,7 +182,7 @@ public class PendingEventsTests
     [Test]
     public void Flush_WritesOnlyRegisteredTimings()
     {
-        var context = new DefaultHttpContext();
+        var context = TestHelper.CreateHttpContext();
         var pending = PendingEvents.GetOrCreate(context.Response);
 
         pending.AddEvents(
@@ -201,7 +199,7 @@ public class PendingEventsTests
     [Test]
     public void Flush_SerializesNullEventDetail_AsNull()
     {
-        var context = new DefaultHttpContext();
+        var context = TestHelper.CreateHttpContext();
         var pending = PendingEvents.GetOrCreate(context.Response);
 
         pending.AddEvents(HtmxTriggerTiming.Receive, CreateDictionary(("e", null!)));
@@ -214,7 +212,7 @@ public class PendingEventsTests
     [Test]
     public void GetOrCreate_ReturnsSameInstance()
     {
-        var context = new DefaultHttpContext();
+        var context = TestHelper.CreateHttpContext();
         var pending = PendingEvents.GetOrCreate(context.Response);
 
         Assert.That(pending, Is.SameAs(PendingEvents.GetOrCreate(context.Response)));
@@ -224,7 +222,7 @@ public class PendingEventsTests
     [Test]
     public void GetOrCreate_RegistersInHttpContextItems()
     {
-        var context = new DefaultHttpContext();
+        var context = TestHelper.CreateHttpContext();
         var pending = PendingEvents.GetOrCreate(context.Response);
 
         Assert.That(context.Items[typeof(PendingEvents)], Is.SameAs(pending));

@@ -190,7 +190,7 @@ internal sealed class PendingEvents
     private static HtmxTargetVersion GetTargetVersion(HttpResponse response)
     {
         var p = response.HttpContext.RequestServices;
-        var options = p?.GetService(typeof(IOptions<HtmxToolkitOptions>)) as IOptions<HtmxToolkitOptions>;
+        var options = p.GetService(typeof(IOptions<HtmxToolkitOptions>)) as IOptions<HtmxToolkitOptions>;
 
         return options?.Value.TargetVersion ?? HtmxTargetVersion.V2;
     }
