@@ -68,20 +68,12 @@ public sealed class HtmxResponseAttribute : Attribute, IResultFilter
         set => SetValue(HtmxResponseHeaderNames.Reselect, value);
     }
 
-    /// <summary>
-    /// Gets or sets a value indicating whether to set HTTP status code <c>286</c> to stop polling.
-    /// </summary>
-    public bool StopPolling { get; set; }
-
     /// <inheritdoc />
     public void OnResultExecuting(ResultExecutingContext context)
     {
         if (context.HttpContext.Request.IsHtmxRequest())
         {
             var response = context.HttpContext.Response;
-            if (StopPolling)
-                response.StatusCode = HtmxResponse.StopPollingStatusCode;
-
             var headers = response.Headers;
             foreach (ref var kvp in CollectionsMarshal.AsSpan(_headers))
                 headers[kvp.Key] = kvp.Value;

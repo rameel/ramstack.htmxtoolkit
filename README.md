@@ -406,9 +406,7 @@ to a controller or action:
 public class UserController : ControllerBase
 {
     [HtmxRequest]
-    [HtmxResponse(
-        StopPolling = true,
-        Reswap = HtmxSwap.OuterHtml)]
+    [HtmxResponse(Reswap = HtmxSwap.OuterHtml)]
     public IActionResult UpdateProfile(UserProfile profile)
     {
         ...
