@@ -17,13 +17,8 @@ internal sealed class HtmxSwapJsonConverter : JsonConverter<HtmxSwap?>
     /// <inheritdoc />
     public override void Write(Utf8JsonWriter writer, HtmxSwap? value, JsonSerializerOptions options)
     {
-        if (value is null)
-        {
-            writer.WriteNullValue();
-        }
-        else
-        {
-            writer.WriteStringValue(value.GetValueOrDefault().GetSwapValue());
-        }
+        // NOTE: value is never null here: null-valued properties are omitted
+        // by JsonIgnoreCondition.WhenWritingNull before this converter is invoked.
+        writer.WriteStringValue(value.GetValueOrDefault().GetSwapValue());
     }
 }
