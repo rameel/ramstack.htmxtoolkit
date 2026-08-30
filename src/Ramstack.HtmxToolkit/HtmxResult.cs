@@ -3,8 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace Ramstack.HtmxToolkit;
 
 /// <summary>
-/// Wraps an <see cref="IActionResult" /> and configures HTMX response headers
-/// before executing it for an HTMX request.
+/// Represents an <see cref="IActionResult" /> that when executed configures HTMX response headers
+/// before executing the wrapped result.
 /// </summary>
 /// <param name="result">The action result to execute.</param>
 /// <param name="configure">The delegate that configures the HTMX response headers.</param>
