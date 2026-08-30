@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
-using Ramstack.HtmxToolkit.Builder;
+using Ramstack.HtmxToolkit.Hosting;
 
 namespace Ramstack.HtmxToolkit;
 

@@ -1,6 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Ramstack.HtmxToolkit.Builder;
+namespace Ramstack.HtmxToolkit.Hosting;
 
 /// <summary>
 /// Provides HTMX Toolkit service registration for an <see cref="IServiceCollection" />.

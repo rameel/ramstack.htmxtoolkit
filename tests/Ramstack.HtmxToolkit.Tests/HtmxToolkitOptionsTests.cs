@@ -1,7 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
-using Ramstack.HtmxToolkit.Builder;
+using Ramstack.HtmxToolkit.Hosting;
 
 namespace Ramstack.HtmxToolkit.Tests;
 

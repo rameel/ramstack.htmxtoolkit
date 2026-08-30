@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 
-namespace Ramstack.HtmxToolkit.Builder;
+namespace Ramstack.HtmxToolkit.Hosting;
 
 /// <summary>
 /// Provides HTMX Toolkit endpoint mappings for an <see cref="IEndpointRouteBuilder" />.
