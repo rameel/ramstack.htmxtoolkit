@@ -7,7 +7,7 @@ using Microsoft.Extensions.Options;
 
 using Ramstack.HtmxToolkit.Configuration;
 
-namespace Ramstack.HtmxToolkit.Tests;
+namespace Ramstack.HtmxToolkit.Tests.TagHelpers;
 
 [TestFixture]
 public class HtmxConfigTagHelperTests

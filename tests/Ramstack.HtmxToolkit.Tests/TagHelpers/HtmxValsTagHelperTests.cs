@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 
-namespace Ramstack.HtmxToolkit.Tests;
+namespace Ramstack.HtmxToolkit.Tests.TagHelpers;
 
 [TestFixture]
 public class HtmxValsTagHelperTests

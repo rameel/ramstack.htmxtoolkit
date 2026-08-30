@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using Microsoft.AspNetCore.Routing;
 
-namespace Ramstack.HtmxToolkit.Tests;
+namespace Ramstack.HtmxToolkit.Tests.TagHelpers;
 
 [TestFixture]
 public class HtmxUrlTagHelperTests
