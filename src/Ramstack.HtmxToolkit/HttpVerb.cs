@@ -11,7 +11,8 @@ public enum HttpVerb
     Get,
 
     /// <summary>
-    /// The HEAD method asks for a response identical to a GET request, but without the response body.
+    /// The HEAD method requests a response identical to a GET response,
+    /// but without the response body.
     /// </summary>
     Head,
 
@@ -21,7 +22,8 @@ public enum HttpVerb
     Post,
 
     /// <summary>
-    /// The PUT method replaces all current representations of the target resource with the request payload.
+    /// The PUT method replaces all current representations of the target resource
+    /// with the request payload.
     /// </summary>
     Put,
 
@@ -31,17 +33,20 @@ public enum HttpVerb
     Delete,
 
     /// <summary>
-    /// The CONNECT method establishes a tunnel to the server identified by the target resource.
+    /// The CONNECT method establishes a tunnel to the server
+    /// identified by the target resource.
     /// </summary>
     Connect,
 
     /// <summary>
-    /// The OPTIONS method describes the communication options for the target resource.
+    /// The OPTIONS method describes the communication options
+    /// for the target resource.
     /// </summary>
     Options,
 
     /// <summary>
-    /// The TRACE method performs a message loop-back test along the path to the target resource.
+    /// The TRACE method performs a message loop-back test
+    /// along the path to the target resource.
     /// </summary>
     Trace,
 

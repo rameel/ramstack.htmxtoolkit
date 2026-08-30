@@ -5,20 +5,21 @@ using System.Runtime.CompilerServices;
 namespace Ramstack.HtmxToolkit.Collections;
 
 /// <summary>
-/// Represents the <see cref="IDictionary{TKey,TValue}"/> implementation optimized for a small number of entries.
+/// Provides a compact <see cref="IDictionary{TKey,TValue}" /> implementation
+/// optimized for a small number of entries.
 /// </summary>
-/// <remarks>
-/// This type is intended for scenarios in which a dictionary typically contains only a few entries.
-/// It uses compact array-based storage to reduce memory usage and the overhead of creating, populating,
-/// and searching the dictionary.
-/// <para>
-///   For up to <see cref="LinearSearchThreshold"/> entries, keys are located using a linear search.
-///   When the number of entries exceeds this threshold, the entries are sorted by key and subsequent
-///   lookups use a binary search. Insertions then preserve the key order.
-/// </para>
-/// </remarks>
 /// <typeparam name="TKey">The type of keys in the dictionary.</typeparam>
 /// <typeparam name="TValue">The type of values in the dictionary.</typeparam>
+/// <remarks>
+/// This type is intended for scenarios in which a dictionary typically contains only a few entries.
+/// It uses array-based storage to reduce memory usage and the overhead of creating,
+/// populating, and searching the dictionary.
+/// <para>
+///   For up to <see cref="LinearSearchThreshold" /> entries, keys are located using
+///   a linear search. Above this threshold, the entries are sorted by key and
+///   subsequent lookups use a binary search. Insertions then preserve the key order.
+/// </para>
+/// </remarks>
 [DebuggerDisplay("Count = {Count}")]
 [DebuggerTypeProxy(typeof(SmallDictionaryDebugView<,>))]
 internal sealed class SmallDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IReadOnlyDictionary<TKey, TValue> where TKey : notnull
@@ -32,7 +33,7 @@ internal sealed class SmallDictionary<TKey, TValue> : IDictionary<TKey, TValue>,
     private KeyValuePair<TKey, TValue>[] _items = [];
     private int _count;
 
-    /// <inherited />
+    /// <inheritdoc cref="IReadOnlyCollection{T}.Count" />
     public int Count => _count;
 
     /// <inheritdoc cref="IDictionary{TKey,TValue}.Keys" />
@@ -41,7 +42,7 @@ internal sealed class SmallDictionary<TKey, TValue> : IDictionary<TKey, TValue>,
     /// <inheritdoc cref="IDictionary{TKey,TValue}.Values" />
     public ValueCollection Values => [with(this)];
 
-    /// <inherited />
+    /// <inheritdoc cref="IDictionary{TKey,TValue}.this" />
     public TValue this[TKey key]
     {
         get
@@ -70,10 +71,10 @@ internal sealed class SmallDictionary<TKey, TValue> : IDictionary<TKey, TValue>,
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="SmallDictionary{TKey,TValue}"/> class using the specified key comparer.
+    /// Initializes a new instance of the <see cref="SmallDictionary{TKey,TValue}" /> class
+    /// using the specified key comparer.
     /// </summary>
     /// <param name="comparer">The comparer to use when comparing keys.</param>
-    /// <exception cref="ArgumentNullException"><paramref name="comparer"/> is <see langword="null"/>.</exception>
     public SmallDictionary(IComparer<TKey> comparer)
     {
         ArgumentNullException.ThrowIfNull(comparer);
@@ -81,14 +82,12 @@ internal sealed class SmallDictionary<TKey, TValue> : IDictionary<TKey, TValue>,
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="SmallDictionary{TKey,TValue}"/> class that contains
-    /// entries copied from the specified collection and uses the specified key comparer.
+    /// Initializes a new instance of the <see cref="SmallDictionary{TKey,TValue}" /> class
+    /// with entries copied from the specified collection and the specified
+    /// key comparer.
     /// </summary>
     /// <param name="collection">The collection whose entries are copied to the new dictionary.</param>
     /// <param name="comparer">The comparer to use when comparing keys.</param>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="collection"/> or <paramref name="comparer"/> is <see langword="null"/>.
-    /// </exception>
     public SmallDictionary(IEnumerable<KeyValuePair<TKey, TValue>> collection, IComparer<TKey> comparer) : this(comparer)
     {
         ArgumentNullException.ThrowIfNull(collection);
@@ -114,11 +113,11 @@ internal sealed class SmallDictionary<TKey, TValue> : IDictionary<TKey, TValue>,
         }
     }
 
-    /// <inherited />
+    /// <inheritdoc cref="IReadOnlyDictionary{TKey,TValue}.ContainsKey" />
     public bool ContainsKey(TKey key) =>
         IndexOf(key) >= 0;
 
-    /// <inherited />
+    /// <inheritdoc cref="IReadOnlyDictionary{TKey,TValue}.TryGetValue" />
     public bool TryGetValue(TKey key, [MaybeNullWhen(false)] out TValue value)
     {
         ref var item = ref Find(key);
@@ -132,7 +131,7 @@ internal sealed class SmallDictionary<TKey, TValue> : IDictionary<TKey, TValue>,
         return false;
     }
 
-    /// <inherited />
+    /// <inheritdoc />
     public void Add(TKey key, TValue value)
     {
         var index = IndexOf(key);
@@ -151,10 +150,9 @@ internal sealed class SmallDictionary<TKey, TValue> : IDictionary<TKey, TValue>,
     /// <param name="key">The key of the entry to add.</param>
     /// <param name="value">The value of the entry to add.</param>
     /// <returns>
-    /// <see langword="true"/> if the key/value pair was added to the dictionary;
-    /// otherwise, <see langword="false"/>.
+    /// <see langword="true" /> if the key/value pair was added to the dictionary;
+    /// otherwise, <see langword="false" />.
     /// </returns>
-    /// <exception cref="ArgumentNullException"><paramref name="key"/> is <see langword="null"/>.</exception>
     public bool TryAdd(TKey key, TValue value)
     {
         var index = IndexOf(key);
@@ -165,7 +163,7 @@ internal sealed class SmallDictionary<TKey, TValue> : IDictionary<TKey, TValue>,
         return true;
     }
 
-    /// <inherited />
+    /// <inheritdoc />
     public bool Remove(TKey key)
     {
         var index = IndexOf(key);
@@ -176,7 +174,7 @@ internal sealed class SmallDictionary<TKey, TValue> : IDictionary<TKey, TValue>,
         return true;
     }
 
-    /// <inherited />
+    /// <inheritdoc />
     public void Clear()
     {
         if (RuntimeHelpers.IsReferenceOrContainsReferences<KeyValuePair<TKey, TValue>>())
@@ -189,42 +187,47 @@ internal sealed class SmallDictionary<TKey, TValue> : IDictionary<TKey, TValue>,
         _count = 0;
     }
 
-    /// <inherited />
+    /// <summary>
+    /// Returns an enumerator that iterates through the <see cref="SmallDictionary{TKey,TValue}"/>.
+    /// </summary>
+    /// <returns>
+    /// A <see cref="Enumerator"/> structure for the <see cref="SmallDictionary{TKey,TValue}"/>.
+    /// </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Enumerator GetEnumerator() =>
         new(this);
 
     /// <summary>
-    /// Gets the underlying array used to store the dictionary entries.
+    /// Gets the underlying array used to store dictionary entries, including any unused capacity.
     /// </summary>
     /// <returns>
-    /// The internal backing array.
+    /// The internal backing array. Only the first <see cref="Count" /> elements contain active entries.
     /// </returns>
     internal KeyValuePair<TKey, TValue>[] GetUnderlyingArray() =>
         _items;
 
     #region ICollection<T>: explicit interface implementations
 
-    /// <inherited />
+    /// <inheritdoc />
     bool ICollection<KeyValuePair<TKey, TValue>>.IsReadOnly => false;
 
-    /// <inherited />
+    /// <inheritdoc />
     ICollection<TKey> IDictionary<TKey, TValue>.Keys => new KeyCollection(this);
 
-    /// <inherited />
+    /// <inheritdoc />
     ICollection<TValue> IDictionary<TKey, TValue>.Values => new ValueCollection(this);
 
-    /// <inherited />
+    /// <inheritdoc />
     IEnumerable<TKey> IReadOnlyDictionary<TKey, TValue>.Keys => Keys;
 
-    /// <inherited />
+    /// <inheritdoc />
     IEnumerable<TValue> IReadOnlyDictionary<TKey, TValue>.Values => Values;
 
-    /// <inherited />
+    /// <inheritdoc />
     void ICollection<KeyValuePair<TKey, TValue>>.Add(KeyValuePair<TKey, TValue> item) =>
         Add(item.Key, item.Value);
 
-    /// <inherited />
+    /// <inheritdoc />
     bool ICollection<KeyValuePair<TKey, TValue>>.Contains(KeyValuePair<TKey, TValue> item)
     {
         var index = IndexOf(item.Key);
@@ -234,11 +237,11 @@ internal sealed class SmallDictionary<TKey, TValue> : IDictionary<TKey, TValue>,
         return false;
     }
 
-    /// <inherited />
+    /// <inheritdoc />
     void ICollection<KeyValuePair<TKey, TValue>>.CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex) =>
         _items.AsSpan(0, _count).CopyTo(array.AsSpan(arrayIndex));
 
-    /// <inherited />
+    /// <inheritdoc />
     bool ICollection<KeyValuePair<TKey, TValue>>.Remove(KeyValuePair<TKey, TValue> item)
     {
         var index = IndexOf(item.Key);
@@ -258,11 +261,11 @@ internal sealed class SmallDictionary<TKey, TValue> : IDictionary<TKey, TValue>,
 
     #region IEnumerable<T>: explicit interface implementations
 
-    /// <inherited />
+    /// <inheritdoc />
     IEnumerator<KeyValuePair<TKey, TValue>> IEnumerable<KeyValuePair<TKey, TValue>>.GetEnumerator() =>
         GetEnumerator();
 
-    /// <inherited />
+    /// <inheritdoc />
     System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() =>
         GetEnumerator();
 
@@ -271,7 +274,8 @@ internal sealed class SmallDictionary<TKey, TValue> : IDictionary<TKey, TValue>,
     /// <summary>
     /// Ensures that the dictionary can hold the specified number of entries without resizing.
     /// </summary>
-    /// <param name="capacity">The minimum number of entries that the dictionary must be able to hold.</param>
+    /// <param name="capacity">The minimum number of entries
+    /// that the dictionary must be able to hold.</param>
     private void EnsureCapacity(int capacity)
     {
         const int DefaultCapacity = 4;
@@ -323,8 +327,10 @@ internal sealed class SmallDictionary<TKey, TValue> : IDictionary<TKey, TValue>,
             items[index] = new KeyValuePair<TKey, TValue>(key, value);
 
         //
-        // Once the entry count exceeds the threshold, the dictionary switches from a linear search over
-        // unsorted storage to a binary search over sorted storage. Subsequent insertions preserve key order.
+        // Once the entry count exceeds the threshold,
+        // the dictionary switches from a linear search over
+        // unsorted storage to a binary search over sorted storage.
+        // Subsequent insertions preserve key order.
         //
         count++;
         if (count == LinearSearchThreshold + 1)
@@ -338,7 +344,8 @@ internal sealed class SmallDictionary<TKey, TValue> : IDictionary<TKey, TValue>,
     /// </summary>
     /// <param name="key">The key of the entry to find.</param>
     /// <returns>
-    /// A reference to the entry associated with <paramref name="key"/>, or a <see langword="null"/> reference if the key is not found.
+    /// A reference to the entry associated with <paramref name="key" />,
+    /// or a <see langword="null"/> reference if the key is not found.
     /// </returns>
     private ref KeyValuePair<TKey, TValue> Find(TKey key)
     {
@@ -390,8 +397,8 @@ internal sealed class SmallDictionary<TKey, TValue> : IDictionary<TKey, TValue>,
     /// </summary>
     /// <param name="key">The key to locate.</param>
     /// <returns>
-    /// The zero-based index of <paramref name="key"/> if it is found; otherwise, the bitwise complement of the index
-    /// at which the key should be inserted.
+    /// The zero-based index of <paramref name="key" /> if it is found; otherwise,
+    /// the bitwise complement of the index at which the key should be inserted.
     /// </returns>
     private int IndexOf(TKey key)
     {
@@ -466,7 +473,7 @@ internal sealed class SmallDictionary<TKey, TValue> : IDictionary<TKey, TValue>,
         throw new KeyNotFoundException();
 
     /// <summary>
-    /// Throws an exception indicating that a dictionary key cannot be <see langword="null"/>.
+    /// Throws an exception indicating that a dictionary key cannot be <see langword="null" />.
     /// </summary>
     /// <exception cref="ArgumentNullException">Always thrown.</exception>
     [DoesNotReturn]
@@ -498,7 +505,7 @@ internal sealed class SmallDictionary<TKey, TValue> : IDictionary<TKey, TValue>,
     /// <param name="comparer">The comparer to use when comparing keys.</param>
     private sealed class KeyValuePairComparer(IComparer<TKey> comparer) : IComparer<KeyValuePair<TKey, TValue>>
     {
-        /// <inherited />
+        /// <inheritdoc />
         public int Compare(KeyValuePair<TKey, TValue> x, KeyValuePair<TKey, TValue> y) =>
             comparer.Compare(x.Key, y.Key);
     }
@@ -508,43 +515,48 @@ internal sealed class SmallDictionary<TKey, TValue> : IDictionary<TKey, TValue>,
     #region Inner type: KeyCollection
 
     /// <summary>
-    /// Represents the collection of keys in a <see cref="SmallDictionary{TKey,TValue}"/>.
+    /// Represents the collection of keys in a <see cref="SmallDictionary{TKey,TValue}" />.
     /// </summary>
     /// <param name="dictionary">The dictionary whose keys are exposed by the collection.</param>
     public sealed class KeyCollection(SmallDictionary<TKey, TValue> dictionary) : ICollection<TKey>
     {
-        /// <inherited />
+        /// <inheritdoc />
         public int Count => dictionary.Count;
 
-        /// <inherited />
+        /// <inheritdoc />
         public bool Contains(TKey item) =>
             dictionary.ContainsKey(item);
 
-        /// <inherited />
+        /// <summary>
+        /// Returns an enumerator that iterates through the <see cref="KeyCollection"/>.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="Enumerator"/> for the <see cref="KeyCollection"/>.
+        /// </returns>
         public Enumerator GetEnumerator() =>
             new(dictionary);
 
         #region ICollection<T>: explicit interface implementations
 
-        /// <inherited />
+        /// <inheritdoc />
         bool ICollection<TKey>.IsReadOnly => true;
 
-        /// <inherited />
+        /// <inheritdoc />
         void ICollection<TKey>.Add(TKey item) =>
             Error_NotSupported();
 
-        /// <inherited />
+        /// <inheritdoc />
         void ICollection<TKey>.Clear() =>
             Error_NotSupported();
 
-        /// <inherited />
+        /// <inheritdoc />
         bool ICollection<TKey>.Remove(TKey item)
         {
             Error_NotSupported();
             return false;
         }
 
-        /// <inherited />
+        /// <inheritdoc />
         void ICollection<TKey>.CopyTo(TKey[] array, int arrayIndex)
         {
             var items = dictionary._items.AsSpan(0, dictionary._count);
@@ -558,11 +570,11 @@ internal sealed class SmallDictionary<TKey, TValue> : IDictionary<TKey, TValue>,
 
         #region IEnumerable<T>: explicit interface implementations
 
-        /// <inherited />
+        /// <inheritdoc />
         IEnumerator<TKey> IEnumerable<TKey>.GetEnumerator() =>
             GetEnumerator();
 
-        /// <inherited />
+        /// <inheritdoc />
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() =>
             GetEnumerator();
 
@@ -571,7 +583,7 @@ internal sealed class SmallDictionary<TKey, TValue> : IDictionary<TKey, TValue>,
         #region Inner type: Enumerator
 
         /// <summary>
-        /// Represents an enumerator for the keys in a <see cref="SmallDictionary{TKey,TValue}"/>.
+        /// Represents an enumerator for the keys in a <see cref="SmallDictionary{TKey,TValue}" />.
         /// </summary>
         public struct Enumerator : IEnumerator<TKey>
         {
@@ -579,7 +591,7 @@ internal sealed class SmallDictionary<TKey, TValue> : IDictionary<TKey, TValue>,
             private readonly int _count;
             private int _index;
 
-            /// <inherited />
+            /// <inheritdoc />
             public TKey Current
             {
                 [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -587,7 +599,7 @@ internal sealed class SmallDictionary<TKey, TValue> : IDictionary<TKey, TValue>,
             }
 
             /// <summary>
-            /// Initializes a new instance of the <see cref="Enumerator"/> structure for the specified dictionary.
+            /// Initializes an enumerator for the specified dictionary.
             /// </summary>
             /// <param name="dictionary">The dictionary whose keys are to be enumerated.</param>
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -598,7 +610,7 @@ internal sealed class SmallDictionary<TKey, TValue> : IDictionary<TKey, TValue>,
                 _items = dictionary._items;
             }
 
-            /// <inherited />
+            /// <inheritdoc />
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public bool MoveNext()
             {
@@ -614,17 +626,17 @@ internal sealed class SmallDictionary<TKey, TValue> : IDictionary<TKey, TValue>,
                 return false;
             }
 
-            /// <inherited />
+            /// <inheritdoc />
             public void Dispose()
             {
             }
 
             #region IEnumerator: Explicit interface implementations
 
-            /// <inherited />
+            /// <inheritdoc />
             object System.Collections.IEnumerator.Current => Current!;
 
-            /// <inherited />
+            /// <inheritdoc />
             void System.Collections.IEnumerator.Reset() =>
                 Error_NotSupported();
 
@@ -639,15 +651,15 @@ internal sealed class SmallDictionary<TKey, TValue> : IDictionary<TKey, TValue>,
     #region Inner type: ValueCollection
 
     /// <summary>
-    /// Represents the collection of values in a <see cref="SmallDictionary{TKey,TValue}"/>.
+    /// Represents the collection of values in a <see cref="SmallDictionary{TKey,TValue}" />.
     /// </summary>
     /// <param name="dictionary">The dictionary whose values are exposed by the collection.</param>
     public sealed class ValueCollection(SmallDictionary<TKey, TValue> dictionary) : ICollection<TValue>
     {
-        /// <inherited />
+        /// <inheritdoc />
         public int Count => dictionary.Count;
 
-        /// <inherited />
+        /// <inheritdoc />
         public bool Contains(TValue item)
         {
             var items = dictionary._items.AsSpan(0, dictionary._count);
@@ -658,31 +670,36 @@ internal sealed class SmallDictionary<TKey, TValue> : IDictionary<TKey, TValue>,
             return false;
         }
 
-        /// <inherited />
+        /// <summary>
+        /// Returns an enumerator that iterates through the <see cref="ValueCollection"/>.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="Enumerator"/> for the <see cref="ValueCollection"/>.
+        /// </returns>
         public Enumerator GetEnumerator() =>
             new(dictionary);
 
         #region ICollection<T>: explicit interface implementations
 
-        /// <inherited />
+        /// <inheritdoc />
         bool ICollection<TValue>.IsReadOnly => true;
 
-        /// <inherited />
+        /// <inheritdoc />
         void ICollection<TValue>.Add(TValue item) =>
             Error_NotSupported();
 
-        /// <inherited />
+        /// <inheritdoc />
         void ICollection<TValue>.Clear() =>
             Error_NotSupported();
 
-        /// <inherited />
+        /// <inheritdoc />
         bool ICollection<TValue>.Remove(TValue item)
         {
             Error_NotSupported();
             return false;
         }
 
-        /// <inherited />
+        /// <inheritdoc />
         void ICollection<TValue>.CopyTo(TValue[] array, int arrayIndex)
         {
             var items = dictionary._items.AsSpan(0, dictionary._count);
@@ -696,11 +713,11 @@ internal sealed class SmallDictionary<TKey, TValue> : IDictionary<TKey, TValue>,
 
         #region IEnumerable<T>: explicit interface implementations
 
-        /// <inherited />
+        /// <inheritdoc />
         IEnumerator<TValue> IEnumerable<TValue>.GetEnumerator() =>
             GetEnumerator();
 
-        /// <inherited />
+        /// <inheritdoc />
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() =>
             GetEnumerator();
 
@@ -709,7 +726,7 @@ internal sealed class SmallDictionary<TKey, TValue> : IDictionary<TKey, TValue>,
         #region Inner type: Enumerator
 
         /// <summary>
-        /// Represents an enumerator for the values in a <see cref="SmallDictionary{TKey,TValue}"/>.
+        /// Enumerates the values in a <see cref="SmallDictionary{TKey,TValue}" />.
         /// </summary>
         public struct Enumerator : IEnumerator<TValue>
         {
@@ -717,7 +734,7 @@ internal sealed class SmallDictionary<TKey, TValue> : IDictionary<TKey, TValue>,
             private readonly int _count;
             private int _index;
 
-            /// <inherited />
+            /// <inheritdoc />
             public TValue Current
             {
                 [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -725,7 +742,7 @@ internal sealed class SmallDictionary<TKey, TValue> : IDictionary<TKey, TValue>,
             }
 
             /// <summary>
-            /// Initializes a new instance of the <see cref="Enumerator"/> structure for the specified dictionary.
+            /// Initializes an enumerator for the specified dictionary.
             /// </summary>
             /// <param name="dictionary">The dictionary whose values are to be enumerated.</param>
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -736,7 +753,7 @@ internal sealed class SmallDictionary<TKey, TValue> : IDictionary<TKey, TValue>,
                 _items = dictionary._items;
             }
 
-            /// <inherited />
+            /// <inheritdoc />
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public bool MoveNext()
             {
@@ -752,17 +769,17 @@ internal sealed class SmallDictionary<TKey, TValue> : IDictionary<TKey, TValue>,
                 return false;
             }
 
-            /// <inherited />
+            /// <inheritdoc />
             public void Dispose()
             {
             }
 
             #region IEnumerator: Explicit interface implementations
 
-            /// <inherited />
+            /// <inheritdoc />
             object System.Collections.IEnumerator.Current => Current!;
 
-            /// <inherited />
+            /// <inheritdoc />
             void System.Collections.IEnumerator.Reset() =>
                 Error_NotSupported();
 
@@ -777,7 +794,7 @@ internal sealed class SmallDictionary<TKey, TValue> : IDictionary<TKey, TValue>,
     #region Inner type: Enumerator
 
     /// <summary>
-    /// Represents an enumerator for the entries in a <see cref="SmallDictionary{TKey,TValue}"/>.
+    /// Represents an enumerator for the entries in a <see cref="SmallDictionary{TKey,TValue}" />.
     /// </summary>
     public struct Enumerator : IEnumerator<KeyValuePair<TKey, TValue>>
     {
@@ -785,7 +802,7 @@ internal sealed class SmallDictionary<TKey, TValue> : IDictionary<TKey, TValue>,
         private readonly int _count;
         private int _index;
 
-        /// <inherited />
+        /// <inheritdoc />
         public KeyValuePair<TKey, TValue> Current
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -793,7 +810,7 @@ internal sealed class SmallDictionary<TKey, TValue> : IDictionary<TKey, TValue>,
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Enumerator"/> structure for the specified dictionary.
+        /// Initializes an enumerator for the specified dictionary.
         /// </summary>
         /// <param name="dictionary">The dictionary whose entries are to be enumerated.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -804,7 +821,7 @@ internal sealed class SmallDictionary<TKey, TValue> : IDictionary<TKey, TValue>,
             _items = dictionary._items;
         }
 
-        /// <inherited />
+        /// <inheritdoc />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool MoveNext()
         {
@@ -820,17 +837,17 @@ internal sealed class SmallDictionary<TKey, TValue> : IDictionary<TKey, TValue>,
             return false;
         }
 
-        /// <inherited />
+        /// <inheritdoc />
         public void Dispose()
         {
         }
 
         #region IEnumerator: Explicit interface implementations
 
-        /// <inherited />
+        /// <inheritdoc />
         object System.Collections.IEnumerator.Current => Current;
 
-        /// <inherited />
+        /// <inheritdoc />
         void System.Collections.IEnumerator.Reset() =>
             Error_NotSupported();
 

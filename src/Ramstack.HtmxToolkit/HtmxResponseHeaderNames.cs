@@ -2,68 +2,69 @@ namespace Ramstack.HtmxToolkit;
 
 /// <summary>
 /// Defines constants for the well-known names of HTMX response headers.
-/// For more information, see https://htmx.org/reference/#response_headers
 /// </summary>
+/// <remarks>
+/// For more information, see <see href="https://htmx.org/reference/#response_headers">HTMX Response Headers Reference</see>.
+/// </remarks>
 public static class HtmxResponseHeaderNames
 {
     /// <summary>
-    /// The <c>HX-Location</c> header is used to perform a client-side redirect without a full page reload.
+    /// The <c>HX-Location</c> header performs a client-side redirect without a full-page reload.
     /// </summary>
     public const string Location = "HX-Location";
 
     /// <summary>
-    /// The <c>HX-Push-Url</c> header is used to push a new URL into the browser's history stack.
+    /// The <c>HX-Push-Url</c> header pushes a new URL onto the browser's history stack.
     /// </summary>
     public const string PushUrl = "HX-Push-Url";
 
     /// <summary>
-    /// The <c>HX-Redirect</c> header is used to perform a client-side redirect to a new location.
+    /// The <c>HX-Redirect</c> header performs a client-side redirect to a new location.
     /// </summary>
     public const string Redirect = "HX-Redirect";
 
     /// <summary>
-    /// The <c>HX-Refresh</c> header is used to perform a full page refresh.
+    /// The <c>HX-Refresh</c> header performs a full-page refresh when its value is <c>"true"</c>.
     /// </summary>
     public const string Refresh = "HX-Refresh";
 
     /// <summary>
-    /// The <c>HX-Replace-Url</c> header is used to replace the current URL
+    /// The <c>HX-Replace-Url</c> header replaces the current URL
     /// without pushing a new entry to the browser's history stack.
     /// </summary>
     public const string ReplaceUrl = "HX-Replace-Url";
 
     /// <summary>
-    /// The <c>HX-Reswap</c> header is used to specify how the response will be swapped into the DOM.
+    /// The <c>HX-Reswap</c> header specifies how the response is swapped into the DOM.
     /// </summary>
     public const string Reswap = "HX-Reswap";
 
     /// <summary>
-    /// The <c>HX-Retarget</c> header sets a selector to change
-    /// the target of the content update to a different element on the page.
+    /// The <c>HX-Retarget</c> header specifies a CSS selector
+    /// that changes the target of the content update.
     /// </summary>
     public const string Retarget = "HX-Retarget";
 
     /// <summary>
-    /// The <c>HX-Reselect</c> header sets a selector to choose
-    /// which part of the response content will be swapped in.
+    /// The <c>HX-Reselect</c> header specifies a CSS selector that determines
+    /// which part of the response is swapped in.
     /// </summary>
     public const string Reselect = "HX-Reselect";
 
     /// <summary>
-    /// The <c>HX-Trigger</c> header is used to trigger an event on the client side
-    /// after the server response has been processed.
+    /// The <c>HX-Trigger</c> header triggers client-side events.
     /// </summary>
     public const string Trigger = "HX-Trigger";
 
     /// <summary>
-    /// The <c>HX-Trigger-After-Settle</c> header is used to trigger an event
-    /// on the client side after the HTMX request has settled.
+    /// The <c>HX-Trigger-After-Settle</c> header triggers client-side events after the settle step.
     /// </summary>
+    /// <remarks>Supported only in HTMX 1.x and 2.x.</remarks>
     public const string TriggerAfterSettle = "HX-Trigger-After-Settle";
 
     /// <summary>
-    /// The <c>HX-Trigger-After-Swap</c> header is used to trigger an event
-    /// on the client side after the response has been swapped into the DOM.
+    /// The <c>HX-Trigger-After-Swap</c> header triggers client-side events after the swap step.
     /// </summary>
+    /// <remarks>Supported only in HTMX 1.x and 2.x.</remarks>
     public const string TriggerAfterSwap = "HX-Trigger-After-Swap";
 }

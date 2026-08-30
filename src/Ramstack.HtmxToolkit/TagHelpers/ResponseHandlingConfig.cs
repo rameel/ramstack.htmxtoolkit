@@ -1,12 +1,13 @@
 namespace Ramstack.HtmxToolkit.TagHelpers;
 
 /// <summary>
-/// Represents the response handling configuration for responses matching a specific HTTP status code pattern.
+/// Represents the response handling configuration for responses that match
+/// a specific HTTP status code pattern.
 /// </summary>
 public sealed class ResponseHandlingConfig
 {
     /// <summary>
-    /// Gets or sets a regular expression that will be tested against response status codes.
+    /// Gets or sets the regular expression used to match response status codes.
     /// </summary>
     public string? Code { get; set; }
 

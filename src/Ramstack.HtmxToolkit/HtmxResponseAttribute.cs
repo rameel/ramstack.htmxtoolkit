@@ -8,7 +8,7 @@ using Ramstack.HtmxToolkit.Internal;
 namespace Ramstack.HtmxToolkit;
 
 /// <summary>
-/// Identifies an action that sets HTMX response headers.
+/// Specifies HTMX response headers to apply when an action result is executed for an HTMX request.
 /// </summary>
 [AttributeUsage(AttributeTargets.All, Inherited = false, AllowMultiple = true)]
 public sealed class HtmxResponseAttribute : Attribute, IResultFilter
@@ -16,7 +16,8 @@ public sealed class HtmxResponseAttribute : Attribute, IResultFilter
     private readonly List<(string Key, string Value)> _headers = [];
 
     /// <summary>
-    /// Gets or sets the <c>HX-Refresh</c> header to perform a full page refresh.
+    /// Gets or sets a value indicating whether the <c>HX-Refresh</c> header is set
+    /// to request a full-page refresh.
     /// </summary>
     public bool Refresh
     {
@@ -25,7 +26,7 @@ public sealed class HtmxResponseAttribute : Attribute, IResultFilter
     }
 
     /// <summary>
-    /// Gets or sets the <c>HX-Reswap</c> header to specify how the response will be swapped into the DOM.
+    /// Gets or sets the swap style to specify in the <c>HX-Reswap</c> header.
     /// </summary>
     public HtmxSwap Reswap
     {
@@ -38,7 +39,7 @@ public sealed class HtmxResponseAttribute : Attribute, IResultFilter
     }
 
     /// <summary>
-    /// Gets or sets the <c>HX-Reswap</c> header to specify how the response will be swapped into the DOM.
+    /// Gets or sets the complete <c>HX-Reswap</c> header value, including any swap modifiers.
     /// </summary>
     [MaybeNull]
     public string ReswapExpression
@@ -48,8 +49,7 @@ public sealed class HtmxResponseAttribute : Attribute, IResultFilter
     }
 
     /// <summary>
-    /// Gets or sets the <c>HX-Retarget</c> header that specifies a selector to change
-    /// the target of the content update to a different element on the page.
+    /// Gets or sets the CSS selector to specify in the <c>HX-Retarget</c> header.
     /// </summary>
     [MaybeNull]
     public string Retarget
@@ -59,8 +59,7 @@ public sealed class HtmxResponseAttribute : Attribute, IResultFilter
     }
 
     /// <summary>
-    /// Gets or sets the <c>HX-Reselect</c> header that specifies a selector
-    /// to choose which part of the response content will be swapped in.
+    /// Gets or sets the CSS selector to specify in the <c>HX-Reselect</c> header.
     /// </summary>
     [MaybeNull]
     public string Reselect
@@ -70,7 +69,7 @@ public sealed class HtmxResponseAttribute : Attribute, IResultFilter
     }
 
     /// <summary>
-    /// Gets or sets a value indicating whether a special HTTP status code should be set to stop polling.
+    /// Gets or sets a value indicating whether to set HTTP status code <c>286</c> to stop polling.
     /// </summary>
     public bool StopPolling { get; set; }
 
@@ -94,6 +93,13 @@ public sealed class HtmxResponseAttribute : Attribute, IResultFilter
     {
     }
 
+    /// <summary>
+    /// Gets the pending value of the specified response header.
+    /// </summary>
+    /// <param name="key">The name of the header.</param>
+    /// <returns>
+    /// The header value, or <see langword="null" /> if no value has been configured.
+    /// </returns>
     private string? GetValue(string key)
     {
         foreach (ref var kvp in CollectionsMarshal.AsSpan(_headers))
@@ -103,6 +109,11 @@ public sealed class HtmxResponseAttribute : Attribute, IResultFilter
         return null;
     }
 
+    /// <summary>
+    /// Adds a nonempty response header value to the pending headers.
+    /// </summary>
+    /// <param name="key">The name of the header.</param>
+    /// <param name="value">The header value.</param>
     private void SetValue(string key, string value)
     {
         if (!string.IsNullOrEmpty(value))

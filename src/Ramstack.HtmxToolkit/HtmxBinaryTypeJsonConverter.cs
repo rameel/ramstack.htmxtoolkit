@@ -6,7 +6,7 @@ using Ramstack.HtmxToolkit.Internal;
 namespace Ramstack.HtmxToolkit;
 
 /// <summary>
-/// Represents a <see cref="JsonConverter{T}"/> for nullable <see cref="HtmxBinaryType"/> values.
+/// Represents a <see cref="JsonConverter{T}" /> for nullable <see cref="HtmxBinaryType" /> values.
 /// </summary>
 internal sealed class HtmxBinaryTypeJsonConverter : JsonConverter<HtmxBinaryType?>
 {

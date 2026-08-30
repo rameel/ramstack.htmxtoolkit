@@ -6,7 +6,7 @@ using Ramstack.HtmxToolkit.Internal;
 namespace Ramstack.HtmxToolkit;
 
 /// <summary>
-/// Represents a <see cref="JsonConverter{T}"/> for nullable <see cref="HtmxScrollBehavior"/> values.
+/// Represents a <see cref="JsonConverter{T}" /> for nullable <see cref="HtmxScrollBehavior" /> values.
 /// </summary>
 internal sealed class HtmxScrollBehaviorJsonConverter : JsonConverter<HtmxScrollBehavior?>
 {

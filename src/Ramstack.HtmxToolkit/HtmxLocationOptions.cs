@@ -8,7 +8,7 @@ namespace Ramstack.HtmxToolkit;
 public sealed class HtmxLocationOptions
 {
     /// <summary>
-    /// Gets or sets the path used for the AJAX request.
+    /// Gets the path used for the AJAX request.
     /// </summary>
     /// <remarks>Supported in HTMX 1.9.x, HTMX 2.x, and HTMX 4.x.</remarks>
     public string? Path { get; internal set; }
@@ -40,7 +40,7 @@ public sealed class HtmxLocationOptions
 
     /// <summary>
     /// Gets or sets the headers to include with the request.
-    /// Header values must be strings; complex data should be passed as a pre-serialized JSON string.
+    /// Header values must be strings. Pass complex data as a pre-serialized JSON string.
     /// </summary>
     /// <remarks>Supported in HTMX 1.9.x, HTMX 2.x, and HTMX 4.x.</remarks>
     public IDictionary<string, string>? Headers { get; set; }
@@ -54,13 +54,13 @@ public sealed class HtmxLocationOptions
     /// <summary>
     /// Gets or sets a selector used to select content for out-of-band swaps from the response.
     /// </summary>
-    /// <remarks>Supported in HTMX 2.x and HTMX 4.x.</remarks>
+    /// <remarks>Supported only in HTMX 2.x.</remarks>
     [JsonPropertyName("selectOOB")]
     public string? SelectOob { get; set; }
 
     /// <summary>
     /// Gets or sets the path to push into the browser history.
-    /// Set to <c>false</c> to prevent the URL from being pushed.
+    /// Set this property to <c>"false"</c> to prevent the URL from being pushed.
     /// </summary>
     /// <remarks>Supported in HTMX 2.x and HTMX 4.x.</remarks>
     public string? Push { get; set; }

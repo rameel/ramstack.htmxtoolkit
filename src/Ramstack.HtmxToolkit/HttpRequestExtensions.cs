@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Http;
 namespace Ramstack.HtmxToolkit;
 
 /// <summary>
-/// Provides extension methods for the <see cref="HttpRequest"/> class.
+/// Provides extension methods for the <see cref="HttpRequest" /> class.
 /// </summary>
 public static class HttpRequestExtensions
 {
@@ -22,10 +22,11 @@ public static class HttpRequestExtensions
     /// Determines whether the specified HTTP request is an HTMX request.
     /// </summary>
     /// <param name="request">The HTTP request.</param>
-    /// <param name="headers">When this method returns, contains the <see cref="HtmxRequestHeaders"/>
+    /// <param name="headers">When this method returns, contains the <see cref="HtmxRequestHeaders" />
     /// that provides access to well-known HTMX headers.</param>
     /// <returns>
-    /// <see langword="true" /> if the specified HTTP request is an HTMX request; otherwise, <see langword="false" />.
+    /// <see langword="true" /> if the specified HTTP request is an HTMX request;
+    /// otherwise, <see langword="false" />.
     /// </returns>
     public static bool IsHtmxRequest(this HttpRequest request, out HtmxRequestHeaders headers)
     {
@@ -38,20 +39,21 @@ public static class HttpRequestExtensions
     /// </summary>
     /// <param name="request">The HTTP request.</param>
     /// <returns>
-    /// <see langword="true" /> if the specified HTTP request is boosted; otherwise, <see langword="false" />.
+    /// <see langword="true" /> if the specified HTTP request is boosted;
+    /// otherwise, <see langword="false" />.
     /// </returns>
     public static bool IsHtmxBoosted(this HttpRequest request) =>
         request.Headers.TryGetValue(HtmxRequestHeaderNames.Boosted, out var value) && value is ["true"];
 
     /// <summary>
-    /// Determines whether the specified HTTP request was made using AJAX
-    /// instead of a normal navigation.
+    /// Determines whether the specified HTTP request was made using AJAX instead of a normal navigation.
     /// </summary>
     /// <param name="request">The HTTP request.</param>
-    /// <param name="headers">When this method returns, contains the <see cref="HtmxRequestHeaders"/>
+    /// <param name="headers">When this method returns, contains the <see cref="HtmxRequestHeaders" />
     /// that provides access to well-known HTMX headers.</param>
     /// <returns>
-    /// <see langword="true" /> if the specified HTTP request is boosted; otherwise, <see langword="false" />.
+    /// <see langword="true" /> if the specified HTTP request is boosted;
+    /// otherwise, <see langword="false" />.
     /// </returns>
     public static bool IsHtmxBoosted(this HttpRequest request, out HtmxRequestHeaders headers)
     {
@@ -60,11 +62,11 @@ public static class HttpRequestExtensions
     }
 
     /// <summary>
-    /// Returns the <see cref="HtmxRequestHeaders"/> that provides access to well-known HTMX headers.
+    /// Returns a strongly typed view of the HTMX request headers.
     /// </summary>
     /// <param name="request">The HTTP request.</param>
     /// <returns>
-    /// The <see cref="HtmxRequestHeaders"/>.
+    /// The <see cref="HtmxRequestHeaders" />.
     /// </returns>
     public static HtmxRequestHeaders GetHtmxHeaders(this HttpRequest request) =>
         new(request);

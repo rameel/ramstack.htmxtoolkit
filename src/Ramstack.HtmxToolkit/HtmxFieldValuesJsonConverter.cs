@@ -5,7 +5,7 @@ using System.Text.Json.Serialization;
 namespace Ramstack.HtmxToolkit;
 
 /// <summary>
-/// Represents a JSON converter for <see cref="HtmxFieldValues"/>.
+/// Represents a JSON converter for <see cref="HtmxFieldValues" />.
 /// </summary>
 internal sealed class HtmxFieldValuesJsonConverter : JsonConverter<HtmxFieldValues>
 {

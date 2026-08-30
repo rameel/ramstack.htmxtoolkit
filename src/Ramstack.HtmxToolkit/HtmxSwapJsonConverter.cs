@@ -6,7 +6,7 @@ using Ramstack.HtmxToolkit.Internal;
 namespace Ramstack.HtmxToolkit;
 
 /// <summary>
-/// Represents a <see cref="JsonConverter{T}"/> for nullable <see cref="HtmxSwap"/> values.
+/// Represents a <see cref="JsonConverter{T}" /> for nullable <see cref="HtmxSwap" /> values.
 /// </summary>
 internal sealed class HtmxSwapJsonConverter : JsonConverter<HtmxSwap?>
 {

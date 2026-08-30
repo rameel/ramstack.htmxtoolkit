@@ -3,16 +3,17 @@ using Microsoft.AspNetCore.Http;
 namespace Ramstack.HtmxToolkit.Internal;
 
 /// <summary>
-/// Provides helper methods for debugging purposes.
+/// Provides helper methods for debugger views.
 /// </summary>
 internal static class DebugHelpers
 {
     /// <summary>
-    /// Extracts all headers that start with <c>"HX-"</c> (case-insensitive) from the given header collection.
+    /// Returns all headers whose names start with <c>"HX-"</c>,
+    /// using a case-insensitive comparison.
     /// </summary>
     /// <param name="headers">The header dictionary to inspect.</param>
     /// <returns>
-    /// An array of key-value pairs representing the headers that start with <c>"HX-"</c>.
+    /// An array containing the matching header names and values.
     /// </returns>
     public static KeyValuePair<string, string>[] GetHeaders(IHeaderDictionary headers)
     {

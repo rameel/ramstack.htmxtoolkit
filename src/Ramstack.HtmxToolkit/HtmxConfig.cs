@@ -14,9 +14,11 @@ public abstract class HtmxConfig
     public HtmxTargetVersion TargetVersion { get; }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="HtmxConfig"/> class with the specified target HTMX version.
+    /// Initializes a new instance of the <see cref="HtmxConfig" /> class for
+    /// the specified target HTMX version.
     /// </summary>
-    /// <param name="version">The target major version of HTMX that this configuration applies to.</param>
+    /// <param name="version">The target HTMX major version
+    /// to which this configuration applies.</param>
     internal HtmxConfig(HtmxTargetVersion version) =>
         TargetVersion = version;
 

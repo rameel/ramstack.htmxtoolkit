@@ -6,17 +6,17 @@ namespace Ramstack.HtmxToolkit;
 public enum HtmxScrollBehavior
 {
     /// <summary>
-    /// Specifies instant scrolling behavior, similar to a vanilla link.
+    /// Uses the <c>auto</c> scrolling behavior.
     /// </summary>
     Auto,
 
     /// <summary>
-    /// Specifies smooth scrolling to the top of the page.
+    /// Uses the <c>smooth</c> scrolling behavior.
     /// </summary>
     Smooth,
 
     /// <summary>
-    /// Specifies instant scrolling with no animation.
+    /// Uses the <c>instant</c> scrolling behavior.
     /// Supported only in HTMX 2.x.
     /// </summary>
     Instant

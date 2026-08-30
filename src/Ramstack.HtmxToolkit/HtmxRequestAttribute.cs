@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.ActionConstraints;
 namespace Ramstack.HtmxToolkit;
 
 /// <summary>
-/// Identifies an action that supports HTMX requests.
+/// Restricts an action to HTMX requests.
 /// </summary>
 [AttributeUsage(AttributeTargets.Method)]
 public sealed class HtmxRequestAttribute : Attribute, IActionConstraint
@@ -12,14 +12,14 @@ public sealed class HtmxRequestAttribute : Attribute, IActionConstraint
     public int Order => 0;
 
     /// <summary>
-    /// Gets or sets a value that indicates whether the action should be executed
-    /// for boosted or non-boosted HTMX requests.
+    /// Gets or sets a value indicating whether the action accepts boosted
+    /// or non-boosted HTMX requests.
     /// </summary>
     /// <remarks>
     /// <list type="bullet">
-    ///   <item>If set to <see langword="true" />, the action will be executed only for boosted requests.</item>
-    ///   <item>If set to <see langword="false" />, the action will be executed only for non-boosted requests.</item>
-    ///   <item>If set to <see langword="null" />, the action will be executed for any HTMX request.</item>
+    ///   <item><see langword="true" /> accepts only boosted requests.</item>
+    ///   <item><see langword="false" /> accepts only non-boosted requests.</item>
+    ///   <item><see langword="null" /> accepts any HTMX request.</item>
     /// </list>
     /// </remarks>
     public bool? Boosted { get; set; }
@@ -28,8 +28,9 @@ public sealed class HtmxRequestAttribute : Attribute, IActionConstraint
     public bool Accept(ActionConstraintContext context)
     {
         var request = context.RouteContext.HttpContext.Request;
-        var boosted = Boosted;
+        if (request.IsHtmxRequest())
+            return Boosted is null || request.IsHtmxBoosted() == Boosted.GetValueOrDefault();
 
-        return request.IsHtmxRequest() && (boosted is null || request.IsHtmxBoosted() == boosted.Value);
+        return false;
     }
 }

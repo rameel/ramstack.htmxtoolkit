@@ -6,21 +6,23 @@ namespace Ramstack.HtmxToolkit.Internal;
 internal static class EnumHelper
 {
     /// <summary>
-    /// Converts a <see cref="HtmxBinaryType"/> value to its corresponding WebSocket binary type string.
+    /// Converts a <see cref="HtmxBinaryType" /> value
+    /// to the corresponding WebSocket binary type string.
     /// </summary>
-    /// <param name="value">The <see cref="HtmxBinaryType"/> value.</param>
+    /// <param name="value">The <see cref="HtmxBinaryType" /> value.</param>
     /// <returns>
-    /// The string representation: either "blob" or "arraybuffer".
+    /// <c>blob</c> or <c>arraybuffer</c>.
     /// </returns>
     public static string GetWsBinaryTypeValue(this HtmxBinaryType value) =>
         value == HtmxBinaryType.Blob ? "blob" : "arraybuffer";
 
     /// <summary>
-    /// Converts a <see cref="HtmxScrollBehavior"/> value to its corresponding string value used in HTML scroll behavior.
+    /// Converts a <see cref="HtmxScrollBehavior" /> value
+    /// to the corresponding scrolling behavior string.
     /// </summary>
-    /// <param name="value">The <see cref="HtmxScrollBehavior"/> value.</param>
+    /// <param name="value">The <see cref="HtmxScrollBehavior" /> value.</param>
     /// <returns>
-    /// The string representation: "auto", "smooth" or "instant".
+    /// <c>auto</c>, <c>smooth</c>, or <c>instant</c>.
     /// </returns>
     public static string GetScrollBehaviorValue(this HtmxScrollBehavior value)
     {
@@ -33,10 +35,10 @@ internal static class EnumHelper
     }
 
     /// <summary>
-    /// Converts a <see cref="HtmxSwap"/> value to its corresponding string representation,
+    /// Converts a <see cref="HtmxSwap" /> value to its corresponding string representation,
     /// or returns <see langword="null" /> if the value is <see langword="null" />.
     /// </summary>
-    /// <param name="value">The nullable <see cref="HtmxSwap"/> value.</param>
+    /// <param name="value">The nullable <see cref="HtmxSwap" /> value.</param>
     /// <returns>
     /// The string representation of the value,
     /// or <see langword="null" /> if the value is <see langword="null" />.
@@ -45,12 +47,13 @@ internal static class EnumHelper
         value?.GetSwapValue();
 
     /// <summary>
-    /// Converts a <see cref="HtmxSwap"/> value to its corresponding string representation used in HTMX attributes.
+    /// Converts a <see cref="HtmxSwap" /> value to the corresponding string
+    /// representation used in HTMX attributes.
     /// </summary>
-    /// <param name="value">The <see cref="HtmxSwap"/> value.</param>
+    /// <param name="value">The <see cref="HtmxSwap" /> value.</param>
     /// <returns>
-    /// The corresponding string, such as "innerHTML", "beforebegin", etc.
-    /// Defaults to "none" if the value is unrecognized.
+    /// The corresponding HTMX swap value, or <c>none</c> if
+    /// <paramref name="value" /> is not recognized.
     /// </returns>
     public static string GetSwapValue(this HtmxSwap value)
     {
@@ -72,11 +75,11 @@ internal static class EnumHelper
     }
 
     /// <summary>
-    /// Converts a <see cref="HttpVerb"/> value to its corresponding lowercase HTTP method string.
+    /// Converts a <see cref="HttpVerb" /> value to its corresponding lowercase HTTP method string.
     /// </summary>
-    /// <param name="value">The <see cref="HttpVerb"/> value.</param>
+    /// <param name="value">The <see cref="HttpVerb" /> value.</param>
     /// <returns>
-    /// The lowercase string representation, such as "get", "post", "delete", etc.
+    /// The lowercase HTTP method name, such as <c>get</c>, <c>post</c>, or <c>delete</c>.
     /// </returns>
     public static string GetHttpVerbValue(this HttpVerb value)
     {
@@ -95,11 +98,12 @@ internal static class EnumHelper
     }
 
     /// <summary>
-    /// Converts a <see cref="HtmxFetchMode"/> value to its corresponding Fetch API request mode string.
+    /// Converts a <see cref="HtmxFetchMode" /> value
+    /// to the corresponding Fetch API request mode string.
     /// </summary>
-    /// <param name="value">The <see cref="HtmxFetchMode"/> value.</param>
+    /// <param name="value">The <see cref="HtmxFetchMode" /> value.</param>
     /// <returns>
-    /// The string representation: "same-origin", "cors" or "no-cors".
+    /// <c>same-origin</c>, <c>cors</c>, or <c>no-cors</c>.
     /// </returns>
     public static string GetFetchModeValue(this HtmxFetchMode value)
     {
@@ -112,11 +116,11 @@ internal static class EnumHelper
     }
 
     /// <summary>
-    /// Parses a string into a <see cref="HtmxFetchMode"/> value.
+    /// Parses a string into a <see cref="HtmxFetchMode" /> value.
     /// </summary>
     /// <param name="expression">The string to parse.</param>
     /// <returns>
-    /// The parsed <see cref="HtmxFetchMode"/> value if successful;
+    /// The parsed <see cref="HtmxFetchMode" /> value if successful;
     /// otherwise, <see langword="null" />.
     /// </returns>
     public static HtmxFetchMode? ParseHtmxFetchMode(string? expression)
@@ -131,11 +135,11 @@ internal static class EnumHelper
     }
 
     /// <summary>
-    /// Parses a string into a <see cref="HtmxSwap"/> value.
+    /// Parses a string into a <see cref="HtmxSwap" /> value.
     /// </summary>
     /// <param name="expression">The string to parse.</param>
     /// <returns>
-    /// The parsed <see cref="HtmxSwap"/> value if successful;
+    /// The parsed <see cref="HtmxSwap" /> value if successful;
     /// otherwise, <see langword="null" />.
     /// </returns>
     public static HtmxSwap? ParseHtmxSwap(string? expression)

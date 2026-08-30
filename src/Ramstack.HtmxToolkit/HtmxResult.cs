@@ -3,10 +3,11 @@ using Microsoft.AspNetCore.Mvc;
 namespace Ramstack.HtmxToolkit;
 
 /// <summary>
-/// Represents an <see cref="IActionResult"/> that is used to configure the HTMX response headers.
+/// Wraps an <see cref="IActionResult" /> and configures HTMX response headers
+/// before executing it for an HTMX request.
 /// </summary>
-/// <param name="result">The <see cref="IActionResult"/> to produce the response result.</param>
-/// <param name="configure">The function to configure the HTMX response headers.</param>
+/// <param name="result">The action result to execute.</param>
+/// <param name="configure">The delegate that configures the HTMX response headers.</param>
 public sealed class HtmxResult(IActionResult result, Action<HtmxResponse> configure) : IActionResult
 {
     /// <inheritdoc />

@@ -108,11 +108,11 @@ public static class HttpRequestExtensions
     public static bool IsHtmxBoosted(this HttpRequest request, out HtmxRequestHeaders headers);
 
     /// <summary>
-    /// Returns the <see cref="HtmxRequestHeaders"/> that provides access to well-known HTMX headers.
+    /// Returns a strongly typed view of the HTMX request headers.
     /// </summary>
     /// <param name="request">The HTTP request.</param>
     /// <returns>
-    /// The <see cref="HtmxRequestHeaders"/>.
+    /// The <see cref="HtmxRequestHeaders" />.
     /// </returns>
     public static HtmxRequestHeaders GetHtmxHeaders(this HttpRequest request);
 }
@@ -170,7 +170,7 @@ public readonly struct HtmxRequestHeaders
     public string? CurrentUrl { get; }
 
     /// <summary>
-    /// Gets a value indicating whether the request is for history restoration after a miss in the local history cache.
+    /// Gets a value indicating whether the request restores history after a miss in the local history cache.
     /// </summary>
     public bool HistoryRestoreRequest { get; }
 
@@ -185,17 +185,17 @@ public readonly struct HtmxRequestHeaders
     public bool Request { get; }
 
     /// <summary>
-    /// Gets the ID of the target element if it exists.
+    /// Gets the ID of the target element, if present.
     /// </summary>
     public string? Target { get; }
 
     /// <summary>
-    /// Gets the name of the triggered element if it exists.
+    /// Gets the name of the triggered element, if present.
     /// </summary>
     public string? TriggerName { get; }
 
     /// <summary>
-    /// Gets the ID of the triggered element if it exists as indicated by the <c>HX-Trigger</c> header.
+    /// Gets the ID of the triggered element, if present.
     /// </summary>
     public string? Trigger { get; }
 }
@@ -216,8 +216,10 @@ so you do not have to remember their exact spelling.
 ```csharp
 /// <summary>
 /// Defines constants for the well-known names of HTMX request headers.
-/// For more information, see https://htmx.org/reference/#request_headers
 /// </summary>
+/// <remarks>
+/// For more information, see <see href="https://htmx.org/reference/#request_headers">HTMX Request Headers Reference</see>.
+/// </remarks>
 public static class HtmxRequestHeaderNames
 {
     /// <summary>
@@ -277,11 +279,11 @@ For working with response headers, the library provides the `HttpResponseExtensi
 public static class HttpResponseExtensions
 {
     /// <summary>
-    /// Returns the <see cref="HtmxResponseHeaders"/> that provides access to well-known HTMX headers.
+    /// Returns a strongly typed view of the HTMX response headers.
     /// </summary>
     /// <param name="response">The HTTP response.</param>
     /// <returns>
-    /// The <see cref="HtmxResponseHeaders"/>.
+    /// The <see cref="HtmxResponseHeaders" />.
     /// </returns>
     public static HtmxResponseHeaders GetHtmxHeaders(this HttpResponse response);
 
@@ -289,15 +291,16 @@ public static class HttpResponseExtensions
     /// Configures the HTMX response headers.
     /// </summary>
     /// <param name="response">The HTTP response to configure.</param>
-    /// <param name="configure">The function to configure the HTMX response headers.</param>
+    /// <param name="configure">The delegate that configures the HTMX response headers.</param>
     public static void Htmx(this HttpResponse response, Action<HtmxResponse> configure);
 
     /// <summary>
     /// Configures the HTMX response headers.
     /// </summary>
     /// <param name="response">The HTTP response to configure.</param>
-    /// <param name="configure">The function to configure the HTMX response headers.</param>
-    /// <param name="state">The value to pass to the <paramref name="configure"/>.</param>
+    /// <param name="configure">The delegate that configures the HTMX response headers
+    /// using <paramref name="state" />.</param>
+    /// <param name="state">The state passed to <paramref name="configure" />.</param>
     public static void Htmx<TState>(this HttpResponse response, Action<HtmxResponse, TState> configure, TState state);
 }
 ```
@@ -312,13 +315,15 @@ that control HTMX behavior.
 public readonly struct HtmxResponseHeaders
 {
     /// <summary>
-    /// Gets or sets the <c>HX-Location</c> header to perform a client-side redirect without a full page reload.
+    /// Gets or sets the value of the <c>HX-Location</c> header, which performs
+    /// a client-side redirect without a full-page reload.
     /// </summary>
     [MaybeNull]
     public string Location { get; set; }
 
     /// <summary>
-    /// Gets or sets the <c>HX-Push-Url</c> header to push a new URL into the browser's history stack.
+    /// Gets or sets the value of the <c>HX-Push-Url</c> header, which pushes a new URL
+    /// onto the browser's history stack.
     /// </summary>
     [MaybeNull]
     public string PushUrl { get; set; }
@@ -334,22 +339,24 @@ Just as `HtmxRequestHeaderNames` defines constants for HTMX request headers,
 ```csharp
 /// <summary>
 /// Defines constants for the well-known names of HTMX response headers.
-/// For more information, see https://htmx.org/reference/#response_headers
 /// </summary>
+/// <remarks>
+/// For more information, see <see href="https://htmx.org/reference/#response_headers">HTMX Response Headers Reference</see>.
+/// </remarks>
 public static class HtmxResponseHeaderNames
 {
     /// <summary>
-    /// The <c>HX-Location</c> header is used to perform a client-side redirect without a full page reload.
+    /// The <c>HX-Location</c> header performs a client-side redirect without a full-page reload.
     /// </summary>
     public const string Location = "HX-Location";
 
     /// <summary>
-    /// The <c>HX-Push-Url</c> header is used to push a new URL into the browser's history stack.
+    /// The <c>HX-Push-Url</c> header pushes a new URL onto the browser's history stack.
     /// </summary>
     public const string PushUrl = "HX-Push-Url";
 
     /// <summary>
-    /// The <c>HX-Redirect</c> header is used to perform a client-side redirect to a new location.
+    /// The <c>HX-Redirect</c> header performs a client-side redirect to a new location.
     /// </summary>
     public const string Redirect = "HX-Redirect";
 
@@ -416,11 +423,11 @@ use the `Reswap` overload that accepts a string.
 /// <summary>
 /// Sets the <c>HX-Reswap</c> header to specify how the response will be swapped.
 /// </summary>
-/// <param name="value">The header value to set.</param>
+/// <param name="value">The swap style to assign to the header.</param>
 /// <returns>
 /// The current <see cref="HtmxResponse"/> instance.
 /// </returns>
-public HtmxResponse Reswap(string value);
+public HtmxResponse Reswap(HtmxSwap value);
 
 /// <summary>
 /// Sets the <c>HX-Reswap</c> header to specify how the response will be swapped.
@@ -429,20 +436,20 @@ public HtmxResponse Reswap(string value);
 /// <returns>
 /// The current <see cref="HtmxResponse"/> instance.
 /// </returns>
-public HtmxResponse Reswap(HtmxSwap value);
+public HtmxResponse Reswap(string value);
 ```
 
 For declarative configuration, `HtmxResponseAttribute` provides the `ReswapExpression` property:
 
 ```csharp
 /// <summary>
-/// Gets or sets the <c>HX-Reswap</c> header to specify how the response will be swapped into the DOM.
+/// Gets or sets the complete <c>HX-Reswap</c> header value, including any swap modifiers.
 /// </summary>
 [MaybeNull]
 public string ReswapExpression { get; set; }
 
 /// <summary>
-/// Gets or sets the <c>HX-Reswap</c> header to specify how the response will be swapped into the DOM.
+/// Gets or sets the swap style to specify in the <c>HX-Reswap</c> header.
 /// </summary>
 public HtmxSwap Reswap { get; set; }
 ```
