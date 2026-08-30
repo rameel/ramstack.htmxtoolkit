@@ -8,8 +8,7 @@ using Microsoft.Extensions.Options;
 namespace Ramstack.HtmxToolkit.TagHelpers;
 
 /// <summary>
-/// Represents the <see cref="ITagHelper" /> implementation that renders
-/// the application-wide HTMX configuration as a meta element.
+/// Renders the application-wide HTMX configuration as a <c>meta</c> element.
 /// </summary>
 /// <param name="antiforgery">The service used to generate antiforgery tokens.</param>
 /// <param name="options">The configured HTMX Toolkit options.</param>
@@ -22,7 +21,7 @@ public sealed class HtmxConfigTagHelper(IAntiforgery antiforgery, IOptions<HtmxT
     private const string FormFieldNameAttributeName = "data-antiforgery-form-field-name";
 
     /// <summary>
-    /// Gets or sets the current view context.
+    /// Gets or sets the view context for the current request.
     /// </summary>
     [ViewContext]
     [HtmlAttributeNotBound]

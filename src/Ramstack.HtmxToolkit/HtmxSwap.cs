@@ -61,7 +61,7 @@ public enum HtmxSwap
     Delete,
 
     /// <summary>
-    /// Does not append content from the response (out-of-band items will still be processed).
+    /// Does not swap content from the response. Out-of-band items are still processed.
     /// </summary>
     None
 }

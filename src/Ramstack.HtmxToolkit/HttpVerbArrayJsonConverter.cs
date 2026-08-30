@@ -6,7 +6,7 @@ using Ramstack.HtmxToolkit.Internal;
 namespace Ramstack.HtmxToolkit;
 
 /// <summary>
-/// Represents a <see cref="JsonConverter{T}"/> for arrays of <see cref="HttpVerb"/> values.
+/// Represents a <see cref="JsonConverter{T}" /> for arrays of <see cref="HttpVerb" /> values.
 /// </summary>
 internal sealed class HttpVerbArrayJsonConverter : JsonConverter<HttpVerb[]>
 {

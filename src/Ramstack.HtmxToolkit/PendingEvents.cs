@@ -8,7 +8,7 @@ using Ramstack.HtmxToolkit.Internal;
 namespace Ramstack.HtmxToolkit;
 
 /// <summary>
-/// Accumulates htmx events per <see cref="HtmxTriggerTiming"/> for a single request,
+/// Accumulates HTMX events by <see cref="HtmxTriggerTiming" /> for a single request,
 /// deferring header serialization until the response is about to start.
 /// </summary>
 internal sealed class PendingEvents
@@ -21,18 +21,19 @@ internal sealed class PendingEvents
     private SmallDictionary<string, object>? _afterSettle;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="PendingEvents"/> class.
+    /// Initializes a new instance of the <see cref="PendingEvents" /> class.
     /// </summary>
     /// <param name="response">The HTTP response to which the events belong.</param>
     private PendingEvents(HttpResponse response) =>
         _response = response;
 
     /// <summary>
-    /// Adds the specified events to the pending set for the given <paramref name="timing"/>.
-    /// When a key already exists, the duplicate event is accumulated under a <c>rs:events</c> key and replayed client-side.
+    /// Adds the specified events to the pending set for <paramref name="timing" />.
+    /// When an event name already exists, the duplicate is stored under the
+    /// <c>rs:events</c> key for client-side replay.
     /// </summary>
-    /// <param name="timing">The time at which the events will be triggered.</param>
-    /// <param name="events">A dictionary containing event names as keys and event details as values.</param>
+    /// <param name="timing">The time at which to trigger the events.</param>
+    /// <param name="events">The event names and their associated details.</param>
     public void AddEvents(HtmxTriggerTiming timing, IReadOnlyDictionary<string, object> events)
     {
         var current = timing switch
@@ -58,11 +59,11 @@ internal sealed class PendingEvents
     }
 
     /// <summary>
-    /// Returns the pending events for the specified <paramref name="timing"/>.
+    /// Returns the pending events for the specified <paramref name="timing" />.
     /// </summary>
-    /// <param name="timing">The time at which the events will be triggered.</param>
+    /// <param name="timing">The time at which to trigger the events.</param>
     /// <returns>
-    /// The pending events, or <see langword="null"/> if none were registered.
+    /// The pending events, or <see langword="null" /> if none were registered.
     /// </returns>
     public IReadOnlyDictionary<string, object>? GetEvents(HtmxTriggerTiming timing)
     {
@@ -75,10 +76,10 @@ internal sealed class PendingEvents
     }
 
     /// <summary>
-    /// Replaces the pending events for the specified <paramref name="timing"/>.
+    /// Replaces the pending events for the specified <paramref name="timing" />.
     /// </summary>
-    /// <param name="timing">The time at which the events will be triggered.</param>
-    /// <param name="events">A dictionary containing event names as keys and event details as values.</param>
+    /// <param name="timing">The time at which to trigger the events.</param>
+    /// <param name="events">The replacement event names and their associated details.</param>
     public void SetEvents(HtmxTriggerTiming timing, IReadOnlyDictionary<string, object> events)
     {
         var replacement = new SmallDictionary<string, object>(events, StringComparer.Ordinal);
@@ -97,7 +98,8 @@ internal sealed class PendingEvents
     }
 
     /// <summary>
-    /// Serializes the accumulated events, if any, into the corresponding <c>HX-Trigger</c> response headers.
+    /// Serializes the accumulated events, if any, into the corresponding
+    /// <c>HX-Trigger</c> response headers.
     /// </summary>
     public void Flush()
     {
@@ -111,13 +113,14 @@ internal sealed class PendingEvents
     /// </summary>
     /// <param name="response">The HTTP response that owns the events.</param>
     /// <returns>
-    /// The pending events accumulator, or <see langword="null"/> if none was registered.
+    /// The pending events accumulator, or <see langword="null" /> if none was registered.
     /// </returns>
     public static PendingEvents? TryGet(HttpResponse response) =>
         response.HttpContext.Items[typeof(PendingEvents)] as PendingEvents;
 
     /// <summary>
-    /// Returns the pending events accumulator, creating and registering it for the response when necessary.
+    /// Returns the pending events accumulator, creating and registering it
+    /// for the response when necessary.
     /// </summary>
     /// <param name="response">The HTTP response that owns the events.</param>
     /// <returns>
@@ -142,6 +145,12 @@ internal sealed class PendingEvents
         return pending;
     }
 
+    /// <summary>
+    /// Serializes the specified events into a response header
+    /// when the collection is not <see langword="null" />.
+    /// </summary>
+    /// <param name="name">The response header name.</param>
+    /// <param name="events">The events to serialize.</param>
     private void SetHeader(string name, SmallDictionary<string, object>? events)
     {
         if (events is not null)

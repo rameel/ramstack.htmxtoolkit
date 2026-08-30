@@ -4,7 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace Ramstack.HtmxToolkit;
 
 /// <summary>
-/// Represents configuration options for services provided by the HTMX toolkit.
+/// Represents configuration options for services provided by HTMX Toolkit.
 /// </summary>
 public sealed class HtmxToolkitOptions
 {
@@ -28,8 +28,9 @@ public sealed class HtmxToolkitOptions
     }
 
     /// <summary>
-    /// Gets or sets a value indicating whether antiforgery request metadata is rendered by the configuration tag helper.
-    /// Defaults to <see langword="true"/>.
+    /// Gets or sets a value indicating whether antiforgery request metadata is rendered
+    /// by the configuration tag helper.
+    /// Defaults to <see langword="true" />.
     /// </summary>
     public bool IncludeAntiforgeryToken { get; set; } = true;
 
@@ -45,6 +46,9 @@ public sealed class HtmxToolkitOptions
     /// <returns>
     /// The current options instance.
     /// </returns>
+    /// <exception cref="InvalidOperationException">
+    /// A different HTMX major version has already been selected.
+    /// </exception>
     [MemberNotNull(nameof(_config))]
     public HtmxToolkitOptions UseHtmxV1(Action<HtmxV1Config>? configure = null)
     {
@@ -60,6 +64,9 @@ public sealed class HtmxToolkitOptions
     /// <returns>
     /// The current options instance.
     /// </returns>
+    /// <exception cref="InvalidOperationException">
+    /// A different HTMX major version has already been selected.
+    /// </exception>
     [MemberNotNull(nameof(_config))]
     public HtmxToolkitOptions UseHtmxV2(Action<HtmxV2Config>? configure = null)
     {
@@ -75,6 +82,9 @@ public sealed class HtmxToolkitOptions
     /// <returns>
     /// The current options instance.
     /// </returns>
+    /// <exception cref="InvalidOperationException">
+    /// A different HTMX major version has already been selected.
+    /// </exception>
     [MemberNotNull(nameof(_config))]
     public HtmxToolkitOptions UseHtmxV4(Action<HtmxV4Config>? configure = null)
     {
@@ -84,13 +94,15 @@ public sealed class HtmxToolkitOptions
     }
 
     /// <summary>
-    /// Returns the selected version-specific HTMX configuration,
-    /// and throws an exception if the requested configuration type does not match the configured HTMX target version.
+    /// Returns the selected version-specific HTMX configuration.
     /// </summary>
     /// <typeparam name="TConfig">The expected configuration type.</typeparam>
     /// <returns>
     /// The requested configuration instance.
     /// </returns>
+    /// <exception cref="InvalidOperationException">
+    /// <typeparamref name="TConfig" /> does not match the selected HTMX major version.
+    /// </exception>
     public TConfig GetHtmxConfig<TConfig>() where TConfig : HtmxConfig
     {
         if (HtmxConfig is TConfig config)
@@ -137,8 +149,8 @@ public sealed class HtmxToolkitOptions
     }
 
     /// <summary>
-    /// Throws an <see cref="InvalidOperationException"/> when the requested HTMX configuration type
-    /// does not match the configured target version.
+    /// Throws an <see cref="InvalidOperationException" /> when the requested HTMX
+    /// configuration type does not match the configured target version.
     /// </summary>
     /// <param name="version">The current HTMX target version.</param>
     /// <exception cref="InvalidOperationException">Always thrown.</exception>
@@ -147,7 +159,8 @@ public sealed class HtmxToolkitOptions
         throw new InvalidOperationException($"HTMX configuration version '{version}' does not match the requested configuration type.");
 
     /// <summary>
-    /// Throws an <see cref="InvalidOperationException"/> when attempting to reconfigure the HTMX target version.
+    /// Throws an <see cref="InvalidOperationException" /> when attempting to reconfigure
+    /// the HTMX target version.
     /// </summary>
     /// <param name="currentVersion">The version that has already been configured.</param>
     /// <param name="newVersion">The new version being attempted.</param>

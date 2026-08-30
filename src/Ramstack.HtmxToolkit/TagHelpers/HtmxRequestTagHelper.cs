@@ -7,11 +7,11 @@ using Microsoft.Extensions.Options;
 namespace Ramstack.HtmxToolkit.TagHelpers;
 
 /// <summary>
-/// Represents a <see cref="TagHelper"/> implementation that applies request configuration to matching elements.
+/// Applies version-specific HTMX request configuration to matching elements.
 /// </summary>
 /// <remarks>
-/// <para>HTMX 1.x and 2.x use merge-inherited <c>hx-request</c></para>
-/// <para>HTMX 4.x uses <c>hx-config</c></para>
+/// <para>HTMX 1.x and 2.x use the merge-inherited <c>hx-request</c> attribute.</para>
+/// <para>HTMX 4.x uses the <c>hx-config</c> attribute.</para>
 /// </remarks>
 [HtmlTargetElement(Attributes = RequestTimeoutAttributeName)]
 [HtmlTargetElement(Attributes = RequestCredentialsAttributeName)]
@@ -50,16 +50,18 @@ public sealed class HtmxRequestTagHelper(IOptions<HtmxToolkitOptions> options) :
     /// </summary>
     /// <remarks>
     /// <para>
-    ///   In HTMX 1.x and 2.x this maps to the <c>credentials</c> boolean option of <c>hx-request</c>,
-    ///   where <see cref="HtmxRequestCredentials.Include"/> yields <see langword="true" /> and
-    ///   <see cref="HtmxRequestCredentials.SameOrigin"/> yields <see langword="false" />.
+    ///   In HTMX 1.x and 2.x, this property maps to the Boolean
+    ///   <c>credentials</c> option of <c>hx-request</c>.
+    ///   <see cref="HtmxRequestCredentials.Include" /> yields <see langword="true" />.
+    ///   <see cref="HtmxRequestCredentials.SameOrigin" /> yields <see langword="false" />.
     /// </para>
     /// <para>
-    ///   In HTMX 4.x this maps to the <c>credentials</c> string option of <c>hx-config</c>.
+    ///   In HTMX 4.x, this property maps to the string <c>credentials</c> option
+    ///   of <c>hx-config</c>.
     /// </para>
     /// <para>
-    ///   <see cref="HtmxRequestCredentials.Omit"/> is unsupported in HTMX 1.x and 2.x, so the option
-    ///   is omitted and HTMX uses its default value. A future version may throw an exception instead.
+    ///   <see cref="HtmxRequestCredentials.Omit" /> is unsupported in HTMX 1.x and 2.x,
+    ///   so the option is omitted and HTMX uses its default value.
     /// </para>
     /// </remarks>
     [HtmlAttributeName(RequestCredentialsAttributeName)]
@@ -70,7 +72,7 @@ public sealed class HtmxRequestTagHelper(IOptions<HtmxToolkitOptions> options) :
     }
 
     /// <summary>
-    /// Gets or sets a value indicating whether htmx strips all request headers.
+    /// Gets or sets a value indicating whether HTMX-specific request headers are omitted.
     /// </summary>
     /// <remarks>Supported in HTMX 1.x and 2.x. Removed in HTMX 4.x.</remarks>
     [HtmlAttributeName(RequestNoHeadersAttributeName)]
@@ -141,7 +143,7 @@ public sealed class HtmxRequestTagHelper(IOptions<HtmxToolkitOptions> options) :
         var targetVersion = options.Value.TargetVersion;
         var request = targetVersion == HtmxTargetVersion.V4
             ? JsonSerializer.Serialize(new HtmxRequestDataV4(_request), HtmxRequestJsonSerializerContext.Default.HtmxRequestDataV4)
-            : JsonSerializer.Serialize(new HtmxRequestDataLegacy(_request), HtmxRequestJsonSerializerContext.Default.HtmxRequestDataLegacy);
+            : JsonSerializer.Serialize(new HtmxRequestDataPrior(_request), HtmxRequestJsonSerializerContext.Default.HtmxRequestDataPrior);
 
         if (request != "{}")
         {
@@ -156,27 +158,47 @@ public sealed class HtmxRequestTagHelper(IOptions<HtmxToolkitOptions> options) :
     #region Inner types
 
     /// <summary>
-    /// Represents all typed request configuration data.
+    /// Stores the request configuration shared by all supported HTMX versions.
     /// </summary>
     internal sealed class HtmxRequestData
     {
+        /// <inheritdoc cref="HtmxRequestTagHelper.Timeout" />
         public int? Timeout { get; set; }
+
+        /// <inheritdoc cref="HtmxRequestTagHelper.Credentials" />
         public HtmxRequestCredentials? Credentials { get; set; }
+
+        /// <inheritdoc cref="HtmxRequestTagHelper.NoHeaders" />
         public bool? NoHeaders { get; set; }
+
+        /// <inheritdoc cref="HtmxRequestTagHelper.Cache" />
         public string? Cache { get; set; }
+
+        /// <inheritdoc cref="HtmxRequestTagHelper.Redirect" />
         public string? Redirect { get; set; }
+
+        /// <inheritdoc cref="HtmxRequestTagHelper.Referrer" />
         public string? Referrer { get; set; }
+
+        /// <inheritdoc cref="HtmxRequestTagHelper.Integrity" />
         public string? Integrity { get; set; }
+
+        /// <inheritdoc cref="HtmxRequestTagHelper.Validate" />
         public bool? Validate { get; set; }
     }
 
     /// <summary>
     /// Projects request configuration into the <c>hx-request</c> contract used by HTMX 1.x and 2.x.
     /// </summary>
-    internal readonly struct HtmxRequestDataLegacy(HtmxRequestData data)
+    /// <param name="data">The shared request configuration.</param>
+    internal readonly struct HtmxRequestDataPrior(HtmxRequestData data)
     {
+        /// <inheritdoc cref="HtmxRequestData.Timeout" />
         public int? Timeout => data.Timeout;
 
+        /// <summary>
+        /// Gets the boolean credentials value supported by HTMX 1.x and 2.x.
+        /// </summary>
         public bool? Credentials => data.Credentials switch
         {
             HtmxRequestCredentials.SameOrigin => false,
@@ -186,15 +208,22 @@ public sealed class HtmxRequestTagHelper(IOptions<HtmxToolkitOptions> options) :
             _ => null
         };
 
+        /// <inheritdoc cref="HtmxRequestData.NoHeaders" />
         public bool? NoHeaders => data.NoHeaders;
     }
 
     /// <summary>
     /// Projects request configuration into the <c>hx-config</c> contract used by HTMX 4.x.
     /// </summary>
+    /// <param name="data">The shared request configuration.</param>
     internal readonly struct HtmxRequestDataV4(HtmxRequestData data)
     {
+        /// <inheritdoc cref="HtmxRequestData.Timeout" />
         public int? Timeout => data.Timeout;
+
+        /// <summary>
+        /// Gets the Fetch API credentials mode supported by HTMX 4.x.
+        /// </summary>
         public string? Credentials => data.Credentials switch
         {
             HtmxRequestCredentials.SameOrigin => "same-origin",
@@ -203,10 +232,19 @@ public sealed class HtmxRequestTagHelper(IOptions<HtmxToolkitOptions> options) :
             _ => null
         };
 
+        /// <inheritdoc cref="HtmxRequestData.Cache" />
         public string? Cache => data.Cache;
+
+        /// <inheritdoc cref="HtmxRequestData.Redirect" />
         public string? Redirect => data.Redirect;
+
+        /// <inheritdoc cref="HtmxRequestData.Referrer" />
         public string? Referrer => data.Referrer;
+
+        /// <inheritdoc cref="HtmxRequestData.Integrity" />
         public string? Integrity => data.Integrity;
+
+        /// <inheritdoc cref="HtmxRequestData.Validate" />
         public bool? Validate => data.Validate;
     }
 

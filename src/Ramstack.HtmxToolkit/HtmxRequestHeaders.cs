@@ -15,63 +15,98 @@ public readonly struct HtmxRequestHeaders
     private readonly IHeaderDictionary _headers;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="HtmxRequestHeaders"/> structure.
+    /// Initializes a new instance of the <see cref="HtmxRequestHeaders" /> structure.
     /// </summary>
     /// <param name="request">The HTTP request.</param>
     internal HtmxRequestHeaders(HttpRequest request) =>
         _headers = request.Headers;
 
     /// <summary>
-    /// Gets a value indicating whether the request was made using AJAX instead of a normal navigation.
+    /// Gets a value indicating whether the request was made
+    /// using AJAX instead of a normal navigation.
     /// </summary>
-    /// <remarks><see cref="HtmxRequestHeaderNames.Boosted"/></remarks>
+    /// <remarks>
+    /// The header name is <see cref="HtmxRequestHeaderNames.Boosted" />.
+    /// </remarks>
     public bool Boosted => GetBoolean(_headers, HtmxRequestHeaderNames.Boosted);
 
     /// <summary>
     /// Gets the current URL of the browser.
     /// </summary>
-    /// <remarks><see cref="HtmxRequestHeaderNames.CurrentUrl"/></remarks>
+    /// <remarks>
+    /// The header name is <see cref="HtmxRequestHeaderNames.CurrentUrl" />.
+    /// </remarks>
     public string? CurrentUrl => GetString(_headers, HtmxRequestHeaderNames.CurrentUrl);
 
     /// <summary>
-    /// Gets a value indicating whether the request is for history restoration after a miss in the local history cache.
+    /// Gets a value indicating whether the request restores history
+    /// after a miss in the local history cache.
     /// </summary>
-    /// <remarks><see cref="HtmxRequestHeaderNames.HistoryRestoreRequest"/></remarks>
+    /// <remarks>
+    /// The header name is <see cref="HtmxRequestHeaderNames.HistoryRestoreRequest" />.
+    /// </remarks>
     public bool HistoryRestoreRequest => GetBoolean(_headers, HtmxRequestHeaderNames.HistoryRestoreRequest);
 
     /// <summary>
-    /// Gets the user response to "hx-prompt" on the client.
+    /// Gets the user's response to an <c>hx-prompt</c> on the client.
     /// </summary>
-    /// <remarks><see cref="HtmxRequestHeaderNames.Prompt"/></remarks>
+    /// <remarks>
+    /// The header name is <see cref="HtmxRequestHeaderNames.Prompt" />.
+    /// </remarks>
     public string? Prompt => GetString(_headers, HtmxRequestHeaderNames.Prompt);
 
     /// <summary>
     /// Gets a value indicating whether the current request is an HTMX request.
     /// </summary>
-    /// <remarks><see cref="HtmxRequestHeaderNames.Request"/></remarks>
+    /// <remarks>
+    /// The header name is <see cref="HtmxRequestHeaderNames.Request" />.
+    /// </remarks>
     public bool Request => GetBoolean(_headers, HtmxRequestHeaderNames.Request);
 
     /// <summary>
-    /// Gets the ID of the target element if it exists.
+    /// Gets the ID of the target element, if present.
     /// </summary>
-    /// <remarks><see cref="HtmxRequestHeaderNames.Target"/></remarks>
+    /// <remarks>
+    /// The header name is <see cref="HtmxRequestHeaderNames.Target" />.
+    /// </remarks>
     public string? Target => GetString(_headers, HtmxRequestHeaderNames.Target);
 
     /// <summary>
-    /// Gets the name of the triggered element if it exists.
+    /// Gets the name of the triggered element, if present.
     /// </summary>
-    /// <remarks><see cref="HtmxRequestHeaderNames.TriggerName"/></remarks>
+    /// <remarks>
+    /// The header name is <see cref="HtmxRequestHeaderNames.TriggerName" />.
+    /// </remarks>
     public string? TriggerName => GetString(_headers, HtmxRequestHeaderNames.TriggerName);
 
     /// <summary>
-    /// Gets the ID of the triggered element if it exists as indicated by the <c>HX-Trigger</c> header.
+    /// Gets the ID of the triggered element, if present.
     /// </summary>
-    /// <remarks><see cref="HtmxRequestHeaderNames.Trigger"/></remarks>
+    /// <remarks>
+    /// The header name is <see cref="HtmxRequestHeaderNames.Trigger" />.
+    /// </remarks>
     public string? Trigger => GetString(_headers, HtmxRequestHeaderNames.Trigger);
 
+    /// <summary>
+    /// Determines whether the specified header has the value <c>"true"</c>.
+    /// </summary>
+    /// <param name="dictionary">The header collection to inspect.</param>
+    /// <param name="key">The name of the header.</param>
+    /// <returns>
+    /// <see langword="true" /> if the header value is <c>"true"</c>;
+    /// otherwise, <see langword="false" />.
+    /// </returns>
     private static bool GetBoolean(IHeaderDictionary dictionary, string key) =>
         dictionary.TryGetValue(key, out var value) && value[0] == "true";
 
+    /// <summary>
+    /// Gets the value of the specified header.
+    /// </summary>
+    /// <param name="dictionary">The header collection to inspect.</param>
+    /// <param name="key">The name of the header.</param>
+    /// <returns>
+    /// The header value, or <see langword="null" /> if the header is not present.
+    /// </returns>
     private static string? GetString(IHeaderDictionary dictionary, string key)
     {
         dictionary.TryGetValue(key, out var value);
@@ -80,8 +115,18 @@ public readonly struct HtmxRequestHeaders
 
     #region Inner type: HtmxRequestHeadersDebugView
 
+    /// <summary>
+    /// Provides a debugger view for <see cref="HtmxRequestHeaders"/>.
+    /// </summary>
+    /// <param name="headers">The <see cref="HtmxRequestHeaders"/> instance
+    /// whose headers will be displayed.</param>
     private sealed class HtmxRequestHeadersDebugView(HtmxRequestHeaders headers)
     {
+        /// <summary>
+        /// Gets the collection of all HTTP headers stored
+        /// in the associated <see cref="HtmxRequestHeaders"/> instance
+        /// as an array of key-value pairs.
+        /// </summary>
         [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
         public KeyValuePair<string, string>[] Items => DebugHelpers.GetHeaders(headers._headers);
     }

@@ -3,14 +3,14 @@ using System.Diagnostics;
 namespace Ramstack.HtmxToolkit.Collections;
 
 /// <summary>
-/// Represents a debugger view for the <see cref="SmallDictionary{TKey,TValue}"/> class, allowing inspection of its contents.
+/// Provides a debugger view of a <see cref="SmallDictionary{TKey,TValue}" />.
 /// </summary>
 /// <typeparam name="TKey">The type of the keys in the dictionary.</typeparam>
 /// <typeparam name="TValue">The type of the values in the dictionary.</typeparam>
 internal sealed class SmallDictionaryDebugView<TKey, TValue>(SmallDictionary<TKey, TValue>? dictionary) where TKey : notnull
 {
     /// <summary>
-    /// Gets the array of key-value pairs contained in the <see cref="SmallDictionary{TKey,TValue}"/> for debugging purposes.
+    /// Gets the active dictionary entries for display in the debugger.
     /// </summary>
     [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
     public DictionaryEntry[] Items
@@ -33,7 +33,7 @@ internal sealed class SmallDictionaryDebugView<TKey, TValue>(SmallDictionary<TKe
     #region Inner type: DictionaryEntry
 
     /// <summary>
-    /// Represents a class that contains the key/value pairs of the dictionary entry for displaying by a debugger.
+    /// Represents a dictionary entry displayed by the debugger.
     /// </summary>
     /// <param name="key">The key of the entry.</param>
     /// <param name="value">The value of the entry.</param>

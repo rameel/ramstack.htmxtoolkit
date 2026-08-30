@@ -6,7 +6,7 @@ using Ramstack.HtmxToolkit.Builder;
 namespace Ramstack.HtmxToolkit;
 
 /// <summary>
-/// Provides extension methods for the <see cref="IHtmlHelper"/> interface.
+/// Provides extension methods for the <see cref="IHtmlHelper" /> interface.
 /// </summary>
 public static class HtmlHelperExtensions
 {
@@ -14,33 +14,35 @@ public static class HtmlHelperExtensions
     private static readonly HtmlString s_debugScript = new(HtmxAssets.DebugScript);
 
     /// <summary>
-    /// Gets the HTML string that represents the path to the minified version of the script.
+    /// Gets or sets the HTML string that represents the path to the minified script.
     /// </summary>
     internal static HtmlString Path { get; set; } = new(EndpointRouteBuilderExtensions.AssetPath);
 
     /// <summary>
-    /// Gets the HTML string that represents the path to the debug version of the script.
+    /// Gets or sets the HTML string that represents the path to the debug script.
     /// </summary>
     internal static HtmlString DebugPath { get; set; } = new(EndpointRouteBuilderExtensions.AssetPath + "?debug");
 
     /// <summary>
-    /// Returns the HTMX toolkit script content.
+    /// Returns the embedded HTMX Toolkit script.
     /// </summary>
-    /// <param name="_">The HTML helper.</param>
-    /// <param name="debug">Whether to return the debug version of the script.</param>
+    /// <param name="_">The HTML helper instance.</param>
+    /// <param name="debug"><see langword="true" /> to return the debug script;
+    /// otherwise, <see langword="false" />.</param>
     /// <returns>
-    /// The HTMX toolkit script content.
+    /// The embedded script content.
     /// </returns>
     public static IHtmlContent HtmxToolkitScript(this IHtmlHelper _, bool debug = false) =>
         debug ? s_debugScript : s_script;
 
     /// <summary>
-    /// Returns the path to the HTMX toolkit script endpoint.
+    /// Returns the path to the HTMX Toolkit script endpoint.
     /// </summary>
-    /// <param name="_">The HTML helper.</param>
-    /// <param name="debug">Whether to return the debug version of the script.</param>
+    /// <param name="_">The HTML helper instance.</param>
+    /// <param name="debug"><see langword="true" /> to return the debug script path;
+    /// otherwise, <see langword="false" />.</param>
     /// <returns>
-    /// The HTMX toolkit script endpoint path.
+    /// The HTMX Toolkit script endpoint path.
     /// </returns>
     public static IHtmlContent HtmxToolkitScriptPath(this IHtmlHelper _, bool debug = false) =>
         debug ? DebugPath : Path;

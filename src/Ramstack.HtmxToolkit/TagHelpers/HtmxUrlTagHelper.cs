@@ -12,10 +12,9 @@ using Microsoft.AspNetCore.Routing;
 namespace Ramstack.HtmxToolkit.TagHelpers;
 
 /// <summary>
-/// Represents a <see cref="TagHelper"/> implementation
-/// used to generate URIs for htmx actions on matching elements.
+/// Generates URLs for HTMX request attributes on matching elements.
 /// </summary>
-/// <param name="factory">The <see cref="IUrlHelperFactory"/>.</param>
+/// <param name="factory">The factory used to create URL helpers.</param>
 [HtmlTargetElement(Attributes = ActionAttributeName)]
 [HtmlTargetElement(Attributes = ControllerAttributeName)]
 [HtmlTargetElement(Attributes = AreaAttributeName)]
@@ -52,7 +51,9 @@ public sealed class HtmxUrlTagHelper(IUrlHelperFactory factory) : TagHelper
     /// Gets or sets the name of the route.
     /// </summary>
     /// <remarks>
-    /// Must be <see langword="null" /> if one of <see cref="Action"/>, <see cref="Controller"/>, <see cref="Area"/> or <see cref="Page"/> is non-<see langword="null" />.
+    /// Must be <see langword="null" /> if <see cref="Action" />,
+    /// <see cref="Controller" />, <see cref="Page" />, or <see cref="PageHandler" />
+    /// is not <see langword="null" />.
     /// </remarks>
     [HtmlAttributeName(RouteAttributeName)]
     public string? Route { get; set; }
@@ -61,7 +62,7 @@ public sealed class HtmxUrlTagHelper(IUrlHelperFactory factory) : TagHelper
     /// Gets or sets the name of the area.
     /// </summary>
     /// <remarks>
-    /// Must be <see langword="null" /> if <see cref="Route"/> is non-<see langword="null" />.
+    /// Must be <see langword="null" /> if <see cref="Route" /> is not <see langword="null" />.
     /// </remarks>
     [AspMvcArea]
     [HtmlAttributeName(AreaAttributeName)]
@@ -71,7 +72,8 @@ public sealed class HtmxUrlTagHelper(IUrlHelperFactory factory) : TagHelper
     /// Gets or sets the name of the controller.
     /// </summary>
     /// <remarks>
-    /// Must be <see langword="null" /> if <see cref="Route"/> or <see cref="Page"/> is non-<see langword="null" />.
+    /// Must be <see langword="null" /> if <see cref="Route" />, <see cref="Page" />,
+    /// or <see cref="PageHandler" /> is not <see langword="null" />.
     /// </remarks>
     [AspMvcController]
     [HtmlAttributeName(ControllerAttributeName)]
@@ -81,7 +83,8 @@ public sealed class HtmxUrlTagHelper(IUrlHelperFactory factory) : TagHelper
     /// Gets or sets the name of the action.
     /// </summary>
     /// <remarks>
-    /// Must be <see langword="null" /> if <see cref="Route"/> or <see cref="Page"/> is non-<see langword="null" />.
+    /// Must be <see langword="null" /> if <see cref="Route" />, <see cref="Page" />,
+    /// or <see cref="PageHandler" /> is not <see langword="null" />.
     /// </remarks>
     [AspMvcAction]
     [HtmlAttributeName(ActionAttributeName)]
@@ -91,7 +94,8 @@ public sealed class HtmxUrlTagHelper(IUrlHelperFactory factory) : TagHelper
     /// Gets or sets the name of the page.
     /// </summary>
     /// <remarks>
-    /// Must be <see langword="null" /> if one of <see cref="Route"/>, <see cref="Action"/> or <see cref="Controller"/> is non-<see langword="null" />.
+    /// Must be <see langword="null" /> if <see cref="Route" />, <see cref="Action" />,
+    /// or <see cref="Controller" /> is not <see langword="null" />.
     /// </remarks>
     [AspMvcView]
     [HtmlAttributeName(PageAttributeName)]
@@ -101,13 +105,14 @@ public sealed class HtmxUrlTagHelper(IUrlHelperFactory factory) : TagHelper
     /// Gets or sets the name of the page handler.
     /// </summary>
     /// <remarks>
-    /// Must be <see langword="null" /> if one of <see cref="Route"/>, <see cref="Action"/> or <see cref="Controller"/> is non-<see langword="null" />.
+    /// Must be <see langword="null" /> if <see cref="Route" />, <see cref="Action" />,
+    /// or <see cref="Controller" /> is not <see langword="null" />.
     /// </remarks>
     [HtmlAttributeName(PageHandlerAttributeName)]
     public string? PageHandler { get; set; }
 
     /// <summary>
-    /// Gets or sets the protocol for the URL, such as "http" or "https".
+    /// Gets or sets the protocol for the URL, such as <c>http</c> or <c>https</c>.
     /// </summary>
     [HtmlAttributeName(ProtocolAttributeName)]
     public string? Protocol { get; set; }
@@ -125,7 +130,7 @@ public sealed class HtmxUrlTagHelper(IUrlHelperFactory factory) : TagHelper
     public string? Fragment { get; set; }
 
     /// <summary>
-    /// Gets or sets the additional parameters for the route.
+    /// Gets or sets the additional route values.
     /// </summary>
     [HtmlAttributeName(RouteValuesDictionaryName, DictionaryAttributePrefix = RouteValuesPrefix)]
     public IDictionary<string, string> RouteValues
@@ -135,7 +140,7 @@ public sealed class HtmxUrlTagHelper(IUrlHelperFactory factory) : TagHelper
     }
 
     /// <summary>
-    /// Gets or sets the <see cref="Microsoft.AspNetCore.Mvc.Rendering.ViewContext"/> for the current request.
+    /// Gets or sets the view context for the current request.
     /// </summary>
     [ViewContext]
     [HtmlAttributeNotBound]
@@ -214,6 +219,10 @@ public sealed class HtmxUrlTagHelper(IUrlHelperFactory factory) : TagHelper
         return Task.CompletedTask;
     }
 
+    /// <summary>
+    /// Throws an exception indicating that mutually exclusive URL attributes were specified.
+    /// </summary>
+    /// <exception cref="InvalidOperationException">Always thrown.</exception>
     [DoesNotReturn]
     private static void Error_CannotDetermineUrl()
     {
@@ -226,6 +235,10 @@ public sealed class HtmxUrlTagHelper(IUrlHelperFactory factory) : TagHelper
         throw new InvalidOperationException(Message);
     }
 
+    /// <summary>
+    /// Throws an exception indicating that multiple HTMX method attributes were specified.
+    /// </summary>
+    /// <exception cref="InvalidOperationException">Always thrown.</exception>
     [DoesNotReturn]
     private static void Error_AmbiguousMethods()
     {

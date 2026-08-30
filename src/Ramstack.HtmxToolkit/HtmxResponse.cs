@@ -11,8 +11,9 @@ namespace Ramstack.HtmxToolkit;
 /// Represents an HTTP response whose HTMX response headers can be configured.
 /// </summary>
 /// <remarks>
-/// Like <see cref="HttpContext"/> and <see cref="HttpResponse"/> themselves, this type is not thread-safe.
-/// Its members should not be called concurrently from multiple threads for the same request.
+/// Like <see cref="HttpContext" /> and <see cref="HttpResponse" /> themselves,
+/// this type is not thread-safe. Its members should not be called concurrently
+/// from multiple threads for the same request.
 /// </remarks>
 [DebuggerTypeProxy(typeof(HtmxResponseDebugView))]
 public readonly struct HtmxResponse
@@ -20,39 +21,41 @@ public readonly struct HtmxResponse
     private readonly HttpResponse _response;
 
     /// <summary>
-    /// The custom status code to stop the polling.
+    /// The HTTP status code used by HTMX to stop polling.
     /// </summary>
     public const int StopPollingStatusCode = 286;
 
     /// <summary>
-    /// Gets the HTMX headers.
+    /// Gets the strongly typed HTMX response headers.
     /// </summary>
     public HtmxResponseHeaders Headers => new(_response);
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="HtmxResponse"/> structure.
+    /// Initializes a new instance of the <see cref="HtmxResponse" /> structure.
     /// </summary>
     /// <param name="response">The HTTP response.</param>
     internal HtmxResponse(HttpResponse response) =>
         _response = response;
 
     /// <summary>
-    /// Sets the <c>HX-Location</c> header to a client-side redirect that does not do a full page reload.
+    /// Sets the <c>HX-Location</c> header to perform a client-side redirect
+    /// without a full-page reload.
     /// </summary>
-    /// <param name="value">The header value to set.</param>
+    /// <param name="value">The path or serialized JSON options to assign to the header.</param>
     /// <returns>
-    /// The current <see cref="HtmxResponse"/> instance.
+    /// The current <see cref="HtmxResponse" /> instance.
     /// </returns>
     public HtmxResponse Location(string value) =>
         SetHeader(this, HtmxResponseHeaderNames.Location, value);
 
     /// <summary>
-    /// Sets the <c>HX-Location</c> header to a client-side redirect that does not do a full page reload.
+    /// Sets the <c>HX-Location</c> header to perform a client-side redirect
+    /// without a full-page reload.
     /// </summary>
-    /// <param name="path">The path of the request.</param>
-    /// <param name="options">The options for the <c>HX-Location</c> request.</param>
+    /// <param name="path">The path to request.</param>
+    /// <param name="options">The options used to issue the request.</param>
     /// <returns>
-    /// The current <see cref="HtmxResponse"/> instance.
+    /// The current <see cref="HtmxResponse" /> instance.
     /// </returns>
     public HtmxResponse Location(string path, HtmxLocationOptions options)
     {
@@ -62,27 +65,27 @@ public readonly struct HtmxResponse
         {
             options.Path = path;
 
-            var value = JsonSerializer.Serialize(options, HtmxLocationOptionsJsonSerializerContext.Default.HtmxLocationOptions);
-            return SetHeader(response, HtmxResponseHeaderNames.Location, value);
+            var json = JsonSerializer.Serialize(options, HtmxLocationOptionsJsonSerializerContext.Default.HtmxLocationOptions);
+            return SetHeader(response, HtmxResponseHeaderNames.Location, json);
         }
     }
 
     /// <summary>
-    /// Sets the <c>HX-Push-Url</c> header to push a new URL into the history stack.
+    /// Sets the <c>HX-Push-Url</c> header to push a new URL onto the browser's history stack.
     /// </summary>
     /// <param name="value">The header value to set.</param>
     /// <returns>
-    /// The current <see cref="HtmxResponse"/> instance.
+    /// The current <see cref="HtmxResponse" /> instance.
     /// </returns>
     /// <remarks>
     /// The possible values for this header are:
     /// <list type="bullet">
     ///   <item>
     ///     A URL to be pushed into the location bar. This may be relative or absolute,
-    ///     as per <a href="https://developer.mozilla.org/en-US/docs/Web/API/History/pushState">history.pushState()</a>.
+    ///     as supported by <see href="https://developer.mozilla.org/en-US/docs/Web/API/History/pushState">history.pushState()</see>.
     ///   </item>
     ///   <item>
-    ///     <see langword="false" />, which prevents the browser's history being updated.
+    ///     <c>"false"</c>, which prevents the browser's history from being updated.
     ///   </item>
     /// </list>
     /// </remarks>
@@ -90,29 +93,30 @@ public readonly struct HtmxResponse
         SetHeader(this, HtmxResponseHeaderNames.PushUrl, value);
 
     /// <summary>
-    /// Sets the <c>HX-Push-Url</c> header to <see langword="false" /> that prevents the browser's history being updated.
+    /// Sets the <c>HX-Push-Url</c> header to <c>"false"</c> to prevent the browser's
+    /// history from being updated.
     /// </summary>
     /// <returns>
-    /// The current <see cref="HtmxResponse"/> instance.
+    /// The current <see cref="HtmxResponse" /> instance.
     /// </returns>
     public HtmxResponse PreventPushUrl() =>
         SetHeader(this, HtmxResponseHeaderNames.PushUrl, "false");
 
     /// <summary>
-    /// Sets the <c>HX-Redirect</c> header to a client-side redirect to a new location.
+    /// Sets the <c>HX-Redirect</c> header to perform a client-side redirect to a new location.
     /// </summary>
     /// <param name="value">The header value to set.</param>
     /// <returns>
-    /// The current <see cref="HtmxResponse"/> instance.
+    /// The current <see cref="HtmxResponse" /> instance.
     /// </returns>
     public HtmxResponse Redirect(string value) =>
         SetHeader(this, HtmxResponseHeaderNames.Redirect, value);
 
     /// <summary>
-    /// Sets the <c>HX-Refresh</c> header to full refresh of the page.
+    /// Sets the <c>HX-Refresh</c> header to request a full-page refresh.
     /// </summary>
     /// <returns>
-    /// The current <see cref="HtmxResponse"/> instance.
+    /// The current <see cref="HtmxResponse" /> instance.
     /// </returns>
     public HtmxResponse Refresh() =>
         SetHeader(this, HtmxResponseHeaderNames.Refresh, "true");
@@ -122,18 +126,19 @@ public readonly struct HtmxResponse
     /// </summary>
     /// <param name="value">The header value to set.</param>
     /// <returns>
-    /// The current <see cref="HtmxResponse"/> instance.
+    /// The current <see cref="HtmxResponse" /> instance.
     /// </returns>
     /// <remarks>
     /// The possible values for this header are:
     /// <list type="bullet">
     ///   <item>
-    ///     A URL to replace the current URL in the location bar. This may be relative or absolute,
-    ///     as per <a href="https://developer.mozilla.org/en-US/docs/Web/API/History/replaceState">history.replaceState()</a>,
+    ///     A URL to replace the current URL in the location bar. This may be relative
+    ///     or absolute, as supported by
+    ///     <see href="https://developer.mozilla.org/en-US/docs/Web/API/History/replaceState">history.replaceState()</see>,
     ///     but must have the same origin as the current URL.
     ///   </item>
     ///   <item>
-    ///     <see langword="false" />, which prevents the browser's current URL from being updated.
+    ///     <c>"false"</c>, which prevents the browser's current URL from being updated.
     ///   </item>
     /// </list>
     /// </remarks>
@@ -141,10 +146,11 @@ public readonly struct HtmxResponse
         SetHeader(this, HtmxResponseHeaderNames.ReplaceUrl, value);
 
     /// <summary>
-    /// Sets the <c>HX-Replace-Url</c> header to <see langword="false" /> that prevents the browser's history being updated.
+    /// Sets the <c>HX-Replace-Url</c> header to <c>"false"</c> to prevent the browser's
+    /// current URL from being updated.
     /// </summary>
     /// <returns>
-    /// The current <see cref="HtmxResponse"/> instance.
+    /// The current <see cref="HtmxResponse" /> instance.
     /// </returns>
     public HtmxResponse PreventReplaceUrl() =>
         SetHeader(this, HtmxResponseHeaderNames.ReplaceUrl, "false");
@@ -152,9 +158,9 @@ public readonly struct HtmxResponse
     /// <summary>
     /// Sets the <c>HX-Reswap</c> header to specify how the response will be swapped.
     /// </summary>
-    /// <param name="value">The header value to set.</param>
+    /// <param name="value">The swap style to assign to the header.</param>
     /// <returns>
-    /// The current <see cref="HtmxResponse"/> instance.
+    /// The current <see cref="HtmxResponse" /> instance.
     /// </returns>
     public HtmxResponse Reswap(HtmxSwap value) =>
         SetHeader(this, HtmxResponseHeaderNames.Reswap, value.GetSwapValue());
@@ -164,7 +170,7 @@ public readonly struct HtmxResponse
     /// </summary>
     /// <param name="value">The header value to set.</param>
     /// <returns>
-    /// The current <see cref="HtmxResponse"/> instance.
+    /// The current <see cref="HtmxResponse" /> instance.
     /// </returns>
     public HtmxResponse Reswap(string value) =>
         SetHeader(this, HtmxResponseHeaderNames.Reswap, value);
@@ -175,41 +181,41 @@ public readonly struct HtmxResponse
     /// </summary>
     /// <param name="value">The CSS selector to set.</param>
     /// <returns>
-    /// The current <see cref="HtmxResponse"/> instance.
+    /// The current <see cref="HtmxResponse" /> instance.
     /// </returns>
     public HtmxResponse Retarget(string value) =>
         SetHeader(this, HtmxResponseHeaderNames.Retarget, value);
 
     /// <summary>
-    /// Sets the <c>HX-Reselect</c> header to choose which part of the response is used to be swapped in.
+    /// Sets the <c>HX-Reselect</c> header to select the part of the response to swap in.
     /// </summary>
     /// <param name="value">The CSS selector to set.</param>
     /// <returns>
-    /// The current <see cref="HtmxResponse"/> instance.
+    /// The current <see cref="HtmxResponse" /> instance.
     /// </returns>
     public HtmxResponse Reselect(string value) =>
         SetHeader(this, HtmxResponseHeaderNames.Reselect, value);
 
     /// <summary>
-    /// Sets one of <c>HX-Trigger</c> headers to trigger a client-side event.
+    /// Adds a client-side event to the response header selected by <paramref name="trigger" />.
     /// </summary>
     /// <param name="eventName">The event name to trigger.</param>
-    /// <param name="trigger">The time at which the event will be triggered. Defaults to <see cref="HtmxTriggerTiming.Receive"/>.</param>
+    /// <param name="trigger">The event timing. Defaults to <see cref="HtmxTriggerTiming.Receive" />.</param>
     /// <returns>
-    /// The current <see cref="HtmxResponse"/> instance.
+    /// The current <see cref="HtmxResponse" /> instance.
     /// </returns>
     public HtmxResponse TriggerEvent(string eventName, HtmxTriggerTiming trigger = HtmxTriggerTiming.Receive) =>
         TriggerEvent(eventName, "", trigger);
 
     /// <summary>
-    /// Sets one of <c>HX-Trigger</c> headers to trigger a client-side event.
+    /// Adds a client-side event and its detail to the response header selected by
+    /// <paramref name="timing" />.
     /// </summary>
     /// <param name="eventName">The event name to trigger.</param>
     /// <param name="detail">The event detail.</param>
-    /// <param name="timing">The time at which an event will be triggered.
-    /// Defaults to <see cref="HtmxTriggerTiming.Receive"/>.</param>
+    /// <param name="timing">The event timing. Defaults to <see cref="HtmxTriggerTiming.Receive" />.</param>
     /// <returns>
-    /// The current <see cref="HtmxResponse"/> instance.
+    /// The current <see cref="HtmxResponse" /> instance.
     /// </returns>
     public HtmxResponse TriggerEvent(string eventName, object detail, HtmxTriggerTiming timing = HtmxTriggerTiming.Receive)
     {
@@ -220,32 +226,32 @@ public readonly struct HtmxResponse
     }
 
     /// <summary>
-    /// Sets one of <c>HX-Trigger</c> headers to trigger client-side events.
+    /// Adds client-side events to the response header selected by <paramref name="timing" />.
     /// </summary>
-    /// <param name="events">A dictionary containing event names as keys and event details as values.</param>
-    /// <param name="timing">The time at which an event will be triggered.
-    /// Defaults to <see cref="HtmxTriggerTiming.Receive"/>.</param>
+    /// <param name="events">The event names and their associated details.</param>
+    /// <param name="timing">The event timing. Defaults to <see cref="HtmxTriggerTiming.Receive" />.</param>
     /// <returns>
-    /// The current <see cref="HtmxResponse"/> instance.
+    /// The current <see cref="HtmxResponse" /> instance.
     /// </returns>
     public HtmxResponse TriggerEvents(IReadOnlyDictionary<string, object> events, HtmxTriggerTiming timing = HtmxTriggerTiming.Receive) =>
         AddEvents(this, events, timing);
 
     /// <summary>
-    /// Sets the special HTTP status code <c>286</c> that is used to stop the polling.
+    /// Sets HTTP status code <c>286</c> to stop polling.
     /// </summary>
     /// <returns>
-    /// The current <see cref="HtmxResponse"/> instance.
+    /// The current <see cref="HtmxResponse" /> instance.
     /// </returns>
     public HtmxResponse StopPolling() =>
         StopPolling(true);
 
     /// <summary>
-    /// Sets the special HTTP status code <c>286</c> to stop the polling.
+    /// Sets HTTP status code <c>286</c> when <paramref name="condition" /> is <see langword="true" />.
     /// </summary>
-    /// <param name="condition">A boolean condition indicating whether to stop the polling.</param>
+    /// <param name="condition"><see langword="true" /> to stop polling;
+    /// otherwise, <see langword="false" />.</param>
     /// <returns>
-    /// The current <see cref="HtmxResponse"/> instance.
+    /// The current <see cref="HtmxResponse" /> instance.
     /// </returns>
     public HtmxResponse StopPolling(bool condition)
     {
@@ -255,12 +261,30 @@ public readonly struct HtmxResponse
         return this;
     }
 
+    /// <summary>
+    /// Sets a response header and returns the response wrapper for fluent chaining.
+    /// </summary>
+    /// <param name="response">The response wrapper to update.</param>
+    /// <param name="key">The name of the header.</param>
+    /// <param name="value">The header value.</param>
+    /// <returns>
+    /// The updated response wrapper.
+    /// </returns>
     private static HtmxResponse SetHeader(HtmxResponse response, string key, string value)
     {
         response._response.Headers[key] = [with(value)];
         return response;
     }
 
+    /// <summary>
+    /// Adds pending client-side events and returns the response wrapper for fluent chaining.
+    /// </summary>
+    /// <param name="response">The response wrapper to update.</param>
+    /// <param name="events">The event names and their associated details.</param>
+    /// <param name="timing">The time at which to trigger the events.</param>
+    /// <returns>
+    /// The updated response wrapper.
+    /// </returns>
     private static HtmxResponse AddEvents(HtmxResponse response, IReadOnlyDictionary<string, object> events, HtmxTriggerTiming timing)
     {
         PendingEvents.GetOrCreate(response._response).AddEvents(timing, events);
@@ -269,8 +293,18 @@ public readonly struct HtmxResponse
 
     #region Inner type: HtmxResponseDebugView
 
+    /// <summary>
+    /// Provides a debugger view for <see cref="HtmxResponse"/>.
+    /// </summary>
+    /// <param name="response">The <see cref="HtmxResponse"/> instance
+    /// whose response headers will be displayed.</param>
     private sealed class HtmxResponseDebugView(HtmxResponse response)
     {
+        /// <summary>
+        /// Gets the collection of HTTP response headers
+        /// from the associated <see cref="HtmxResponse"/> instance
+        /// as an array of key-value pairs.
+        /// </summary>
         [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
         public KeyValuePair<string, string>[] Items => DebugHelpers.GetHeaders(response._response.Headers);
     }

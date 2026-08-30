@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Ramstack.HtmxToolkit.Builder;
 
 /// <summary>
-/// Provides extension methods for registering HTMX Toolkit services.
+/// Provides HTMX Toolkit service registration for an <see cref="IServiceCollection" />.
 /// </summary>
 public static class ServiceCollectionExtensions
 {

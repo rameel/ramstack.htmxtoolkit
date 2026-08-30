@@ -8,7 +8,7 @@ using Ramstack.HtmxToolkit.Collections;
 namespace Ramstack.HtmxToolkit.TagHelpers;
 
 /// <summary>
-/// Represents a <see cref="TagHelper"/> implementation that applies the <c>hx-headers</c> attribute to matching elements.
+/// Applies an <c>hx-headers</c> attribute assembled from strongly typed tag helper attributes.
 /// </summary>
 /// <remarks>
 /// <list type="bullet">

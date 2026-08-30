@@ -6,17 +6,17 @@ using Microsoft.AspNetCore.Routing;
 namespace Ramstack.HtmxToolkit.Builder;
 
 /// <summary>
-/// Provides extension methods for the <see cref="IEndpointRouteBuilder"/> interface to add "htmxtoolkit" endpoints.
+/// Provides HTMX Toolkit endpoint mappings for an <see cref="IEndpointRouteBuilder" />.
 /// </summary>
 public static class EndpointRouteBuilderExtensions
 {
     /// <summary>
-    /// Gets the default path to the htmx anti-forgery script asset.
+    /// Gets the current path to the HTMX Toolkit script asset.
     /// </summary>
     internal static string AssetPath { get; private set; } = $"/htmxtoolkit/{HtmxAssets.Hash}";
 
     /// <summary>
-    /// Maps an endpoint that serves the HTMX toolkit script at the default path.
+    /// Maps an endpoint that serves the HTMX Toolkit script at the default path.
     /// </summary>
     /// <param name="builder">The endpoint route builder.</param>
     /// <returns>
@@ -26,7 +26,7 @@ public static class EndpointRouteBuilderExtensions
         builder.MapHtmxToolkitScript(AssetPath);
 
     /// <summary>
-    /// Maps an endpoint that serves the HTMX toolkit script at the specified path.
+    /// Maps an endpoint that serves the HTMX Toolkit script at the specified path.
     /// </summary>
     /// <param name="builder">The endpoint route builder.</param>
     /// <param name="path">The path at which to serve the script.</param>

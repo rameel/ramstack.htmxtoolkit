@@ -1,9 +1,11 @@
 namespace Ramstack.HtmxToolkit;
 
 /// <summary>
-/// Defines constants for the well-known names of htmx request headers.
-/// For more information, see https://htmx.org/reference/#request_headers
+/// Defines constants for the well-known names of HTMX request headers.
 /// </summary>
+/// <remarks>
+/// For more information, see <see href="https://htmx.org/reference/#request_headers">HTMX Request Headers Reference</see>.
+/// </remarks>
 public static class HtmxRequestHeaderNames
 {
     /// <summary>
@@ -24,28 +26,28 @@ public static class HtmxRequestHeaderNames
     public const string HistoryRestoreRequest = "HX-History-Restore-Request";
 
     /// <summary>
-    /// The <c>HX-Prompt</c> header contains the user response to "hx-prompt".
+    /// The <c>HX-Prompt</c> header contains the user's response to an <c>hx-prompt</c>.
     /// </summary>
     public const string Prompt = "HX-Prompt";
 
     /// <summary>
-    /// The <c>HX-Request</c> header is a general header sent with every htmx request.
-    /// Always <c>"true"</c>.
+    /// The <c>HX-Request</c> header indicates that the request was issued by HTMX.
+    /// Its value is always <c>"true"</c>.
     /// </summary>
     public const string Request = "HX-Request";
 
     /// <summary>
-    /// The <c>HX-Target</c> header contains the ID of the target element if it exists.
+    /// The <c>HX-Target</c> header contains the ID of the target element, if present.
     /// </summary>
     public const string Target = "HX-Target";
 
     /// <summary>
-    /// The <c>HX-Trigger-Name</c> header contains the name of the triggered element if it exists.
+    /// The <c>HX-Trigger-Name</c> header contains the name of the triggered element, if present.
     /// </summary>
     public const string TriggerName = "HX-Trigger-Name";
 
     /// <summary>
-    /// The <c>HX-Trigger</c> header contains the ID of the triggered element if it exists.
+    /// The <c>HX-Trigger</c> header contains the ID of the triggered element, if present.
     /// </summary>
     public const string Trigger = "HX-Trigger";
 }

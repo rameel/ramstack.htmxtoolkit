@@ -1,12 +1,13 @@
 namespace Ramstack.HtmxToolkit.TagHelpers;
 
 /// <summary>
-/// Represents the response handling configuration for responses matching a specific HTTP status code pattern.
+/// Represents the response handling configuration for responses that match
+/// a specific HTTP status code pattern.
 /// </summary>
 public sealed class ResponseHandlingConfig
 {
     /// <summary>
-    /// Gets or sets a regular expression that will be tested against response status codes.
+    /// Gets or sets the regular expression used to match response status codes.
     /// </summary>
     public string? Code { get; set; }
 
@@ -16,12 +17,12 @@ public sealed class ResponseHandlingConfig
     public bool? Swap { get; set; }
 
     /// <summary>
-    /// Gets or sets a value indicating whether htmx should treat this response as an error.
+    /// Gets or sets a value indicating whether HTMX should treat this response as an error.
     /// </summary>
     public bool? Error { get; set; }
 
     /// <summary>
-    /// Gets or sets a value indicating whether htmx should ignore title tags in the response.
+    /// Gets or sets a value indicating whether HTMX should ignore title tags in the response.
     /// </summary>
     public bool? IgnoreTitle { get; set; }
 

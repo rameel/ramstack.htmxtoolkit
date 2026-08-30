@@ -15,14 +15,15 @@ public readonly struct HtmxResponseHeaders
     private readonly HttpResponse _response;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="HtmxResponseHeaders"/> structure.
+    /// Initializes a new instance of the <see cref="HtmxResponseHeaders" /> structure.
     /// </summary>
     /// <param name="response">The HTTP response.</param>
     internal HtmxResponseHeaders(HttpResponse response) =>
         _response = response;
 
     /// <summary>
-    /// Gets or sets the <c>HX-Location</c> header to perform a client-side redirect without a full page reload.
+    /// Gets or sets the value of the <c>HX-Location</c> header, which performs
+    /// a client-side redirect without a full-page reload.
     /// </summary>
     [MaybeNull]
     public string Location
@@ -32,7 +33,8 @@ public readonly struct HtmxResponseHeaders
     }
 
     /// <summary>
-    /// Gets or sets the <c>HX-Push-Url</c> header to push a new URL into the browser's history stack.
+    /// Gets or sets the value of the <c>HX-Push-Url</c> header, which pushes a new URL
+    /// onto the browser's history stack.
     /// </summary>
     [MaybeNull]
     public string PushUrl
@@ -42,7 +44,8 @@ public readonly struct HtmxResponseHeaders
     }
 
     /// <summary>
-    /// Gets or sets the <c>HX-Redirect</c> header to perform a client-side redirect to a new location.
+    /// Gets or sets the value of the <c>HX-Redirect</c> header, which performs
+    /// a client-side redirect to a new location.
     /// </summary>
     [MaybeNull]
     public string Redirect
@@ -52,7 +55,7 @@ public readonly struct HtmxResponseHeaders
     }
 
     /// <summary>
-    /// Gets or sets the <c>HX-Refresh</c> header to perform a full page refresh.
+    /// Gets or sets a value indicating whether the <c>HX-Refresh</c> header requests a full-page refresh.
     /// </summary>
     public bool Refresh
     {
@@ -61,7 +64,7 @@ public readonly struct HtmxResponseHeaders
     }
 
     /// <summary>
-    /// Gets or sets the <c>HX-Replace-Url</c> header to replace the current URL
+    /// Gets or sets the value of the <c>HX-Replace-Url</c> header, which replaces the current URL
     /// without pushing a new entry to the browser's history stack.
     /// </summary>
     [MaybeNull]
@@ -72,7 +75,7 @@ public readonly struct HtmxResponseHeaders
     }
 
     /// <summary>
-    /// Gets or sets the <c>HX-Reswap</c> header to specify how the response will be swapped into the DOM.
+    /// Gets or sets the swap style specified by the <c>HX-Reswap</c> header.
     /// </summary>
     [DisallowNull]
     public HtmxSwap? Reswap
@@ -82,7 +85,7 @@ public readonly struct HtmxResponseHeaders
     }
 
     /// <summary>
-    /// Gets or sets the <c>HX-Reswap</c> header to specify how the response will be swapped into the DOM.
+    /// Gets or sets the complete <c>HX-Reswap</c> header value, including any swap modifiers.
     /// </summary>
     [MaybeNull]
     public string ReswapExpression
@@ -92,8 +95,8 @@ public readonly struct HtmxResponseHeaders
     }
 
     /// <summary>
-    /// Gets or sets the <c>HX-Retarget</c> header that specifies a selector to change
-    /// the target of the content update to a different element on the page.
+    /// Gets or sets the CSS selector specified by the <c>HX-Retarget</c> header
+    /// to change the target of the content update.
     /// </summary>
     [MaybeNull]
     public string Retarget
@@ -103,8 +106,8 @@ public readonly struct HtmxResponseHeaders
     }
 
     /// <summary>
-    /// Gets or sets the <c>HX-Reselect</c> header that specifies a selector
-    /// to choose which part of the response content will be swapped in.
+    /// Gets or sets the CSS selector specified by the <c>HX-Reselect</c> header
+    /// to determine which part of the response is swapped in.
     /// </summary>
     [MaybeNull]
     public string Reselect
@@ -114,12 +117,11 @@ public readonly struct HtmxResponseHeaders
     }
 
     /// <summary>
-    /// Gets or sets the <c>HX-Trigger</c> header, which specifies a dictionary of client-side events
-    /// to trigger after the server response is processed.
+    /// Gets or sets the client-side events to trigger through the <c>HX-Trigger</c> header.
     /// </summary>
     /// <remarks>
-    /// Event values are accumulated for the current response and serialized into the header immediately
-    /// before the response starts.
+    /// Event values are accumulated for the current response and serialized
+    /// into the header immediately before the response starts.
     /// </remarks>
     [MaybeNull]
     public IReadOnlyDictionary<string, object> Trigger
@@ -129,12 +131,15 @@ public readonly struct HtmxResponseHeaders
     }
 
     /// <summary>
-    /// Gets or sets the <c>HX-Trigger-After-Swap</c> header, which specifies a dictionary of client-side events
-    /// to trigger after the response content has been swapped into the DOM.
+    /// Gets or sets the client-side events to trigger through
+    /// the <c>HX-Trigger-After-Swap</c> header after the swap step.
     /// </summary>
     /// <remarks>
-    /// Event values are accumulated for the current response and serialized into the header immediately
-    /// before the response starts.
+    /// <para>
+    ///   Event values are accumulated for the current response and serialized
+    ///   into the header immediately before the response starts.
+    /// </para>
+    /// <para>This header is supported only in HTMX 1.x and 2.x.</para>
     /// </remarks>
     [MaybeNull]
     public IReadOnlyDictionary<string, object> TriggerAfterSwap
@@ -144,12 +149,15 @@ public readonly struct HtmxResponseHeaders
     }
 
     /// <summary>
-    /// Gets or sets the <c>HX-Trigger-After-Settle</c> header, which specifies a dictionary of client-side events
-    /// to trigger after the htmx request has settled.
+    /// Gets or sets the client-side events to trigger through
+    /// the <c>HX-Trigger-After-Settle</c> header after the settle step.
     /// </summary>
     /// <remarks>
-    /// Event values are accumulated for the current response and serialized into the header immediately
-    /// before the response starts.
+    /// <para>
+    ///   Event values are accumulated for the current response and serialized
+    ///   into the header immediately before the response starts.
+    /// </para>
+    /// <para>This header is supported only in HTMX 1.x and 2.x.</para>
     /// </remarks>
     [MaybeNull]
     public IReadOnlyDictionary<string, object> TriggerAfterSettle
@@ -158,12 +166,26 @@ public readonly struct HtmxResponseHeaders
         set => PendingEvents.GetOrCreate(_response).SetEvents(HtmxTriggerTiming.AfterSettle, value);
     }
 
+    /// <summary>
+    /// Gets the value of the specified header.
+    /// </summary>
+    /// <param name="headers">The header collection to inspect.</param>
+    /// <param name="key">The name of the header.</param>
+    /// <returns>
+    /// The header value, or <see langword="null" /> if the header is not present.
+    /// </returns>
     private static string? GetHeader(IHeaderDictionary headers, string key)
     {
         headers.TryGetValue(key, out var values);
         return values;
     }
 
+    /// <summary>
+    /// Sets the specified header when <paramref name="value" /> is not <see langword="null" />.
+    /// </summary>
+    /// <param name="headers">The header collection to update.</param>
+    /// <param name="key">The name of the header.</param>
+    /// <param name="value">The header value.</param>
     private static void SetHeader(IHeaderDictionary headers, string key, string? value)
     {
         if (value is not null)
@@ -172,8 +194,18 @@ public readonly struct HtmxResponseHeaders
 
     #region Inner type: HtmxResponseHeadersDebugView
 
+    /// <summary>
+    /// Provides a debugger view for <see cref="HtmxResponseHeaders"/>.
+    /// </summary>
+    /// <param name="headers">The <see cref="HtmxResponseHeaders"/> instance
+    /// whose response headers will be displayed.</param>
     private sealed class HtmxResponseHeadersDebugView(HtmxResponseHeaders headers)
     {
+        /// <summary>
+        /// Gets the collection of HTTP response headers
+        /// from the associated <see cref="HtmxResponseHeaders"/> instance
+        /// as an array of key-value pairs.
+        /// </summary>
         [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
         public KeyValuePair<string, string>[] Items => DebugHelpers.GetHeaders(headers._response.Headers);
     }

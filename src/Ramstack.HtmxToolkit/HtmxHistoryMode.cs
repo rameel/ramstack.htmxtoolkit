@@ -16,7 +16,8 @@ public enum HtmxHistoryMode
     Disabled,
 
     /// <summary>
-    /// Reloads the page when restoring history in HTMX 4. HTMX 1 and 2 treat this as <see cref="Enabled"/>.
+    /// Reloads the page when restoring history.
     /// </summary>
+    /// <remarks>Supported only in HTMX 4.x.</remarks>
     Reload
 }

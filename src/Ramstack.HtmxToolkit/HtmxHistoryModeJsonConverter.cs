@@ -4,23 +4,13 @@ using System.Text.Json.Serialization;
 namespace Ramstack.HtmxToolkit;
 
 /// <summary>
-/// Represents a <see cref="JsonConverter{T}"/> for <see cref="HtmxHistoryMode"/> values
-/// written in the format expected by the <c>history</c> configuration option:
-/// <see cref="HtmxHistoryMode.Enabled"/> and <see cref="HtmxHistoryMode.Disabled"/>
-/// are written as booleans, while any other value is written as its lowercase
-/// string representation (e.g. "reload").
+/// Converts <see cref="HtmxHistoryMode" /> values to the JSON representation expected
+/// by the <c>history</c> configuration option.
 /// </summary>
-/// <remarks>
-/// Unlike other enum values, which are serialized as strings, this one requires a custom
-/// converter: <see cref="HtmxHistoryMode.Enabled"/> and <see cref="HtmxHistoryMode.Disabled"/>
-/// must be written as actual JSON booleans rather than strings, since otherwise htmx
-/// would not recognize them.
-/// </remarks>
 internal sealed class HtmxHistoryModeJsonConverter : JsonConverter<HtmxHistoryMode?>
 {
     /// <summary>
-    /// Pre-encoded "reload" text; encoding it once as a static field avoids
-    /// repeated UTF-8 encoding overhead on each serialization.
+    /// The pre-encoded <c>reload</c> value used to avoid repeated UTF-8 encoding during serialization.
     /// </summary>
     private static readonly JsonEncodedText s_reload = JsonEncodedText.Encode("reload");
 
