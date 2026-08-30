@@ -365,7 +365,7 @@ public static class HtmxResponseHeaderNames
 }
 ```
 
-The most convenient approach is to use one of the `Htmx` extension methods.
+The most convenient approach is to use one of the `HttpResponse.Htmx` extension methods.
 Its callback receives an `HtmxResponse`, allowing you to configure response headers in a fluent style:
 
 ```csharp
@@ -388,10 +388,14 @@ Response.Htmx(
     ShouldStopPolling);
 ```
 
-:bulb: The `Htmx` extension methods are also available for `IActionResult`, allowing you to write:
+:bulb: The same API works in Minimal API handlers by binding `HttpResponse`:
 
 ```csharp
-return Json(profile).Htmx(h => h.StopPolling(ShouldStopPolling));
+app.MapGet("/profile", (HttpResponse response) =>
+{
+    response.Htmx(h => h.Retarget("#profile"));
+    return TypedResults.Content("<div>Profile</div>", "text/html");
+});
 ```
 
 In all these examples, headers are set only for an HTMX request. For a regular request,
