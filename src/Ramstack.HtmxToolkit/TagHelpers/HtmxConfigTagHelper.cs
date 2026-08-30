@@ -1,5 +1,3 @@
-using System.Text.Json;
-
 using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -40,12 +38,7 @@ public sealed class HtmxConfigTagHelper(IAntiforgery antiforgery, IOptions<HtmxT
         output.TagMode = TagMode.SelfClosing;
         output.Attributes.SetAttribute("name", "htmx-config");
 
-        var json = options.Value.HtmxConfig switch
-        {
-            HtmxV1Config value => JsonSerializer.Serialize(value, HtmxConfigJsonSerializerContext.Default.HtmxV1Config),
-            HtmxV2Config value => JsonSerializer.Serialize(value, HtmxConfigJsonSerializerContext.Default.HtmxV2Config),
-            var value => JsonSerializer.Serialize((HtmxV4Config)value, HtmxConfigJsonSerializerContext.Default.HtmxV4Config)
-        };
+        var json = options.Value.HtmxConfig.ToJson();
 
         output.Attributes.SetAttribute(
             new TagHelperAttribute("content", new HtmlString(json), HtmlAttributeValueStyle.SingleQuotes));

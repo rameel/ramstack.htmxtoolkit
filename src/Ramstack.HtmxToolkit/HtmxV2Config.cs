@@ -1,3 +1,4 @@
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
 using Ramstack.HtmxToolkit.TagHelpers;
@@ -229,4 +230,8 @@ public sealed class HtmxV2Config() : HtmxConfig(HtmxTargetVersion.V2)
     /// Defaults to <see langword="false"/>.
     /// </summary>
     public bool? ReportValidityOfForms { get; set; }
+
+    /// <inheritdoc />
+    internal override string ToJson() =>
+        JsonSerializer.Serialize(this, HtmxConfigJsonSerializerContext.Default.HtmxV2Config);
 }
