@@ -15,20 +15,15 @@ internal sealed class HttpVerbArrayJsonConverter : JsonConverter<HttpVerb[]>
         throw new NotSupportedException();
 
     /// <inheritdoc />
-    public override void Write(Utf8JsonWriter writer, HttpVerb[]? value, JsonSerializerOptions options)
+    public override void Write(Utf8JsonWriter writer, HttpVerb[] value, JsonSerializerOptions options)
     {
-        if (value is null)
-        {
-            writer.WriteNullValue();
-        }
-        else
-        {
-            writer.WriteStartArray();
+        // NOTE: value is never null here: null-valued properties are omitted
+        // by JsonIgnoreCondition.WhenWritingNull before this converter is invoked.
+        writer.WriteStartArray();
 
-            foreach (var verb in value)
-                writer.WriteStringValue(verb.GetHttpVerbValue());
+        foreach (var verb in value)
+            writer.WriteStringValue(verb.GetHttpVerbValue());
 
-            writer.WriteEndArray();
-        }
+        writer.WriteEndArray();
     }
 }

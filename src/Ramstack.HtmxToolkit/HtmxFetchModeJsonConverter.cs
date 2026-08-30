@@ -17,13 +17,8 @@ internal sealed class HtmxFetchModeJsonConverter : JsonConverter<HtmxFetchMode?>
     /// <inheritdoc />
     public override void Write(Utf8JsonWriter writer, HtmxFetchMode? value, JsonSerializerOptions options)
     {
-        if (value is null)
-        {
-            writer.WriteNullValue();
-        }
-        else
-        {
-            writer.WriteStringValue(value.GetValueOrDefault().GetFetchModeValue());
-        }
+        // NOTE: value is never null here: null-valued properties are omitted
+        // by JsonIgnoreCondition.WhenWritingNull before this converter is invoked.
+        writer.WriteStringValue(value.GetValueOrDefault().GetFetchModeValue());
     }
 }

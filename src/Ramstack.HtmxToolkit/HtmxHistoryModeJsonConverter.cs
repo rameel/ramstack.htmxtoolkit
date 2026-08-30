@@ -21,24 +21,19 @@ internal sealed class HtmxHistoryModeJsonConverter : JsonConverter<HtmxHistoryMo
     /// <inheritdoc />
     public override void Write(Utf8JsonWriter writer, HtmxHistoryMode? value, JsonSerializerOptions options)
     {
-        if (value is null)
+        // NOTE: value is never null here: null-valued properties are omitted
+        // by JsonIgnoreCondition.WhenWritingNull before this converter is invoked.
+        switch (value.GetValueOrDefault())
         {
-            writer.WriteNullValue();
-        }
-        else
-        {
-            switch (value.GetValueOrDefault())
-            {
-                case HtmxHistoryMode.Enabled:
-                    writer.WriteBooleanValue(true);
-                    break;
-                case HtmxHistoryMode.Disabled:
-                    writer.WriteBooleanValue(false);
-                    break;
-                default:
-                    writer.WriteStringValue(s_reload);
-                    break;
-            }
+            case HtmxHistoryMode.Enabled:
+                writer.WriteBooleanValue(true);
+                break;
+            case HtmxHistoryMode.Disabled:
+                writer.WriteBooleanValue(false);
+                break;
+            default:
+                writer.WriteStringValue(s_reload);
+                break;
         }
     }
 }

@@ -17,13 +17,8 @@ internal sealed class HtmxScrollBehaviorJsonConverter : JsonConverter<HtmxScroll
     /// <inheritdoc />
     public override void Write(Utf8JsonWriter writer, HtmxScrollBehavior? value, JsonSerializerOptions options)
     {
-        if (value is null)
-        {
-            writer.WriteNullValue();
-        }
-        else
-        {
-            writer.WriteStringValue(value.GetValueOrDefault().GetScrollBehaviorValue());
-        }
+        // NOTE: value is never null here: null-valued properties are omitted
+        // by JsonIgnoreCondition.WhenWritingNull before this converter is invoked.
+        writer.WriteStringValue(value.GetValueOrDefault().GetScrollBehaviorValue());
     }
 }
