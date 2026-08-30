@@ -40,7 +40,7 @@ public sealed class HtmxConfigTagHelper(IAntiforgery antiforgery, IOptions<HtmxT
         var json = options.Value.HtmxConfig.ToJson();
 
         output.Attributes.SetAttribute(
-            new TagHelperAttribute("content", new HtmlString(json), HtmlAttributeValueStyle.SingleQuotes));
+            new TagHelperAttribute("content", json, HtmlAttributeValueStyle.SingleQuotes));
 
         if (options.Value.IncludeAntiforgeryToken)
             RenderAntiforgeryAttributes(output);
