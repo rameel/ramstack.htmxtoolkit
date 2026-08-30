@@ -8,7 +8,7 @@ using Ramstack.HtmxToolkit.Internal;
 namespace Ramstack.HtmxToolkit;
 
 /// <summary>
-/// Accumulates htmx events per <see cref="HtmxTriggerTiming"/> for a single request,
+/// Accumulates HTMX events per <see cref="HtmxTriggerTiming"/> for a single request,
 /// deferring header serialization until the response is about to start.
 /// </summary>
 internal sealed class PendingEvents

@@ -8,24 +8,24 @@ namespace Ramstack.HtmxToolkit;
 public static class HttpRequestExtensions
 {
     /// <summary>
-    /// Determines whether the specified HTTP request is htmx request.
+    /// Determines whether the specified HTTP request is an HTMX request.
     /// </summary>
     /// <param name="request">The HTTP request.</param>
     /// <returns>
-    /// <see langword="true" /> if the specified HTTP request is htmx request;
+    /// <see langword="true" /> if the specified HTTP request is an HTMX request;
     /// otherwise, <see langword="false" />.
     /// </returns>
     public static bool IsHtmxRequest(this HttpRequest request) =>
         request.Headers.ContainsKey(HtmxRequestHeaderNames.Request);
 
     /// <summary>
-    /// Determines whether the specified HTTP request is htmx request.
+    /// Determines whether the specified HTTP request is an HTMX request.
     /// </summary>
     /// <param name="request">The HTTP request.</param>
     /// <param name="headers">When this method returns, contains the <see cref="HtmxRequestHeaders"/>
-    /// that provides well-known htmx headers.</param>
+    /// that provides access to well-known HTMX headers.</param>
     /// <returns>
-    /// <see langword="true" /> if the specified HTTP request is htmx request; otherwise, <see langword="false" />.
+    /// <see langword="true" /> if the specified HTTP request is an HTMX request; otherwise, <see langword="false" />.
     /// </returns>
     public static bool IsHtmxRequest(this HttpRequest request, out HtmxRequestHeaders headers)
     {
@@ -49,7 +49,7 @@ public static class HttpRequestExtensions
     /// </summary>
     /// <param name="request">The HTTP request.</param>
     /// <param name="headers">When this method returns, contains the <see cref="HtmxRequestHeaders"/>
-    /// that provides well-known htmx headers.</param>
+    /// that provides access to well-known HTMX headers.</param>
     /// <returns>
     /// <see langword="true" /> if the specified HTTP request is boosted; otherwise, <see langword="false" />.
     /// </returns>
@@ -60,7 +60,7 @@ public static class HttpRequestExtensions
     }
 
     /// <summary>
-    /// Returns the <see cref="HtmxRequestHeaders"/> that provides well-known htmx headers.
+    /// Returns the <see cref="HtmxRequestHeaders"/> that provides access to well-known HTMX headers.
     /// </summary>
     /// <param name="request">The HTTP request.</param>
     /// <returns>

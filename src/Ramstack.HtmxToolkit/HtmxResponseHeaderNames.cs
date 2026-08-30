@@ -1,7 +1,7 @@
 namespace Ramstack.HtmxToolkit;
 
 /// <summary>
-/// Defines constants for the well-known names of htmx response headers.
+/// Defines constants for the well-known names of HTMX response headers.
 /// For more information, see https://htmx.org/reference/#response_headers
 /// </summary>
 public static class HtmxResponseHeaderNames
@@ -57,7 +57,7 @@ public static class HtmxResponseHeaderNames
 
     /// <summary>
     /// The <c>HX-Trigger-After-Settle</c> header is used to trigger an event
-    /// on the client side after the htmx request has settled.
+    /// on the client side after the HTMX request has settled.
     /// </summary>
     public const string TriggerAfterSettle = "HX-Trigger-After-Settle";
 

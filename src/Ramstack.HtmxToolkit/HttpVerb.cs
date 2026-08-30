@@ -1,7 +1,7 @@
 namespace Ramstack.HtmxToolkit;
 
 /// <summary>
-/// Defines the HTTP methods that can be used in htmx configuration.
+/// Defines the HTTP methods that can be used in HTMX configuration.
 /// </summary>
 public enum HttpVerb
 {

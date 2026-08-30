@@ -8,7 +8,7 @@ namespace Ramstack.HtmxToolkit;
 public static class HttpResponseExtensions
 {
     /// <summary>
-    /// Returns the <see cref="HtmxResponseHeaders"/> that provides well-known htmx headers.
+    /// Returns the <see cref="HtmxResponseHeaders"/> that provides access to well-known HTMX headers.
     /// </summary>
     /// <param name="response">The HTTP response.</param>
     /// <returns>
@@ -18,10 +18,10 @@ public static class HttpResponseExtensions
         new(response);
 
     /// <summary>
-    /// Configures the htmx response headers.
+    /// Configures the HTMX response headers.
     /// </summary>
     /// <param name="response">The HTTP response to configure.</param>
-    /// <param name="configure">The function to configure the htmx response headers.</param>
+    /// <param name="configure">The function to configure the HTMX response headers.</param>
     public static void Htmx(this HttpResponse response, Action<HtmxResponse> configure)
     {
         if (response.HttpContext.Request.IsHtmxRequest())
@@ -29,10 +29,10 @@ public static class HttpResponseExtensions
     }
 
     /// <summary>
-    /// Configures the htmx response headers.
+    /// Configures the HTMX response headers.
     /// </summary>
     /// <param name="response">The HTTP response to configure.</param>
-    /// <param name="configure">The function to configure the htmx response headers.</param>
+    /// <param name="configure">The function to configure the HTMX response headers.</param>
     /// <param name="state">The value to pass to the <paramref name="configure"/>.</param>
     public static void Htmx<TState>(this HttpResponse response, Action<HtmxResponse, TState> configure, TState state)
     {

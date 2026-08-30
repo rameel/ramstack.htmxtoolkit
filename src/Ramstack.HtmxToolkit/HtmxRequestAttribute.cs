@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.ActionConstraints;
 namespace Ramstack.HtmxToolkit;
 
 /// <summary>
-/// Identifies an action that supports htmx requests.
+/// Identifies an action that supports HTMX requests.
 /// </summary>
 [AttributeUsage(AttributeTargets.Method)]
 public sealed class HtmxRequestAttribute : Attribute, IActionConstraint
@@ -13,13 +13,13 @@ public sealed class HtmxRequestAttribute : Attribute, IActionConstraint
 
     /// <summary>
     /// Gets or sets a value that indicates whether the action should be executed
-    /// for boosted or non-boosted htmx requests.
+    /// for boosted or non-boosted HTMX requests.
     /// </summary>
     /// <remarks>
     /// <list type="bullet">
     ///   <item>If set to <see langword="true" />, the action will be executed only for boosted requests.</item>
     ///   <item>If set to <see langword="false" />, the action will be executed only for non-boosted requests.</item>
-    ///   <item>If set to <see langword="null" />, the action will be executed for any htmx request.</item>
+    ///   <item>If set to <see langword="null" />, the action will be executed for any HTMX request.</item>
     /// </list>
     /// </remarks>
     public bool? Boosted { get; set; }

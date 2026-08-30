@@ -1,7 +1,7 @@
 namespace Ramstack.HtmxToolkit;
 
 /// <summary>
-/// Defines constants for the well-known names of htmx request headers.
+/// Defines constants for the well-known names of HTMX request headers.
 /// For more information, see https://htmx.org/reference/#request_headers
 /// </summary>
 public static class HtmxRequestHeaderNames
@@ -29,7 +29,7 @@ public static class HtmxRequestHeaderNames
     public const string Prompt = "HX-Prompt";
 
     /// <summary>
-    /// The <c>HX-Request</c> header is a general header sent with every htmx request.
+    /// The <c>HX-Request</c> header is a general header sent with every HTMX request.
     /// Always <c>"true"</c>.
     /// </summary>
     public const string Request = "HX-Request";

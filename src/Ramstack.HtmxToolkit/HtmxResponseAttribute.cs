@@ -8,7 +8,7 @@ using Ramstack.HtmxToolkit.Internal;
 namespace Ramstack.HtmxToolkit;
 
 /// <summary>
-/// Identifies an action that sets htmx response headers.
+/// Identifies an action that sets HTMX response headers.
 /// </summary>
 [AttributeUsage(AttributeTargets.All, Inherited = false, AllowMultiple = true)]
 public sealed class HtmxResponseAttribute : Attribute, IResultFilter

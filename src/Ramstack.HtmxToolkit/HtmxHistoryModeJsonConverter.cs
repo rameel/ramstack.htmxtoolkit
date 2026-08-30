@@ -13,7 +13,7 @@ namespace Ramstack.HtmxToolkit;
 /// <remarks>
 /// Unlike other enum values, which are serialized as strings, this one requires a custom
 /// converter: <see cref="HtmxHistoryMode.Enabled"/> and <see cref="HtmxHistoryMode.Disabled"/>
-/// must be written as actual JSON booleans rather than strings, since otherwise htmx
+/// must be written as actual JSON booleans rather than strings, since otherwise HTMX
 /// would not recognize them.
 /// </remarks>
 internal sealed class HtmxHistoryModeJsonConverter : JsonConverter<HtmxHistoryMode?>

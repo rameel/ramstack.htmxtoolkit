@@ -13,7 +13,7 @@ namespace Ramstack.HtmxToolkit.TagHelpers;
 
 /// <summary>
 /// Represents a <see cref="TagHelper"/> implementation
-/// used to generate URIs for htmx actions on matching elements.
+/// used to generate URIs for HTMX actions on matching elements.
 /// </summary>
 /// <param name="factory">The <see cref="IUrlHelperFactory"/>.</param>
 [HtmlTargetElement(Attributes = ActionAttributeName)]

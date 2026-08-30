@@ -70,7 +70,7 @@ public sealed class HtmxRequestTagHelper(IOptions<HtmxToolkitOptions> options) :
     }
 
     /// <summary>
-    /// Gets or sets a value indicating whether htmx strips all request headers.
+    /// Gets or sets a value indicating whether HTMX strips all request headers.
     /// </summary>
     /// <remarks>Supported in HTMX 1.x and 2.x. Removed in HTMX 4.x.</remarks>
     [HtmlAttributeName(RequestNoHeadersAttributeName)]

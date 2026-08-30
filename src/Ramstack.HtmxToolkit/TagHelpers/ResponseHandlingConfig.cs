@@ -16,12 +16,12 @@ public sealed class ResponseHandlingConfig
     public bool? Swap { get; set; }
 
     /// <summary>
-    /// Gets or sets a value indicating whether htmx should treat this response as an error.
+    /// Gets or sets a value indicating whether HTMX should treat this response as an error.
     /// </summary>
     public bool? Error { get; set; }
 
     /// <summary>
-    /// Gets or sets a value indicating whether htmx should ignore title tags in the response.
+    /// Gets or sets a value indicating whether HTMX should ignore title tags in the response.
     /// </summary>
     public bool? IgnoreTitle { get; set; }
 

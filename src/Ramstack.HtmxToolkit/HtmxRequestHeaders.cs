@@ -40,7 +40,7 @@ public readonly struct HtmxRequestHeaders
     public bool HistoryRestoreRequest => GetBoolean(_headers, HtmxRequestHeaderNames.HistoryRestoreRequest);
 
     /// <summary>
-    /// Gets the user response to "hx-prompt" on the client.
+    /// Gets the user's response to an <c>hx-prompt</c> on the client.
     /// </summary>
     /// <remarks><see cref="HtmxRequestHeaderNames.Prompt"/></remarks>
     public string? Prompt => GetString(_headers, HtmxRequestHeaderNames.Prompt);

@@ -6,7 +6,7 @@ namespace Ramstack.HtmxToolkit;
 /// <summary>
 /// Represents a <see cref="JsonConverter{T}"/> that serializes the <c>triggerSpecsCache</c>
 /// configuration option from its boolean form: <see langword="true" /> is written as an empty
-/// JSON object (<c>{}</c>), instructing htmx to use a never-clearing trigger specification cache,
+/// JSON object (<c>{}</c>), instructing HTMX to use a never-clearing trigger specification cache,
 /// while <see langword="false" /> and <see langword="null" /> are written as JSON null.
 /// </summary>
 internal sealed class HtmxTriggerSpecsCacheJsonConverter : JsonConverter<bool?>

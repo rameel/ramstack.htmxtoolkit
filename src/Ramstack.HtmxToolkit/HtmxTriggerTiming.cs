@@ -1,7 +1,7 @@
 namespace Ramstack.HtmxToolkit;
 
 /// <summary>
-/// Specifies the time at which an event will be triggered in htmx.
+/// Specifies the time at which an event will be triggered in HTMX.
 /// </summary>
 public enum HtmxTriggerTiming
 {
@@ -19,7 +19,7 @@ public enum HtmxTriggerTiming
 
     /// <summary>
     /// Maps to the <c>HX-Trigger-After-Settle</c> header that is used to trigger an event
-    /// on the client side after the htmx request has settled.
+    /// on the client side after the HTMX request has settled.
     /// </summary>
     AfterSettle
 }

@@ -145,7 +145,7 @@ public readonly struct HtmxResponseHeaders
 
     /// <summary>
     /// Gets or sets the <c>HX-Trigger-After-Settle</c> header, which specifies a dictionary of client-side events
-    /// to trigger after the htmx request has settled.
+    /// to trigger after the HTMX request has settled.
     /// </summary>
     /// <remarks>
     /// Event values are accumulated for the current response and serialized into the header immediately
