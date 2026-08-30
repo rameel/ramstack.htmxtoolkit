@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Http;
+using Ramstack.HtmxToolkit.Configuration;
 
 namespace Ramstack.HtmxToolkit.Tests;
 
@@ -8,7 +8,7 @@ public class HtmxResponseHeadersTests
     [Test]
     public void Properties_RoundTrips()
     {
-        var context = new DefaultHttpContext();
+        var context = TestHelper.CreateHttpContext();
         var headers = context.Response.GetHtmxHeaders();
 
         headers.Location = "/foo";
@@ -42,7 +42,7 @@ public class HtmxResponseHeadersTests
     [Test]
     public void Refresh_WhenTrue_SetsTrue()
     {
-        var context = new DefaultHttpContext();
+        var context = TestHelper.CreateHttpContext();
         var headers = context.Response.GetHtmxHeaders();
 
         headers.Refresh = true;
@@ -54,7 +54,7 @@ public class HtmxResponseHeadersTests
     [Test]
     public void Refresh_IsFalse_ByDefault()
     {
-        var context = new DefaultHttpContext();
+        var context = TestHelper.CreateHttpContext();
         var headers = context.Response.GetHtmxHeaders();
 
         Assert.That(headers.Refresh, Is.False);
@@ -63,7 +63,7 @@ public class HtmxResponseHeadersTests
     [Test]
     public void Reswap_IsNull_WhenHeaderAbsent()
     {
-        var context = new DefaultHttpContext();
+        var context = TestHelper.CreateHttpContext();
         var headers = context.Response.GetHtmxHeaders();
 
         Assert.That(headers.Reswap, Is.Null);
@@ -72,7 +72,7 @@ public class HtmxResponseHeadersTests
     [Test]
     public void Reswap_IsNull_WhenHeaderUnknown()
     {
-        var context = new DefaultHttpContext();
+        var context = TestHelper.CreateHttpContext();
         var headers = context.Response.GetHtmxHeaders();
 
         context.Response.Headers[HtmxResponseHeaderNames.Reswap] = "bogus";
@@ -83,7 +83,7 @@ public class HtmxResponseHeadersTests
     [Test]
     public void ReswapExpression_KeepsFullExpression_WhileReswapParsesOnlyStyle()
     {
-        var context = new DefaultHttpContext();
+        var context = TestHelper.CreateHttpContext();
         var headers = context.Response.GetHtmxHeaders();
 
         headers.ReswapExpression = "outerHTML show:top";
@@ -95,7 +95,7 @@ public class HtmxResponseHeadersTests
     [Test]
     public void SettingNull_DoesNotAddHeader()
     {
-        var context = new DefaultHttpContext();
+        var context = TestHelper.CreateHttpContext();
         var headers = context.Response.GetHtmxHeaders();
 
         headers.Location = null!;
@@ -106,11 +106,37 @@ public class HtmxResponseHeadersTests
     [Test]
     public void Trigger_IsNull_WhenNotSet()
     {
-        var context = new DefaultHttpContext();
+        var context = TestHelper.CreateHttpContext();
         var headers = context.Response.GetHtmxHeaders();
 
         Assert.That(headers.Trigger, Is.Null);
         Assert.That(headers.TriggerAfterSwap, Is.Null);
         Assert.That(headers.TriggerAfterSettle, Is.Null);
+    }
+
+    [Test]
+    public void TriggerTimingProperties_Htmx4_AliasReceiveTrigger()
+    {
+        var context = TestHelper.CreateHtmxRequestContext(HtmxTargetVersion.V4);
+        var headers = context.Response.GetHtmxHeaders();
+        var events = new Dictionary<string, object> { ["swapped"] = true };
+
+        headers.TriggerAfterSwap = events;
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(headers.Trigger, Is.EqualTo(events));
+            Assert.That(headers.TriggerAfterSwap, Is.EqualTo(events));
+            Assert.That(headers.TriggerAfterSettle, Is.EqualTo(events));
+        });
+
+        PendingEvents.GetOrCreate(context.Response).Flush();
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(context.Response.Headers.ContainsKey(HtmxResponseHeaderNames.Trigger), Is.True);
+            Assert.That(context.Response.Headers.ContainsKey(HtmxResponseHeaderNames.TriggerAfterSwap), Is.False);
+            Assert.That(context.Response.Headers.ContainsKey(HtmxResponseHeaderNames.TriggerAfterSettle), Is.False);
+        });
     }
 }

@@ -120,8 +120,14 @@ public readonly struct HtmxResponseHeaders
     /// Gets or sets the client-side events to trigger through the <c>HX-Trigger</c> header.
     /// </summary>
     /// <remarks>
-    /// Event values are accumulated for the current response and serialized
-    /// into the header immediately before the response starts.
+    /// <para>
+    ///   Event values are accumulated for the current response and serialized
+    ///   into the header immediately before the response starts.
+    /// </para>
+    /// <para>
+    ///   HTMX 1.x and 2.x trigger these events when the response is received,
+    ///   whereas HTMX 4.x triggers them after the swap.
+    /// </para>
     /// </remarks>
     [MaybeNull]
     public IReadOnlyDictionary<string, object> Trigger
@@ -139,7 +145,10 @@ public readonly struct HtmxResponseHeaders
     ///   Event values are accumulated for the current response and serialized
     ///   into the header immediately before the response starts.
     /// </para>
-    /// <para>This header is supported only in HTMX 1.x and 2.x.</para>
+    /// <para>
+    ///   In HTMX 4.x, assigned events are accumulated in <see cref="Trigger" />
+    ///   and emitted through <c>HX-Trigger</c> after the swap.
+    /// </para>
     /// </remarks>
     [MaybeNull]
     public IReadOnlyDictionary<string, object> TriggerAfterSwap
@@ -157,7 +166,11 @@ public readonly struct HtmxResponseHeaders
     ///   Event values are accumulated for the current response and serialized
     ///   into the header immediately before the response starts.
     /// </para>
-    /// <para>This header is supported only in HTMX 1.x and 2.x.</para>
+    /// <para>
+    ///   In HTMX 4.x, assigned events are accumulated in <see cref="Trigger" />
+    ///   and emitted through <c>HX-Trigger</c> after the swap; the requested
+    ///   after-settle timing cannot be preserved.
+    /// </para>
     /// </remarks>
     [MaybeNull]
     public IReadOnlyDictionary<string, object> TriggerAfterSettle

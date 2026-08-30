@@ -205,6 +205,11 @@ public readonly struct HtmxResponse
     /// <returns>
     /// The current <see cref="HtmxResponse" /> instance.
     /// </returns>
+    /// <remarks>
+    /// In HTMX 4.x, every <see cref="HtmxTriggerTiming" /> value is emitted through
+    /// <c>HX-Trigger</c> and runs after the swap.
+    /// See <see href="https://github.com/bigskysoftware/htmx/pull/3900">PR #3900</see>.
+    /// </remarks>
     public HtmxResponse TriggerEvent(string eventName, HtmxTriggerTiming trigger = HtmxTriggerTiming.Receive) =>
         TriggerEvent(eventName, "", trigger);
 
@@ -218,6 +223,11 @@ public readonly struct HtmxResponse
     /// <returns>
     /// The current <see cref="HtmxResponse" /> instance.
     /// </returns>
+    /// <remarks>
+    /// In HTMX 4.x, every <see cref="HtmxTriggerTiming" /> value is emitted through
+    /// <c>HX-Trigger</c> and runs after the swap.
+    /// See <see href="https://github.com/bigskysoftware/htmx/pull/3900">PR #3900</see>.
+    /// </remarks>
     public HtmxResponse TriggerEvent(string eventName, object detail, HtmxTriggerTiming timing = HtmxTriggerTiming.Receive)
     {
         return TriggerEventImpl(this, eventName, detail, timing);
@@ -234,6 +244,11 @@ public readonly struct HtmxResponse
     /// <returns>
     /// The current <see cref="HtmxResponse" /> instance.
     /// </returns>
+    /// <remarks>
+    /// In HTMX 4.x, every <see cref="HtmxTriggerTiming" /> value is emitted through
+    /// <c>HX-Trigger</c> and runs after the swap.
+    /// See <see href="https://github.com/bigskysoftware/htmx/pull/3900">PR #3900</see>.
+    /// </remarks>
     public HtmxResponse TriggerEvents(IReadOnlyDictionary<string, object> events, HtmxTriggerTiming timing = HtmxTriggerTiming.Receive) =>
         AddEvents(this, events, timing);
 

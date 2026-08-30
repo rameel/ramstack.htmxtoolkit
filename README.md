@@ -364,6 +364,15 @@ Response.Htmx(h => h
     .StopPolling(ShouldStopPolling));
 ```
 
+`TriggerEvent` and `TriggerEvents` accept an optional `HtmxTriggerTiming` value.
+In HTMX 1.x and 2.x, the value selects `HX-Trigger`, `HX-Trigger-After-Swap`, or
+`HX-Trigger-After-Settle`. HTMX 4.x supports only `HX-Trigger`, so the toolkit
+emits events requested for any timing through that header rather than dropping
+them. These events run after the swap; in particular, the 1.x/2.x `Receive` and
+`AfterSettle` timings cannot be preserved. See
+[htmx pull request #3900](https://github.com/bigskysoftware/htmx/pull/3900) for
+the upstream timing change.
+
 :bulb: The generic overload accepts an additional state parameter to avoid closure allocations:
 
 ```csharp

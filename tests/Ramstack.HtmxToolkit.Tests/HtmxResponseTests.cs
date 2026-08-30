@@ -1,3 +1,5 @@
+using Ramstack.HtmxToolkit.Configuration;
+
 namespace Ramstack.HtmxToolkit.Tests;
 
 [TestFixture]
@@ -259,5 +261,26 @@ public class HtmxResponseTests
         Assert.That(events.Count, Is.EqualTo(2));
         Assert.That(events["a"], Is.EqualTo(1));
         Assert.That(events["b"], Is.EqualTo(2));
+    }
+
+    [Test]
+    public void TriggerEvent_Htmx4_AddsEveryTimingToReceiveTrigger()
+    {
+        var context = TestHelper.CreateHtmxRequestContext(HtmxTargetVersion.V4);
+
+        context.Response.Htmx(r => r
+            .TriggerEvent("received")
+            .TriggerEvent("swapped", HtmxTriggerTiming.AfterSwap)
+            .TriggerEvent("settled", HtmxTriggerTiming.AfterSettle));
+
+        var headers = context.Response.GetHtmxHeaders();
+        var events = headers.Trigger!;
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(events.Keys, Is.EqualTo(["received", "swapped", "settled"]));
+            Assert.That(headers.TriggerAfterSwap, Is.SameAs(events));
+            Assert.That(headers.TriggerAfterSettle, Is.SameAs(events));
+        });
     }
 }
