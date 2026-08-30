@@ -2,7 +2,7 @@ using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Ramstack.HtmxToolkit;
+namespace Ramstack.HtmxToolkit.Serialization;
 
 /// <summary>
 /// Represents a JSON converter for <see cref="HtmxFieldValues" />.

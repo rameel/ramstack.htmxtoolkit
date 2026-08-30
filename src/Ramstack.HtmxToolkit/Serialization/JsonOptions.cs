@@ -3,7 +3,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.Unicode;
 
-namespace Ramstack.HtmxToolkit.Internal;
+namespace Ramstack.HtmxToolkit.Serialization;
 
 /// <summary>
 /// Provides preconfigured <see cref="JsonSerializerOptions" /> for JSON serialization.

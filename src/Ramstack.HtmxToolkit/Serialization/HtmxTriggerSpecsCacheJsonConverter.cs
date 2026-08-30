@@ -1,7 +1,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Ramstack.HtmxToolkit;
+namespace Ramstack.HtmxToolkit.Serialization;
 
 /// <summary>
 /// Converts the boolean <c>triggerSpecsCache</c> abstraction to its HTMX JSON representation.

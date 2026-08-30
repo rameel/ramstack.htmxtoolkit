@@ -1,8 +1,6 @@
 using System.Text.Json.Serialization;
 
-using Ramstack.HtmxToolkit.Internal;
-
-namespace Ramstack.HtmxToolkit.TagHelpers;
+namespace Ramstack.HtmxToolkit.Serialization;
 
 /// <summary>
 /// Provides source-generated JSON serialization metadata for HTMX string dictionaries.

@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 using Ramstack.HtmxToolkit.Internal;
 
-namespace Ramstack.HtmxToolkit;
+namespace Ramstack.HtmxToolkit.Serialization;
 
 /// <summary>
 /// Represents a <see cref="JsonConverter{T}" /> for arrays of <see cref="HttpVerb" /> values.

@@ -1,7 +1,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Ramstack.HtmxToolkit;
+namespace Ramstack.HtmxToolkit.Serialization;
 
 /// <summary>
 /// Converts <see cref="HtmxHistoryMode" /> values to the JSON representation expected

@@ -2,6 +2,8 @@ using System.Collections;
 using System.Runtime.CompilerServices;
 using System.Text.Json.Serialization;
 
+using Ramstack.HtmxToolkit.Serialization;
+
 namespace Ramstack.HtmxToolkit;
 
 /// <summary>
