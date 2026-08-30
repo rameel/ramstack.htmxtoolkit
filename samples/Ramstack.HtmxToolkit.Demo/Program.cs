@@ -1,5 +1,6 @@
 using Ramstack.HtmxToolkit;
-using Ramstack.HtmxToolkit.Builder;
+using Ramstack.HtmxToolkit.Configuration;
+using Ramstack.HtmxToolkit.Hosting;
 
 var builder = WebApplication.CreateBuilder(args);
 

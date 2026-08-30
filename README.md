@@ -33,26 +33,14 @@ to your project with the following command:
 dotnet add package Ramstack.HtmxToolkit
 ```
 
-Register the toolkit and select the HTMX version used by the application:
-
-```csharp
-builder.Services.AddHtmxToolkit(options =>
-{
-    options.UseHtmxV2(config =>
-    {
-        config.DefaultSwapStyle = HtmxSwap.OuterHtml;
-        config.Timeout = 5000;
-        config.GlobalViewTransitions = true;
-    });
-});
-```
-
-HTMX 2.x is used by default. Calling `UseHtmxV2` is optional when no version-specific
-settings are required:
+Register the toolkit. HTMX 2.x is used by default:
 
 ```csharp
 builder.Services.AddHtmxToolkit();
 ```
+
+To select another major version or override HTMX defaults, see
+[`HtmxConfigTagHelper`](#htmxconfigtaghelper).
 
 ## HttpRequest
 
@@ -365,7 +353,7 @@ public static class HtmxResponseHeaderNames
 }
 ```
 
-The most convenient approach is to use one of the `Htmx` extension methods.
+The most convenient approach is to use one of the `HttpResponse.Htmx` extension methods.
 Its callback receives an `HtmxResponse`, allowing you to configure response headers in a fluent style:
 
 ```csharp
@@ -388,10 +376,14 @@ Response.Htmx(
     ShouldStopPolling);
 ```
 
-:bulb: The `Htmx` extension methods are also available for `IActionResult`, allowing you to write:
+:bulb: The same API works in Minimal API handlers by binding `HttpResponse`:
 
 ```csharp
-return Json(profile).Htmx(h => h.StopPolling(ShouldStopPolling));
+app.MapGet("/profile", (HttpResponse response) =>
+{
+    response.Htmx(h => h.Retarget("#profile"));
+    return TypedResults.Content("<div>Profile</div>", "text/html");
+});
 ```
 
 In all these examples, headers are set only for an HTMX request. For a regular request,
@@ -400,18 +392,18 @@ the callback passed to `Htmx` is not executed, avoiding unnecessary work.
 ### The declarative way of setting response headers
 
 Some response headers can be set declaratively by applying `HtmxResponseAttribute`
-to a controller or action:
+to a controller or action. For example, an action that renders one new comment can append
+it to the element targeted by the request:
 
 ```csharp
-public class UserController : ControllerBase
+public class CommentController : Controller
 {
     [HtmxRequest]
-    [HtmxResponse(
-        StopPolling = true,
-        Reswap = HtmxSwap.OuterHtml)]
-    public IActionResult UpdateProfile(UserProfile profile)
+    [HtmxResponse(Reswap = HtmxSwap.BeforeEnd)]
+    public IActionResult Add(CommentInput input)
     {
-        ...
+        var comment = ...;
+        return PartialView("_Comment", comment);
     }
 }
 ```
@@ -689,16 +681,17 @@ With HTMX 4.x selected, the following HTML will be generated:
 ### HtmxConfigTagHelper
 
 HTMX configuration is defined at application startup through `AddHtmxToolkit`.
-The version-specific callback exposes only settings supported by the selected HTMX version:
+The values apply application-wide and override HTMX defaults, so configure only behavior
+the application relies on. For example, a form-oriented application can report native
+validation failures before sending a request and scroll restored focus into view after a swap:
 
 ```csharp
 builder.Services.AddHtmxToolkit(options =>
 {
     options.UseHtmxV2(config =>
     {
-        config.DefaultSwapStyle = HtmxSwap.OuterHtml;
-        config.Timeout = 5000;
-        config.GlobalViewTransitions = true;
+        config.ReportValidityOfForms = true;
+        config.DefaultFocusScroll = true;
     });
 });
 ```
@@ -716,7 +709,7 @@ The following markup will be generated:
 ```html
 <head>
     <meta name="htmx-config"
-          content='{"defaultSwapStyle":"outerHTML","timeout":5000,"globalViewTransitions":true}'
+          content='{"defaultFocusScroll":true,"reportValidityOfForms":true}'
           data-antiforgery-request-token="..."
           data-antiforgery-header-name="RequestVerificationToken"
           data-antiforgery-form-field-name="__RequestVerificationToken" />
@@ -734,20 +727,10 @@ version explicitly. Each configuration type follows the names used by that HTMX 
 and 2.x expose `DefaultSwapStyle` and `Timeout`, while HTMX 4.x exposes `DefaultSwap` and
 `DefaultTimeout`. Selecting different versions in the same configuration throws an exception.
 
-HTMX 4.x is currently in beta. To target it, select it explicitly and use its version-specific
-settings:
+HTMX 4.x is currently in beta. To target it, select it explicitly:
 
 ```csharp
-builder.Services.AddHtmxToolkit(options =>
-{
-    options.UseHtmxV4(config =>
-    {
-        config.DefaultSwap = HtmxSwap.OuterHtml;
-        config.DefaultTimeout = 5000;
-        config.Transitions = true;
-        config.NoSwap = ["204", "304", "4xx", "5xx"];
-    });
-});
+builder.Services.AddHtmxToolkit(options => options.UseHtmxV4());
 ```
 
 The configured values remain available through dependency injection:
@@ -784,7 +767,17 @@ builder.Services.AddHtmxToolkit(options =>
 ```
 
 HTMX 4.x removes `responseHandling`. To retain HTMX 2.x behavior that does not swap error
-responses, configure `NoSwap` as shown in the HTMX 4.x example above.
+responses, configure `NoSwap` explicitly:
+
+```csharp
+builder.Services.AddHtmxToolkit(options =>
+{
+    options.UseHtmxV4(config =>
+    {
+        config.NoSwap = ["204", "304", "4xx", "5xx"];
+    });
+});
+```
 
 ## Toolkit Script
 

@@ -4,6 +4,7 @@ using System.Text.Json;
 using Microsoft.AspNetCore.Http;
 
 using Ramstack.HtmxToolkit.Internal;
+using Ramstack.HtmxToolkit.Serialization;
 
 namespace Ramstack.HtmxToolkit;
 

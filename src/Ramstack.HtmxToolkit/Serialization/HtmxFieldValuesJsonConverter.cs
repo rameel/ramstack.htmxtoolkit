@@ -1,0 +1,37 @@
+using System.Runtime.CompilerServices;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+
+namespace Ramstack.HtmxToolkit.Serialization;
+
+/// <summary>
+/// Represents a JSON converter for <see cref="HtmxFieldValues" />.
+/// </summary>
+internal sealed class HtmxFieldValuesJsonConverter : JsonConverter<HtmxFieldValues>
+{
+    /// <inheritdoc />
+    public override HtmxFieldValues Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) =>
+        throw new NotSupportedException();
+
+    /// <inheritdoc />
+    public override void Write(Utf8JsonWriter writer, HtmxFieldValues value, JsonSerializerOptions options)
+    {
+        var values = value.Values;
+        switch (values)
+        {
+            case string s:
+                writer.WriteStringValue(s);
+                break;
+
+            default:
+                writer.WriteStartArray();
+
+                if (values is not null)
+                    foreach (var s in Unsafe.As<string[]>(values))
+                        writer.WriteStringValue(s);
+
+                writer.WriteEndArray();
+                break;
+        }
+    }
+}

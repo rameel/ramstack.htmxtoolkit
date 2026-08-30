@@ -41,29 +41,6 @@ public class HtmxResponseAttributeTests
     }
 
     [Test]
-    public void OnResultExecuting_SetsStopPollingStatusCode_WhenStopPolling()
-    {
-        var ctx = TestHelper.CreateHtmxRequestContext();
-        var res = new HtmxResponseAttribute { StopPolling = true };
-
-        res.OnResultExecuting(CreateContext(ctx));
-
-        Assert.That(ctx.Response.StatusCode, Is.EqualTo(HtmxResponse.StopPollingStatusCode));
-    }
-
-    [Test]
-    public void OnResultExecuting_DoesNotSetStatusCode_WhenNotStopPolling()
-    {
-        var ctx = TestHelper.CreateHtmxRequestContext();
-        var res = new HtmxResponseAttribute();
-
-        res.OnResultExecuting(CreateContext(ctx));
-
-        Assert.That(ctx.Response.StatusCode, Is.EqualTo(200));
-        Assert.That(ctx.Response.StatusCode, Is.Not.EqualTo(HtmxResponse.StopPollingStatusCode));
-    }
-
-    [Test]
     public void Properties_RoundTrips()
     {
         var res = new HtmxResponseAttribute

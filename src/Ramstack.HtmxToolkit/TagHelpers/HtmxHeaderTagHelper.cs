@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 
 using Ramstack.HtmxToolkit.Collections;
+using Ramstack.HtmxToolkit.Serialization;
 
 namespace Ramstack.HtmxToolkit.TagHelpers;
 

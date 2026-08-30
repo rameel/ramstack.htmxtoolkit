@@ -1,3 +1,5 @@
+using Ramstack.HtmxToolkit.Configuration;
+
 namespace Ramstack.HtmxToolkit.Internal;
 
 /// <summary>

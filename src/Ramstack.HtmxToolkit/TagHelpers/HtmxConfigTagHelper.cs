@@ -1,9 +1,10 @@
 using Microsoft.AspNetCore.Antiforgery;
-using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using Microsoft.Extensions.Options;
+
+using Ramstack.HtmxToolkit.Configuration;
 
 namespace Ramstack.HtmxToolkit.TagHelpers;
 
