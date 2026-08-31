@@ -8,25 +8,15 @@
   <header class="page-heading">
     <p class="eyebrow">Example 05</p>
     <h1>Polling</h1>
-    <p>Stop a repeating HTMX request from the server when a condition is reached</p>
+    <p>Let the server decide whether to schedule the next HTMX request</p>
   </header>
 
   <section class="demo-card">
     <div class="demo-card__header">
-      <h2><code>HtmxResponse.StopPolling()</code></h2>
-      <p>The request is evaluated every second. The server randomly asks HTMX to stop polling.</p>
-    </div>
-    <div class="poll-status"
-         hx-get hx-page="/Examples/Polling"
-         hx-page-handler="StopPolling"
-         hx-target="#poll-result"
-         hx-trigger="every 1s"
-         hx-swap="innerHTML">
-      <span id="poll-status">Polling is active</span>
+      <h2>Server-controlled polling</h2>
+      <p>The server returns the next polling element every second until it randomly stops.</p>
     </div>
 
-    <div id="poll-result" class="result">
-      Waiting for the first response.
-    </div>
+    <partial name="_PollingStatus" model="Model.State" />
   </section>
 </article>

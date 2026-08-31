@@ -11,6 +11,7 @@ Provides HTMX integration for ASP.NET Core applications.
     * [HtmxRequestAttribute](#htmxrequestattribute)
   * [HttpResponse](#httpresponse)
     * [The declarative way of setting response headers](#the-declarative-way-of-setting-response-headers)
+  * [Polling](#polling)
   * [Tag Helpers](#tag-helpers)
     * [HtmxUrlTagHelper](#htmxurltaghelper)
     * [HtmxHeaderTagHelper](#htmxheadertaghelper)
@@ -360,8 +361,7 @@ Its callback receives an `HtmxResponse`, allowing you to configure response head
 Response.Htmx(h => h
     .TriggerEvent(
         eventName: "process",
-        detail: new { Value = ... })
-    .StopPolling(ShouldStopPolling));
+        detail: new { Value = ... }));
 ```
 
 `TriggerEvent` and `TriggerEvents` accept an optional `HtmxTriggerTiming` value.
@@ -377,12 +377,11 @@ the upstream timing change.
 
 ```csharp
 Response.Htmx(
-    static (h, stop) => h
+    static (h, value) => h
         .TriggerEvent(
             eventName: "process",
-            detail: new { Value = ... })
-        .StopPolling(stop),
-    ShouldStopPolling);
+            detail: new { Value = value }),
+    ProcessValue);
 ```
 
 :bulb: The same API works in Minimal API handlers by binding `HttpResponse`:
@@ -456,6 +455,44 @@ public HtmxSwap Reswap { get; set; }
 ```
 
 Use `ReswapExpression` when the strongly typed `Reswap` property is not flexible enough.
+
+## Polling
+
+For server-controlled polling that works in every supported HTMX version, return
+the polling element itself and replace it with `outerHTML`:
+
+```html
+<div id="poll-status"
+     hx-get="/poll"
+     hx-trigger="load delay:1s"
+     hx-swap="outerHTML">
+  Polling...
+</div>
+```
+
+While polling should continue, return the same element with its request
+attributes. To stop, return the element without `hx-get` and `hx-trigger`:
+
+```html
+<div id="poll-status">
+  Polling stopped!
+</div>
+```
+
+This load-polling pattern gives the server control over every next request and
+works with HTMX 1.9.x, 2.x, and 4.x. For an indefinitely updated status, use
+`hx-trigger="every 1s"` instead.
+
+HTMX 1.9.x and 2.x also recognize HTTP status code `286` as a fixed-rate polling
+stop signal. Applications that target only those versions can opt into that legacy
+behavior directly:
+
+```csharp
+Response.StatusCode = 286;
+```
+
+HTMX 4.x treats `286` as a regular successful response, so it is not exposed as a
+toolkit API.
 
 ## Tag Helpers
 

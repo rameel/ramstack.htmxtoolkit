@@ -5,15 +5,17 @@ namespace Ramstack.HtmxToolkit.Demo.Pages.Examples;
 
 public class PollingModel : PageModel
 {
-    public IActionResult OnGetStopPolling()
+    public PollingState State { get; } = new(false, "Polling is active");
+
+    public IActionResult OnGetPoll()
     {
-        var stop = Random.Shared.Next(0, 20) == 10;
-        Response.Htmx((h, f) => h.StopPolling(f), stop);
+        var stopped = Random.Shared.Next(0, 20) == 10;
+        var message = stopped
+            ? "Polling stopped!"
+            : $"Polling... {DateTime.Now:HH:mm:ss}";
 
-        var content = $"Polling... {DateTime.Now:HH:mm:ss}";
-        if (stop)
-            content += "<span id='poll-status' hx-swap-oob='true' style='color: orange'>Polling stopped!</span>";
-
-        return Content(content);
+        return Partial("_PollingStatus", new PollingState(stopped, message));
     }
+
+    public sealed record PollingState(bool Stopped, string Message);
 }
