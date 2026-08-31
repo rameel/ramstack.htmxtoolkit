@@ -773,7 +773,7 @@ version explicitly. Each configuration type follows the names used by that HTMX 
 and 2.x expose `DefaultSwapStyle` and `Timeout`, while HTMX 4.x exposes `DefaultSwap` and
 `DefaultTimeout`. Selecting different versions in the same configuration throws an exception.
 
-HTMX 4.x is currently in beta. To target it, select it explicitly:
+To target HTMX 4.x, select it explicitly:
 
 ```csharp
 builder.Services.AddHtmxToolkit(options => options.UseHtmxV4());
