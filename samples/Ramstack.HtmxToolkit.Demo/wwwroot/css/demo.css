@@ -274,6 +274,11 @@ code {
   font-size: 0.85rem;
 }
 
+.poll-status--stopped {
+  background: rgb(255 165 0 / 0.15);
+  color: orange;
+}
+
 .demo-form {
   display: grid;
   gap: 1rem;

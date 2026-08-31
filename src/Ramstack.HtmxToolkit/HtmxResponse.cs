@@ -22,11 +22,6 @@ public readonly struct HtmxResponse
     private readonly HttpResponse _response;
 
     /// <summary>
-    /// The HTTP status code used by HTMX to stop polling.
-    /// </summary>
-    public const int StopPollingStatusCode = 286;
-
-    /// <summary>
     /// Gets the strongly typed HTMX response headers.
     /// </summary>
     public HtmxResponseHeaders Headers => new(_response);
@@ -251,31 +246,6 @@ public readonly struct HtmxResponse
     /// </remarks>
     public HtmxResponse TriggerEvents(IReadOnlyDictionary<string, object> events, HtmxTriggerTiming timing = HtmxTriggerTiming.Receive) =>
         AddEvents(this, events, timing);
-
-    /// <summary>
-    /// Sets HTTP status code <c>286</c> to stop polling.
-    /// </summary>
-    /// <returns>
-    /// The current <see cref="HtmxResponse" /> instance.
-    /// </returns>
-    public HtmxResponse StopPolling() =>
-        StopPolling(true);
-
-    /// <summary>
-    /// Sets HTTP status code <c>286</c> when <paramref name="condition" /> is <see langword="true" />.
-    /// </summary>
-    /// <param name="condition"><see langword="true" /> to stop polling;
-    /// otherwise, <see langword="false" />.</param>
-    /// <returns>
-    /// The current <see cref="HtmxResponse" /> instance.
-    /// </returns>
-    public HtmxResponse StopPolling(bool condition)
-    {
-        if (condition)
-            _response.StatusCode = StopPollingStatusCode;
-
-        return this;
-    }
 
     /// <summary>
     /// Sets a response header and returns the response wrapper for fluent chaining.

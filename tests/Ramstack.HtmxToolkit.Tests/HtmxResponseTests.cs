@@ -185,33 +185,6 @@ public class HtmxResponseTests
     }
 
     [Test]
-    public void StopPolling_SetsStatusCode286()
-    {
-        var context = TestHelper.CreateHtmxRequestContext();
-        context.Response.Htmx(r => r.StopPolling());
-
-        Assert.That(context.Response.StatusCode, Is.EqualTo(HtmxResponse.StopPollingStatusCode));
-    }
-
-    [Test]
-    public void StopPolling_WithFalseCondition_DoesNotChangeStatusCode()
-    {
-        var context = TestHelper.CreateHtmxRequestContext();
-        context.Response.Htmx(r => r.StopPolling(false));
-
-        Assert.That(context.Response.StatusCode, Is.Not.EqualTo(HtmxResponse.StopPollingStatusCode));
-    }
-
-    [Test]
-    public void StopPolling_WithTrueCondition_SetsStatusCode286()
-    {
-        var context = TestHelper.CreateHtmxRequestContext();
-        context.Response.Htmx(r => r.StopPolling(true));
-
-        Assert.That(context.Response.StatusCode, Is.EqualTo(HtmxResponse.StopPollingStatusCode));
-    }
-
-    [Test]
     public void TriggerEvent_SetsReceiveTrigger()
     {
         var context = TestHelper.CreateHtmxRequestContext();

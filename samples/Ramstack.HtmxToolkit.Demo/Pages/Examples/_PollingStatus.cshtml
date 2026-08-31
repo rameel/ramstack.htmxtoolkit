@@ -1,0 +1,18 @@
+@model PollingModel.PollingState
+
+@if (Model.Stopped)
+{
+  <div id="poll-status" class="poll-status poll-status--stopped">
+    @Model.Message
+  </div>
+}
+else
+{
+  <div id="poll-status" class="poll-status"
+       hx-get hx-page="/Examples/Polling"
+       hx-page-handler="Poll"
+       hx-trigger="load delay:1s"
+       hx-swap="outerHTML">
+    @Model.Message
+  </div>
+}
