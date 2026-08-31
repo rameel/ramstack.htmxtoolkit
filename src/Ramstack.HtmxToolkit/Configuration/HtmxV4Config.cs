@@ -69,7 +69,8 @@ public sealed class HtmxV4Config() : HtmxConfig(HtmxTargetVersion.V4)
     /// The HTMX default is <see langword="false" /> and can be overridden
     /// using the <c>swapEmpty</c> modifier on <c>hx-swap</c>.
     /// </summary>
-    public bool? AllowEmptySwapAfterOOB
+    [JsonPropertyName("allowEmptySwapAfterOOB")]
+    public bool? AllowEmptySwapAfterOob
     {
         get;
         set => SetField(ref field, value);

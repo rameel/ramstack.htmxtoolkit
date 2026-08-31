@@ -250,7 +250,7 @@ public class HtmxConfigTagHelperTests
             htmx.MetaCharacter = "-";
             htmx.History = HtmxHistoryMode.Reload;
             htmx.DefaultSwap = HtmxSwap.OuterMorph;
-            htmx.AllowEmptySwapAfterOOB = true;
+            htmx.AllowEmptySwapAfterOob = true;
             htmx.DefaultSettleDelay = 1;
             htmx.IncludeIndicatorCss = false;
             htmx.IndicatorClass = "indicator";
