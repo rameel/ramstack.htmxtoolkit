@@ -63,10 +63,14 @@ public sealed class HtmxV4Config() : HtmxConfig(HtmxTargetVersion.V4)
     }
 
     /// <summary>
-    /// Gets or sets a value indicating whether an empty response body replaces the main swap target.
-    /// The HTMX default is <c>undefined</c>.
+    /// Gets or sets a value indicating whether the main swap is performed
+    /// when the response contained only out-of-band elements.
+    /// <c>&lt;hx-partial&gt;</c> content always prevents the main swap.
+    /// The HTMX default is <see langword="false" /> and can be overridden
+    /// using the <c>swapEmpty</c> modifier on <c>hx-swap</c>.
     /// </summary>
-    public bool? DefaultSwapEmpty
+    [JsonPropertyName("allowEmptySwapAfterOOB")]
+    public bool? AllowEmptySwapAfterOob
     {
         get;
         set => SetField(ref field, value);
