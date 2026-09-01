@@ -18,16 +18,30 @@ public enum HtmxSwap
     /// <summary>
     /// Morphs the inner HTML of the target element.
     /// </summary>
+    /// <remarks>
+    /// Supported natively by HTMX 4.x. With HTMX 1.9.x or 2.x, activate the
+    /// <c>ramstack-morph</c> extension and optionally load Idiomorph. Without Idiomorph,
+    /// the extension falls back to <c>innerHTML</c>.
+    /// </remarks>
     InnerMorph,
 
     /// <summary>
     /// Morphs the target element itself.
     /// </summary>
+    /// <remarks>
+    /// Supported natively by HTMX 4.x. With HTMX 1.9.x or 2.x, activate the
+    /// <c>ramstack-morph</c> extension and optionally load Idiomorph. Without Idiomorph,
+    /// the extension falls back to <c>outerHTML</c>.
+    /// </remarks>
     OuterMorph,
 
     /// <summary>
     /// Synchronizes the target element with the response.
     /// </summary>
+    /// <remarks>
+    /// Supported natively by HTMX 4.x. With HTMX 1.9.x or 2.x, activate the
+    /// <c>ramstack-morph</c> extension to fall back to attribute synchronization and <c>innerHTML</c>.
+    /// </remarks>
     OuterSync,
 
     /// <summary>
