@@ -18,6 +18,15 @@ The package targets .NET 6 and can be used by applications running on .NET 6 or 
 - Render version-specific HTMX configuration from ASP.NET Core options.
 - Add antiforgery tokens to unsafe HTMX requests with a small companion script.
 
+## Designed for Low Overhead
+
+HtmxToolkit is designed to make HTMX integration inexpensive on the application's request path:
+
+- `HtmxRequestHeaders` and `HtmxResponseHeaders` are readonly, single-reference structs. In normal use they add no wrapper allocation while preserving a strongly typed API.
+- Version-specific HTMX configuration is serialized only when it changes; the resulting JSON is cached and reused across requests.
+- Known JSON shapes use source-generated `System.Text.Json` metadata, avoiding reflection-based metadata discovery at runtime. Event details passed to `TriggerEvent` are the deliberate exception because their types are defined by the application.
+- Work is skipped for non-HTMX requests, and state-passing overloads allow static callbacks when callers need to avoid closure allocations.
+
 ## Installation
 
 ```console
