@@ -1,4 +1,61 @@
 document._r_htmx ||= ((document, htmx) => {
+    const warn = message => console.warn(`ramstack.htmxtoolkit: ${message}`);
+
+    if (htmx.defineExtension) {
+        htmx.defineExtension("ramstack-morph", {
+            isInlineSwap(swap_style) {
+                return swap_style === "outerMorph" || swap_style === "outerSync";
+            },
+            handleSwap(swap_style, target, fragment) {
+                if (swap_style === "textContent") {
+                    target.textContent = fragment.textContent;
+                    return [target];
+                }
+
+                let morph_style =
+                    swap_style === "innerMorph" ? "innerHTML" :
+                    swap_style === "outerMorph" ? "outerHTML" : null;
+
+                if (morph_style) {
+                    let idiomorph = globalThis.Idiomorph;
+                    if (idiomorph?.morph) {
+                        return idiomorph.morph(target, fragment.children, { morphStyle: morph_style });
+                    }
+
+                    warn(`Idiomorph is unavailable; falling back from ${swap_style} to ${morph_style}`);
+
+                    let nodes = [...fragment.childNodes];
+                    morph_style === "innerHTML"
+                        ? target.replaceChildren(...nodes)
+                        : target.replaceWith(...nodes);
+
+                    return nodes;
+                }
+
+                if (swap_style === "outerSync") {
+                    warn("outerSync requires HTMX 4.x; falling back to attribute sync and innerHTML");
+
+                    let source = fragment.firstElementChild;
+                    if (source) {
+                        for (let attr of [...target.attributes]) {
+                            source.hasAttribute(attr.name) || target.removeAttribute(attr.name);
+                        }
+
+                        for (let attr of source.attributes) {
+                            target.setAttribute(attr.name, attr.value);
+                        }
+
+                        let nodes = source.childNodes;
+                        target.replaceChildren(...nodes);
+
+                        return nodes;
+                    }
+
+                }
+            }
+        });
+    }
+
     const listen = (type, listener) => {
         document.addEventListener(type, listener);
     };
