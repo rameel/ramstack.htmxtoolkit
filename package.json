@@ -11,8 +11,8 @@
   "license": "MIT",
   "devDependencies": {
     "@rollup/plugin-terser": "^1.0.0",
-    "rollup": "^4.62.4",
+    "rollup": "^4.63.1",
     "rollup-plugin-bundle-size": "^1.0.3",
-    "terser": "^5.49.2"
+    "terser": "^5.51.2"
   }
 }
