@@ -407,6 +407,42 @@ For server-controlled polling that works with every supported HTMX version, retu
 
 Return the same element with its request attributes to continue polling, or return it without `hx-get` and `hx-trigger` to stop. Status code `286` stops polling in HTMX 1.9.x and 2.x, but HTMX 4.x treats it as a regular successful response.
 
+### Morph Swaps
+
+`HtmxSwap.InnerMorph` and `HtmxSwap.OuterMorph` use the native `innerMorph` and
+`outerMorph` swap styles in HTMX 4.x. No additional client-side dependency or
+configuration is required.
+
+With HTMX 1.9.x or 2.x, enable the `ramstack-morph` extension. To preserve morphing
+behavior, also load the optional `Idiomorph` core library before the first morph swap:
+
+```razor
+<body hx-ext="ramstack-morph">
+    ...
+
+    <script src="https://unpkg.com/htmx.org@2"></script>
+    <script src="https://unpkg.com/idiomorph/dist/idiomorph.min.js"></script>
+    <script>
+        @Html.HtmxToolkitScript()
+    </script>
+</body>
+```
+
+The toolkit script contains only the HTMX adapter and must be loaded after HTMX.
+`Idiomorph` remains an optional dependency and is not included in the toolkit bundle.
+It may be loaded before or after the toolkit script because the adapter resolves it
+when each morph swap runs. Do not enable the extension with HTMX 4.x, which handles
+these swap styles natively.
+
+If `Idiomorph` is unavailable, the adapter logs a warning and falls back from
+`innerMorph` to `innerHTML` and from `outerMorph` to `outerHTML`. On HTMX 1.9.x
+and 2.x, `outerSync` falls back to synchronizing the target's attributes and then
+replacing its children through `innerHTML`.
+
+`HtmxSwap.TextContent` is also handled by the `ramstack-morph` extension and does not
+require Idiomorph. It is supported natively by HTMX 2.x and 4.x; only HTMX 1.9.x
+needs the extension.
+
 ## Sample
 
 The [`samples/Ramstack.HtmxToolkit.Demo`](samples/Ramstack.HtmxToolkit.Demo) project demonstrates request detection, response headers, Tag Helpers, polling, boosted navigation, and antiforgery integration.
