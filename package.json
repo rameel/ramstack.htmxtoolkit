@@ -5,8 +5,7 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "build": "rollup -c",
-    "test": "node --test tests/js/htmx-toolkit.test.js"
+    "build": "rollup -c"
   },
   "author": "rameel <rameel-b@hotmail.com>",
   "license": "MIT",
