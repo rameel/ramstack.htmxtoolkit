@@ -4,28 +4,32 @@
 [![Build](https://github.com/rameel/ramstack.htmxtoolkit/actions/workflows/test.yml/badge.svg)](https://github.com/rameel/ramstack.htmxtoolkit/actions/workflows/test.yml)
 [![License: MIT](https://img.shields.io/github/license/rameel/ramstack.htmxtoolkit)](LICENSE)
 
-HtmxToolkit connects [HTMX](https://htmx.org/) with ASP.NET Core. It adds strongly typed request and response headers, MVC action filters, Razor Tag Helpers, application-wide HTMX configuration, and antiforgery support.
+HtmxToolkit integrates [HTMX](https://htmx.org/) with ASP.NET Core. It provides strongly typed APIs for request and response headers,
+MVC action filters, Razor Tag Helpers, application-wide HTMX configuration, and antiforgery support.
 
-The package targets .NET 6 and can be used by applications running on .NET 6 or later. It supports HTMX 1.9.x, HTMX 2.x, and HTMX 4.x. HTMX 2.x is selected by default.
+The package targets .NET 6 and can be used by applications running on .NET 6 or later.
+It supports HTMX 1.9.x, HTMX 2.x, and HTMX 4.x. HTMX 2.x is selected by default.
 
 ## Features
 
-- Detect HTMX and boosted requests without comparing header strings.
+- Detect HTMX requests, including boosted requests, without comparing header strings.
 - Read and write all standard HTMX headers through strongly typed APIs.
 - Route HTMX requests to dedicated MVC actions with `[HtmxRequest]`.
 - Configure response behavior fluently or with `[HtmxResponse]`.
 - Generate HTMX URLs, headers, values, and request options with Razor Tag Helpers.
 - Render version-specific HTMX configuration from ASP.NET Core options.
-- Add antiforgery tokens to unsafe HTMX requests with a small companion script.
+- Add antiforgery tokens to non-GET HTMX requests with a small companion script.
 
 ## Designed for Low Overhead
 
-HtmxToolkit is designed to make HTMX integration inexpensive on the application's request path:
+HtmxToolkit is designed to minimize HTMX integration overhead in the application's request-processing path:
 
-- `HtmxRequestHeaders` and `HtmxResponseHeaders` are readonly, single-reference structs. In normal use they add no wrapper allocation while preserving a strongly typed API.
-- Version-specific HTMX configuration is serialized only when it changes; the resulting JSON is cached and reused across requests.
-- Known JSON shapes use source-generated `System.Text.Json` metadata, avoiding reflection-based metadata discovery at runtime. Event details passed to `TriggerEvent` are the deliberate exception because their types are defined by the application.
-- Work is skipped for non-HTMX requests, and state-passing overloads allow static callbacks when callers need to avoid closure allocations.
+- `HtmxRequestHeaders` and `HtmxResponseHeaders` are `readonly` structs, each containing a single reference.
+  In normal use, they incur no wrapper allocations while preserving a strongly typed API.
+- Version-specific HTMX configuration is serialized only when the configuration changes; the resulting JSON is cached and reused across requests.
+- Known JSON shapes use source-generated `System.Text.Json` metadata, avoiding reflection-based metadata discovery at runtime.
+  Event details passed to `TriggerEvent` are the deliberate exception because their types are defined by the application.
+- Work is skipped for non-HTMX requests, and overloads that accept state allow callers to use static callbacks and avoid closure allocations.
 
 ## Installation
 
@@ -50,14 +54,14 @@ builder.Services.AddHtmxToolkit();
 
 Make the Tag Helpers and toolkit types available to Razor views in `_ViewImports.cshtml`:
 
-```razor
+```html
 @using Ramstack.HtmxToolkit
 @addTagHelper *, Ramstack.HtmxToolkit
 ```
 
 Render the configuration metadata in the document `<head>`:
 
-```razor
+```html
 <head>
     <htmx-config />
 </head>
@@ -71,16 +75,16 @@ app.MapHtmxToolkitScript();
 
 Load HTMX first, then the toolkit script in the layout:
 
-```razor
+```html
 <script src="/path/to/htmx.min.js"></script>
 <script src="@Html.HtmxToolkitScriptPath()"></script>
 ```
 
-The default script URL contains a content hash, so it can be cached indefinitely and is invalidated automatically when the script changes.
+The default script URL contains a content hash, so the script can be cached indefinitely. When the script changes, its URL changes automatically.
 
 You can now generate an HTMX URL from ASP.NET Core route information:
 
-```razor
+```html
 <button hx-controller="Books"
         hx-action="List"
         hx-route-category="science"
@@ -95,31 +99,24 @@ If no HTTP method is specified, the URL Tag Helper emits `hx-get`. Use `hx-post`
 
 ## Requests
 
-Use `IsHtmxRequest()` when an endpoint should return a partial response to HTMX and a complete page to a normal navigation:
+Use `IsHtmxRequest` when an endpoint should return a partial response for an HTMX request and a full-page response otherwise:
 
 ```csharp
-using Ramstack.HtmxToolkit;
-
-public IActionResult Details(int id)
+public IActionResult Help()
 {
-    var model = repository.Find(id);
+    if (Request.IsHtmxRequest(out var htmx) && !htmx.HistoryRestoreRequest)
+        return PartialView("_Help");
 
-    return Request.IsHtmxRequest()
-        ? PartialView("_Details", model)
-        : View(model);
+    return View();
 }
 ```
 
-The overload with an `out` parameter returns a strongly typed view of the request headers:
+Checking `HistoryRestoreRequest` ensures that an HTMX history cache miss receives the full page it expects.
+The `out` parameter provides strongly typed access to the request headers.
 
-```csharp
-if (Request.IsHtmxRequest(out var htmx) && htmx.HistoryRestoreRequest)
-{
-    // Handle a history cache miss.
-}
-```
+Call `Request.GetHtmxHeaders()` to access the same headers separately from request detection.
 
-Call `Request.GetHtmxHeaders()` when request detection and header access do not need to happen together. Available properties include:
+Available properties include:
 
 - `Boosted`
 - `CurrentUrl`
@@ -132,22 +129,22 @@ Call `Request.GetHtmxHeaders()` when request detection and header access do not 
 
 `HtmxRequestHeaderNames` exposes the corresponding header-name constants for lower-level APIs.
 
-Use `Request.IsHtmxBoosted()` when only boosted navigation matters. It also has an overload that returns the typed headers.
+Use `Request.IsHtmxBoosted()` when only boosted navigation matters. An overload also provides access to the strongly typed headers.
 
 ### MVC Action Selection
 
-Apply `[HtmxRequest]` to route only HTMX requests to an action:
+Apply `[HtmxRequest]` to reserve an action for HTMX requests:
 
 ```csharp
+[HttpGet("/profile/fragment")]
 [HtmxRequest]
-public IActionResult UpdateProfile(ProfileInput input)
+public IActionResult ProfileFragment()
 {
-    var profile = repository.Update(input);
-    return PartialView("_Profile", profile);
+    return PartialView("_Profile");
 }
 ```
 
-Set `Boosted` to distinguish boosted and non-boosted HTMX requests:
+Set `Boosted` to restrict action selection to boosted or non-boosted HTMX requests:
 
 ```csharp
 [HtmxRequest(Boosted = true)]
@@ -165,11 +162,11 @@ Configure HTMX response headers through `Response.Htmx(...)`:
 Response.Htmx(htmx => htmx
     .Retarget("#profile")
     .Reswap(HtmxSwap.OuterHtml)
-    .TriggerEvent("profile-updated", new { id = profile.Id }));
+    .TriggerEvent("profile-updated"));
 ```
 
 > [!NOTE]
-> The callback runs only for an HTMX request, so regular requests avoid unnecessary response work.
+> The callback runs only for HTMX requests, so non-HTMX requests avoid unnecessary response work.
 
 The fluent API supports:
 
@@ -189,15 +186,15 @@ app.MapGet("/profile", (HttpResponse response) =>
 ```
 
 > [!TIP]
-> For a callback that captures state, use the generic overload to avoid a closure allocation.
+> When a callback needs state, use the generic overload to pass it explicitly and avoid a closure allocation.
 
 ```csharp
 Response.Htmx(
-    static (htmx, id) => htmx.TriggerEvent("profile-updated", new { id }),
-    profile.Id);
+    static (htmx, path) => htmx.TriggerEvent("content-updated", new { path }),
+    Request.Path.Value);
 ```
 
-Call `Response.GetHtmxHeaders()` for direct strongly typed access, or use `HtmxResponseHeaderNames` with lower-level APIs.
+Call `Response.GetHtmxHeaders()` for direct access to the strongly typed response headers, or use `HtmxResponseHeaderNames` with lower-level APIs.
 
 ### Declarative Responses
 
@@ -206,34 +203,34 @@ Controllers can set common response headers declaratively:
 ```csharp
 [HtmxRequest]
 [HtmxResponse(
-    Retarget = "#comments",
+    Retarget = "#results",
     Reswap = HtmxSwap.BeforeEnd)]
-public IActionResult AddComment(CommentInput input)
+public IActionResult LoadMore()
 {
-    var comment = repository.Add(input);
-    return PartialView("_Comment", comment);
+    return PartialView("_MoreResults");
 }
 ```
 
-`HtmxResponseAttribute` supports `Refresh`, `Reswap`, `ReswapExpression`, `Retarget`, and `Reselect`. Use `ReswapExpression` for a complete expression with swap modifiers, such as `innerHTML show:#result:top`.
+`HtmxResponseAttribute` supports `Refresh`, `Reswap`, `ReswapExpression`, `Retarget`, and `Reselect`.
+Use `ReswapExpression` for a complete expression with swap modifiers, such as `innerHTML show:#result:top`.
 
 ## Tag Helpers
 
 HtmxToolkit includes five Tag Helpers:
 
-| Tag Helper | Purpose |
-| --- | --- |
-| `HtmxUrlTagHelper` | Builds HTMX request URLs from routes, controllers, actions, or Razor Pages. |
-| `HtmxHeaderTagHelper` | Serializes custom `hx-headers` values. |
-| `HtmxValsTagHelper` | Serializes additional `hx-vals` request values. |
-| `HtmxRequestTagHelper` | Generates version-specific `hx-request` or `hx-config` options. |
-| `HtmxConfigTagHelper` | Renders application configuration and antiforgery metadata. |
+| Tag Helper             | Purpose                                                                     |
+|------------------------|-----------------------------------------------------------------------------|
+| `HtmxUrlTagHelper`     | Builds HTMX request URLs from routes, controllers, actions, or Razor Pages. |
+| `HtmxHeaderTagHelper`  | Serializes custom `hx-headers` values.                                      |
+| `HtmxValsTagHelper`    | Serializes additional `hx-vals` request values.                             |
+| `HtmxRequestTagHelper` | Generates version-specific `hx-request` or `hx-config` options.             |
+| `HtmxConfigTagHelper`  | Renders application configuration and antiforgery metadata.                 |
 
 ### URL Generation
 
 Controller and action:
 
-```razor
+```html
 <button hx-post
         hx-area="Admin"
         hx-controller="Users"
@@ -245,7 +242,7 @@ Controller and action:
 
 Razor Page handler:
 
-```razor
+```html
 <button hx-page="/Attendee"
         hx-page-handler="Profile"
         hx-route-attendeeid="@Model.Id">
@@ -253,13 +250,14 @@ Razor Page handler:
 </button>
 ```
 
-Use `hx-all-route-data` for an `IDictionary<string, string>` of route values. The helper also supports `hx-route`, `hx-host`, `hx-protocol`, and `hx-fragment`.
+Use `hx-all-route-data` for an `IDictionary<string, string>` of route values.
+The helper also supports `hx-route`, `hx-host`, `hx-protocol`, and `hx-fragment`.
 
-### Headers And Values
+### Headers and Values
 
 Create `hx-headers` without manually escaping JSON:
 
-```razor
+```html
 <button hx-get="/reports"
         hx-header-X-View="compact"
         hx-header-X-Time-Zone="UTC">
@@ -269,7 +267,7 @@ Create `hx-headers` without manually escaping JSON:
 
 Add request values in the same way:
 
-```razor
+```html
 <button hx-get="/books"
         hx-val-category="science"
         hx-val-format="summary">
@@ -283,7 +281,7 @@ Use `hx-all-headers` or `hx-all-vals` to supply an `IDictionary<string, string>`
 
 For HTMX 1.9.x and 2.x, typed `hx-request-*` attributes generate `hx-request` JSON:
 
-```razor
+```html
 <button hx-get="/reports"
         hx-request-timeout="5000"
         hx-request-credentials="@HtmxRequestCredentials.Include"
@@ -292,11 +290,14 @@ For HTMX 1.9.x and 2.x, typed `hx-request-*` attributes generate `hx-request` JS
 </button>
 ```
 
-With HTMX 4.x selected, the same Tag Helper generates `hx-config`. HTMX 4.x additionally supports `hx-request-cache`, `hx-request-redirect`, `hx-request-referrer`, `hx-request-integrity`, and `hx-request-validate`; `hx-request-no-headers` is limited to HTMX 1.9.x and 2.x.
+With HTMX 4.x selected, `HtmxRequestTagHelper` generates `hx-config` instead.
+HTMX 4.x additionally supports `hx-request-cache`, `hx-request-redirect`, `hx-request-referrer`, `hx-request-integrity`,
+and `hx-request-validate`; `hx-request-no-headers` is limited to HTMX 1.9.x and 2.x.
 
 ## Configuration
 
-Configure HTMX once during service registration. Only values you explicitly set are emitted, allowing HTMX defaults to remain in control:
+Configure HTMX once during service registration. Only explicitly configured values are emitted,
+so HTMX defaults remain in effect:
 
 ```csharp
 builder.Services.AddHtmxToolkit(options =>
@@ -311,20 +312,24 @@ builder.Services.AddHtmxToolkit(options =>
 
 Render `<htmx-config />` in the document `<head>` to produce the corresponding `<meta name="htmx-config">` element.
 
-Select a supported HTMX major version with `UseHtmxV1`, `UseHtmxV2`, or `UseHtmxV4`:
+Select a supported HTMX version family with `UseHtmxV1`, `UseHtmxV2`, or `UseHtmxV4`:
 
 ```csharp
 builder.Services.AddHtmxToolkit(options => options.UseHtmxV4());
 ```
 
-Configuration property names follow the selected HTMX release. For example, HTMX 1.9.x and 2.x use `DefaultSwapStyle` and `Timeout`, while HTMX 4.x uses `DefaultSwap` and `DefaultTimeout`.
+Configuration property names follow the selected HTMX version.
+For example, HTMX 1.9.x and 2.x use `DefaultSwapStyle` and `Timeout`,
+while HTMX 4.x uses `DefaultSwap` and `DefaultTimeout`.
 
 > [!WARNING]
-> Select only one HTMX version. Selecting another version in the same configuration throws an exception.
+> Select only one HTMX version. Attempting to select a second version in the same configuration throws an exception.
 
 ### Response Handling
 
-HTMX 2.x can customize response handling by status code:
+The following configuration follows the
+[HTMX 2.x response-handling example](https://htmx.org/docs/#response-handling-examples), allowing `422` validation
+responses to swap while treating other `4xx` and `5xx` responses as errors:
 
 ```csharp
 builder.Services.AddHtmxToolkit(options =>
@@ -343,7 +348,9 @@ builder.Services.AddHtmxToolkit(options =>
 });
 ```
 
-HTMX 4.x replaces `responseHandling` with `noSwap`. Configure equivalent rules explicitly when migrating:
+HTMX 4.x replaces `responseHandling` with `noSwap` and swaps `4xx` and `5xx` responses by default. To restore the
+default HTMX 2.x behavior for those errors, the
+[HTMX 4.x migration guide](https://four.htmx.org/docs/#migrating-from-htmx-2x-to-4x) recommends:
 
 ```csharp
 builder.Services.AddHtmxToolkit(options =>
@@ -355,12 +362,25 @@ builder.Services.AddHtmxToolkit(options =>
 });
 ```
 
+This policy also prevents `422` responses from swapping. Omit or narrow the `4xx` pattern if those responses should
+continue to update the page.
+
 ## Antiforgery
 
-Antiforgery metadata is enabled by default. `<htmx-config />` renders the current token and field or header names; the companion script attaches the token to non-GET HTMX requests and refreshes it after boosted navigation.
+Antiforgery metadata is enabled by default. `<htmx-config />` renders the current token and field or header names;
+the companion script attaches the token to non-GET HTMX requests and refreshes it after boosted navigation.
 
 > [!WARNING]
-> The companion script only sends the token. The application must still enable server-side antiforgery validation for the relevant endpoints.
+> The companion script sends the token but does not perform validation. The application must still enable server-side antiforgery validation for the relevant endpoints.
+
+For example, MVC applications can validate all unsafe actions globally:
+
+```csharp
+builder.Services.AddControllersWithViews(options =>
+{
+    options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
+});
+```
 
 Disable the metadata when antiforgery is handled elsewhere:
 
@@ -373,13 +393,14 @@ builder.Services.AddHtmxToolkit(options =>
 
 Instead of mapping an endpoint, the companion script can be embedded directly:
 
-```razor
+```html
 <script>
     @Html.HtmxToolkitScript()
 </script>
 ```
 
-Pass `debug: true` to `HtmxToolkitScript` or `HtmxToolkitScriptPath` to use the readable script during development. A custom endpoint path is also supported:
+Pass `debug: true` to `HtmxToolkitScript` or `HtmxToolkitScriptPath` to use the readable script during development.
+A custom endpoint path is also supported:
 
 ```csharp
 app.MapHtmxToolkitScript("/assets/htmx-toolkit.js");
@@ -390,7 +411,9 @@ app.MapHtmxToolkitScript("/assets/htmx-toolkit.js");
 ### Trigger Timing
 
 > [!IMPORTANT]
-> HTMX 1.9.x and 2.x support `HX-Trigger`, `HX-Trigger-After-Swap`, and `HX-Trigger-After-Settle`. HTMX 4.x supports only `HX-Trigger`, so HtmxToolkit emits events requested for any `HtmxTriggerTiming` through that header rather than dropping them. The exact receive/settle timing cannot be preserved on HTMX 4.x.
+> HTMX 1.9.x and 2.x support `HX-Trigger`, `HX-Trigger-After-Swap`, and `HX-Trigger-After-Settle`.
+> HTMX 4.x supports only `HX-Trigger`. HtmxToolkit therefore emits events requested for any `HtmxTriggerTiming`
+> value through that header rather than dropping them. The `Receive` and `AfterSettle` timings cannot be preserved exactly.
 
 ### Polling
 
@@ -405,11 +428,53 @@ For server-controlled polling that works with every supported HTMX version, retu
 </div>
 ```
 
-Return the same element with its request attributes to continue polling, or return it without `hx-get` and `hx-trigger` to stop. Status code `286` stops polling in HTMX 1.9.x and 2.x, but HTMX 4.x treats it as a regular successful response.
+Return the same element with its request attributes to continue polling,
+or return it without `hx-get` and `hx-trigger` to stop. Status code `286` stops polling in HTMX 1.9.x and 2.x,
+but HTMX 4.x treats it as a regular successful response.
+
+### Morph Swaps
+
+`HtmxSwap.InnerMorph` and `HtmxSwap.OuterMorph` use the native `innerMorph` and `outerMorph` swap styles in HTMX 4.x.
+No additional client-side dependency or configuration is required.
+
+With HTMX 1.9.x or 2.x, enable the `ramstack-morph` extension. To preserve morphing behavior, also load the optional
+Idiomorph library before the first morph swap:
+
+```html
+<body hx-ext="ramstack-morph">
+    <div id="profile">Current profile</div>
+
+    <button hx-get="/profile/morph"
+            hx-target="#profile"
+            hx-swap="outerMorph">
+        Refresh profile
+    </button>
+
+    <script src="https://unpkg.com/htmx.org@2"></script>
+    <script src="https://unpkg.com/idiomorph@0.7.4"></script>
+    <script>
+        @Html.HtmxToolkitScript()
+    </script>
+</body>
+```
+
+The `/profile/morph` endpoint should return the replacement root, such as `<div id="profile">Updated profile</div>`.
+
+The toolkit script does not bundle HTMX or Idiomorph and must be loaded after HTMX. Idiomorph remains an optional dependency
+and may be loaded before or after the toolkit script because the adapter resolves it when each morph swap runs. Do not enable
+the extension with HTMX 4.x, which handles these swap styles natively.
+
+If Idiomorph is unavailable, the adapter logs a warning and falls back from `innerMorph` to `innerHTML` and from `outerMorph`
+to `outerHTML`. With HTMX 1.9.x and 2.x, `outerSync` falls back to synchronizing the target's attributes and then replacing
+its children using `innerHTML`.
+
+`HtmxSwap.TextContent` is also handled by the `ramstack-morph` extension and does not require Idiomorph. It is supported natively
+by HTMX 2.x and 4.x; only HTMX 1.9.x needs the extension.
 
 ## Sample
 
-The [`samples/Ramstack.HtmxToolkit.Demo`](samples/Ramstack.HtmxToolkit.Demo) project demonstrates request detection, response headers, Tag Helpers, polling, boosted navigation, and antiforgery integration.
+The [`samples/Ramstack.HtmxToolkit.Demo`](samples/Ramstack.HtmxToolkit.Demo) project demonstrates request detection,
+response headers, Tag Helpers, polling, boosted navigation, and antiforgery integration.
 
 Run it with:
 

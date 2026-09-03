@@ -18,21 +18,59 @@ public enum HtmxSwap
     /// <summary>
     /// Morphs the inner HTML of the target element.
     /// </summary>
+    /// <remarks>
+    /// <para>
+    ///   Supported natively by HTMX 4.x.
+    /// </para>
+    /// <para>
+    ///   With HTMX 1.9.x or 2.x, activate the <c>ramstack-morph</c> extension
+    ///   and optionally load Idiomorph. Without Idiomorph, the extension
+    ///   falls back to <c>innerHTML</c>.
+    /// </para>
+    /// </remarks>
     InnerMorph,
 
     /// <summary>
     /// Morphs the target element itself.
     /// </summary>
+    /// <remarks>
+    /// <para>
+    ///   Supported natively by HTMX 4.x.
+    /// </para>
+    /// <para>
+    ///   With HTMX 1.9.x or 2.x, activate the <c>ramstack-morph</c> extension
+    ///   and optionally load Idiomorph. Without Idiomorph, the extension
+    ///   falls back to <c>outerHTML</c>.
+    /// </para>
+    /// </remarks>
     OuterMorph,
 
     /// <summary>
     /// Synchronizes the target element with the response.
     /// </summary>
+    /// <remarks>
+    /// <para>
+    ///   Supported natively by HTMX 4.x.
+    /// </para>
+    /// <para>
+    ///   With HTMX 1.9.x or 2.x, activate the <c>ramstack-morph</c> extension
+    ///   to fall back to attribute synchronization and <c>innerHTML</c>.
+    /// </para>
+    /// </remarks>
     OuterSync,
 
     /// <summary>
     /// Replaces the text content of the target element.
     /// </summary>
+    /// <remarks>
+    /// <para>
+    ///   Supported natively by HTMX 2.x and 4.x.
+    /// </para>
+    /// <para>
+    ///   With HTMX 1.9.x, activate the <c>ramstack-morph</c> extension.
+    ///   Idiomorph is not required for this style.
+    /// </para>
+    /// </remarks>
     TextContent,
 
     /// <summary>
