@@ -5,14 +5,15 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "build": "rollup -c"
+    "build": "rollup -c",
+    "test": "node --test tests/js/htmx-toolkit.test.js"
   },
   "author": "rameel <rameel-b@hotmail.com>",
   "license": "MIT",
   "devDependencies": {
     "@rollup/plugin-terser": "^1.0.0",
-    "rollup": "^4.62.4",
+    "rollup": "^4.63.1",
     "rollup-plugin-bundle-size": "^1.0.3",
-    "terser": "^5.49.2"
+    "terser": "^5.51.2"
   }
 }
