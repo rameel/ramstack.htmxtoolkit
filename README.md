@@ -123,9 +123,19 @@ Available properties include:
 - `HistoryRestoreRequest`
 - `Prompt`
 - `Request`
+- `RequestType`
+- `Source`
 - `Target`
 - `Trigger`
 - `TriggerName`
+
+> [!NOTE]
+> The request header vocabulary differs between HTMX versions.
+> `HX-Trigger`, `HX-Trigger-Name`, and `HX-Prompt` are sent by HTMX 1.x and 2.x only.
+> HTMX 4.x does not support `hx-prompt`, identifies the source element with `HX-Source` instead,
+> and reports partial or full requests through `HX-Request-Type`.
+> In HTMX 4.x, `HX-Target` also carries a `tag#id` value (for example, `div#results`)
+> rather than an ID alone.
 
 `HtmxRequestHeaderNames` exposes the corresponding header-name constants for lower-level APIs.
 

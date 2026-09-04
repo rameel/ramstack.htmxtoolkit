@@ -41,6 +41,24 @@ public static class HtmxRequestHeaderNames
     public const string Request = "HX-Request";
 
     /// <summary>
+    /// The <c>HX-Request-Type</c> header indicates whether the request expects a partial
+    /// or a full page response.
+    /// </summary>
+    /// <remarks>
+    /// Supported only in HTMX 4.x. The value is <c>"partial"</c> for targeted swaps
+    /// and <c>"full"</c> for body-level or <c>hx-select</c> requests.
+    /// </remarks>
+    public const string RequestType = "HX-Request-Type";
+
+    /// <summary>
+    /// The <c>HX-Source</c> header identifies the element that triggered the request.
+    /// </summary>
+    /// <remarks>
+    /// Supported only in HTMX 4.x. The value is in <c>tag#id</c> format, for example <c>button#submit</c>.
+    /// </remarks>
+    public const string Source = "HX-Source";
+
+    /// <summary>
     /// The <c>HX-Target</c> header identifies the target element, if present.
     /// </summary>
     /// <remarks>

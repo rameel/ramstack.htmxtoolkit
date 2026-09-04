@@ -68,6 +68,29 @@ public readonly struct HtmxRequestHeaders
     public bool Request => GetBoolean(_headers, HtmxRequestHeaderNames.Request);
 
     /// <summary>
+    /// Gets the type of the expected response, either a partial or a full page.
+    /// </summary>
+    /// <remarks>
+    /// <para>The header name is <see cref="HtmxRequestHeaderNames.RequestType" />.</para>
+    /// <para>
+    ///  Supported only in HTMX 4.x. The value is <c>"partial"</c> for targeted swaps
+    ///  and <c>"full"</c> for body-level or <c>hx-select</c> requests.
+    /// </para>
+    /// </remarks>
+    public string? RequestType => GetString(_headers, HtmxRequestHeaderNames.RequestType);
+
+    /// <summary>
+    /// Gets the identifier of the element that triggered the request.
+    /// </summary>
+    /// <remarks>
+    /// <para>The header name is <see cref="HtmxRequestHeaderNames.Source" />.</para>
+    /// <para>
+    ///   Supported only in HTMX 4.x. The value is in <c>tag#id</c> format, for example <c>button#submit</c>.
+    /// </para>
+    /// </remarks>
+    public string? Source => GetString(_headers, HtmxRequestHeaderNames.Source);
+
+    /// <summary>
     /// Gets the identifier of the target element, if present.
     /// </summary>
     /// <remarks>
