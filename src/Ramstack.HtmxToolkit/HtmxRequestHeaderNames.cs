@@ -28,6 +28,10 @@ public static class HtmxRequestHeaderNames
     /// <summary>
     /// The <c>HX-Prompt</c> header contains the user's response to an <c>hx-prompt</c>.
     /// </summary>
+    /// <remarks>
+    /// Supported only in HTMX 1.x and 2.x. HTMX 4.x removed <c>hx-prompt</c>
+    /// and does not send this header.
+    /// </remarks>
     public const string Prompt = "HX-Prompt";
 
     /// <summary>
@@ -37,17 +41,27 @@ public static class HtmxRequestHeaderNames
     public const string Request = "HX-Request";
 
     /// <summary>
-    /// The <c>HX-Target</c> header contains the ID of the target element, if present.
+    /// The <c>HX-Target</c> header identifies the target element, if present.
     /// </summary>
+    /// <remarks>
+    /// <para>In HTMX 1.x and 2.x, the value is the ID of the target element.</para>
+    /// <para>In HTMX 4.x, the value is in <c>tag#id</c> format, for example <c>div#results</c>.</para>
+    /// </remarks>
     public const string Target = "HX-Target";
 
     /// <summary>
     /// The <c>HX-Trigger-Name</c> header contains the name of the triggered element, if present.
     /// </summary>
+    /// <remarks>
+    /// Supported only in HTMX 1.x and 2.x. HTMX 4.x identifies the source element with <c>HX-Source</c> instead.
+    /// </remarks>
     public const string TriggerName = "HX-Trigger-Name";
 
     /// <summary>
     /// The <c>HX-Trigger</c> header contains the ID of the triggered element, if present.
     /// </summary>
+    /// <remarks>
+    /// Supported only in HTMX 1.x and 2.x. HTMX 4.x identifies the source element with <c>HX-Source</c> instead.
+    /// </remarks>
     public const string Trigger = "HX-Trigger";
 }

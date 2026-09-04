@@ -202,7 +202,7 @@ public readonly struct HtmxResponse
     /// </returns>
     /// <remarks>
     /// In HTMX 4.x, every <see cref="HtmxTriggerTiming" /> value is emitted through
-    /// <c>HX-Trigger</c> and runs after the swap.
+    /// <c>HX-Trigger</c> and runs when the request completes (after the swap whenever one is performed).
     /// See <see href="https://github.com/bigskysoftware/htmx/pull/3900">PR #3900</see>.
     /// </remarks>
     public HtmxResponse TriggerEvent(string eventName, HtmxTriggerTiming trigger = HtmxTriggerTiming.Receive) =>
@@ -212,17 +212,17 @@ public readonly struct HtmxResponse
     /// Adds a client-side event and its detail to the response header selected by
     /// <paramref name="timing" />.
     /// </summary>
+    /// <remarks>
+    /// In HTMX 4.x, every <see cref="HtmxTriggerTiming" /> value is emitted through <c>HX-Trigger</c>
+    /// and runs when the request completes (after the swap whenever one is performed).
+    /// See <see href="https://github.com/bigskysoftware/htmx/pull/3900">PR #3900</see>.
+    /// </remarks>
     /// <param name="eventName">The event name to trigger.</param>
     /// <param name="detail">The event detail.</param>
     /// <param name="timing">The event timing. Defaults to <see cref="HtmxTriggerTiming.Receive" />.</param>
     /// <returns>
     /// The current <see cref="HtmxResponse" /> instance.
     /// </returns>
-    /// <remarks>
-    /// In HTMX 4.x, every <see cref="HtmxTriggerTiming" /> value is emitted through
-    /// <c>HX-Trigger</c> and runs after the swap.
-    /// See <see href="https://github.com/bigskysoftware/htmx/pull/3900">PR #3900</see>.
-    /// </remarks>
     public HtmxResponse TriggerEvent(string eventName, object detail, HtmxTriggerTiming timing = HtmxTriggerTiming.Receive)
     {
         return TriggerEventImpl(this, eventName, detail, timing);
@@ -234,16 +234,16 @@ public readonly struct HtmxResponse
     /// <summary>
     /// Adds client-side events to the response header selected by <paramref name="timing" />.
     /// </summary>
+    /// <remarks>
+    /// In HTMX 4.x, every <see cref="HtmxTriggerTiming" /> value is emitted through <c>HX-Trigger</c>
+    /// and runs when the request completes (after the swap whenever one is performed).
+    /// See <see href="https://github.com/bigskysoftware/htmx/pull/3900">PR #3900</see>.
+    /// </remarks>
     /// <param name="events">The event names and their associated details.</param>
     /// <param name="timing">The event timing. Defaults to <see cref="HtmxTriggerTiming.Receive" />.</param>
     /// <returns>
     /// The current <see cref="HtmxResponse" /> instance.
     /// </returns>
-    /// <remarks>
-    /// In HTMX 4.x, every <see cref="HtmxTriggerTiming" /> value is emitted through
-    /// <c>HX-Trigger</c> and runs after the swap.
-    /// See <see href="https://github.com/bigskysoftware/htmx/pull/3900">PR #3900</see>.
-    /// </remarks>
     public HtmxResponse TriggerEvents(IReadOnlyDictionary<string, object> events, HtmxTriggerTiming timing = HtmxTriggerTiming.Receive) =>
         AddEvents(this, events, timing);
 

@@ -51,7 +51,11 @@ public readonly struct HtmxRequestHeaders
     /// Gets the user's response to an <c>hx-prompt</c> on the client.
     /// </summary>
     /// <remarks>
-    /// The header name is <see cref="HtmxRequestHeaderNames.Prompt" />.
+    /// <para>The header name is <see cref="HtmxRequestHeaderNames.Prompt" />.</para>
+    /// <para>
+    ///   Supported only in HTMX 1.x and 2.x; HTMX 4.x removed <c>hx-prompt</c>
+    ///   and does not send this header.
+    /// </para>
     /// </remarks>
     public string? Prompt => GetString(_headers, HtmxRequestHeaderNames.Prompt);
 
@@ -64,10 +68,12 @@ public readonly struct HtmxRequestHeaders
     public bool Request => GetBoolean(_headers, HtmxRequestHeaderNames.Request);
 
     /// <summary>
-    /// Gets the ID of the target element, if present.
+    /// Gets the identifier of the target element, if present.
     /// </summary>
     /// <remarks>
-    /// The header name is <see cref="HtmxRequestHeaderNames.Target" />.
+    /// <para>The header name is <see cref="HtmxRequestHeaderNames.Target" />.</para>
+    /// <para>In HTMX 1.x and 2.x, the value is the ID of the target element.</para>
+    /// <para>In HTMX 4.x, the value is in <c>tag#id</c> format, for example <c>div#results</c>.</para>
     /// </remarks>
     public string? Target => GetString(_headers, HtmxRequestHeaderNames.Target);
 
@@ -75,7 +81,11 @@ public readonly struct HtmxRequestHeaders
     /// Gets the name of the triggered element, if present.
     /// </summary>
     /// <remarks>
-    /// The header name is <see cref="HtmxRequestHeaderNames.TriggerName" />.
+    /// <para>The header name is <see cref="HtmxRequestHeaderNames.TriggerName" />.</para>
+    /// <para>
+    ///   Supported only in HTMX 1.x and 2.x; HTMX 4.x identifies the source element
+    ///   with <c>HX-Source</c> instead.
+    /// </para>
     /// </remarks>
     public string? TriggerName => GetString(_headers, HtmxRequestHeaderNames.TriggerName);
 
@@ -83,7 +93,10 @@ public readonly struct HtmxRequestHeaders
     /// Gets the ID of the triggered element, if present.
     /// </summary>
     /// <remarks>
-    /// The header name is <see cref="HtmxRequestHeaderNames.Trigger" />.
+    /// <para>The header name is <see cref="HtmxRequestHeaderNames.Trigger" />.</para>
+    /// <para>
+    ///   Supported only in HTMX 1.x and 2.x; HTMX 4.x identifies the source element  with <c>HX-Source</c> instead.
+    /// </para>
     /// </remarks>
     public string? Trigger => GetString(_headers, HtmxRequestHeaderNames.Trigger);
 
@@ -93,8 +106,7 @@ public readonly struct HtmxRequestHeaders
     /// <param name="dictionary">The header collection to inspect.</param>
     /// <param name="key">The name of the header.</param>
     /// <returns>
-    /// <see langword="true" /> if the header value is <c>"true"</c>;
-    /// otherwise, <see langword="false" />.
+    /// <see langword="true" /> if the header value is <c>"true"</c>; otherwise, <see langword="false" />.
     /// </returns>
     private static bool GetBoolean(IHeaderDictionary dictionary, string key) =>
         dictionary.TryGetValue(key, out var value) && value[0] == "true";

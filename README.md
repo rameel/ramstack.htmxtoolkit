@@ -412,7 +412,8 @@ app.MapHtmxToolkitScript("/assets/htmx-toolkit.js");
 
 > [!IMPORTANT]
 > HTMX 1.9.x and 2.x support `HX-Trigger`, `HX-Trigger-After-Swap`, and `HX-Trigger-After-Settle`.
-> HTMX 4.x supports only `HX-Trigger`. HtmxToolkit therefore emits events requested for any `HtmxTriggerTiming`
+> HTMX 4.x supports only `HX-Trigger`, which fires when the request completes (after the swap whenever one is performed).
+> HtmxToolkit therefore emits events requested for any `HtmxTriggerTiming`
 > value through that header rather than dropping them. The `Receive` and `AfterSettle` timings cannot be preserved exactly.
 
 ### Polling
