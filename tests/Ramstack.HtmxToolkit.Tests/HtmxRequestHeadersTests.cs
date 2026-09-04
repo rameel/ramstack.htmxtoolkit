@@ -53,6 +53,20 @@ public class HtmxRequestHeadersTests
     }
 
     [Test]
+    public void RequestType_ReturnsHeaderValue()
+    {
+        var headers = CreateHeaders((HtmxRequestHeaderNames.RequestType, "partial"));
+        Assert.That(headers.RequestType, Is.EqualTo("partial"));
+    }
+
+    [Test]
+    public void Source_ReturnsHeaderValue()
+    {
+        var headers = CreateHeaders((HtmxRequestHeaderNames.Source, "button#submit"));
+        Assert.That(headers.Source, Is.EqualTo("button#submit"));
+    }
+
+    [Test]
     public void Target_ReturnsHeaderValue()
     {
         var headers = CreateHeaders((HtmxRequestHeaderNames.Target, "content"));
@@ -80,6 +94,8 @@ public class HtmxRequestHeadersTests
 
         Assert.That(headers.CurrentUrl, Is.Null);
         Assert.That(headers.Prompt, Is.Null);
+        Assert.That(headers.RequestType, Is.Null);
+        Assert.That(headers.Source, Is.Null);
         Assert.That(headers.Target, Is.Null);
         Assert.That(headers.TriggerName, Is.Null);
         Assert.That(headers.Trigger, Is.Null);

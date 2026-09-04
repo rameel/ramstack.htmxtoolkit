@@ -126,7 +126,8 @@ public readonly struct HtmxResponseHeaders
     /// </para>
     /// <para>
     ///   HTMX 1.x and 2.x trigger these events when the response is received,
-    ///   whereas HTMX 4.x triggers them after the swap.
+    ///   whereas HTMX 4.x triggers them when the request completes
+    ///   (after the swap whenever one is performed).
     /// </para>
     /// </remarks>
     [MaybeNull]
@@ -147,7 +148,8 @@ public readonly struct HtmxResponseHeaders
     /// </para>
     /// <para>
     ///   In HTMX 4.x, assigned events are accumulated in <see cref="Trigger" />
-    ///   and emitted through <c>HX-Trigger</c> after the swap.
+    ///   and emitted through <c>HX-Trigger</c> when the request completes
+    ///   (after the swap whenever one is performed).
     /// </para>
     /// </remarks>
     [MaybeNull]
@@ -168,8 +170,9 @@ public readonly struct HtmxResponseHeaders
     /// </para>
     /// <para>
     ///   In HTMX 4.x, assigned events are accumulated in <see cref="Trigger" />
-    ///   and emitted through <c>HX-Trigger</c> after the swap; the requested
-    ///   after-settle timing cannot be preserved.
+    ///   and emitted through <c>HX-Trigger</c> when the request completes
+    ///   (after the swap whenever one is performed); the requested after-settle timing
+    ///   cannot be preserved.
     /// </para>
     /// </remarks>
     [MaybeNull]

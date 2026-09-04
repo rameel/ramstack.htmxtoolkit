@@ -205,7 +205,7 @@ public sealed class HtmxV2Config() : HtmxConfig(HtmxTargetVersion.V2)
 
     /// <summary>
     /// Gets or sets the selector for elements that HTMX must not process.
-    /// The HTMX default is <c>[disable-htmx], [data-disable-htmx]</c>.
+    /// The HTMX default is <c>[hx-disable], [data-hx-disable]</c>.
     /// </summary>
     public string? DisableSelector
     {

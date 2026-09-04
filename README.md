@@ -123,9 +123,19 @@ Available properties include:
 - `HistoryRestoreRequest`
 - `Prompt`
 - `Request`
+- `RequestType`
+- `Source`
 - `Target`
 - `Trigger`
 - `TriggerName`
+
+> [!NOTE]
+> The request header vocabulary differs between HTMX versions.
+> `HX-Trigger`, `HX-Trigger-Name`, and `HX-Prompt` are sent by HTMX 1.x and 2.x only.
+> HTMX 4.x does not support `hx-prompt`, identifies the source element with `HX-Source` instead,
+> and reports partial or full requests through `HX-Request-Type`.
+> In HTMX 4.x, `HX-Target` also carries a `tag#id` value (for example, `div#results`)
+> rather than an ID alone.
 
 `HtmxRequestHeaderNames` exposes the corresponding header-name constants for lower-level APIs.
 
@@ -412,7 +422,8 @@ app.MapHtmxToolkitScript("/assets/htmx-toolkit.js");
 
 > [!IMPORTANT]
 > HTMX 1.9.x and 2.x support `HX-Trigger`, `HX-Trigger-After-Swap`, and `HX-Trigger-After-Settle`.
-> HTMX 4.x supports only `HX-Trigger`. HtmxToolkit therefore emits events requested for any `HtmxTriggerTiming`
+> HTMX 4.x supports only `HX-Trigger`, which fires when the request completes (after the swap whenever one is performed).
+> HtmxToolkit therefore emits events requested for any `HtmxTriggerTiming`
 > value through that header rather than dropping them. The `Receive` and `AfterSettle` timings cannot be preserved exactly.
 
 ### Polling

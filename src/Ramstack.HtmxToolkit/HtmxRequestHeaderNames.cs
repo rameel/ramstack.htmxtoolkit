@@ -28,6 +28,10 @@ public static class HtmxRequestHeaderNames
     /// <summary>
     /// The <c>HX-Prompt</c> header contains the user's response to an <c>hx-prompt</c>.
     /// </summary>
+    /// <remarks>
+    /// Supported only in HTMX 1.x and 2.x. HTMX 4.x removed <c>hx-prompt</c>
+    /// and does not send this header.
+    /// </remarks>
     public const string Prompt = "HX-Prompt";
 
     /// <summary>
@@ -37,17 +41,45 @@ public static class HtmxRequestHeaderNames
     public const string Request = "HX-Request";
 
     /// <summary>
-    /// The <c>HX-Target</c> header contains the ID of the target element, if present.
+    /// The <c>HX-Request-Type</c> header indicates whether the request expects a partial
+    /// or a full page response.
     /// </summary>
+    /// <remarks>
+    /// Supported only in HTMX 4.x. The value is <c>"partial"</c> for targeted swaps
+    /// and <c>"full"</c> for body-level or <c>hx-select</c> requests.
+    /// </remarks>
+    public const string RequestType = "HX-Request-Type";
+
+    /// <summary>
+    /// The <c>HX-Source</c> header identifies the element that triggered the request.
+    /// </summary>
+    /// <remarks>
+    /// Supported only in HTMX 4.x. The value is in <c>tag#id</c> format, for example <c>button#submit</c>.
+    /// </remarks>
+    public const string Source = "HX-Source";
+
+    /// <summary>
+    /// The <c>HX-Target</c> header identifies the target element, if present.
+    /// </summary>
+    /// <remarks>
+    /// <para>In HTMX 1.x and 2.x, the value is the ID of the target element.</para>
+    /// <para>In HTMX 4.x, the value is in <c>tag#id</c> format, for example <c>div#results</c>.</para>
+    /// </remarks>
     public const string Target = "HX-Target";
 
     /// <summary>
     /// The <c>HX-Trigger-Name</c> header contains the name of the triggered element, if present.
     /// </summary>
+    /// <remarks>
+    /// Supported only in HTMX 1.x and 2.x. HTMX 4.x identifies the source element with <c>HX-Source</c> instead.
+    /// </remarks>
     public const string TriggerName = "HX-Trigger-Name";
 
     /// <summary>
     /// The <c>HX-Trigger</c> header contains the ID of the triggered element, if present.
     /// </summary>
+    /// <remarks>
+    /// Supported only in HTMX 1.x and 2.x. HTMX 4.x identifies the source element with <c>HX-Source</c> instead.
+    /// </remarks>
     public const string Trigger = "HX-Trigger";
 }

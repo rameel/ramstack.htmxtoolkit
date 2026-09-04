@@ -27,7 +27,7 @@ public sealed class ResponseHandlingConfig
     public bool? IgnoreTitle { get; set; }
 
     /// <summary>
-    /// Gets or sets a CSS selector to use to select content from the response.
+    /// Gets or sets a CSS selector used to select content from the response.
     /// </summary>
     public string? Select { get; set; }
 
