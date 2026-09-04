@@ -1,7 +1,7 @@
-#Ignore thumbnails created by windows
+#Ignore thumbnails created by Windows
 [Tt]humbs.db
 
-#Ignore files build by Visual Studio
+#Ignore files built by Visual Studio
 *.obj
 *.exe
 *.pdb
@@ -33,7 +33,7 @@ obj/
 *.ReSharper.user
 [Tt]est[Rr]esult*
 
-#Ignore Rider/Idea files
+#Ignore JetBrains IDE files
 .idea/
 
 #Ignore npm modules

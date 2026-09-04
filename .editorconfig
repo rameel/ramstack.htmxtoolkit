@@ -74,7 +74,7 @@ dotnet_diagnostic.CS8653.severity = error
 # CS8714: The type cannot be used as type parameter in the generic type or method. Nullability of type argument doesn't match 'notnull' constraint.
 dotnet_diagnostic.CS8714.severity = error
 
-# IDE0059: Unnecessary assigment of a value
+# IDE0059: Unnecessary assignment of a value
 dotnet_diagnostic.IDE0059.severity = none
 
 # IDE0060: Remove unused parameter
