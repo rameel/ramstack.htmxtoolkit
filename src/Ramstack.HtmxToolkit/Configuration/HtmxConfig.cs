@@ -27,7 +27,7 @@ public abstract class HtmxConfig
         TargetVersion = version;
 
     /// <summary>
-    /// Returns this configuration serialized as JSON,
+    /// Returns this configuration serialized as JSON. The result is
     /// cached and reused until the configuration changes.
     /// </summary>
     /// <returns>

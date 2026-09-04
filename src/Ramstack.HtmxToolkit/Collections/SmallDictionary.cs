@@ -615,7 +615,7 @@ internal sealed class SmallDictionary<TKey, TValue> : IDictionary<TKey, TValue>,
             public bool MoveNext()
             {
                 //
-                // JIT generates redundant mov for inline ++i (pre-increment)
+                // The JIT generates a redundant mov instruction for inline ++i (pre-increment).
                 // https://github.com/dotnet/runtime/issues/129532
                 //
 
@@ -758,7 +758,7 @@ internal sealed class SmallDictionary<TKey, TValue> : IDictionary<TKey, TValue>,
             public bool MoveNext()
             {
                 //
-                // JIT generates redundant mov for inline ++i (pre-increment)
+                // The JIT generates a redundant mov instruction for inline ++i (pre-increment).
                 // https://github.com/dotnet/runtime/issues/129532
                 //
 
@@ -826,7 +826,7 @@ internal sealed class SmallDictionary<TKey, TValue> : IDictionary<TKey, TValue>,
         public bool MoveNext()
         {
             //
-            // JIT generates redundant mov for inline ++i (pre-increment)
+            // The JIT generates a redundant mov instruction for inline ++i (pre-increment).
             // https://github.com/dotnet/runtime/issues/129532
             //
 

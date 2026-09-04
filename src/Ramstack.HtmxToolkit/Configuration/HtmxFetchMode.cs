@@ -6,9 +6,9 @@ namespace Ramstack.HtmxToolkit.Configuration;
 /// <remarks>
 /// <para>In HTMX 4.x this is passed as the <c>mode</c> option of the Fetch API.</para>
 /// <para>
-///   In HTMX 1.x and 2.x (compatibility mode) this maps to the <c>selfRequestsOnly</c>
-///   boolean configuration option, where <see cref="SameOrigin" /> yields
-///   <see langword="true" /> and any other value yields <see langword="false" />.
+///   In HTMX 1.x and 2.x, the equivalent setting is the <c>selfRequestsOnly</c>
+///   boolean configuration option, for which <see cref="SameOrigin" /> corresponds to
+///   <see langword="true" /> and any other value corresponds to <see langword="false" />.
 /// </para>
 /// </remarks>
 public enum HtmxFetchMode

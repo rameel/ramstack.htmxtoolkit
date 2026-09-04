@@ -53,7 +53,7 @@ public sealed class HtmxRequestTagHelper(IOptions<HtmxToolkitOptions> options) :
     /// </summary>
     /// <remarks>
     /// <para>
-    ///   In HTMX 1.x and 2.x, this property maps to the Boolean
+    ///   In HTMX 1.x and 2.x, this property maps to the boolean
     ///   <c>credentials</c> option of <c>hx-request</c>.
     ///   <see cref="HtmxRequestCredentials.Include" /> yields <see langword="true" />.
     ///   <see cref="HtmxRequestCredentials.SameOrigin" /> yields <see langword="false" />.
@@ -206,7 +206,7 @@ public sealed class HtmxRequestTagHelper(IOptions<HtmxToolkitOptions> options) :
         {
             HtmxRequestCredentials.SameOrigin => false,
             HtmxRequestCredentials.Include => true,
-            // TODO: Consider throwing an exception when an HTMX 4-only credentials mode is configured for HTMX 1.x or 2.x
+            // TODO: Consider throwing an exception when an HTMX 4-only credentials mode is configured for HTMX 1.x or 2.x.
             // HtmxRequestCredentials.Omit => throw new InvalidOperationException(),
             _ => null
         };

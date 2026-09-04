@@ -13,9 +13,9 @@ namespace Ramstack.HtmxToolkit.Tests;
 internal static class TestHelper
 {
     /// <summary>
-    /// Creates a <see cref="HttpContext"/> with the given request headers.
+    /// Creates a <see cref="HttpContext"/> with the specified request headers.
     /// </summary>
-    /// <param name="headers">The request headers as key/value pairs.</param>
+    /// <param name="headers">The request headers as key-value pairs.</param>
     /// <returns>
     /// The configured <see cref="HttpContext"/>.
     /// </returns>
@@ -30,7 +30,7 @@ internal static class TestHelper
     }
 
     /// <summary>
-    /// Creates a <see cref="HttpContext"/> whose request is an htmx request.
+    /// Creates a <see cref="HttpContext"/> whose request is an HTMX request.
     /// </summary>
     /// <param name="boosted"><see langword="true"/> to mark the request as boosted;
     /// otherwise, <see langword="false"/>.</param>
@@ -49,7 +49,7 @@ internal static class TestHelper
     }
 
     /// <summary>
-    /// Creates a <see cref="HttpContext"/> whose request is an htmx request
+    /// Creates a <see cref="HttpContext"/> whose request is an HTMX request
     /// and whose services target the specified HTMX major version.
     /// </summary>
     /// <param name="version">The HTMX major version to configure.</param>
@@ -106,7 +106,7 @@ internal static class TestHelper
     }
 
     /// <summary>
-    /// Creates a <see cref="TagHelperContext"/> with the given tag name, attributes and items.
+    /// Creates a <see cref="TagHelperContext"/> with the specified tag name, attributes, and items.
     /// </summary>
     public static TagHelperContext CreateTagHelperContext(string tagName = "div", TagHelperAttributeList? attributes = null, IDictionary<object, object>? items = null) =>
         new(tagName, attributes ?? [], items ?? new Dictionary<object, object>(), "test");

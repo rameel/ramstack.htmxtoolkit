@@ -162,7 +162,7 @@ public sealed class HtmxUrlTagHelper(IUrlHelperFactory factory) : TagHelper
 
         if (Area is not null)
         {
-            // Unconditionally replace any value from hx-area
+            // Unconditionally replace any existing area route value with the value from hx-area.
             routeValues ??= new RouteValueDictionary();
             routeValues["area"] = Area;
         }

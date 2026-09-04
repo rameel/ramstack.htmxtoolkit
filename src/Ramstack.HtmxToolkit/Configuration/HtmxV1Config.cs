@@ -205,7 +205,7 @@ public sealed class HtmxV1Config() : HtmxConfig(HtmxTargetVersion.V1)
 
     /// <summary>
     /// Gets or sets the selector for elements that HTMX must not process.
-    /// The HTMX default is <c>[disable-htmx], [data-disable-htmx]</c>.
+    /// The HTMX default is <c>[hx-disable], [data-hx-disable]</c>.
     /// </summary>
     public string? DisableSelector
     {
@@ -235,7 +235,7 @@ public sealed class HtmxV1Config() : HtmxConfig(HtmxTargetVersion.V1)
 
     /// <summary>
     /// Gets or sets a value indicating whether requests are restricted to the current origin.
-    /// The HTMX default is <see langword="true" />.
+    /// The HTMX default is <see langword="false" />.
     /// </summary>
     public bool? SelfRequestsOnly
     {

@@ -77,7 +77,7 @@ public readonly struct HtmxResponse
     /// The possible values for this header are:
     /// <list type="bullet">
     ///   <item>
-    ///     A URL to be pushed into the location bar. This may be relative or absolute,
+    ///     A relative or same-origin absolute URL to be pushed into the location bar,
     ///     as supported by <see href="https://developer.mozilla.org/en-US/docs/Web/API/History/pushState">history.pushState()</see>.
     ///   </item>
     ///   <item>

@@ -8,11 +8,11 @@ namespace Ramstack.HtmxToolkit.Tests;
 public static class JsonHelper
 {
     /// <summary>
-    /// Deserializes a JSON object into a dictionary for key/value assertions.
+    /// Deserializes a JSON object into a dictionary for key-value assertions.
     /// </summary>
     /// <param name="json">The JSON object to deserialize.</param>
     /// <returns>
-    /// The deserialized key/value pairs.
+    /// The deserialized key-value pairs.
     /// </returns>
     public static Dictionary<string, JsonElement> ParseJson(string json) =>
         JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(json)!;
