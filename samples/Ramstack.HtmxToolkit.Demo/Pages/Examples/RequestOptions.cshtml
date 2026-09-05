@@ -1,0 +1,34 @@
+@page
+@model RequestOptionsModel
+@{
+  ViewData["Title"] = "Request options";
+}
+
+<article class="example-page">
+  <header class="page-heading">
+    <p class="eyebrow">Example 05</p>
+    <h1>Configure one request</h1>
+    <p>Set typed HTMX request options without writing an <code>hx-config</code> value</p>
+  </header>
+
+  <section class="demo-card">
+    <div class="demo-card__header">
+      <h2><code>hx-request-timeout</code></h2>
+      <p>The toolkit emits an HTMX 4 <code>hx-config</code> timeout for this report preview.</p>
+    </div>
+
+    <div class="demo-actions">
+      <button hx-get
+              hx-page="/Examples/RequestOptions"
+              hx-page-handler="Preview"
+              hx-request-timeout="2000"
+              hx-target="#preview-result">
+        Generate report preview
+      </button>
+    </div>
+
+    <div id="preview-result" class="result">
+      No preview has been generated.
+    </div>
+  </section>
+</article>

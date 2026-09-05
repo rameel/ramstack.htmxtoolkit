@@ -7,38 +7,38 @@
 <article class="example-page">
   <header class="page-heading">
     <p class="eyebrow">Example 02</p>
-    <h1>Route parameters</h1>
-    <p>Pass route data with individual attributes or one Razor dictionary</p>
+    <h1>Pass route values</h1>
+    <p>Add route values individually or from a dictionary</p>
   </header>
 
   <section class="demo-card">
     <div class="demo-card__header">
       <h2><code>hx-route-*</code> and <code>hx-all-route-data</code></h2>
-      <p>Both forms produce a typed Razor Pages URL without composing a query string manually.</p>
+      <p>Both buttons generate a handler URL without assembling a query string.</p>
     </div>
 
     <div class="demo-actions">
       <button
         hx-get
         hx-page="/Examples/RouteData"
-        hx-page-handler="Greet"
-        hx-route-name="World"
-        hx-target="#greet-result">
-        Greet via route attribute
+        hx-page-handler="Order"
+        hx-route-id="1042"
+        hx-target="#order-result">
+        Load order #1042
       </button>
       <button
         hx-get
         hx-page="/Examples/RouteData"
-        hx-page-handler="Greet"
-        hx-all-route-data="@(new Dictionary<string, string> { { "name", "HTMX" } })"
-        hx-target="#greet-result"
+        hx-page-handler="Order"
+        hx-all-route-data="@(new Dictionary<string, string> { ["id"] = "1088" })"
+        hx-target="#order-result"
         class="button-secondary">
-        Greet via route data
+        Load order #1088
       </button>
     </div>
 
-    <div id="greet-result" class="result">
-      Choose a route-data strategy.
+    <div id="order-result" class="result">
+      Choose an order.
     </div>
   </section>
 </article>

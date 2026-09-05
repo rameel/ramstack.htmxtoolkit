@@ -1,44 +1,46 @@
 @page
 @model FluentResponseModel
 @{
-  ViewData["Title"] = "Fluent response API";
+  ViewData["Title"] = "Response control";
 }
 
 <article class="example-page">
   <header class="page-heading">
-    <p class="eyebrow">Example 04</p>
-    <h1>Fluent response API</h1>
-    <p>Set HTMX response headers from the page handler with <code>Response.Htmx()</code></p>
+    <p class="eyebrow">Example 08</p>
+    <h1>Control the response target</h1>
+    <p>Let the server redirect a response to a more appropriate element</p>
   </header>
 
   <section class="demo-card">
     <div class="demo-card__header">
-      <h2>Retarget and reswap</h2>
-      <p>The response changes the target or swap mode chosen by the triggering element.</p>
+      <h2><code>Response.Htmx(h => h.Retarget(...))</code></h2>
+      <p>A successful lookup updates the product panel; a missing product is retargeted to the notice.</p>
     </div>
 
     <div class="demo-actions">
-      <button
-        hx-get
-        hx-page="/Examples/FluentResponse"
-        hx-page-handler="Reswap"
-        hx-target="#fluent-result"
-        hx-swap="outerHTML">
-        Reswap after begin
+      <button hx-get
+              hx-page="/Examples/FluentResponse"
+              hx-page-handler="Product"
+              hx-route-sku="BOOK-42"
+              hx-target="#product-result">
+        Find BOOK-42
       </button>
-      <button
-        class="button-secondary"
-        hx-get hx-page="/Examples/FluentResponse"
-        hx-page-handler="Retarget"
-        hx-target="#ignored-target">
-        Retarget response
+      <button class="button-secondary"
+              hx-get
+              hx-page="/Examples/FluentResponse"
+              hx-page-handler="Product"
+              hx-route-sku="BOOK-00"
+              hx-target="#product-result">
+        Find BOOK-00
       </button>
-
-      <span id="ignored-target" hidden></span>
     </div>
 
-    <div id="fluent-result" class="result">
-      Try either response directive.
+    <div id="product-notice" class="result">
+      No lookup errors.
+    </div>
+
+    <div id="product-result" class="result">
+      Choose a product.
     </div>
   </section>
 </article>

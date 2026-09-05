@@ -8,17 +8,42 @@
         <p>Explore the Ramstack.HtmxToolkit API through focused, runnable Razor Pages examples.</p>
     </header>
 
-    <div class="overview-grid">
-        <a class="overview-card" asp-page="/Examples/UrlTagHelper"><h2>01. URL Tag Helper</h2><p>Generate handler URLs declaratively.</p></a>
-        <a class="overview-card" asp-page="/Examples/RouteData"><h2>02. Route data</h2><p>Pass route values without query-string assembly.</p></a>
-        <a class="overview-card" asp-page="/Examples/Headers"><h2>03. Request headers</h2><p>Attach custom HTMX headers in Razor.</p></a>
-        <a class="overview-card" asp-page="/Examples/FluentResponse"><h2>04. Fluent responses</h2><p>Configure response directives on the server.</p></a>
-        <a class="overview-card" asp-page="/Examples/Polling"><h2>05. Polling</h2><p>Let the server control repeated requests.</p></a>
-        <a class="overview-card" asp-page="/Examples/HtmxRequest"><h2>06. HTMX requests</h2><p>Detect asynchronous requests.</p></a>
-        <a class="overview-card" asp-page="/Examples/ResponseHeaders"><h2>07. Response headers</h2><p>Override the requested swap strategy.</p></a>
-        <a class="overview-card" asp-page="/Examples/Boosted"><h2>08. Boosted navigation</h2><p>Detect links enhanced by HTMX.</p></a>
-        <a class="overview-card" asp-page="/Examples/Random"><h2>09. On-demand content</h2><p>Request and swap a small response.</p></a>
-        <a class="overview-card" asp-page="/Examples/Antiforgery"><h2>10. Antiforgery</h2><p>Post a protected form via HTMX.</p></a>
-        <a class="overview-card" asp-page="/Examples/HtmxVals"><h2>11. HTMX values</h2><p>Send additional request values declaratively.</p></a>
+    <div class="overview-sections">
+        <section class="overview-section">
+            <header>
+                <h2>Build requests</h2>
+                <p>Generate URLs and request metadata with Razor Tag Helpers.</p>
+            </header>
+            <ol class="overview-list">
+                <li><a class="overview-link" asp-page="/Examples/UrlTagHelper"><span class="overview-number" aria-hidden="true">01.</span><h3>Razor Pages URLs</h3><p>Generate a handler URL from Razor routing attributes.</p></a></li>
+                <li><a class="overview-link" asp-page="/Examples/RouteData"><span class="overview-number" aria-hidden="true">02.</span><h3>Route values</h3><p>Add individual or dictionary route values.</p></a></li>
+                <li><a class="overview-link" asp-page="/Examples/HtmxVals"><span class="overview-number" aria-hidden="true">03.</span><h3>Request values</h3><p>Build <code>hx-vals</code> without hand-written JSON.</p></a></li>
+                <li><a class="overview-link" asp-page="/Examples/Headers"><span class="overview-number" aria-hidden="true">04.</span><h3>Request headers</h3><p>Build <code>hx-headers</code> from Razor attributes.</p></a></li>
+                <li><a class="overview-link" asp-page="/Examples/RequestOptions"><span class="overview-number" aria-hidden="true">05.</span><h3>Request options</h3><p>Configure an individual HTMX request.</p></a></li>
+            </ol>
+        </section>
+
+        <section class="overview-section">
+            <header>
+                <h2>Handle requests and responses</h2>
+                <p>Use the strongly typed server APIs in page handlers.</p>
+            </header>
+            <ol class="overview-list" start="6">
+                <li><a class="overview-link" asp-page="/Examples/HtmxRequest"><span class="overview-number" aria-hidden="true">06.</span><h3>HTMX requests</h3><p>Return a fragment or a complete page.</p></a></li>
+                <li><a class="overview-link" asp-page="/Examples/Boosted"><span class="overview-number" aria-hidden="true">07.</span><h3>Boosted requests</h3><p>Detect progressively enhanced navigation.</p></a></li>
+                <li><a class="overview-link" asp-page="/Examples/FluentResponse"><span class="overview-number" aria-hidden="true">08.</span><h3>Response control</h3><p>Retarget a response from the server.</p></a></li>
+            </ol>
+        </section>
+
+        <section class="overview-section">
+            <header>
+                <h2>Common patterns</h2>
+                <p>Small end-to-end examples using the toolkit integration.</p>
+            </header>
+            <ol class="overview-list" start="9">
+                <li><a class="overview-link" asp-page="/Examples/Polling"><span class="overview-number" aria-hidden="true">09.</span><h3>Progress bar</h3><p>Track a background job with server-controlled polling.</p></a></li>
+                <li><a class="overview-link" asp-page="/Examples/Antiforgery"><span class="overview-number" aria-hidden="true">10.</span><h3>Antiforgery</h3><p>Post a protected form via HTMX.</p></a></li>
+            </ol>
+        </section>
     </div>
 </article>

@@ -1,18 +1,53 @@
-@model PollingModel.PollingState
+@model PollingModel.ProgressState
 
-@if (Model.Stopped)
+@if (Model.Completed)
 {
-  <div id="poll-status" class="poll-status poll-status--stopped">
-    @Model.Message
+  <div id="job-progress" class="job-progress job-progress--complete">
+    <div class="job-progress__meta">
+      <span>Job complete</span>
+      <strong>@Model.Percent%</strong>
+    </div>
+    <div class="job-progress__track"
+         role="progressbar"
+         aria-label="Job progress"
+         aria-valuemin="0"
+         aria-valuemax="100"
+         aria-valuenow="@Model.Percent">
+      <div id="job-progress-fill"
+           class="job-progress__fill"
+           style="transform: scaleX(@Model.Scale)"></div>
+    </div>
+    <button class="button-secondary"
+            hx-post
+            hx-page="/Examples/Polling"
+            hx-page-handler="Start"
+            hx-target="#job-progress"
+            hx-swap="outerMorph">
+      Run again
+    </button>
   </div>
 }
 else
 {
-  <div id="poll-status" class="poll-status"
+  <div id="job-progress" class="job-progress"
        hx-get hx-page="/Examples/Polling"
-       hx-page-handler="Poll"
-       hx-trigger="load delay:1s"
-       hx-swap="outerHTML">
-    @Model.Message
+       hx-page-handler="Progress"
+       hx-route-progress="@Model.Percent"
+       hx-trigger="every 400ms"
+       hx-swap="outerMorph">
+    <div class="job-progress__meta">
+      <span>Processing background job</span>
+      <strong>@Model.Percent%</strong>
+    </div>
+    <div class="job-progress__track"
+         role="progressbar"
+         aria-label="Job progress"
+         aria-valuemin="0"
+         aria-valuemax="100"
+         aria-valuenow="@Model.Percent">
+      <div id="job-progress-fill"
+           class="job-progress__fill"
+           style="transform: scaleX(@Model.Scale)"></div>
+    </div>
   </div>
 }

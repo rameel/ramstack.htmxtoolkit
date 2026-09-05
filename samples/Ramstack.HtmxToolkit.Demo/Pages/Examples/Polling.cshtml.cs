@@ -1,3 +1,4 @@
+using System.Globalization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
@@ -5,17 +6,21 @@ namespace Ramstack.HtmxToolkit.Demo.Pages.Examples;
 
 public class PollingModel : PageModel
 {
-    public PollingState State { get; } = new(false, "Polling is active");
+    public IActionResult OnPostStart() =>
+        Partial("_PollingStatus", new ProgressState(0));
 
-    public IActionResult OnGetPoll()
+    public IActionResult OnGetProgress(int progress)
     {
-        var stopped = Random.Shared.Next(0, 20) == 10;
-        var message = stopped
-            ? "Polling stopped!"
-            : $"Polling... {DateTime.Now:HH:mm:ss}";
+        progress = Math.Clamp(progress + 10, 0, 100);
 
-        return Partial("_PollingStatus", new PollingState(stopped, message));
+        return Partial("_PollingStatus", new ProgressState(progress));
     }
 
-    public sealed record PollingState(bool Stopped, string Message);
+    public sealed record ProgressState(int Percent)
+    {
+        public bool Completed => Percent == 100;
+
+        public string Scale =>
+            (Percent / 100d).ToString("0.##", CultureInfo.InvariantCulture);
+    }
 }

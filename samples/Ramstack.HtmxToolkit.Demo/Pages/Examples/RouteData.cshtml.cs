@@ -5,6 +5,6 @@ namespace Ramstack.HtmxToolkit.Demo.Pages.Examples;
 
 public class RouteDataModel : PageModel
 {
-    public IActionResult OnGetGreet(string name) =>
-        Content($"<b>Hello, {name}!</b>");
+    public IActionResult OnGetOrder(int id) =>
+        Content($"Order #{id} is packed and ready for pickup.");
 }

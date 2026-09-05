@@ -6,8 +6,7 @@ namespace Ramstack.HtmxToolkit.Demo.Pages.Examples;
 public class BoostedModel : PageModel
 {
     public IActionResult OnGetBoostedCheck() =>
-        Content(
-            Request.IsHtmxBoosted()
-                ? "Boosted HTMX request detected!"
-                : "Non-boosted HTMX request.");
+        Request.IsHtmxBoosted()
+            ? Content("Boosted HTMX request detected.")
+            : RedirectToPage();
 }
