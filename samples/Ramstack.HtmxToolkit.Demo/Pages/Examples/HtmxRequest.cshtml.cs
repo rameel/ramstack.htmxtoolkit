@@ -15,10 +15,14 @@ public class HtmxRequestModel : PageModel
             return Page();
 
         var status = $"Order #{id} is ready for pickup.";
-        OrderStatus = status;
 
-        return Request.IsHtmxRequest()
-            ? Content(HtmlEncoder.Default.Encode(status))
-            : Page();
+        if (Request.IsHtmxRequest(out var headers))
+        {
+            var metadata = $"{status} Source: {headers.Source}; target: {headers.Target}; type: {headers.RequestType}.";
+            return Content(HtmlEncoder.Default.Encode(metadata));
+        }
+
+        OrderStatus = $"{status} This was a normal browser request.";
+        return Page();
     }
 }

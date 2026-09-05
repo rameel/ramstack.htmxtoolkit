@@ -8,17 +8,18 @@
   <header class="page-heading">
     <p class="eyebrow">Example 06</p>
     <h1>Detect HTMX requests</h1>
-    <p>Return a fragment to HTMX and a complete page to normal navigation</p>
+    <p>Return a fragment to HTMX and inspect its strongly typed request metadata</p>
   </header>
 
   <section class="demo-card">
     <div class="demo-card__header">
-      <h2><code>Request.IsHtmxRequest()</code></h2>
-      <p>Both controls request the same URL; only the HTMX request replaces the result panel.</p>
+      <h2><code>Request.IsHtmxRequest(out var headers)</code></h2>
+      <p>Both controls request the same URL; the HTMX response also reports its source, target, and request type.</p>
     </div>
 
     <div class="demo-actions">
       <button
+        id="check-order"
         hx-get
         hx-page="/Examples/HtmxRequest"
         hx-route-id="1042"
