@@ -486,7 +486,7 @@ by HTMX 2.x and 4.x; only HTMX 1.9.x needs the extension.
 ## Sample
 
 The [`samples/Ramstack.HtmxToolkit.Demo`](samples/Ramstack.HtmxToolkit.Demo) project demonstrates request detection,
-response headers, Tag Helpers, polling, boosted navigation, and antiforgery integration.
+response headers and events, MVC attributes, Tag Helpers, polling, boosted navigation, and antiforgery integration.
 
 Run it with:
 
