@@ -5,15 +5,12 @@ namespace Ramstack.HtmxToolkit.Demo.Pages.Examples;
 
 public class FluentResponseModel : PageModel
 {
-    public IActionResult OnGetReswap()
+    public IActionResult OnGetProduct(string sku)
     {
-        Response.Htmx(h => h.Reswap(HtmxSwap.AfterBegin));
-        return Content("<p>Prepended to top with AfterBegin swap!</p>");
-    }
+        if (sku == "BOOK-42")
+            return Content("BOOK-42: Hypermedia Systems — in stock.");
 
-    public IActionResult OnGetRetarget()
-    {
-        Response.Htmx(h => h.Retarget("#fluent-result"));
-        return Content("<b>Retargeted to #fluent-result!</b>");
+        Response.Htmx(htmx => htmx.Retarget("#product-notice"));
+        return Content("No product found for that SKU.");
     }
 }

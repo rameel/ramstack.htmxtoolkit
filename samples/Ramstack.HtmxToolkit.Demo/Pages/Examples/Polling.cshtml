@@ -1,22 +1,31 @@
 @page
 @model PollingModel
 @{
-  ViewData["Title"] = "Polling";
+  ViewData["Title"] = "Progress bar";
 }
 
 <article class="example-page">
   <header class="page-heading">
-    <p class="eyebrow">Example 05</p>
-    <h1>Polling</h1>
-    <p>Let the server decide whether to schedule the next HTMX request</p>
+    <p class="eyebrow">Example 11</p>
+    <h1>Progress bar</h1>
+    <p>Track a background job with polling controlled by server-rendered HTML</p>
   </header>
 
   <section class="demo-card">
     <div class="demo-card__header">
-      <h2>Server-controlled polling</h2>
-      <p>The server returns the next polling element every second until it randomly stops.</p>
+      <h2>Background job progress</h2>
+      <p>The server updates the bar every 400 ms and stops polling when the job reaches 100%.</p>
     </div>
 
-    <partial name="_PollingStatus" model="Model.State" />
+    <div id="job-progress" class="job-progress job-progress--idle">
+      <p>Start the simulated job to see server-controlled polling in action.</p>
+      <button hx-post
+              hx-page="/Examples/Polling"
+              hx-page-handler="Start"
+              hx-target="#job-progress"
+              hx-swap="outerMorph">
+        Start job
+      </button>
+    </div>
   </section>
 </article>

@@ -1,40 +1,33 @@
 @page
 @model UrlTagHelperModel
 @{
-  ViewData["Title"] = "URL Tag Helper";
+  ViewData["Title"] = "Razor Pages URLs";
 }
 
 <article class="example-page">
   <header class="page-heading">
     <p class="eyebrow">Example 01</p>
-    <h1>URL Tag Helper</h1>
-    <p>Generate HTMX URLs with familiar Razor Pages routing attributes</p>
+    <h1>Generate Razor Pages URLs</h1>
+    <p>Build an HTMX request URL from a Razor Page and handler name</p>
   </header>
 
   <section class="demo-card">
     <div class="demo-card__header">
       <h2><code>hx-page</code> + <code>hx-page-handler</code></h2>
-      <p>The toolkit generates the request URL and uses <code>hx-get</code> by default.</p>
+      <p>The toolkit generates <code>hx-get</code>, so the URL stays in sync with ASP.NET Core routing.</p>
     </div>
 
     <div class="demo-actions">
       <button
         hx-page="/Examples/UrlTagHelper"
-        hx-page-handler="ServerTime"
+        hx-page-handler="Status"
         hx-target="#result">
-        Get server time
-      </button>
-      <button
-        class="button-secondary"
-        hx-page="/Examples/UrlTagHelper"
-        hx-page-handler="Hello"
-        hx-target="#result">
-        Say hello
+        Check service status
       </button>
     </div>
 
     <div id="result" class="result">
-      Run an action to see the response.
+      The service has not been checked yet.
     </div>
   </section>
 </article>

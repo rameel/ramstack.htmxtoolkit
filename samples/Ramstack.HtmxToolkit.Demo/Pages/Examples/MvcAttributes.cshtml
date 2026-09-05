@@ -1,0 +1,33 @@
+@page
+@{
+  ViewData["Title"] = "MVC attributes";
+}
+
+<article class="example-page">
+  <header class="page-heading">
+    <p class="eyebrow">Example 08</p>
+    <h1>Route HTMX requests to MVC actions</h1>
+    <p>Generate a controller URL and apply request and response behavior declaratively</p>
+  </header>
+
+  <section class="demo-card">
+    <div class="demo-card__header">
+      <h2><code>[HtmxRequest]</code> and <code>[HtmxResponse]</code></h2>
+      <p>The action accepts only HTMX requests and replaces the complete inventory status element.</p>
+    </div>
+
+    <div class="demo-actions">
+      <button hx-get
+              hx-controller="Inventory"
+              hx-action="Status"
+              hx-route-sku="BOOK-42"
+              hx-target="#inventory-status">
+        Check inventory
+      </button>
+    </div>
+
+    <div id="inventory-status" class="result">
+      Inventory has not been checked.
+    </div>
+  </section>
+</article>

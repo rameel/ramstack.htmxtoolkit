@@ -6,42 +6,32 @@
 
 <article class="example-page">
   <header class="page-heading">
-    <p class="eyebrow">Example 10</p>
-    <h1>Antiforgery forms</h1>
-    <p>Submit HTMX forms while the toolkit automatically supplies the verification token</p>
+    <p class="eyebrow">Example 12</p>
+    <h1>Protect form submissions</h1>
+    <p>Send the antiforgery token expected by Razor Pages with an HTMX form</p>
   </header>
 
   <section class="demo-card">
     <div class="demo-card__header">
       <h2><code>hx-post</code> with antiforgery</h2>
-      <p>The layout configures token inclusion and the toolkit script attaches it to every HTMX request.</p>
+      <p>Razor Pages validates the POST automatically. <code>&lt;htmx-config /&gt;</code> renders the token and the toolkit script attaches it to the request.</p>
     </div>
 
     <form class="demo-form"
           hx-post
           hx-page="/Examples/Antiforgery"
-          hx-page-handler="FormSubmit"
+          hx-page-handler="Save"
           hx-target="#form-result">
       <label>
-        Name
-        <input type="text" name="name" placeholder="John Doe"/>
+        Display name
+        <input type="text" name="displayName" value="Ada" required/>
       </label>
 
-      <label>
-        Email
-        <input type="email" name="email" placeholder="john@example.com"/>
-      </label>
-
-      <label>
-        Message
-        <textarea name="message" rows="4" placeholder="Your message"></textarea>
-      </label>
-
-      <button type="submit">Submit form</button>
+      <button type="submit">Save settings</button>
     </form>
 
     <div id="form-result" class="result">
-      Submit the form to see the posted values.
+      No settings have been saved.
     </div>
   </section>
 </article>

@@ -18,32 +18,39 @@
     </a>
 
     <nav>
-      <p class="nav-label">Examples</p>
-      <a class="nav-link" asp-page="/Examples/UrlTagHelper">01. URL Tag Helper</a>
-      <a class="nav-link" asp-page="/Examples/RouteData">02. Route parameters</a>
-      <a class="nav-link" asp-page="/Examples/Headers">03. Request headers</a>
-      <a class="nav-link" asp-page="/Examples/FluentResponse">04. Fluent responses</a>
-      <a class="nav-link" asp-page="/Examples/Polling">05. Polling</a>
+      <p class="nav-label">Build requests</p>
+      <a class="nav-link" asp-page="/Examples/UrlTagHelper">01. Razor Pages URLs</a>
+      <a class="nav-link" asp-page="/Examples/RouteData">02. Route values</a>
+      <a class="nav-link" asp-page="/Examples/HtmxVals">03. Request values</a>
+      <a class="nav-link" asp-page="/Examples/Headers">04. Request headers</a>
+      <a class="nav-link" asp-page="/Examples/RequestOptions">05. Request options</a>
+
+      <p class="nav-label">Handle requests</p>
       <a class="nav-link" asp-page="/Examples/HtmxRequest">06. HTMX requests</a>
-      <a class="nav-link" asp-page="/Examples/ResponseHeaders">07. Response headers</a>
-      <a class="nav-link" asp-page="/Examples/Boosted">08. Boosted navigation</a>
-      <a class="nav-link" asp-page="/Examples/Random">09. On-demand content</a>
-      <a class="nav-link" asp-page="/Examples/Antiforgery">10. Antiforgery</a>
-      <a class="nav-link" asp-page="/Examples/HtmxVals">11. HTMX values</a>
+      <a class="nav-link" asp-page="/Examples/Boosted">07. Boosted requests</a>
+      <a class="nav-link" asp-page="/Examples/MvcAttributes">08. MVC attributes</a>
+      <a class="nav-link" asp-page="/Examples/FluentResponse">09. Response control</a>
+      <a class="nav-link" asp-page="/Examples/ServerEvents">10. Server events</a>
+
+      <p class="nav-label">Patterns</p>
+      <a class="nav-link" asp-page="/Examples/Polling">11. Progress bar</a>
+      <a class="nav-link" asp-page="/Examples/Antiforgery">12. Antiforgery</a>
     </nav>
   </aside>
 
   <main class="main">
     <header class="topbar">
       <button class="menu-toggle" data-menu-toggle>Menu</button>
-      <span>Razor Pages &mdash; HTMX 2</span>
+      <span>ASP.NET Core &mdash; HTMX 4</span>
     </header>
 
     <div class="content">@RenderBody()</div>
   </main>
 </div>
 
-<script src="https://unpkg.com/htmx.org@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/htmx.org@4.0.0"
+        integrity="sha384-BvJpBiO8Kh31EqtJe5DRIeWrHWnCGkwytKs9NKFi86Hhw96dEqdEMzZDeK9iEGTc"
+        crossorigin="anonymous"></script>
 <script src="@Html.HtmxToolkitScriptPath()"></script>
 <script src="~/js/demo.js"></script>
 </body>

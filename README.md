@@ -381,7 +381,8 @@ Antiforgery metadata is enabled by default. `<htmx-config />` renders the curren
 the companion script attaches the token to non-GET HTMX requests and refreshes it after boosted navigation.
 
 > [!WARNING]
-> The companion script sends the token but does not perform validation. The application must still enable server-side antiforgery validation for the relevant endpoints.
+> The companion script sends the token but does not validate it. Razor Pages validates unsafe HTTP methods automatically.
+> MVC applications must enable server-side antiforgery validation for the relevant actions.
 
 For example, MVC applications can validate all unsafe actions globally:
 
@@ -485,7 +486,7 @@ by HTMX 2.x and 4.x; only HTMX 1.9.x needs the extension.
 ## Sample
 
 The [`samples/Ramstack.HtmxToolkit.Demo`](samples/Ramstack.HtmxToolkit.Demo) project demonstrates request detection,
-response headers, Tag Helpers, polling, boosted navigation, and antiforgery integration.
+response headers and events, MVC attributes, Tag Helpers, polling, boosted navigation, and antiforgery integration.
 
 Run it with:
 

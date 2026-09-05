@@ -34,8 +34,7 @@ a {
 }
 
 button,
-input,
-textarea {
+input {
   font: inherit;
 }
 
@@ -63,7 +62,6 @@ button:hover,
 button:focus-visible,
 .button:focus-visible,
 input:focus-visible,
-textarea:focus-visible,
 .nav-link:focus-visible {
   outline: 3px solid #d4deff;
   outline-offset: 3px;
@@ -128,12 +126,16 @@ code {
 }
 
 .nav-label {
-  margin-bottom: 0.25rem;
+  margin: 1rem 0 0.25rem;
   padding-left: 1rem;
   color: #6f7f9c;
   font-size: 0.75rem;
   font-weight: 800;
   text-transform: uppercase;
+}
+
+.nav-label:first-child {
+  margin-top: 0;
 }
 
 .sidebar nav {
@@ -210,15 +212,11 @@ code {
   text-transform: uppercase;
 }
 
-.demo-card,
-.overview-card {
+.demo-card {
   border: 1px solid var(--border);
   border-radius: 0.5rem;
   background: linear-gradient(145deg, rgb(25 30 50 / 0.9), rgb(15 20 35 / 0.9));
   box-shadow: var(--shadow);
-}
-
-.demo-card {
   padding: clamp(1.25rem, 3vw, 2rem);
 }
 
@@ -248,35 +246,67 @@ code {
   color: #bdc9df;
 }
 
-.event-log {
-  margin-top: 1rem;
-  color: var(--muted);
-  font-size: 0.9rem;
-}
-
-.event-log p {
-  display: flex;
-  gap: 0.5rem;
-  margin: 0.5rem 0;
-}
-
-.event-log b {
-  color: var(--success);
-}
-
-.poll-status {
-  display: inline-block;
+.job-progress {
+  display: grid;
+  gap: 1rem;
+  max-width: 38rem;
   margin-top: 1.5rem;
-  padding: 0.25rem 1rem;
-  border-radius: 10rem;
-  background: rgb(120 220 175 / 0.15);
-  color: var(--success);
-  font-size: 0.85rem;
+  padding: 1.25rem;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  background: rgb(5 10 20 / 0.5);
 }
 
-.poll-status--stopped {
-  background: rgb(255 165 0 / 0.15);
-  color: orange;
+.job-progress--idle {
+  justify-items: start;
+}
+
+.job-progress--idle p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.job-progress__meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  color: var(--muted);
+}
+
+.job-progress__meta strong {
+  color: var(--accent-strong);
+  font-variant-numeric: tabular-nums;
+}
+
+.job-progress__track {
+  overflow: hidden;
+  width: 100%;
+  height: 0.75rem;
+  border-radius: 10rem;
+  background: var(--surface-raised);
+}
+
+.job-progress__fill {
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--accent), #b29cff);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 400ms ease-in-out;
+}
+
+.job-progress--complete .job-progress__meta strong {
+  color: var(--success);
+}
+
+.job-progress--complete .job-progress__fill {
+  background: var(--success);
+}
+
+.job-progress--complete .button-secondary {
+  justify-self: start;
 }
 
 .demo-form {
@@ -294,8 +324,7 @@ code {
   font-weight: 700;
 }
 
-input,
-textarea {
+input {
   width: 100%;
   padding: 0.5rem 1rem;
   border: 1px solid var(--border);
@@ -304,38 +333,64 @@ textarea {
   color: var(--text);
 }
 
-textarea {
-  resize: vertical;
-}
-
-.overview-grid {
+.overview-sections {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
-  gap: 1rem;
+  gap: 2rem;
 }
 
-.overview-card {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  padding: 1.25rem;
+.overview-section > header {
+  margin-bottom: 1rem;
+}
+
+.overview-section > header h2 {
+  margin: 0 0 0.25rem;
+  font-size: 1.2rem;
+}
+
+.overview-section > header p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.overview-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--border);
+}
+
+.overview-list li {
+  border-bottom: 1px solid var(--border);
+}
+
+.overview-link {
+  display: grid;
+  grid-template-columns: 2.5rem minmax(0, 1fr);
+  padding: 0.9rem 1rem;
   text-decoration: none;
-  transition: border-color 0.16s ease, transform 0.16s ease;
+  transition: background 0.16s ease;
 }
 
-.overview-card:hover {
-  border-color: var(--accent);
+.overview-link:hover {
+  background: rgb(124 156 255 / 0.09);
 }
 
-.overview-card p {
+.overview-number {
+  grid-row: 1 / span 2;
+  color: var(--accent-strong);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.overview-link h3 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.overview-link p {
   margin: 0;
   color: var(--muted);
   font-size: 0.9rem;
-}
-
-.overview-card h2 {
-  margin: 0;
-  font-size: 1rem;
 }
 
 @media (max-width: 760px) {
@@ -366,5 +421,11 @@ textarea {
 
   .content {
     padding-top: 1rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .job-progress__fill {
+    transition: none;
   }
 }

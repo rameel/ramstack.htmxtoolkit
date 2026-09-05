@@ -8,65 +8,35 @@
   <header class="page-heading">
     <p class="eyebrow">Example 06</p>
     <h1>Detect HTMX requests</h1>
-    <p>Return an appropriate representation when the handler is called asynchronously or directly</p>
+    <p>Return a fragment to HTMX and inspect its strongly typed request metadata</p>
   </header>
 
   <section class="demo-card">
     <div class="demo-card__header">
-      <h2><code>Request.IsHtmxRequest()</code></h2>
-      <p>Compare a normal browser navigation with an HTMX request to the same handler.</p>
+      <h2><code>Request.IsHtmxRequest(out var headers)</code></h2>
+      <p>Both controls request the same URL; the HTMX response also reports its source, target, and request type.</p>
     </div>
 
     <div class="demo-actions">
       <button
+        id="check-order"
         hx-get
         hx-page="/Examples/HtmxRequest"
-        hx-page-handler="PartialOrFull"
-        hx-target="#partial-result">
-        Fetch via HTMX
+        hx-route-id="1042"
+        hx-target="#order-status">
+        Check inline
       </button>
       <a
         class="button button-secondary"
         asp-page="/Examples/HtmxRequest"
-        asp-page-handler="PartialOrFull"
+        asp-route-id="1042"
         target="_blank">
-        Open full request
+        Open the same URL normally
       </a>
     </div>
 
-    <div id="partial-result" class="result">
-      Choose a request type.
-    </div>
-  </section>
-
-  <section class="demo-card">
-    <div class="demo-card__header">
-      <h2><code>hx-request-timeout</code></h2>
-      <p>The handler responds after 1200 ms. The first request times out after 1000 ms; the second completes normally.</p>
-    </div>
-
-    <div class="demo-actions">
-      <button
-        hx-get
-        hx-page="/Examples/HtmxRequest"
-        hx-page-handler="Delayed"
-        hx-request-timeout="1000"
-        hx-on::error="document.querySelector('#timeout-result').textContent = 'Request timed out'"
-        hx-target="#timeout-result">
-        Request with 1000 ms timeout
-      </button>
-      <button
-        class="button button-secondary"
-        hx-get
-        hx-page="/Examples/HtmxRequest"
-        hx-page-handler="Delayed"
-        hx-target="#timeout-result">
-        Request without timeout
-      </button>
-    </div>
-
-    <div id="timeout-result" class="result">
-      Choose a request mode.
+    <div id="order-status" class="result">
+      @(Model.OrderStatus ?? "Order status has not been requested.")
     </div>
   </section>
 </article>

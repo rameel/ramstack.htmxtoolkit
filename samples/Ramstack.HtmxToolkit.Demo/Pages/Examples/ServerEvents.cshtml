@@ -1,0 +1,47 @@
+@page
+@model ServerEventsModel
+@{
+  ViewData["Title"] = "Server events";
+}
+
+<article class="example-page">
+  <header class="page-heading">
+    <p class="eyebrow">Example 10</p>
+    <h1>Trigger UI updates from the server</h1>
+    <p>Notify another element after a successful request without custom JavaScript</p>
+  </header>
+
+  <section class="demo-card">
+    <div class="demo-card__header">
+      <h2><code>Response.Htmx(h => h.TriggerEvent(...))</code></h2>
+      <p>Saving the form triggers <code>profileSaved</code>; the profile summary listens for that event and reloads itself.</p>
+    </div>
+
+    <form class="demo-form"
+          hx-post
+          hx-page="/Examples/ServerEvents"
+          hx-page-handler="Save"
+          hx-target="#save-result">
+      <label>
+        Display name
+        <input id="display-name" type="text" name="displayName" value="Ada Lovelace" required/>
+      </label>
+
+      <button type="submit">Save profile</button>
+    </form>
+
+    <div id="save-result" class="result">
+      No changes have been saved.
+    </div>
+
+    <div id="profile-summary"
+         class="result"
+         hx-get
+         hx-page="/Examples/ServerEvents"
+         hx-page-handler="Summary"
+         hx-trigger="profileSaved from:body"
+         hx-include="#display-name">
+      The profile summary has not been refreshed.
+    </div>
+  </section>
+</article>

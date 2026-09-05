@@ -1,3 +1,5 @@
+using System.Text.Encodings.Web;
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
@@ -5,15 +7,22 @@ namespace Ramstack.HtmxToolkit.Demo.Pages.Examples;
 
 public class HtmxRequestModel : PageModel
 {
-    public IActionResult OnGetPartialOrFull() =>
-        Content(
-            Request.IsHtmxRequest()
-                ? "Partial response (HTMX request detected via <code>IsHtmxRequest()</code>)"
-                : "Full page response. This wouldn't normally be a Content result, but demonstrates the check.");
+    public string? OrderStatus { get; private set; }
 
-    public async Task<IActionResult> OnGetDelayedAsync()
+    public IActionResult OnGet(string? id)
     {
-        await Task.Delay(1200);
-        return Content("<strong>Response received after 1200 ms.</strong>");
+        if (id is null)
+            return Page();
+
+        var status = $"Order #{id} is ready for pickup.";
+
+        if (Request.IsHtmxRequest(out var headers))
+        {
+            var metadata = $"{status} Source: {headers.Source}; target: {headers.Target}; type: {headers.RequestType}.";
+            return Content(HtmlEncoder.Default.Encode(metadata));
+        }
+
+        OrderStatus = $"{status} This was a normal browser request.";
+        return Page();
     }
 }

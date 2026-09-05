@@ -11,7 +11,7 @@ public class HtmxValsModel : PageModel
     {
         return Content($"""
             <p><b>Category:</b> {Encode(category)}</p>
-            <p><b>Format:</b> {Encode(format)}</b></p>
+            <p><b>Format:</b> {Encode(format)}</p>
             """);
 
         static string Encode(string? text) =>
