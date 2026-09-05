@@ -304,6 +304,31 @@ With HTMX 4.x selected, `HtmxRequestTagHelper` generates `hx-config` instead.
 HTMX 4.x additionally supports `hx-request-cache`, `hx-request-redirect`, `hx-request-referrer`, `hx-request-integrity`,
 and `hx-request-validate`; `hx-request-no-headers` is limited to HTMX 1.9.x and 2.x.
 
+### Attribute Inheritance
+
+HTMX 1.9.x and 2.x merge-inherit `hx-request`, `hx-vals`, and `hx-headers` automatically.
+HTMX 4.x requires inheritance to be enabled explicitly. Use the corresponding Tag Helper attribute to emit
+the HTMX 4 `inherited` modifier:
+
+| Razor attribute               | Generated HTMX 4 attribute |
+|-------------------------------|----------------------------|
+| `hx-request-inherited="true"` | `hx-config:inherited`      |
+| `hx-vals-inherited="true"`    | `hx-vals:inherited`        |
+| `hx-headers-inherited="true"` | `hx-headers:inherited`     |
+
+For example, values declared on a parent element can be inherited by its children:
+
+```html
+<div hx-request-inherited="true"
+     hx-request-timeout="2000">
+    ...
+</div>
+```
+
+When `HtmxV4Config.MetaCharacter` is configured, that character is used instead of `:` in the generated attribute name.
+Alternatively, set `HtmxV4Config.ImplicitInheritance` to `true` to enable inheritance globally.
+For HTMX 1.9.x and 2.x, the Tag Helper attributes above do not change the generated attribute names.
+
 ## Configuration
 
 Configure HTMX once during service registration. Only explicitly configured values are emitted,

@@ -12,7 +12,7 @@ public class HtmxRequestTagHelperTests
     [Test]
     [TestCase(HtmxTargetVersion.V1)]
     [TestCase(HtmxTargetVersion.V2)]
-    public async Task ProcessAsync_SerializesLegacyRequestConfiguration(HtmxTargetVersion version)
+    public async Task ProcessAsync_Serializes_Htmx1_Htmx2_RequestConfiguration(HtmxTargetVersion version)
     {
         var output = TestHelper.CreateTagHelperOutput();
         var helper = CreateHelper(version);
@@ -67,7 +67,7 @@ public class HtmxRequestTagHelperTests
     }
 
     [Test]
-    public async Task ProcessAsync_OmitsUnsetLegacyProperties()
+    public async Task ProcessAsync_Htmx1_Htmx2_OmitsUnsetProperties()
     {
         var output = TestHelper.CreateTagHelperOutput();
         var helper = CreateHelper(HtmxTargetVersion.V2);
@@ -137,7 +137,7 @@ public class HtmxRequestTagHelperTests
     }
 
     [Test]
-    public async Task ProcessAsync_OmitsHtmx4OnlyCredentialsModeForLegacyVersions()
+    public async Task ProcessAsync_OmitsHtmx4OnlyCredentialsModeForPriorVersions()
     {
         var output = TestHelper.CreateTagHelperOutput();
         var helper = CreateHelper(HtmxTargetVersion.V2);
@@ -176,7 +176,100 @@ public class HtmxRequestTagHelperTests
         Assert.That(output.Attributes["hx-request"], Is.Null);
     }
 
-    private static HtmxRequestTagHelper CreateHelper(HtmxTargetVersion version)
+    [Test]
+    public async Task ProcessAsync_Htmx4_Inherited_UsesInheritedAttribute()
+    {
+        var output = TestHelper.CreateTagHelperOutput();
+        var helper = CreateHelper(HtmxTargetVersion.V4);
+
+        helper.Inherited = true;
+        helper.Timeout = 500;
+
+        await helper.ProcessAsync(TestHelper.CreateTagHelperContext(), output);
+
+        var attribute = output.Attributes["hx-config:inherited"];
+
+        Assert.That(attribute.Value.ToString(), Is.EqualTo("{\"timeout\":500}"));
+        Assert.That(output.Attributes["hx-config"], Is.Null);
+    }
+
+    [Test]
+    public async Task ProcessAsync_Htmx4_Inherited_UsesConfiguredMetaCharacter()
+    {
+        var output = TestHelper.CreateTagHelperOutput();
+        var helper = CreateHelper(HtmxTargetVersion.V4, "-");
+
+        helper.Inherited = true;
+        helper.Timeout = 500;
+
+        await helper.ProcessAsync(TestHelper.CreateTagHelperContext(), output);
+        var attribute = output.Attributes["hx-config-inherited"];
+
+        Assert.That(attribute!.Value.ToString(), Is.EqualTo("{\"timeout\":500}"));
+        Assert.That(output.Attributes["hx-config:inherited"], Is.Null);
+    }
+
+    [Test]
+    public async Task ProcessAsync_Htmx4_Inherited_WithImplicitInheritance_StillUsesInheritedAttribute()
+    {
+        var output = TestHelper.CreateTagHelperOutput();
+        var helper = CreateHelper(HtmxTargetVersion.V4, implicitInheritance: true);
+
+        helper.Inherited = true;
+        helper.Timeout = 500;
+
+        await helper.ProcessAsync(TestHelper.CreateTagHelperContext(), output);
+        var attribute = output.Attributes["hx-config:inherited"];
+
+        Assert.That(attribute!.Value.ToString(), Is.EqualTo("{\"timeout\":500}"));
+        Assert.That(output.Attributes["hx-config"], Is.Null);
+    }
+
+    [Test]
+    public async Task ProcessAsync_Htmx4NotInherited_UsesOrdinaryAttribute()
+    {
+        var output = TestHelper.CreateTagHelperOutput();
+        var helper = CreateHelper(HtmxTargetVersion.V4);
+        helper.Timeout = 500;
+
+        await helper.ProcessAsync(TestHelper.CreateTagHelperContext(), output);
+        var attribute = output.Attributes["hx-config"];
+
+        Assert.That(attribute!.Value.ToString(), Is.EqualTo("{\"timeout\":500}"));
+        Assert.That(output.Attributes["hx-config:inherited"], Is.Null);
+    }
+
+    [Test]
+    public async Task ProcessAsync_Inherited_WithEmptyConfiguration_OmitsAttribute()
+    {
+        var output = TestHelper.CreateTagHelperOutput();
+        var helper = CreateHelper(HtmxTargetVersion.V4);
+        helper.Inherited = true;
+
+        await helper.ProcessAsync(TestHelper.CreateTagHelperContext(), output);
+
+        Assert.That(output.Attributes, Is.Empty);
+    }
+
+    [TestCase(HtmxTargetVersion.V1)]
+    [TestCase(HtmxTargetVersion.V2)]
+    public async Task ProcessAsync_Htmx1_Htmx2_Inherited_UsesOrdinaryAttribute(HtmxTargetVersion version)
+    {
+        var output = TestHelper.CreateTagHelperOutput();
+        var helper = CreateHelper(version);
+
+        helper.Inherited = true;
+        helper.Timeout = 500;
+
+        await helper.ProcessAsync(TestHelper.CreateTagHelperContext(), output);
+        var attribute = output.Attributes["hx-request"];
+
+        Assert.That(attribute!.Value.ToString(), Is.EqualTo("{\"timeout\":500}"));
+        Assert.That(output.Attributes["hx-request:inherited"], Is.Null);
+        Assert.That(output.Attributes["hx-inherit"], Is.Null);
+    }
+
+    private static HtmxRequestTagHelper CreateHelper(HtmxTargetVersion version, string? metachar = null, bool? implicitInheritance = null)
     {
         var options = new HtmxToolkitOptions();
 
@@ -189,7 +282,11 @@ public class HtmxRequestTagHelperTests
                 options.UseHtmxV2();
                 break;
             case HtmxTargetVersion.V4:
-                options.UseHtmxV4();
+                options.UseHtmxV4(config =>
+                {
+                    config.MetaCharacter = metachar;
+                    config.ImplicitInheritance = implicitInheritance;
+                });
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(version));

@@ -14,8 +14,12 @@ namespace Ramstack.HtmxToolkit.TagHelpers;
 /// </summary>
 /// <remarks>
 /// <para>HTMX 1.x and 2.x use the merge-inherited <c>hx-request</c> attribute.</para>
-/// <para>HTMX 4.x uses the <c>hx-config</c> attribute.</para>
+/// <para>
+///   HTMX 4.x uses <c>hx-config</c> and requires either the explicit inheritance modifier
+///   or the global <see cref="HtmxV4Config.ImplicitInheritance" /> option for inheritance.
+/// </para>
 /// </remarks>
+[HtmlTargetElement(Attributes = RequestInheritedAttributeName)]
 [HtmlTargetElement(Attributes = RequestTimeoutAttributeName)]
 [HtmlTargetElement(Attributes = RequestCredentialsAttributeName)]
 [HtmlTargetElement(Attributes = RequestNoHeadersAttributeName)]
@@ -26,6 +30,7 @@ namespace Ramstack.HtmxToolkit.TagHelpers;
 [HtmlTargetElement(Attributes = RequestValidateAttributeName)]
 public sealed class HtmxRequestTagHelper(IOptions<HtmxToolkitOptions> options) : TagHelper
 {
+    private const string RequestInheritedAttributeName = "hx-request-inherited";
     private const string RequestTimeoutAttributeName = "hx-request-timeout";
     private const string RequestCredentialsAttributeName = "hx-request-credentials";
     private const string RequestNoHeadersAttributeName = "hx-request-no-headers";
@@ -36,6 +41,16 @@ public sealed class HtmxRequestTagHelper(IOptions<HtmxToolkitOptions> options) :
     private const string RequestValidateAttributeName = "hx-request-validate";
 
     private readonly HtmxRequestData _request = new();
+
+    /// <summary>
+    /// Gets or sets a value indicating whether the generated attribute is explicitly inherited.
+    /// </summary>
+    /// <remarks>
+    /// <para>HTMX 1.x and 2.x merge-inherit request configuration without a modifier.</para>
+    /// <para>HTMX 4.x emits the <c>inherited</c> modifier when this property is <see langword="true" />.</para>
+    /// </remarks>
+    [HtmlAttributeName(RequestInheritedAttributeName)]
+    public bool Inherited { get; set; }
 
     /// <summary>
     /// Gets or sets the timeout for the request in milliseconds.
@@ -143,22 +158,37 @@ public sealed class HtmxRequestTagHelper(IOptions<HtmxToolkitOptions> options) :
     /// <inheritdoc />
     public override Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
     {
-        var targetVersion = options.Value.TargetVersion;
-        var request = targetVersion == HtmxTargetVersion.V4
+        var json = options.Value.TargetVersion == HtmxTargetVersion.V4
             ? JsonSerializer.Serialize(new HtmxRequestDataV4(_request), HtmxRequestJsonSerializerContext.Default.HtmxRequestDataV4)
             : JsonSerializer.Serialize(new HtmxRequestDataPrior(_request), HtmxRequestJsonSerializerContext.Default.HtmxRequestDataPrior);
 
-        if (request != "{}")
+        if (json != "{}")
         {
-            var attributeName = targetVersion == HtmxTargetVersion.V4 ? "hx-config" : "hx-request";
+            var name = "hx-request";
+
+            if (options.Value.TargetVersion == HtmxTargetVersion.V4)
+            {
+                if (Inherited)
+                {
+                    if (options.Value.HtmxConfig is HtmxV4Config config)
+                        name = string.IsNullOrEmpty(config.MetaCharacter)
+                            ? "hx-config:inherited"
+                            : $"hx-config{config.MetaCharacter}inherited";
+                }
+                else
+                {
+                    name = "hx-config";
+                }
+            }
+
             output.Attributes.SetAttribute(
-                new TagHelperAttribute(attributeName, new HtmlString(request), HtmlAttributeValueStyle.SingleQuotes));
+                new TagHelperAttribute(name, new HtmlString(json), HtmlAttributeValueStyle.SingleQuotes));
         }
 
         return Task.CompletedTask;
     }
 
-    #region Inner types
+    #region Inner type: HtmxRequestData
 
     /// <summary>
     /// Stores the request configuration shared by all supported HTMX versions.
@@ -190,6 +220,10 @@ public sealed class HtmxRequestTagHelper(IOptions<HtmxToolkitOptions> options) :
         public bool? Validate { get; set; }
     }
 
+    #endregion
+
+    #region Inner type: HtmxRequestDataPrior
+
     /// <summary>
     /// Projects request configuration into the <c>hx-request</c> contract used by HTMX 1.x and 2.x.
     /// </summary>
@@ -214,6 +248,10 @@ public sealed class HtmxRequestTagHelper(IOptions<HtmxToolkitOptions> options) :
         /// <inheritdoc cref="HtmxRequestData.NoHeaders" />
         public bool? NoHeaders => data.NoHeaders;
     }
+
+    #endregion
+
+    #region Inner type: HtmxRequestDataV4
 
     /// <summary>
     /// Projects request configuration into the <c>hx-config</c> contract used by HTMX 4.x.
