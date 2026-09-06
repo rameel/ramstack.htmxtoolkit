@@ -1,3 +1,5 @@
+using System.Diagnostics;
+
 using Ramstack.HtmxToolkit.Configuration;
 
 namespace Ramstack.HtmxToolkit.Internal;
@@ -15,8 +17,12 @@ internal static class EnumHelper
     /// <returns>
     /// <c>blob</c> or <c>arraybuffer</c>.
     /// </returns>
-    public static string GetWsBinaryTypeValue(this HtmxBinaryType value) =>
-        value == HtmxBinaryType.Blob ? "blob" : "arraybuffer";
+    public static string GetWsBinaryTypeValue(this HtmxBinaryType value)
+    {
+        Debug.Assert(value is HtmxBinaryType.Blob or HtmxBinaryType.ArrayBuffer);
+
+        return value == HtmxBinaryType.Blob ? "blob" : "arraybuffer";
+    }
 
     /// <summary>
     /// Converts a <see cref="HtmxScrollBehavior" /> value
@@ -28,6 +34,11 @@ internal static class EnumHelper
     /// </returns>
     public static string GetScrollBehaviorValue(this HtmxScrollBehavior value)
     {
+        Debug.Assert(value
+            is HtmxScrollBehavior.Auto
+            or HtmxScrollBehavior.Smooth
+            or HtmxScrollBehavior.Instant);
+
         return value switch
         {
             HtmxScrollBehavior.Auto => "auto",
@@ -59,6 +70,20 @@ internal static class EnumHelper
     /// </returns>
     public static string GetSwapValue(this HtmxSwap value)
     {
+        Debug.Assert(value
+            is HtmxSwap.InnerHtml
+            or HtmxSwap.OuterHtml
+            or HtmxSwap.InnerMorph
+            or HtmxSwap.OuterMorph
+            or HtmxSwap.OuterSync
+            or HtmxSwap.TextContent
+            or HtmxSwap.BeforeBegin
+            or HtmxSwap.AfterBegin
+            or HtmxSwap.BeforeEnd
+            or HtmxSwap.AfterEnd
+            or HtmxSwap.Delete
+            or HtmxSwap.None);
+
         return value switch
         {
             HtmxSwap.InnerHtml => "innerHTML",
@@ -85,6 +110,17 @@ internal static class EnumHelper
     /// </returns>
     public static string GetHttpVerbValue(this HttpVerb value)
     {
+        Debug.Assert(value
+            is HttpVerb.Get
+            or HttpVerb.Head
+            or HttpVerb.Post
+            or HttpVerb.Put
+            or HttpVerb.Delete
+            or HttpVerb.Connect
+            or HttpVerb.Options
+            or HttpVerb.Trace
+            or HttpVerb.Patch);
+
         return value switch
         {
             HttpVerb.Get => "get",
@@ -109,6 +145,11 @@ internal static class EnumHelper
     /// </returns>
     public static string GetFetchModeValue(this HtmxFetchMode value)
     {
+        Debug.Assert(value
+            is HtmxFetchMode.SameOrigin
+            or HtmxFetchMode.Cors
+            or HtmxFetchMode.NoCors);
+
         return value switch
         {
             HtmxFetchMode.SameOrigin => "same-origin",

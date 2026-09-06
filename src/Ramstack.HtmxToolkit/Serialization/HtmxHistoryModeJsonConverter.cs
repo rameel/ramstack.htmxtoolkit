@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -23,6 +24,11 @@ internal sealed class HtmxHistoryModeJsonConverter : JsonConverter<HtmxHistoryMo
     /// <inheritdoc />
     public override void Write(Utf8JsonWriter writer, HtmxHistoryMode? value, JsonSerializerOptions options)
     {
+        Debug.Assert(value is null
+            or HtmxHistoryMode.Enabled
+            or HtmxHistoryMode.Disabled
+            or HtmxHistoryMode.Reload);
+
         // NOTE: value is never null here: null-valued properties are omitted
         // by JsonIgnoreCondition.WhenWritingNull before this converter is invoked.
         switch (value.GetValueOrDefault())
