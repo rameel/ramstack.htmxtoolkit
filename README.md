@@ -304,6 +304,40 @@ With HTMX 4.x selected, `HtmxRequestTagHelper` generates `hx-config` instead.
 HTMX 4.x additionally supports `hx-request-cache`, `hx-request-redirect`, `hx-request-referrer`, `hx-request-integrity`,
 and `hx-request-validate`; `hx-request-no-headers` is limited to HTMX 1.9.x and 2.x.
 
+### Attribute Modifiers
+
+HTMX 1.9.x and 2.x merge-inherit `hx-request`, `hx-vals`, and `hx-headers` automatically.
+HTMX 4.x requires inheritance to be enabled explicitly. Use the corresponding Tag Helper attribute to emit
+the HTMX 4 `inherited` or `append` modifier:
+
+| Razor attribute               | Generated HTMX 4 attribute |
+|-------------------------------|----------------------------|
+| `hx-request-inherited="true"` | `hx-config:inherited`      |
+| `hx-request-append="true"`    | `hx-config:append`         |
+| `hx-vals-inherited="true"`    | `hx-vals:inherited`        |
+| `hx-vals-append="true"`       | `hx-vals:append`           |
+| `hx-headers-inherited="true"` | `hx-headers:inherited`     |
+| `hx-headers-append="true"`    | `hx-headers:append`        |
+
+Use `inherited` on a parent and `append` on a child to merge their values:
+
+```html
+<div hx-vals-inherited="true"
+     hx-val-category="books">
+    <button hx-post="/search"
+            hx-vals-append="true"
+            hx-val-sort="title">
+        Search
+    </button>
+</div>
+```
+
+Setting both options on the same element emits one combined attribute, such as
+`hx-vals:inherited:append`, so the merged value is also inherited by descendants.
+
+Alternatively, set `HtmxV4Config.ImplicitInheritance` to `true` to enable inheritance globally.
+For HTMX 1.9.x and 2.x, the Tag Helper modifier attributes above do not change the generated attribute names.
+
 ## Configuration
 
 Configure HTMX once during service registration. Only explicitly configured values are emitted,

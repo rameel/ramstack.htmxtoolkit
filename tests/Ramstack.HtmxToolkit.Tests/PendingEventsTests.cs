@@ -60,7 +60,7 @@ public class PendingEventsTests
 
     [TestCase(HtmxTargetVersion.V1)]
     [TestCase(HtmxTargetVersion.V2)]
-    public void AddEvents_LegacyVersions_WriteEachTimingToItsOwnHeader(HtmxTargetVersion targetVersion)
+    public void AddEvents_PriorVersions_WriteEachTimingToItsOwnHeader(HtmxTargetVersion targetVersion)
     {
         var context = TestHelper.CreateHtmxRequestContext(targetVersion);
         var pending = PendingEvents.GetOrCreate(context.Response);
