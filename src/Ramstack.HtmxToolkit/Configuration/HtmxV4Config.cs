@@ -31,16 +31,6 @@ public sealed class HtmxV4Config() : HtmxConfig(HtmxTargetVersion.V4)
     }
 
     /// <summary>
-    /// Gets or sets the character used instead of <c>:</c> in attribute names.
-    /// The HTMX default is <c>undefined</c>.
-    /// </summary>
-    public string? MetaCharacter
-    {
-        get;
-        set => SetField(ref field, value);
-    }
-
-    /// <summary>
     /// Gets or sets how HTMX history restoration is handled.
     /// The HTMX default is <see cref="HtmxHistoryMode.Enabled" />.
     /// </summary>

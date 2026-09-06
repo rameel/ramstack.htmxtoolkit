@@ -76,22 +76,6 @@ public class HtmxValsTagHelperTests
     }
 
     [Test]
-    public async Task ProcessAsync_Htmx4_Inherited_UsesConfiguredMetaCharacter()
-    {
-        var output = TestHelper.CreateTagHelperOutput();
-        var helper = CreateHelper(HtmxTargetVersion.V4, "-");
-
-        helper.Inherited = true;
-        helper.Values["sort"] = "title";
-
-        await helper.ProcessAsync(TestHelper.CreateTagHelperContext(), output);
-        var attribute = output.Attributes["hx-vals-inherited"];
-
-        Assert.That(attribute!.Value.ToString(), Is.EqualTo("{\"sort\":\"title\"}"));
-        Assert.That(output.Attributes["hx-vals:inherited"], Is.Null);
-    }
-
-    [Test]
     public async Task ProcessAsync_Htmx4_NotInherited_UsesOrdinaryAttribute()
     {
         var output = TestHelper.CreateTagHelperOutput();
@@ -135,7 +119,7 @@ public class HtmxValsTagHelperTests
         Assert.That(output.Attributes["hx-inherit"], Is.Null);
     }
 
-    private static HtmxValsTagHelper CreateHelper(HtmxTargetVersion version = HtmxTargetVersion.V2, string? metachar = null)
+    private static HtmxValsTagHelper CreateHelper(HtmxTargetVersion version = HtmxTargetVersion.V2)
     {
         var options = new HtmxToolkitOptions();
 
@@ -148,7 +132,7 @@ public class HtmxValsTagHelperTests
                 options.UseHtmxV2();
                 break;
             case HtmxTargetVersion.V4:
-                options.UseHtmxV4(config => config.MetaCharacter = metachar);
+                options.UseHtmxV4();
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(version));

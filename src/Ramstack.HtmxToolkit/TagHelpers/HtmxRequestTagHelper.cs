@@ -164,22 +164,12 @@ public sealed class HtmxRequestTagHelper(IOptions<HtmxToolkitOptions> options) :
 
         if (json != "{}")
         {
-            var name = "hx-request";
-
-            if (options.Value.TargetVersion == HtmxTargetVersion.V4)
+            var name = options.Value.TargetVersion switch
             {
-                if (Inherited)
-                {
-                    if (options.Value.HtmxConfig is HtmxV4Config config)
-                        name = string.IsNullOrEmpty(config.MetaCharacter)
-                            ? "hx-config:inherited"
-                            : $"hx-config{config.MetaCharacter}inherited";
-                }
-                else
-                {
-                    name = "hx-config";
-                }
-            }
+                HtmxTargetVersion.V4 when Inherited => "hx-config:inherited",
+                HtmxTargetVersion.V4 => "hx-config",
+                _ => "hx-request"
+            };
 
             output.Attributes.SetAttribute(
                 new TagHelperAttribute(name, new HtmlString(json), HtmlAttributeValueStyle.SingleQuotes));

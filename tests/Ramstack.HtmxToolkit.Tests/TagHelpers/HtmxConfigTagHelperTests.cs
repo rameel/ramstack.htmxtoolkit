@@ -247,7 +247,6 @@ public class HtmxConfigTagHelperTests
         {
             htmx.LogAll = true;
             htmx.Prefix = "data-custom-";
-            htmx.MetaCharacter = "-";
             htmx.History = HtmxHistoryMode.Reload;
             htmx.DefaultSwap = HtmxSwap.OuterMorph;
             htmx.AllowEmptySwapAfterOob = true;
@@ -273,7 +272,7 @@ public class HtmxConfigTagHelperTests
 
         Assert.That(json.Keys, Is.EquivalentTo(new[]
         {
-            "logAll", "prefix", "metaCharacter", "history", "defaultSwap", "allowEmptySwapAfterOOB",
+            "logAll", "prefix", "history", "defaultSwap", "allowEmptySwapAfterOOB",
             "defaultSettleDelay", "includeIndicatorCSS", "indicatorClass", "requestClass",
             "inlineScriptNonce", "extensions", "implicitInheritance", "defaultTimeout", "mode",
             "defaultFocusScroll", "transitions", "morphIgnore", "morphSkip", "morphSkipChildren",

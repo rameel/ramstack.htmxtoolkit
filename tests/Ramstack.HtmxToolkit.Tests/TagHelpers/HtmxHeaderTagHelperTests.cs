@@ -81,22 +81,6 @@ public class HtmxHeaderTagHelperTests
     }
 
     [Test]
-    public async Task ProcessAsync_Htmx4_Inherited_UsesConfiguredMetaCharacter()
-    {
-        var output = TestHelper.CreateTagHelperOutput();
-        var helper = CreateHelper(HtmxTargetVersion.V4, "-");
-
-        helper.Inherited = true;
-        helper.Headers["X-Custom"] = "value";
-
-        await helper.ProcessAsync(TestHelper.CreateTagHelperContext(), output);
-        var attribute = output.Attributes["hx-headers-inherited"];
-
-        Assert.That(attribute!.Value.ToString(), Is.EqualTo("{\"X-Custom\":\"value\"}"));
-        Assert.That(output.Attributes["hx-headers:inherited"], Is.Null);
-    }
-
-    [Test]
     public async Task ProcessAsync_Htmx4_NotInherited_UsesOrdinaryAttribute()
     {
         var output = TestHelper.CreateTagHelperOutput();
@@ -140,7 +124,7 @@ public class HtmxHeaderTagHelperTests
         Assert.That(output.Attributes["hx-inherit"], Is.Null);
     }
 
-    private static HtmxHeaderTagHelper CreateHelper(HtmxTargetVersion version = HtmxTargetVersion.V2, string? metachar = null)
+    private static HtmxHeaderTagHelper CreateHelper(HtmxTargetVersion version = HtmxTargetVersion.V2)
     {
         var options = new HtmxToolkitOptions();
 
@@ -153,7 +137,7 @@ public class HtmxHeaderTagHelperTests
                 options.UseHtmxV2();
                 break;
             case HtmxTargetVersion.V4:
-                options.UseHtmxV4(config => config.MetaCharacter = metachar);
+                options.UseHtmxV4();
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(version));
