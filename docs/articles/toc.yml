@@ -1,0 +1,44 @@
+- name: Guides
+  href: index.md
+- name: Introduction
+  items:
+    - name: Overview
+      href: overview.md
+    - name: Getting started
+      href: getting-started.md
+    - name: Choose an HTMX version
+      href: choosing-version.md
+- name: Fundamentals
+  items:
+    - name: Full pages and fragments
+      href: pages-and-fragments.md
+    - name: Read HTMX requests
+      href: requests.md
+    - name: Control HTMX responses
+      href: responses.md
+    - name: Tag Helpers
+      href: tag-helpers.md
+- name: Configuration
+  items:
+    - name: Application configuration
+      href: configuration.md
+    - name: HTMX 1.x
+      href: configuration-v1.md
+    - name: HTMX 2.x
+      href: configuration-v2.md
+    - name: HTMX 4.x
+      href: configuration-v4.md
+    - name: Version compatibility
+      href: version-compatibility.md
+- name: Security and assets
+  items:
+    - name: Antiforgery and Toolkit script
+      href: antiforgery.md
+- name: Recipes
+  items:
+    - name: Common recipes
+      href: recipes.md
+- name: Help
+  items:
+    - name: Troubleshooting
+      href: troubleshooting.md

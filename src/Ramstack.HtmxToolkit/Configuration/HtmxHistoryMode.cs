@@ -6,8 +6,12 @@ namespace Ramstack.HtmxToolkit.Configuration;
 public enum HtmxHistoryMode
 {
     /// <summary>
-    /// Enables history snapshots and restoration.
+    /// Enables HTMX history handling.
     /// </summary>
+    /// <remarks>
+    /// In HTMX 4.x, history navigation requests the URL from the server and swaps
+    /// the response. Local DOM snapshots require the optional HTMX history-cache extension.
+    /// </remarks>
     Enabled,
 
     /// <summary>
