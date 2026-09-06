@@ -59,10 +59,7 @@ public sealed class HtmxValsTagHelper(IOptions<HtmxToolkitOptions> options) : Ta
         {
             var name = "hx-vals";
             if (Inherited && options.Value.TargetVersion == HtmxTargetVersion.V4)
-                if (options.Value.HtmxConfig is HtmxV4Config config)
-                    name = string.IsNullOrEmpty(config.MetaCharacter)
-                        ? "hx-vals:inherited"
-                        : $"hx-vals{config.MetaCharacter}inherited";
+                name = "hx-vals:inherited";
 
             var info = HtmxDictionaryJsonSerializerContext.Default.IDictionaryStringString;
             var json = JsonSerializer.Serialize(values, info);

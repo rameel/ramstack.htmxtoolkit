@@ -325,7 +325,6 @@ For example, values declared on a parent element can be inherited by its childre
 </div>
 ```
 
-When `HtmxV4Config.MetaCharacter` is configured, that character is used instead of `:` in the generated attribute name.
 Alternatively, set `HtmxV4Config.ImplicitInheritance` to `true` to enable inheritance globally.
 For HTMX 1.9.x and 2.x, the Tag Helper attributes above do not change the generated attribute names.
 

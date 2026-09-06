@@ -59,12 +59,7 @@ public sealed class HtmxHeaderTagHelper(IOptions<HtmxToolkitOptions> options) : 
         {
             var name = "hx-headers";
             if (Inherited && options.Value.TargetVersion == HtmxTargetVersion.V4)
-            {
-                if (options.Value.HtmxConfig is HtmxV4Config config)
-                    name = string.IsNullOrEmpty(config.MetaCharacter)
-                        ? "hx-headers:inherited"
-                        : $"hx-headers{config.MetaCharacter}inherited";
-            }
+                name = "hx-headers:inherited";
 
             var info = HtmxDictionaryJsonSerializerContext.Default.IDictionaryStringString;
             var json = JsonSerializer.Serialize(Headers, info);
