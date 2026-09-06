@@ -1,16 +1,1 @@
-*.cs           text eol=lf
-*.csproj       text eol=lf
-*.js           text eol=lf
-*.mjs          text eol=lf
-*.json         text eol=lf
-*.md           text eol=lf
-*.props        text eol=lf
-*.sln          text eol=lf
-*.targets      text eol=lf
-*.tt           text eol=crlf
-*.ttinclude    text eol=crlf
-*.xml          text eol=lf
-*.yml          text eol=lf
-.editorconfig  text eol=lf
-.gitattributes text eol=lf
-.gitignore     text eol=lf
+* text=auto
