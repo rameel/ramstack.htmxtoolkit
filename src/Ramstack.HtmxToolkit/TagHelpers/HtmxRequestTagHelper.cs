@@ -15,11 +15,12 @@ namespace Ramstack.HtmxToolkit.TagHelpers;
 /// <remarks>
 /// <para>HTMX 1.x and 2.x use the merge-inherited <c>hx-request</c> attribute.</para>
 /// <para>
-///   HTMX 4.x uses <c>hx-config</c> and requires either the explicit inheritance modifier
-///   or the global <see cref="HtmxV4Config.ImplicitInheritance" /> option for inheritance.
+///   HTMX 4.x uses <c>hx-config</c>, supports the <c>inherited</c> and <c>append</c> modifiers,
+///   and can enable inheritance globally with <see cref="HtmxV4Config.ImplicitInheritance" />.
 /// </para>
 /// </remarks>
 [HtmlTargetElement(Attributes = RequestInheritedAttributeName)]
+[HtmlTargetElement(Attributes = RequestAppendAttributeName)]
 [HtmlTargetElement(Attributes = RequestTimeoutAttributeName)]
 [HtmlTargetElement(Attributes = RequestCredentialsAttributeName)]
 [HtmlTargetElement(Attributes = RequestNoHeadersAttributeName)]
@@ -31,6 +32,7 @@ namespace Ramstack.HtmxToolkit.TagHelpers;
 public sealed class HtmxRequestTagHelper(IOptions<HtmxToolkitOptions> options) : TagHelper
 {
     private const string RequestInheritedAttributeName = "hx-request-inherited";
+    private const string RequestAppendAttributeName = "hx-request-append";
     private const string RequestTimeoutAttributeName = "hx-request-timeout";
     private const string RequestCredentialsAttributeName = "hx-request-credentials";
     private const string RequestNoHeadersAttributeName = "hx-request-no-headers";
@@ -51,6 +53,16 @@ public sealed class HtmxRequestTagHelper(IOptions<HtmxToolkitOptions> options) :
     /// </remarks>
     [HtmlAttributeName(RequestInheritedAttributeName)]
     public bool Inherited { get; set; }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether the generated attribute is appended to inherited configuration.
+    /// </summary>
+    /// <remarks>
+    /// HTMX 4.x emits the <c>append</c> modifier when this property is <see langword="true" />.
+    /// The property does not change the generated attribute name for HTMX 1.x and 2.x.
+    /// </remarks>
+    [HtmlAttributeName(RequestAppendAttributeName)]
+    public bool Append { get; set; }
 
     /// <summary>
     /// Gets or sets the timeout for the request in milliseconds.
@@ -166,7 +178,9 @@ public sealed class HtmxRequestTagHelper(IOptions<HtmxToolkitOptions> options) :
         {
             var name = options.Value.TargetVersion switch
             {
+                HtmxTargetVersion.V4 when Inherited && Append => "hx-config:inherited:append",
                 HtmxTargetVersion.V4 when Inherited => "hx-config:inherited",
+                HtmxTargetVersion.V4 when Append => "hx-config:append",
                 HtmxTargetVersion.V4 => "hx-config",
                 _ => "hx-request"
             };

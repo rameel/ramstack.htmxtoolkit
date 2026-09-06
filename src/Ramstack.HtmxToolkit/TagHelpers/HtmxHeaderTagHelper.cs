@@ -20,15 +20,17 @@ namespace Ramstack.HtmxToolkit.TagHelpers;
 ///     HTMX 4.x requires either the explicit inheritance modifier or the global
 ///     <see cref="HtmxV4Config.ImplicitInheritance" /> option for inheritance.
 ///   </item>
-///   <item>A child declaration of a header overrides a parent declaration.</item>
+///   <item>The <c>append</c> modifier merges a child declaration into inherited headers.</item>
 /// </list>
 /// </remarks>
 [HtmlTargetElement(Attributes = InheritedAttributeName)]
+[HtmlTargetElement(Attributes = AppendAttributeName)]
 [HtmlTargetElement(Attributes = HeadersDictionaryName)]
 [HtmlTargetElement(Attributes = HeadersPrefix + "*")]
 public sealed class HtmxHeaderTagHelper(IOptions<HtmxToolkitOptions> options) : TagHelper
 {
     private const string InheritedAttributeName = "hx-headers-inherited";
+    private const string AppendAttributeName = "hx-headers-append";
     private const string HeadersPrefix = "hx-header-";
     private const string HeadersDictionaryName = "hx-all-headers";
 
@@ -41,6 +43,16 @@ public sealed class HtmxHeaderTagHelper(IOptions<HtmxToolkitOptions> options) : 
     /// </remarks>
     [HtmlAttributeName(InheritedAttributeName)]
     public bool Inherited { get; set; }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether <c>hx-headers</c> is appended to inherited headers.
+    /// </summary>
+    /// <remarks>
+    /// HTMX 4.x emits the <c>append</c> modifier when this property is <see langword="true" />.
+    /// The property does not change the generated attribute name for HTMX 1.x and 2.x.
+    /// </remarks>
+    [HtmlAttributeName(AppendAttributeName)]
+    public bool Append { get; set; }
 
     /// <summary>
     /// Gets or sets the <c>hx-headers</c> attribute values.
@@ -57,9 +69,13 @@ public sealed class HtmxHeaderTagHelper(IOptions<HtmxToolkitOptions> options) : 
     {
         if (Headers is { Count: > 0 })
         {
-            var name = "hx-headers";
-            if (Inherited && options.Value.TargetVersion == HtmxTargetVersion.V4)
-                name = "hx-headers:inherited";
+            var name = options.Value.TargetVersion switch
+            {
+                HtmxTargetVersion.V4 when Inherited && Append => "hx-headers:inherited:append",
+                HtmxTargetVersion.V4 when Inherited => "hx-headers:inherited",
+                HtmxTargetVersion.V4 when Append => "hx-headers:append",
+                _ => "hx-headers"
+            };
 
             var info = HtmxDictionaryJsonSerializerContext.Default.IDictionaryStringString;
             var json = JsonSerializer.Serialize(Headers, info);

@@ -81,6 +81,41 @@ public class HtmxHeaderTagHelperTests
     }
 
     [Test]
+    public async Task ProcessAsync_Htmx4_Append_UsesAppendAttribute()
+    {
+        var output = TestHelper.CreateTagHelperOutput();
+        var helper = CreateHelper(HtmxTargetVersion.V4);
+
+        helper.Append = true;
+        helper.Headers["X-Custom"] = "value";
+
+        await helper.ProcessAsync(TestHelper.CreateTagHelperContext(), output);
+        var attribute = output.Attributes["hx-headers:append"];
+
+        Assert.That(attribute!.Value.ToString(), Is.EqualTo("{\"X-Custom\":\"value\"}"));
+        Assert.That(output.Attributes["hx-headers"], Is.Null);
+    }
+
+    [Test]
+    public async Task ProcessAsync_Htmx4_InheritedAndAppend_UsesCombinedAttribute()
+    {
+        var output = TestHelper.CreateTagHelperOutput();
+        var helper = CreateHelper(HtmxTargetVersion.V4);
+
+        helper.Inherited = true;
+        helper.Append = true;
+        helper.Headers["X-Custom"] = "value";
+
+        await helper.ProcessAsync(TestHelper.CreateTagHelperContext(), output);
+        var attribute = output.Attributes["hx-headers:inherited:append"];
+
+        Assert.That(attribute!.Value.ToString(), Is.EqualTo("{\"X-Custom\":\"value\"}"));
+        Assert.That(output.Attributes["hx-headers"], Is.Null);
+        Assert.That(output.Attributes["hx-headers:inherited"], Is.Null);
+        Assert.That(output.Attributes["hx-headers:append"], Is.Null);
+    }
+
+    [Test]
     public async Task ProcessAsync_Htmx4_NotInherited_UsesOrdinaryAttribute()
     {
         var output = TestHelper.CreateTagHelperOutput();
@@ -108,12 +143,13 @@ public class HtmxHeaderTagHelperTests
 
     [TestCase(HtmxTargetVersion.V1)]
     [TestCase(HtmxTargetVersion.V2)]
-    public async Task ProcessAsync_Htmx1_Htmx2_Inherited_UsesOrdinaryAttribute(HtmxTargetVersion version)
+    public async Task ProcessAsync_Htmx1_Htmx2_Modifiers_UseOrdinaryAttribute(HtmxTargetVersion version)
     {
         var output = TestHelper.CreateTagHelperOutput();
         var helper = CreateHelper(version);
 
         helper.Inherited = true;
+        helper.Append = true;
         helper.Headers["X-Custom"] = "value";
 
         await helper.ProcessAsync(TestHelper.CreateTagHelperContext(), output);
@@ -121,6 +157,8 @@ public class HtmxHeaderTagHelperTests
 
         Assert.That(attribute!.Value.ToString(), Is.EqualTo("{\"X-Custom\":\"value\"}"));
         Assert.That(output.Attributes["hx-headers:inherited"], Is.Null);
+        Assert.That(output.Attributes["hx-headers:append"], Is.Null);
+        Assert.That(output.Attributes["hx-headers:inherited:append"], Is.Null);
         Assert.That(output.Attributes["hx-inherit"], Is.Null);
     }
 
