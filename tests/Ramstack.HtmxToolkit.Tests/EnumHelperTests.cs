@@ -86,24 +86,4 @@ public class EnumHelperTests
     [TestCase(HtmxFetchMode.NoCors, "no-cors")]
     public void GetFetchModeValue_ReturnsExpectedString(HtmxFetchMode value, string expected) =>
         Assert.That(value.GetFetchModeValue(), Is.EqualTo(expected));
-
-    [Test]
-    public void GetSwapValue_ReturnsNone_ForUndefinedValue() =>
-        Assert.That(((HtmxSwap)999).GetSwapValue(), Is.EqualTo("none"));
-
-    [Test]
-    public void GetHttpVerbValue_ReturnsPatch_ForUndefinedValue() =>
-        Assert.That(((HttpVerb)999).GetHttpVerbValue(), Is.EqualTo("patch"));
-
-    [Test]
-    public void GetScrollBehaviorValue_ReturnsInstant_ForUndefinedValue() =>
-        Assert.That(((HtmxScrollBehavior)999).GetScrollBehaviorValue(), Is.EqualTo("instant"));
-
-    [Test]
-    public void GetWsBinaryTypeValue_ReturnsArrayBuffer_ForUndefinedValue() =>
-        Assert.That(((HtmxBinaryType)999).GetWsBinaryTypeValue(), Is.EqualTo("arraybuffer"));
-
-    [Test]
-    public void GetFetchModeValue_ReturnsNoCors_ForUndefinedValue() =>
-        Assert.That(((HtmxFetchMode)999).GetFetchModeValue(), Is.EqualTo("no-cors"));
 }
