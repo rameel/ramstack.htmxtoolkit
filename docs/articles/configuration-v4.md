@@ -24,7 +24,7 @@ builder.Services.AddHtmxToolkit(options =>
 
 | Purpose | Properties |
 |---|---|
-| Diagnostics and syntax | `LogAll`, `Prefix`, `MetaCharacter` |
+| Diagnostics and attribute prefix | `LogAll`, `Prefix` |
 | History | `History` |
 | Swaps and morphing | `DefaultSwap`, `AllowEmptySwapAfterOob`, `DefaultSettleDelay`, `MorphIgnore`, `MorphSkip`, `MorphSkipChildren`, `MorphScanLimit` |
 | Indicators and lifecycle CSS | `IncludeIndicatorCss`, `IndicatorClass`, `RequestClass` |
@@ -62,24 +62,40 @@ Unlike HTMX 1.x and 2.x, HTMX 4.x does not keep local DOM snapshots in `sessionS
 The optional HTMX 4 `hx-history-cache` extension restores local snapshot behavior;
 HtmxToolkit does not enable that extension automatically.
 
-## Attribute inheritance
+## Attribute modifiers
 
-HTMX 4.x requires explicit attribute inheritance by default. HtmxToolkit provides Razor-friendly boolean inputs that generate the HTMX 4 modifier:
+HTMX 4.x requires explicit attribute inheritance by default and replaces an inherited object when a child
+declares the same attribute. HtmxToolkit provides Razor-friendly boolean inputs for the `inherited` and
+`append` modifiers:
 
 ```razor
 <section hx-request-inherited="true"
          hx-request-timeout="2000"
          hx-vals-inherited="true"
          hx-val-tenant="@Model.TenantId">
-    ...
+    <button hx-post="/reports/preview"
+            hx-vals-append="true"
+            hx-val-format="summary">
+        Preview
+    </button>
 </section>
 ```
 
-With the default `MetaCharacter`, these become `hx-config:inherited` and `hx-vals:inherited`.
-`hx-headers-inherited="true"` provides the same behavior for generated request headers.
+The parent inputs become `hx-config:inherited` and `hx-vals:inherited`. The button emits
+`hx-vals:append`, which merges its values into the inherited object instead of replacing it.
+The same inputs are available for all three generated JSON attributes:
 
-When a custom `MetaCharacter` is configured, the generated attribute uses that character instead of `:`.
-For example, `MetaCharacter = "-"` produces `hx-vals-inherited` in the output HTML.
+| Razor Tag Helper input | Generated HTMX 4 attribute |
+|---|---|
+| `hx-request-inherited="true"` | `hx-config:inherited` |
+| `hx-request-append="true"` | `hx-config:append` |
+| `hx-vals-inherited="true"` | `hx-vals:inherited` |
+| `hx-vals-append="true"` | `hx-vals:append` |
+| `hx-headers-inherited="true"` | `hx-headers:inherited` |
+| `hx-headers-append="true"` | `hx-headers:append` |
+
+Setting both inputs for one attribute emits a combined modifier, for example
+`hx-headers:inherited:append`.
 
 Alternatively, enable the HTMX 1.x/2.x inheritance behavior globally:
 
@@ -88,7 +104,8 @@ config.ImplicitInheritance = true;
 ```
 
 Leave it unset or `false` when inheritance is selected per element with `hx-request-inherited`, `hx-vals-inherited`,
-or `hx-headers-inherited`.
+or `hx-headers-inherited`. Global inheritance removes the need for those `*-inherited` inputs, but child
+declarations can still use `*-append` to merge with inherited objects.
 
 ## Prevent swaps for status codes
 

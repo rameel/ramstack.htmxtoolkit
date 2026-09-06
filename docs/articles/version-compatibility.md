@@ -38,19 +38,26 @@ if (Request.IsHtmxRequest(out var htmx))
 | `hx-request-no-headers` | Supported | Removed |
 | Cache, redirect, referrer, integrity, validation | Not emitted | Supported |
 
-## Explicit attribute inheritance
+## Attribute modifiers
 
 HTMX 1.x and 2.x merge-inherit request configuration, values, and headers automatically.
-For HTMX 4.x, HtmxToolkit maps Razor-friendly inputs to the explicit modifier required by the client:
+For HTMX 4.x, HtmxToolkit maps Razor-friendly inputs to the explicit inheritance and append modifiers:
 
 | Razor input | HTMX 1.x / 2.x output | HTMX 4.x output |
 |---|---|---|
 | `hx-request-inherited="true"` | `hx-request` | `hx-config:inherited` |
+| `hx-request-append="true"` | `hx-request` | `hx-config:append` |
 | `hx-vals-inherited="true"` | `hx-vals` | `hx-vals:inherited` |
+| `hx-vals-append="true"` | `hx-vals` | `hx-vals:append` |
 | `hx-headers-inherited="true"` | `hx-headers` | `hx-headers:inherited` |
+| `hx-headers-append="true"` | `hx-headers` | `hx-headers:append` |
 
-The V4 output uses `HtmxV4Config.MetaCharacter` instead of `:` when a custom meta character is configured.
-`HtmxV4Config.ImplicitInheritance = true` is the global alternative.
+In V4, `append` merges a child declaration into the inherited object rather than replacing it.
+Setting both inputs for the same attribute produces one combined name such as
+`hx-vals:inherited:append`. In V1 and V2, both inputs leave the ordinary merge-inherited attribute name unchanged.
+
+`HtmxV4Config.ImplicitInheritance = true` is the global alternative to per-element `*-inherited` inputs.
+It does not replace `*-append` when a child declaration must merge with inherited values.
 
 ## Global configuration concepts
 

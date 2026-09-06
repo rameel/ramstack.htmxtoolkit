@@ -102,12 +102,24 @@ For HTMX 4.x, add `hx-vals-inherited="true"` to the Razor element to generate th
 </section>
 ```
 
-With the default HTMX 4 meta character, this produces `hx-vals:inherited='{"tenant":"..."}'`.
+This produces `hx-vals:inherited='{"tenant":"..."}'`.
 
 HTMX 1.x and 2.x merge inherited values: a child value overrides a value with the same name
-while other inherited values remain. HTMX 4.x behaves differently — a plain child `hx-vals` replaces
-the inherited object entirely. Merging the child object into the inherited values
-requires the HTMX 4 `:append` modifier, which HtmxToolkit does not currently generate.
+while other inherited values remain. In HTMX 4.x, a plain child `hx-vals` replaces the inherited
+object entirely. Add `hx-vals-append="true"` to merge the child object instead:
+
+```razor
+<section hx-vals-inherited="true"
+         hx-val-tenant="@Model.TenantId">
+    <button hx-post="/reports/preview"
+            hx-vals-append="true"
+            hx-val-format="summary">
+        Preview
+    </button>
+</section>
+```
+
+The button emits `hx-vals:append='{"format":"summary"}'`.
 
 ## Send custom headers
 
@@ -128,7 +140,8 @@ For HTMX 4.x, use the Toolkit input `hx-headers-inherited="true"` on a parent el
 </section>
 ```
 
-This generates `hx-headers:inherited` when the default HTMX 4 meta character is used.
+This generates `hx-headers:inherited`.
+Use `hx-headers-append="true"` on a child declaration to merge its headers into the inherited object.
 
 Do not use custom client headers as proof of identity or authorization; clients can modify them.
 Authenticate and authorize on the server.
@@ -171,7 +184,7 @@ The output depends on the configured HTMX target:
 Unsupported properties are omitted from the generated JSON. In particular, `HtmxRequestCredentials.Omit`
 cannot be represented by HTMX 1.x or 2.x and is omitted for those targets.
 
-## Inherit generated attributes
+## Apply attribute modifiers
 
 HTMX 4.x requires attribute inheritance to be explicit by default.
 Razor cannot use the colon-form HTMX modifier as a bound Tag Helper input,
@@ -180,8 +193,11 @@ so HtmxToolkit provides hyphenated boolean inputs and generates the correct clie
 | Razor Tag Helper input | Generated HTMX 4 attribute |
 |---|---|
 | `hx-request-inherited="true"` | `hx-config:inherited` |
+| `hx-request-append="true"` | `hx-config:append` |
 | `hx-vals-inherited="true"` | `hx-vals:inherited` |
+| `hx-vals-append="true"` | `hx-vals:append` |
 | `hx-headers-inherited="true"` | `hx-headers:inherited` |
+| `hx-headers-append="true"` | `hx-headers:append` |
 
 For example, inherit per-request timeout configuration from a parent:
 
@@ -192,15 +208,16 @@ For example, inherit per-request timeout configuration from a parent:
 </section>
 ```
 
+Use `inherited` on a parent declaration to make it available to descendants, and `append` on a child
+declaration to merge rather than replace the inherited object. When both inputs are `true` on the same
+element, HtmxToolkit emits one combined attribute such as `hx-config:inherited:append`.
+
 For HTMX 1.x and 2.x, these boolean inputs do not change the generated names
 because `hx-request`, `hx-vals`, and `hx-headers` are already merge-inherited automatically.
 
-If `HtmxV4Config.MetaCharacter` is configured, HtmxToolkit uses that character instead of `:` in the generated attribute name.
 Alternatively, set `HtmxV4Config.ImplicitInheritance` to `true` to enable inheritance globally;
-the `*-inherited` inputs are then unnecessary.
-
-HtmxToolkit does not currently expose an `*-append` Tag Helper input.
-The table above documents only modifiers the Toolkit can generate.
+the `*-inherited` inputs are then unnecessary. Child declarations can still use the corresponding
+`*-append` input when they need to merge with inherited values.
 
 ## Render global configuration
 
