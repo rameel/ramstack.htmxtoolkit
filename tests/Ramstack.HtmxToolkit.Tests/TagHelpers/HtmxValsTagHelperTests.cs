@@ -76,6 +76,41 @@ public class HtmxValsTagHelperTests
     }
 
     [Test]
+    public async Task ProcessAsync_Htmx4_Append_UsesAppendAttribute()
+    {
+        var output = TestHelper.CreateTagHelperOutput();
+        var helper = CreateHelper(HtmxTargetVersion.V4);
+
+        helper.Append = true;
+        helper.Values["sort"] = "title";
+
+        await helper.ProcessAsync(TestHelper.CreateTagHelperContext(), output);
+        var attribute = output.Attributes["hx-vals:append"];
+
+        Assert.That(attribute!.Value.ToString(), Is.EqualTo("{\"sort\":\"title\"}"));
+        Assert.That(output.Attributes["hx-vals"], Is.Null);
+    }
+
+    [Test]
+    public async Task ProcessAsync_Htmx4_InheritedAndAppend_UsesCombinedAttribute()
+    {
+        var output = TestHelper.CreateTagHelperOutput();
+        var helper = CreateHelper(HtmxTargetVersion.V4);
+
+        helper.Inherited = true;
+        helper.Append = true;
+        helper.Values["sort"] = "title";
+
+        await helper.ProcessAsync(TestHelper.CreateTagHelperContext(), output);
+        var attribute = output.Attributes["hx-vals:inherited:append"];
+
+        Assert.That(attribute!.Value.ToString(), Is.EqualTo("{\"sort\":\"title\"}"));
+        Assert.That(output.Attributes["hx-vals"], Is.Null);
+        Assert.That(output.Attributes["hx-vals:inherited"], Is.Null);
+        Assert.That(output.Attributes["hx-vals:append"], Is.Null);
+    }
+
+    [Test]
     public async Task ProcessAsync_Htmx4_NotInherited_UsesOrdinaryAttribute()
     {
         var output = TestHelper.CreateTagHelperOutput();
@@ -103,12 +138,13 @@ public class HtmxValsTagHelperTests
 
     [TestCase(HtmxTargetVersion.V1)]
     [TestCase(HtmxTargetVersion.V2)]
-    public async Task ProcessAsync_Htmx1_Htmx2_Inherited_UsesOrdinaryAttribute(HtmxTargetVersion version)
+    public async Task ProcessAsync_Htmx1_Htmx2_Modifiers_UseOrdinaryAttribute(HtmxTargetVersion version)
     {
         var output = TestHelper.CreateTagHelperOutput();
         var helper = CreateHelper(version);
 
         helper.Inherited = true;
+        helper.Append = true;
         helper.Values["sort"] = "title";
 
         await helper.ProcessAsync(TestHelper.CreateTagHelperContext(), output);
@@ -116,6 +152,8 @@ public class HtmxValsTagHelperTests
 
         Assert.That(attribute!.Value.ToString(), Is.EqualTo("{\"sort\":\"title\"}"));
         Assert.That(output.Attributes["hx-vals:inherited"], Is.Null);
+        Assert.That(output.Attributes["hx-vals:append"], Is.Null);
+        Assert.That(output.Attributes["hx-vals:inherited:append"], Is.Null);
         Assert.That(output.Attributes["hx-inherit"], Is.Null);
     }
 

@@ -20,15 +20,17 @@ namespace Ramstack.HtmxToolkit.TagHelpers;
 ///     HTMX 4.x requires either the explicit inheritance modifier or the global
 ///     <see cref="HtmxV4Config.ImplicitInheritance" /> option for inheritance.
 ///   </item>
-///   <item>A child declaration of a value overrides a parent declaration.</item>
+///   <item>The <c>append</c> modifier merges a child declaration into inherited values.</item>
 /// </list>
 /// </remarks>
 [HtmlTargetElement(Attributes = InheritedAttributeName)]
+[HtmlTargetElement(Attributes = AppendAttributeName)]
 [HtmlTargetElement(Attributes = ValuesDictionaryName)]
 [HtmlTargetElement(Attributes = ValuesPrefix + "*")]
 public sealed class HtmxValsTagHelper(IOptions<HtmxToolkitOptions> options) : TagHelper
 {
     private const string InheritedAttributeName = "hx-vals-inherited";
+    private const string AppendAttributeName = "hx-vals-append";
     private const string ValuesPrefix = "hx-val-";
     private const string ValuesDictionaryName = "hx-all-vals";
 
@@ -41,6 +43,16 @@ public sealed class HtmxValsTagHelper(IOptions<HtmxToolkitOptions> options) : Ta
     /// </remarks>
     [HtmlAttributeName(InheritedAttributeName)]
     public bool Inherited { get; set; }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether <c>hx-vals</c> is appended to inherited values.
+    /// </summary>
+    /// <remarks>
+    /// HTMX 4.x emits the <c>append</c> modifier when this property is <see langword="true" />.
+    /// The property does not change the generated attribute name for HTMX 1.x and 2.x.
+    /// </remarks>
+    [HtmlAttributeName(AppendAttributeName)]
+    public bool Append { get; set; }
 
     /// <summary>
     /// Gets or sets the <c>hx-vals</c> attribute values.
@@ -57,9 +69,13 @@ public sealed class HtmxValsTagHelper(IOptions<HtmxToolkitOptions> options) : Ta
     {
         if (Values is { Count: > 0 } values)
         {
-            var name = "hx-vals";
-            if (Inherited && options.Value.TargetVersion == HtmxTargetVersion.V4)
-                name = "hx-vals:inherited";
+            var name = options.Value.TargetVersion switch
+            {
+                HtmxTargetVersion.V4 when Inherited && Append => "hx-vals:inherited:append",
+                HtmxTargetVersion.V4 when Inherited => "hx-vals:inherited",
+                HtmxTargetVersion.V4 when Append => "hx-vals:append",
+                _ => "hx-vals"
+            };
 
             var info = HtmxDictionaryJsonSerializerContext.Default.IDictionaryStringString;
             var json = JsonSerializer.Serialize(values, info);
