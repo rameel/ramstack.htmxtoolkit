@@ -1,0 +1,46 @@
+{
+  "$schema": "https://raw.githubusercontent.com/dotnet/docfx/main/schemas/docfx.schema.json",
+  "metadata": [
+    {
+      "src": [
+        {
+          "src": "../src",
+          "files": [ "Ramstack.HtmxToolkit/Ramstack.HtmxToolkit.csproj" ]
+        }
+      ],
+      "dest": "api",
+      "enumSortOrder": "declaringOrder"
+    }
+  ],
+  "build": {
+    "content": [
+      {
+        "files": [ "**/*.md", "**/toc.yml" ],
+        "exclude": [ "_site/**", "api/**", "api-overwrites/**", "README.md" ]
+      },
+      {
+        "files": [ "api/index.md" ]
+      },
+      {
+        "files": [ "api/**.yml" ]
+      }
+    ],
+    "resource": [
+      {
+        "src": "..",
+        "files": [ "Icon.png" ],
+        "dest": "images"
+      }
+    ],
+    "overwrite": [ "api-overwrites/**.md" ],
+    "dest": "_site",
+    "globalMetadata": {
+      "_appTitle": "Ramstack.HtmxToolkit",
+      "_appName": "Ramstack.HtmxToolkit",
+      "_appLogoPath": "images/Icon.png",
+      "_appFaviconPath": "images/Icon.png",
+      "_enableSearch": true
+    },
+    "template": [ "default", "modern", "template" ]
+  }
+}

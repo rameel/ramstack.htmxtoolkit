@@ -41,3 +41,7 @@ node_modules/
 
 /Directory.Build.targets
 
+# Generated DocFX output and API metadata
+/docs/_site/
+/docs/api/*
+!/docs/api/index.md

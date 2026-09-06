@@ -517,7 +517,11 @@ its children using `innerHTML`.
 `HtmxSwap.TextContent` is also handled by the `ramstack-morph` extension and does not require Idiomorph. It is supported natively
 by HTMX 2.x and 4.x; only HTMX 1.9.x needs the extension.
 
-## Sample
+## Running Locally
+
+Run the following commands from the repository root.
+
+### Demo
 
 The [`samples/Ramstack.HtmxToolkit.Demo`](samples/Ramstack.HtmxToolkit.Demo) project demonstrates request detection,
 response headers and events, MVC attributes, Tag Helpers, polling, boosted navigation, and antiforgery integration.
@@ -527,6 +531,20 @@ Run it with:
 ```console
 dotnet run --project samples/Ramstack.HtmxToolkit.Demo
 ```
+
+The application is available at <https://localhost:5001> and <http://localhost:5000>.
+
+### Documentation
+
+Restore the repository-local DocFX tool, then start the documentation preview server:
+
+```console
+dotnet tool restore
+dotnet docfx docs/docfx.json --serve
+```
+
+Open <http://localhost:8080> after DocFX finishes the initial build. See
+[`docs/README.md`](docs/README.md) for standalone builds and information about API examples.
 
 ## Contributing
 
