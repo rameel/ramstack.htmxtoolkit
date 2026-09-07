@@ -223,20 +223,6 @@ public class HtmxResponseTests
     }
 
     [Test]
-    public void TriggerEvents_SetsMultipleEvents()
-    {
-        var context = TestHelper.CreateHtmxRequestContext();
-        context.Response.Htmx(r => r.TriggerEvents(
-            new Dictionary<string, object> { ["a"] = 1, ["b"] = 2 },
-            HtmxTriggerTiming.AfterSwap));
-
-        var events = context.Response.GetHtmxHeaders().TriggerAfterSwap!;
-        Assert.That(events.Count, Is.EqualTo(2));
-        Assert.That(events["a"], Is.EqualTo(1));
-        Assert.That(events["b"], Is.EqualTo(2));
-    }
-
-    [Test]
     public void TriggerEvent_Htmx4_AddsEveryTimingToReceiveTrigger()
     {
         var context = TestHelper.CreateHtmxRequestContext(HtmxTargetVersion.V4);

@@ -32,13 +32,14 @@ internal sealed class PendingEvents
         (_response, _version) = (response, GetTargetVersion(response));
 
     /// <summary>
-    /// Adds the specified events to the pending set for <paramref name="timing" />.
+    /// Adds the specified event to the pending set for <paramref name="timing" />.
     /// When an event name already exists, the duplicate is stored under the
     /// <c>rs:events</c> key for client-side replay.
     /// </summary>
     /// <param name="timing">The time at which to trigger the events.</param>
-    /// <param name="events">The event names and their associated details.</param>
-    public void AddEvents(HtmxTriggerTiming timing, IReadOnlyDictionary<string, object> events)
+    /// <param name="eventName">The event name.</param>
+    /// <param name="detail">The event detail.</param>
+    public void AddEvent(HtmxTriggerTiming timing, string eventName, object detail)
     {
         timing = NormalizeTiming(timing);
 
@@ -49,18 +50,15 @@ internal sealed class PendingEvents
             _ => _afterSettle ??= new SmallDictionary<string, object>(StringComparer.Ordinal)
         };
 
-        foreach (var (k, v) in events)
+        if (!current.TryAdd(eventName, detail))
         {
-            if (current.TryAdd(k, v))
-                continue;
-
             if (!current.TryGetValue(ProxyEventName, out var value) || value is not List<KeyValuePair<string, object>> collection)
             {
                 collection = [];
                 current[ProxyEventName] = collection;
             }
 
-            collection.Add(new KeyValuePair<string, object>(k, v));
+            collection.Add(new KeyValuePair<string, object>(eventName, detail));
         }
     }
 
