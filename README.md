@@ -183,7 +183,7 @@ The fluent API supports:
 - Client navigation with `Location`, `Redirect`, `PushUrl`, and `ReplaceUrl`.
 - Swap control with `Reswap`, `Retarget`, and `Reselect`.
 - Page refresh with `Refresh`.
-- Client events with `TriggerEvent` and `TriggerEvents`.
+- Client events with `TriggerEvent`.
 
 The same API works in Minimal API handlers:
 

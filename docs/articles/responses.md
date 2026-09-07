@@ -130,8 +130,6 @@ Response.Htmx(htmx => htmx.TriggerEvent(
 </aside>
 ```
 
-Use `TriggerEvents` to add several event/detail pairs. Multiple Toolkit calls for the same response accumulate pending events.
-
 HTMX 1.x and 2.x distinguish receive, after-swap, and after-settle response headers.
 HTMX 4.x delivers these Toolkit events through `HX-Trigger` when the request completes, after the swap when one occurs.
 See [Version compatibility](version-compatibility.md).

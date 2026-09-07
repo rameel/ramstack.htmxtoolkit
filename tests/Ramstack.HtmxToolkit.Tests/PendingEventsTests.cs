@@ -6,14 +6,13 @@ namespace Ramstack.HtmxToolkit.Tests;
 public class PendingEventsTests
 {
     [Test]
-    public void AddEvents_StoresDistinctKeys()
+    public void AddEvent_StoresDistinctKeys()
     {
         var context = TestHelper.CreateHttpContext();
         var pending = PendingEvents.GetOrCreate(context.Response);
 
-        pending.AddEvents(
-            HtmxTriggerTiming.Receive,
-            CreateDictionary(("a", 1), ("b", 2)));
+        pending.AddEvent(HtmxTriggerTiming.Receive, "a", 1);
+        pending.AddEvent(HtmxTriggerTiming.Receive, "b", 2);
 
         var events = pending.GetEvents(HtmxTriggerTiming.Receive)!;
 
@@ -23,18 +22,13 @@ public class PendingEventsTests
     }
 
     [Test]
-    public void AddEvents_AccumulatesDuplicateKeys_UnderProxy()
+    public void AddEvent_AccumulatesDuplicateKeys_UnderProxy()
     {
         var context = TestHelper.CreateHttpContext();
         var pending = PendingEvents.GetOrCreate(context.Response);
 
-        pending.AddEvents(
-            HtmxTriggerTiming.Receive,
-            CreateDictionary(("message", "first")));
-
-        pending.AddEvents(
-            HtmxTriggerTiming.Receive,
-            CreateDictionary(("message", "second")));
+        pending.AddEvent(HtmxTriggerTiming.Receive, "message", "first");
+        pending.AddEvent(HtmxTriggerTiming.Receive, "message", "second");
 
         var events = pending.GetEvents(HtmxTriggerTiming.Receive)!;
 
@@ -44,14 +38,14 @@ public class PendingEventsTests
     }
 
     [Test]
-    public void AddEvents_TracksTimingsIndependently()
+    public void AddEvent_TracksTimingsIndependently()
     {
         var context = TestHelper.CreateHttpContext();
         var pending = PendingEvents.GetOrCreate(context.Response);
 
-        pending.AddEvents(HtmxTriggerTiming.Receive, CreateDictionary(("r", 1)));
-        pending.AddEvents(HtmxTriggerTiming.AfterSettle, CreateDictionary(("t", 3)));
-        pending.AddEvents(HtmxTriggerTiming.AfterSwap, CreateDictionary(("s", 2)));
+        pending.AddEvent(HtmxTriggerTiming.Receive, "r", 1);
+        pending.AddEvent(HtmxTriggerTiming.AfterSettle, "t", 3);
+        pending.AddEvent(HtmxTriggerTiming.AfterSwap, "s", 2);
 
         Assert.That(pending.GetEvents(HtmxTriggerTiming.Receive), Is.EqualTo(CreateDictionary(("r", 1))));
         Assert.That(pending.GetEvents(HtmxTriggerTiming.AfterSettle), Is.EqualTo(CreateDictionary(("t", 3))));
@@ -60,14 +54,14 @@ public class PendingEventsTests
 
     [TestCase(HtmxTargetVersion.V1)]
     [TestCase(HtmxTargetVersion.V2)]
-    public void AddEvents_PriorVersions_WriteEachTimingToItsOwnHeader(HtmxTargetVersion targetVersion)
+    public void AddEvent_PriorVersions_WriteEachTimingToItsOwnHeader(HtmxTargetVersion targetVersion)
     {
         var context = TestHelper.CreateHtmxRequestContext(targetVersion);
         var pending = PendingEvents.GetOrCreate(context.Response);
 
-        pending.AddEvents(HtmxTriggerTiming.Receive, CreateDictionary(("received", 1)));
-        pending.AddEvents(HtmxTriggerTiming.AfterSwap, CreateDictionary(("swapped", 2)));
-        pending.AddEvents(HtmxTriggerTiming.AfterSettle, CreateDictionary(("settled", 3)));
+        pending.AddEvent(HtmxTriggerTiming.Receive, "received", 1);
+        pending.AddEvent(HtmxTriggerTiming.AfterSwap, "swapped", 2);
+        pending.AddEvent(HtmxTriggerTiming.AfterSettle, "settled", 3);
         pending.Flush();
 
         Assert.Multiple(() =>
@@ -87,14 +81,14 @@ public class PendingEventsTests
     }
 
     [Test]
-    public void AddEvents_Htmx4_NormalizesAllTimingsToReceive()
+    public void AddEvent_Htmx4_NormalizesAllTimingsToReceive()
     {
         var context = TestHelper.CreateHtmxRequestContext(HtmxTargetVersion.V4);
         var pending = PendingEvents.GetOrCreate(context.Response);
 
-        pending.AddEvents(HtmxTriggerTiming.Receive, CreateDictionary(("received", 1)));
-        pending.AddEvents(HtmxTriggerTiming.AfterSwap, CreateDictionary(("swapped", 2)));
-        pending.AddEvents(HtmxTriggerTiming.AfterSettle, CreateDictionary(("settled", 3)));
+        pending.AddEvent(HtmxTriggerTiming.Receive, "received", 1);
+        pending.AddEvent(HtmxTriggerTiming.AfterSwap, "swapped", 2);
+        pending.AddEvent(HtmxTriggerTiming.AfterSettle, "settled", 3);
 
         var events = pending.GetEvents(HtmxTriggerTiming.Receive)!;
         pending.Flush();
@@ -115,14 +109,14 @@ public class PendingEventsTests
     }
 
     [Test]
-    public void AddEvents_Htmx4_PreservesDuplicatesAcrossRequestedTimings()
+    public void AddEvent_Htmx4_PreservesDuplicatesAcrossRequestedTimings()
     {
         var context = TestHelper.CreateHtmxRequestContext(HtmxTargetVersion.V4);
         var pending = PendingEvents.GetOrCreate(context.Response);
 
-        pending.AddEvents(HtmxTriggerTiming.Receive, CreateDictionary(("message", "first")));
-        pending.AddEvents(HtmxTriggerTiming.AfterSwap, CreateDictionary(("message", "second")));
-        pending.AddEvents(HtmxTriggerTiming.AfterSettle, CreateDictionary(("message", "third")));
+        pending.AddEvent(HtmxTriggerTiming.Receive, "message", "first");
+        pending.AddEvent(HtmxTriggerTiming.AfterSwap, "message", "second");
+        pending.AddEvent(HtmxTriggerTiming.AfterSettle, "message", "third");
 
         var events = pending.GetEvents(HtmxTriggerTiming.Receive)!;
 
@@ -154,7 +148,7 @@ public class PendingEventsTests
         var context = TestHelper.CreateHttpContext();
         var pending = PendingEvents.GetOrCreate(context.Response);
 
-        pending.AddEvents(HtmxTriggerTiming.Receive, CreateDictionary(("old", 1)));
+        pending.AddEvent(HtmxTriggerTiming.Receive, "old", 1);
         pending.SetEvents(HtmxTriggerTiming.Receive, CreateDictionary(("new", 2)));
 
         Assert.That(
@@ -168,9 +162,7 @@ public class PendingEventsTests
         var context = TestHelper.CreateHttpContext();
         var pending = PendingEvents.GetOrCreate(context.Response);
 
-        pending.AddEvents(
-            HtmxTriggerTiming.Receive,
-            CreateDictionary(("message", "hello")));
+        pending.AddEvent(HtmxTriggerTiming.Receive, "message", "hello");
 
         pending.Flush();
 
@@ -185,9 +177,7 @@ public class PendingEventsTests
         var context = TestHelper.CreateHttpContext();
         var pending = PendingEvents.GetOrCreate(context.Response);
 
-        pending.AddEvents(
-            HtmxTriggerTiming.AfterSwap,
-            CreateDictionary(("swapped", true)));
+        pending.AddEvent(HtmxTriggerTiming.AfterSwap, "swapped", true);
 
         pending.Flush();
 
@@ -202,7 +192,7 @@ public class PendingEventsTests
         var context = TestHelper.CreateHttpContext();
         var pending = PendingEvents.GetOrCreate(context.Response);
 
-        pending.AddEvents(HtmxTriggerTiming.Receive, CreateDictionary(("e", null!)));
+        pending.AddEvent(HtmxTriggerTiming.Receive, "e", null!);
         pending.Flush();
 
         var header = context.Response.Headers[HtmxResponseHeaderNames.Trigger].ToString();

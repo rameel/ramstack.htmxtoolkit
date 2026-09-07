@@ -228,24 +228,8 @@ public readonly struct HtmxResponse
         return TriggerEventImpl(this, eventName, detail, timing);
 
         static HtmxResponse TriggerEventImpl(HtmxResponse response, string eventName, object detail, HtmxTriggerTiming timing) =>
-            AddEvents(response, new Dictionary<string, object> { [eventName] = detail }, timing);
+            AddEvent(response, eventName, detail, timing);
     }
-
-    /// <summary>
-    /// Adds client-side events to the response header selected by <paramref name="timing" />.
-    /// </summary>
-    /// <remarks>
-    /// In HTMX 4.x, every <see cref="HtmxTriggerTiming" /> value is emitted through <c>HX-Trigger</c>
-    /// and runs when the request completes (after the swap whenever one is performed).
-    /// See <see href="https://github.com/bigskysoftware/htmx/pull/3900">PR #3900</see>.
-    /// </remarks>
-    /// <param name="events">The event names and their associated details.</param>
-    /// <param name="timing">The event timing. Defaults to <see cref="HtmxTriggerTiming.Receive" />.</param>
-    /// <returns>
-    /// The current <see cref="HtmxResponse" /> instance.
-    /// </returns>
-    public HtmxResponse TriggerEvents(IReadOnlyDictionary<string, object> events, HtmxTriggerTiming timing = HtmxTriggerTiming.Receive) =>
-        AddEvents(this, events, timing);
 
     /// <summary>
     /// Sets a response header and returns the response wrapper for fluent chaining.
@@ -263,17 +247,18 @@ public readonly struct HtmxResponse
     }
 
     /// <summary>
-    /// Adds pending client-side events and returns the response wrapper for fluent chaining.
+    /// Adds a pending client-side event and returns the response wrapper for fluent chaining.
     /// </summary>
     /// <param name="response">The response wrapper to update.</param>
-    /// <param name="events">The event names and their associated details.</param>
+    /// <param name="eventName">The event name.</param>
+    /// <param name="detail">The event detail.</param>
     /// <param name="timing">The time at which to trigger the events.</param>
     /// <returns>
     /// The updated response wrapper.
     /// </returns>
-    private static HtmxResponse AddEvents(HtmxResponse response, IReadOnlyDictionary<string, object> events, HtmxTriggerTiming timing)
+    private static HtmxResponse AddEvent(HtmxResponse response, string eventName, object detail, HtmxTriggerTiming timing)
     {
-        PendingEvents.GetOrCreate(response._response).AddEvents(timing, events);
+        PendingEvents.GetOrCreate(response._response).AddEvent(timing, eventName, detail);
         return response;
     }
 
