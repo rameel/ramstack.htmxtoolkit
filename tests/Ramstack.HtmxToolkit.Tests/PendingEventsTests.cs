@@ -202,6 +202,29 @@ public class PendingEventsTests
     }
 
     [Test]
+    public void AddEvent_NullEventName_ThrowsArgumentNullException()
+    {
+        var context = TestHelper.CreateHttpContext();
+        var pending = PendingEvents.GetOrCreate(context.Response);
+
+        Assert.Throws<ArgumentNullException>(() =>
+            pending.AddEvent(HtmxTriggerTiming.Receive, null!, "1"));
+    }
+
+    [TestCase("")]
+    [TestCase("   ")]
+    public void AddEvent_EmptyOrWhitespaceEventName_ThrowsArgumentException(string eventName)
+    {
+        var context = TestHelper.CreateHttpContext();
+        var pending = PendingEvents.GetOrCreate(context.Response);
+
+        var exception = Assert.Throws<ArgumentException>(() =>
+            pending.AddEvent(HtmxTriggerTiming.Receive, eventName, "1"));
+
+        Assert.That(exception?.ParamName, Is.EqualTo("eventName"));
+    }
+
+    [Test]
     public void Flush_RejectsInvalidJsonDetail()
     {
         var context = TestHelper.CreateHttpContext();

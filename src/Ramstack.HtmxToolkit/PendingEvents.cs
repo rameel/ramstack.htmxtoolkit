@@ -44,8 +44,15 @@ internal sealed class PendingEvents
     /// <param name="detail">The event detail.</param>
     public void AddEvent(HtmxTriggerTiming timing, string eventName, string detail)
     {
+        ArgumentNullException.ThrowIfNull(eventName);
+
+        if (string.IsNullOrWhiteSpace(eventName))
+            throw new ArgumentException("Event name cannot be empty.", nameof(eventName));
+
         if (eventName == ProxyEventName)
-            throw new ArgumentException($"The event name '{ProxyEventName}' is reserved.", nameof(eventName));
+            throw new ArgumentException(
+                $"The event name '{ProxyEventName}' is reserved.",
+                nameof(eventName));
 
         timing = NormalizeTiming(timing);
 
