@@ -42,10 +42,20 @@ internal sealed class PendingEvents
     /// <param name="timing">The time at which to trigger the events.</param>
     /// <param name="eventName">The event name.</param>
     /// <param name="detail">The event detail.</param>
-    public void AddEvent(HtmxTriggerTiming timing, string eventName, string detail)
+    public void AddEvent(HtmxTriggerTiming timing, string eventName, string? detail)
     {
+        ArgumentNullException.ThrowIfNull(eventName);
+
+        if (string.IsNullOrWhiteSpace(eventName))
+            throw new ArgumentException("Event name cannot be empty.", nameof(eventName));
+
         if (eventName == ProxyEventName)
-            throw new ArgumentException($"The event name '{ProxyEventName}' is reserved.", nameof(eventName));
+            throw new ArgumentException(
+                $"The event name '{ProxyEventName}' is reserved.",
+                nameof(eventName));
+
+        if (string.IsNullOrWhiteSpace(detail))
+            detail = "{}";
 
         timing = NormalizeTiming(timing);
 
@@ -76,6 +86,10 @@ internal sealed class PendingEvents
     /// <returns>
     /// The pending events, or <see langword="null" /> if none were registered.
     /// </returns>
+    /// <remarks>
+    /// Returns a live view of the internal accumulator for inspection only;
+    /// callers must not mutate it.
+    /// </remarks>
     public IReadOnlyDictionary<string, object>? GetEvents(HtmxTriggerTiming timing)
     {
         timing = NormalizeTiming(timing);

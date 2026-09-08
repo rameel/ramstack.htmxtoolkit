@@ -281,6 +281,8 @@ public readonly struct HtmxResponse
 
     private static string SerializeEventDetail<T>(T detail, JsonTypeInfo<T> jsonTypeInfo)
     {
+        ArgumentNullException.ThrowIfNull(jsonTypeInfo);
+
         var buffer = new ArrayBufferWriter<byte>();
         using (var writer = new Utf8JsonWriter(buffer, new JsonWriterOptions { Encoder = JsonOptions.Encoder, SkipValidation = true }))
             JsonSerializer.Serialize(writer, detail, jsonTypeInfo);

@@ -251,6 +251,43 @@ public class HtmxResponseTests
     }
 
     [Test]
+    public void TriggerEvent_NullObjectDetail_SerializesAsNull()
+    {
+        var context = TestHelper.CreateHtmxRequestContext();
+        context.Response.Htmx(r => r.TriggerEvent("e", (object?)null!));
+
+        PendingEvents.GetOrCreate(context.Response).Flush();
+
+        Assert.That(
+            context.Response.Headers[HtmxResponseHeaderNames.Trigger].ToString(),
+            Is.EqualTo("{\"e\":null}"));
+    }
+
+    [Test]
+    public void TriggerEvent_EmptyStringDetail_SerializesAsEmptyString()
+    {
+        var context = TestHelper.CreateHtmxRequestContext();
+        context.Response.Htmx(r => r.TriggerEvent("e", ""));
+
+        PendingEvents.GetOrCreate(context.Response).Flush();
+
+        Assert.That(
+            context.Response.Headers[HtmxResponseHeaderNames.Trigger].ToString(),
+            Is.EqualTo("{\"e\":\"\"}"));
+    }
+
+    [Test]
+    public void TriggerEvent_NullJsonTypeInfo_ThrowsArgumentNullException()
+    {
+        var context = TestHelper.CreateHtmxRequestContext();
+
+        var exception = Assert.Throws<ArgumentNullException>(() =>
+            context.Response.Htmx(static htmx => htmx.TriggerEvent("e", new TriggerEventDetail(), null!)));
+
+        Assert.That(exception?.ParamName, Is.EqualTo("jsonTypeInfo"));
+    }
+
+    [Test]
     public void TriggerEvent_ReservedProxyEventName_ThrowsArgumentException()
     {
         var context = TestHelper.CreateHtmxRequestContext();
