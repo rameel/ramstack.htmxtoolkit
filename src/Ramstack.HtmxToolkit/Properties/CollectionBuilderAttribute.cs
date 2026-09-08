@@ -1,6 +1,7 @@
 #if !NET8_0_OR_GREATER
 
-// ReSharper disable once CheckNamespace
+// ReSharper disable CheckNamespace
+// ReSharper disable UnusedAutoPropertyAccessor.Global
 namespace System.Runtime.CompilerServices;
 
 /// <summary>

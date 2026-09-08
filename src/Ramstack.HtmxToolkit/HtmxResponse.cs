@@ -1,5 +1,9 @@
+using System.Buffers;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
+using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization.Metadata;
 
 using Microsoft.AspNetCore.Http;
 
@@ -206,7 +210,7 @@ public readonly struct HtmxResponse
     /// See <see href="https://github.com/bigskysoftware/htmx/pull/3900">PR #3900</see>.
     /// </remarks>
     public HtmxResponse TriggerEvent(string eventName, HtmxTriggerTiming trigger = HtmxTriggerTiming.Receive) =>
-        TriggerEvent(eventName, "", trigger);
+        QueueEvent(this, eventName, "{}", trigger);
 
     /// <summary>
     /// Adds a client-side event and its detail to the response header selected by
@@ -223,13 +227,34 @@ public readonly struct HtmxResponse
     /// <returns>
     /// The current <see cref="HtmxResponse" /> instance.
     /// </returns>
+    [RequiresDynamicCode("Event details are serialized using reflection. Use the TriggerEvent overload that accepts JsonTypeInfo<T> for Native AOT applications.")]
+    [RequiresUnreferencedCode("Event details are serialized using reflection. Use the TriggerEvent overload that accepts JsonTypeInfo<T> for trimmed applications.")]
     public HtmxResponse TriggerEvent(string eventName, object detail, HtmxTriggerTiming timing = HtmxTriggerTiming.Receive)
     {
         return TriggerEventImpl(this, eventName, detail, timing);
 
         static HtmxResponse TriggerEventImpl(HtmxResponse response, string eventName, object detail, HtmxTriggerTiming timing) =>
-            AddEvent(response, eventName, detail, timing);
+            TriggerEventCore(response, eventName, detail, timing);
     }
+
+    /// <summary>
+    /// Adds a client-side event and serializes its detail using the specified JSON metadata.
+    /// </summary>
+    /// <typeparam name="T">The event detail type.</typeparam>
+    /// <param name="eventName">The event name to trigger.</param>
+    /// <param name="detail">The event detail.</param>
+    /// <param name="jsonTypeInfo">The source-generated JSON metadata for the event detail.</param>
+    /// <param name="timing">The event timing. Defaults to <see cref="HtmxTriggerTiming.Receive" />.</param>
+    /// <returns>
+    /// The current <see cref="HtmxResponse" /> instance.
+    /// </returns>
+    /// <remarks>
+    /// In HTMX 4.x, every <see cref="HtmxTriggerTiming" /> value is emitted through <c>HX-Trigger</c>
+    /// and runs when the request completes (after the swap whenever one is performed).
+    /// See <see href="https://github.com/bigskysoftware/htmx/pull/3900">PR #3900</see>.
+    /// </remarks>
+    public HtmxResponse TriggerEvent<T>(string eventName, T detail, JsonTypeInfo<T> jsonTypeInfo, HtmxTriggerTiming timing = HtmxTriggerTiming.Receive) =>
+        TriggerEventCore(this, eventName, detail, jsonTypeInfo, timing);
 
     /// <summary>
     /// Sets a response header and returns the response wrapper for fluent chaining.
@@ -246,17 +271,24 @@ public readonly struct HtmxResponse
         return response;
     }
 
-    /// <summary>
-    /// Adds a pending client-side event and returns the response wrapper for fluent chaining.
-    /// </summary>
-    /// <param name="response">The response wrapper to update.</param>
-    /// <param name="eventName">The event name.</param>
-    /// <param name="detail">The event detail.</param>
-    /// <param name="timing">The time at which to trigger the events.</param>
-    /// <returns>
-    /// The updated response wrapper.
-    /// </returns>
-    private static HtmxResponse AddEvent(HtmxResponse response, string eventName, object detail, HtmxTriggerTiming timing)
+    [RequiresDynamicCode("Event details are serialized using reflection.")]
+    [RequiresUnreferencedCode("Event details are serialized using reflection.")]
+    private static HtmxResponse TriggerEventCore(HtmxResponse response, string eventName, object detail, HtmxTriggerTiming timing) =>
+        QueueEvent(response, eventName, JsonSerializer.Serialize(detail, JsonOptions.CamelCase), timing);
+
+    private static HtmxResponse TriggerEventCore<T>(HtmxResponse response, string eventName, T detail, JsonTypeInfo<T> jsonTypeInfo, HtmxTriggerTiming timing) =>
+        QueueEvent(response, eventName, SerializeEventDetail(detail, jsonTypeInfo), timing);
+
+    private static string SerializeEventDetail<T>(T detail, JsonTypeInfo<T> jsonTypeInfo)
+    {
+        var buffer = new ArrayBufferWriter<byte>();
+        using (var writer = new Utf8JsonWriter(buffer, new JsonWriterOptions { Encoder = JsonOptions.Encoder, SkipValidation = true }))
+            JsonSerializer.Serialize(writer, detail, jsonTypeInfo);
+
+        return Encoding.UTF8.GetString(buffer.WrittenSpan);
+    }
+
+    private static HtmxResponse QueueEvent(HtmxResponse response, string eventName, string detail, HtmxTriggerTiming timing)
     {
         PendingEvents.GetOrCreate(response._response).AddEvent(timing, eventName, detail);
         return response;

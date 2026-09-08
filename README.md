@@ -28,7 +28,7 @@ HtmxToolkit is designed to minimize HTMX integration overhead in the application
   In normal use, they incur no wrapper allocations while preserving a strongly typed API.
 - Version-specific HTMX configuration is serialized only when the configuration changes; the resulting JSON is cached and reused across requests.
 - Known JSON shapes use source-generated `System.Text.Json` metadata, avoiding reflection-based metadata discovery at runtime.
-  Event details passed to `TriggerEvent` are the deliberate exception because their types are defined by the application.
+  Applications can pass `JsonTypeInfo<T>` to `TriggerEvent` to serialize their event details without reflection.
 - Work is skipped for non-HTMX requests, and overloads that accept state allow callers to use static callbacks and avoid closure allocations.
 
 ## Installation
@@ -202,6 +202,14 @@ app.MapGet("/profile", (HttpResponse response) =>
 Response.Htmx(
     static (htmx, path) => htmx.TriggerEvent("content-updated", new { path }),
     Request.Path.Value);
+```
+
+For trimming and Native AOT, pass source-generated JSON metadata for the event detail:
+
+```csharp
+Response.Htmx(
+    static (htmx, detail) => htmx.TriggerEvent("profile-updated", detail, AppJsonContext.Default.ProfileUpdated),
+    detail);
 ```
 
 Call `Response.GetHtmxHeaders()` for direct access to the strongly typed response headers, or use `HtmxResponseHeaderNames` with lower-level APIs.
