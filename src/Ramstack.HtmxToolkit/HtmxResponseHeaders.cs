@@ -125,6 +125,11 @@ public readonly struct HtmxResponseHeaders
     ///   and written into the header immediately before the response starts.
     /// </para>
     /// <para>
+    ///   The returned dictionary is a live view of the accumulated events, provided for
+    ///   inspection only. Do not cast it to a mutable interface or modify it: doing so
+    ///   corrupts the pending events and breaks header serialization.
+    /// </para>
+    /// <para>
     ///   HTMX 1.x and 2.x trigger these events when the response is received,
     ///   whereas HTMX 4.x triggers them when the request completes
     ///   (after the swap whenever one is performed).
@@ -141,6 +146,11 @@ public readonly struct HtmxResponseHeaders
     ///   and written into the header immediately before the response starts.
     /// </para>
     /// <para>
+    ///   The returned dictionary is a live view of the accumulated events, provided for
+    ///   inspection only. Do not cast it to a mutable interface or modify it: doing so
+    ///   corrupts the pending events and breaks header serialization.
+    /// </para>
+    /// <para>
     ///   In HTMX 4.x, assigned events are accumulated in <see cref="Trigger" />
     ///   and emitted through <c>HX-Trigger</c> when the request completes
     ///   (after the swap whenever one is performed).
@@ -155,6 +165,11 @@ public readonly struct HtmxResponseHeaders
     /// <para>
     ///   Event values are serialized JSON fragments accumulated for the current response
     ///   and written into the header immediately before the response starts.
+    /// </para>
+    /// <para>
+    ///   The returned dictionary is a live view of the accumulated events, provided for
+    ///   inspection only. Do not cast it to a mutable interface or modify it: doing so
+    ///   corrupts the pending events and breaks header serialization.
     /// </para>
     /// <para>
     ///   In HTMX 4.x, assigned events are accumulated in <see cref="Trigger" />

@@ -240,6 +240,22 @@ public class PendingEventsTests
     }
 
     [Test]
+    public void GetEvents_MutatingReturnedView_BreaksFlush()
+    {
+        // The returned dictionary is a live inspection-only view: writing a value
+        // that is not a serialized JSON fragment corrupts the pending events.
+        var context = TestHelper.CreateHttpContext();
+        var pending = PendingEvents.GetOrCreate(context.Response);
+
+        pending.AddEvent(HtmxTriggerTiming.Receive, "a", "1");
+
+        var mutable = (IDictionary<string, object>)pending.GetEvents(HtmxTriggerTiming.Receive)!;
+        mutable["a"] = 2;
+
+        Assert.Throws<InvalidCastException>(pending.Flush);
+    }
+
+    [Test]
     public void Flush_RejectsInvalidJsonDetail()
     {
         var context = TestHelper.CreateHttpContext();

@@ -86,6 +86,10 @@ internal sealed class PendingEvents
     /// <returns>
     /// The pending events, or <see langword="null" /> if none were registered.
     /// </returns>
+    /// <remarks>
+    /// Returns a live view of the internal accumulator for inspection only;
+    /// callers must not mutate it.
+    /// </remarks>
     public IReadOnlyDictionary<string, object>? GetEvents(HtmxTriggerTiming timing)
     {
         timing = NormalizeTiming(timing);
