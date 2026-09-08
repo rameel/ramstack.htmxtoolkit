@@ -277,6 +277,17 @@ public class HtmxResponseTests
     }
 
     [Test]
+    public void TriggerEvent_NullJsonTypeInfo_ThrowsArgumentNullException()
+    {
+        var context = TestHelper.CreateHtmxRequestContext();
+
+        var exception = Assert.Throws<ArgumentNullException>(() =>
+            context.Response.Htmx(static htmx => htmx.TriggerEvent("e", new TriggerEventDetail(), null!)));
+
+        Assert.That(exception?.ParamName, Is.EqualTo("jsonTypeInfo"));
+    }
+
+    [Test]
     public void TriggerEvent_ReservedProxyEventName_ThrowsArgumentException()
     {
         var context = TestHelper.CreateHtmxRequestContext();
