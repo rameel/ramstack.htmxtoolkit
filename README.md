@@ -7,8 +7,8 @@
 HtmxToolkit integrates [HTMX](https://htmx.org/) with ASP.NET Core. It provides strongly typed APIs for request and response headers,
 MVC action filters, Razor Tag Helpers, application-wide HTMX configuration, and antiforgery support.
 
-The package targets .NET 6 and can be used by applications running on .NET 6 or later.
-It supports HTMX 1.9.x, HTMX 2.x, and HTMX 4.x. HTMX 2.x is selected by default.
+- The package targets .NET 6 and can be used by applications running on .NET 6 or later.
+- It supports HTMX 1.9.x, HTMX 2.x, and HTMX 4.x. HTMX 2.x is selected by default.
 
 ## Features
 
