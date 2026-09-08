@@ -201,6 +201,21 @@ public class PendingEventsTests
         Assert.That(header, Is.EqualTo("{\"e\":null}"));
     }
 
+    [TestCase(null)]
+    [TestCase("")]
+    [TestCase("   ")]
+    public void AddEvent_NullOrWhitespaceDetail_NormalizesToEmptyObject(string? detail)
+    {
+        var context = TestHelper.CreateHttpContext();
+        var pending = PendingEvents.GetOrCreate(context.Response);
+
+        pending.AddEvent(HtmxTriggerTiming.Receive, "e", detail);
+        pending.Flush();
+
+        var header = context.Response.Headers[HtmxResponseHeaderNames.Trigger].ToString();
+        Assert.That(header, Is.EqualTo("{\"e\":{}}"));
+    }
+
     [Test]
     public void AddEvent_NullEventName_ThrowsArgumentNullException()
     {

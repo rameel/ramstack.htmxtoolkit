@@ -251,6 +251,32 @@ public class HtmxResponseTests
     }
 
     [Test]
+    public void TriggerEvent_NullObjectDetail_SerializesAsNull()
+    {
+        var context = TestHelper.CreateHtmxRequestContext();
+        context.Response.Htmx(r => r.TriggerEvent("e", (object?)null!));
+
+        PendingEvents.GetOrCreate(context.Response).Flush();
+
+        Assert.That(
+            context.Response.Headers[HtmxResponseHeaderNames.Trigger].ToString(),
+            Is.EqualTo("{\"e\":null}"));
+    }
+
+    [Test]
+    public void TriggerEvent_EmptyStringDetail_SerializesAsEmptyString()
+    {
+        var context = TestHelper.CreateHtmxRequestContext();
+        context.Response.Htmx(r => r.TriggerEvent("e", ""));
+
+        PendingEvents.GetOrCreate(context.Response).Flush();
+
+        Assert.That(
+            context.Response.Headers[HtmxResponseHeaderNames.Trigger].ToString(),
+            Is.EqualTo("{\"e\":\"\"}"));
+    }
+
+    [Test]
     public void TriggerEvent_ReservedProxyEventName_ThrowsArgumentException()
     {
         var context = TestHelper.CreateHtmxRequestContext();
