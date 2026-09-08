@@ -210,7 +210,7 @@ public readonly struct HtmxResponse
     /// See <see href="https://github.com/bigskysoftware/htmx/pull/3900">PR #3900</see>.
     /// </remarks>
     public HtmxResponse TriggerEvent(string eventName, HtmxTriggerTiming trigger = HtmxTriggerTiming.Receive) =>
-        QueueEvent(this, eventName, "{}", trigger);
+        AddToPendingEvent(this, eventName, "{}", trigger);
 
     /// <summary>
     /// Adds a client-side event and its detail to the response header selected by
@@ -274,10 +274,10 @@ public readonly struct HtmxResponse
     [RequiresDynamicCode("Event details are serialized using reflection.")]
     [RequiresUnreferencedCode("Event details are serialized using reflection.")]
     private static HtmxResponse TriggerEventCore(HtmxResponse response, string eventName, object detail, HtmxTriggerTiming timing) =>
-        QueueEvent(response, eventName, JsonSerializer.Serialize(detail, JsonOptions.CamelCase), timing);
+        AddToPendingEvent(response, eventName, JsonSerializer.Serialize(detail, JsonOptions.CamelCase), timing);
 
     private static HtmxResponse TriggerEventCore<T>(HtmxResponse response, string eventName, T detail, JsonTypeInfo<T> jsonTypeInfo, HtmxTriggerTiming timing) =>
-        QueueEvent(response, eventName, SerializeEventDetail(detail, jsonTypeInfo), timing);
+        AddToPendingEvent(response, eventName, SerializeEventDetail(detail, jsonTypeInfo), timing);
 
     private static string SerializeEventDetail<T>(T detail, JsonTypeInfo<T> jsonTypeInfo)
     {
@@ -290,9 +290,9 @@ public readonly struct HtmxResponse
         return Encoding.UTF8.GetString(buffer.WrittenSpan);
     }
 
-    private static HtmxResponse QueueEvent(HtmxResponse response, string eventName, string detail, HtmxTriggerTiming timing)
+    private static HtmxResponse AddToPendingEvent(HtmxResponse response, string eventName, string detailJson, HtmxTriggerTiming timing)
     {
-        PendingEvents.GetOrCreate(response._response).AddEvent(timing, eventName, detail);
+        PendingEvents.GetOrCreate(response._response).AddEvent(timing, eventName, detailJson);
         return response;
     }
 

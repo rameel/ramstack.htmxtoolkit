@@ -41,21 +41,19 @@ internal sealed class PendingEvents
     /// </summary>
     /// <param name="timing">The time at which to trigger the events.</param>
     /// <param name="eventName">The event name.</param>
-    /// <param name="detail">The event detail.</param>
-    public void AddEvent(HtmxTriggerTiming timing, string eventName, string? detail)
+    /// <param name="detailJson">The event detail as JSON.</param>
+    public void AddEvent(HtmxTriggerTiming timing, string eventName, string detailJson)
     {
-        ArgumentNullException.ThrowIfNull(eventName);
-
         if (string.IsNullOrWhiteSpace(eventName))
-            throw new ArgumentException("Event name cannot be empty.", nameof(eventName));
+            throw new ArgumentException("Event name cannot be null or whitespace.", nameof(eventName));
+
+        if (string.IsNullOrWhiteSpace(detailJson))
+            throw new ArgumentException("Event detail JSON cannot be null or whitespace.", nameof(detailJson));
 
         if (eventName == ProxyEventName)
             throw new ArgumentException(
                 $"The event name '{ProxyEventName}' is reserved.",
                 nameof(eventName));
-
-        if (string.IsNullOrWhiteSpace(detail))
-            detail = "{}";
 
         timing = NormalizeTiming(timing);
 
@@ -66,7 +64,7 @@ internal sealed class PendingEvents
             _ => _afterSettle ??= new SmallDictionary<string, object>(StringComparer.Ordinal)
         };
 
-        if (!current.TryAdd(eventName, detail))
+        if (!current.TryAdd(eventName, detailJson))
         {
             if (!current.TryGetValue(ProxyEventName, out var value)
                 || value is not List<KeyValuePair<string, string>> collection)
@@ -75,7 +73,7 @@ internal sealed class PendingEvents
                 current[ProxyEventName] = collection;
             }
 
-            collection.Add(new KeyValuePair<string, string>(eventName, detail));
+            collection.Add(new KeyValuePair<string, string>(eventName, detailJson));
         }
     }
 

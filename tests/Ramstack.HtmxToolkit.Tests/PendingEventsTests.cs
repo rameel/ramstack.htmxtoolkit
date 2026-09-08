@@ -204,37 +204,27 @@ public class PendingEventsTests
     [TestCase(null)]
     [TestCase("")]
     [TestCase("   ")]
-    public void AddEvent_NullOrWhitespaceDetail_NormalizesToEmptyObject(string? detail)
-    {
-        var context = TestHelper.CreateHttpContext();
-        var pending = PendingEvents.GetOrCreate(context.Response);
-
-        pending.AddEvent(HtmxTriggerTiming.Receive, "e", detail);
-        pending.Flush();
-
-        var header = context.Response.Headers[HtmxResponseHeaderNames.Trigger].ToString();
-        Assert.That(header, Is.EqualTo("{\"e\":{}}"));
-    }
-
-    [Test]
-    public void AddEvent_NullEventName_ThrowsArgumentNullException()
-    {
-        var context = TestHelper.CreateHttpContext();
-        var pending = PendingEvents.GetOrCreate(context.Response);
-
-        Assert.Throws<ArgumentNullException>(() =>
-            pending.AddEvent(HtmxTriggerTiming.Receive, null!, "1"));
-    }
-
-    [TestCase("")]
-    [TestCase("   ")]
-    public void AddEvent_EmptyOrWhitespaceEventName_ThrowsArgumentException(string eventName)
+    public void AddEvent_NullOrWhitespaceDetail_ThrowsArgumentException(string? detail)
     {
         var context = TestHelper.CreateHttpContext();
         var pending = PendingEvents.GetOrCreate(context.Response);
 
         var exception = Assert.Throws<ArgumentException>(() =>
-            pending.AddEvent(HtmxTriggerTiming.Receive, eventName, "1"));
+            pending.AddEvent(HtmxTriggerTiming.Receive, "e", detail!));
+
+        Assert.That(exception?.ParamName, Is.EqualTo("detailJson"));
+    }
+
+    [TestCase(null)]
+    [TestCase("")]
+    [TestCase("   ")]
+    public void AddEvent_NullOrWhitespaceEventName_ThrowsArgumentException(string? eventName)
+    {
+        var context = TestHelper.CreateHttpContext();
+        var pending = PendingEvents.GetOrCreate(context.Response);
+
+        var exception = Assert.Throws<ArgumentException>(() =>
+            pending.AddEvent(HtmxTriggerTiming.Receive, eventName!, "1"));
 
         Assert.That(exception?.ParamName, Is.EqualTo("eventName"));
     }
