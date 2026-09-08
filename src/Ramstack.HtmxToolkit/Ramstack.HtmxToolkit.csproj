@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFrameworks>net6.0;net8.0</TargetFrameworks>
-    <IsAotCompatible Condition="'$(TargetFramework)' == 'net8.0'">true</IsAotCompatible>
+    <IsAotCompatible Condition="'$(TargetFramework)' == 'net8.0' and '$(EnableAotAnalysis)' == 'true'">true</IsAotCompatible>
     <Description>Enables seamless integration of HTMX with ASP.NET Core (https://htmx.org).</Description>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
