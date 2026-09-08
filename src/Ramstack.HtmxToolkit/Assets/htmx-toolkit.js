@@ -122,7 +122,7 @@ document._r_htmx ||= ((document, htmx) => {
         add_antiforgery(request.method, request.headers, request.body);
     });
 
-    listen("rs:events", e => {
+    listen("rs:event", e => {
         for (let kvp of e.detail.value || e.detail) {
             htmx.trigger(e.target, kvp.key, kvp.value);
         }

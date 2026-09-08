@@ -117,12 +117,12 @@ public readonly struct HtmxResponseHeaders
     }
 
     /// <summary>
-    /// Gets or sets the client-side events to trigger through the <c>HX-Trigger</c> header.
+    /// Gets the client-side events to trigger through the <c>HX-Trigger</c> header.
     /// </summary>
     /// <remarks>
     /// <para>
-    ///   Event values are accumulated for the current response and serialized
-    ///   into the header immediately before the response starts.
+    ///   Event values are serialized JSON fragments accumulated for the current response
+    ///   and written into the header immediately before the response starts.
     /// </para>
     /// <para>
     ///   HTMX 1.x and 2.x trigger these events when the response is received,
@@ -130,21 +130,15 @@ public readonly struct HtmxResponseHeaders
     ///   (after the swap whenever one is performed).
     /// </para>
     /// </remarks>
-    [MaybeNull]
-    public IReadOnlyDictionary<string, object> Trigger
-    {
-        get => PendingEvents.TryGet(_response)?.GetEvents(HtmxTriggerTiming.Receive);
-        set => PendingEvents.GetOrCreate(_response).SetEvents(HtmxTriggerTiming.Receive, value);
-    }
+    public IReadOnlyDictionary<string, object>? Trigger => PendingEvents.TryGet(_response)?.GetEvents(HtmxTriggerTiming.Receive);
 
     /// <summary>
-    /// Gets or sets the client-side events to trigger through
-    /// the <c>HX-Trigger-After-Swap</c> header after the swap step.
+    /// Gets the client-side events to trigger through the <c>HX-Trigger-After-Swap</c> header after the swap step.
     /// </summary>
     /// <remarks>
     /// <para>
-    ///   Event values are accumulated for the current response and serialized
-    ///   into the header immediately before the response starts.
+    ///   Event values are serialized JSON fragments accumulated for the current response
+    ///   and written into the header immediately before the response starts.
     /// </para>
     /// <para>
     ///   In HTMX 4.x, assigned events are accumulated in <see cref="Trigger" />
@@ -152,21 +146,15 @@ public readonly struct HtmxResponseHeaders
     ///   (after the swap whenever one is performed).
     /// </para>
     /// </remarks>
-    [MaybeNull]
-    public IReadOnlyDictionary<string, object> TriggerAfterSwap
-    {
-        get => PendingEvents.TryGet(_response)?.GetEvents(HtmxTriggerTiming.AfterSwap);
-        set => PendingEvents.GetOrCreate(_response).SetEvents(HtmxTriggerTiming.AfterSwap, value);
-    }
+    public IReadOnlyDictionary<string, object>? TriggerAfterSwap => PendingEvents.TryGet(_response)?.GetEvents(HtmxTriggerTiming.AfterSwap);
 
     /// <summary>
-    /// Gets or sets the client-side events to trigger through
-    /// the <c>HX-Trigger-After-Settle</c> header after the settle step.
+    /// Gets the client-side events to trigger through the <c>HX-Trigger-After-Settle</c> header after the settle step.
     /// </summary>
     /// <remarks>
     /// <para>
-    ///   Event values are accumulated for the current response and serialized
-    ///   into the header immediately before the response starts.
+    ///   Event values are serialized JSON fragments accumulated for the current response
+    ///   and written into the header immediately before the response starts.
     /// </para>
     /// <para>
     ///   In HTMX 4.x, assigned events are accumulated in <see cref="Trigger" />
@@ -175,12 +163,7 @@ public readonly struct HtmxResponseHeaders
     ///   cannot be preserved.
     /// </para>
     /// </remarks>
-    [MaybeNull]
-    public IReadOnlyDictionary<string, object> TriggerAfterSettle
-    {
-        get => PendingEvents.TryGet(_response)?.GetEvents(HtmxTriggerTiming.AfterSettle);
-        set => PendingEvents.GetOrCreate(_response).SetEvents(HtmxTriggerTiming.AfterSettle, value);
-    }
+    public IReadOnlyDictionary<string, object>? TriggerAfterSettle => PendingEvents.TryGet(_response)?.GetEvents(HtmxTriggerTiming.AfterSettle);
 
     /// <summary>
     /// Gets the value of the specified header.

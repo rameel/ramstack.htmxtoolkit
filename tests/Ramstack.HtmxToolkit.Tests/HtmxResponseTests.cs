@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 using Ramstack.HtmxToolkit.Configuration;
 
 namespace Ramstack.HtmxToolkit.Tests;
@@ -192,7 +194,7 @@ public class HtmxResponseTests
 
         var events = context.Response.GetHtmxHeaders().Trigger!;
         Assert.That(events.Count, Is.EqualTo(1));
-        Assert.That(events["notify"], Is.EqualTo("hello"));
+        Assert.That(events["notify"], Is.EqualTo("\"hello\""));
     }
 
     [Test]
@@ -204,7 +206,7 @@ public class HtmxResponseTests
         var events = context.Response.GetHtmxHeaders().TriggerAfterSettle!;
 
         Assert.That(events.Count, Is.EqualTo(1));
-        Assert.That(events["done"], Is.EqualTo(""));
+        Assert.That(events["done"], Is.EqualTo("{}"));
     }
 
     [Test]
@@ -220,6 +222,43 @@ public class HtmxResponseTests
 
         Assert.That(json["message"].GetProperty("id").GetInt32(), Is.EqualTo(42));
         Assert.That(json["message"].GetProperty("text").GetString(), Is.EqualTo("hi"));
+    }
+
+    [Test]
+    public void TriggerEvent_WithIndentedJsonTypeInfo_SerializesImmediatelyAsCompactJson()
+    {
+        var context = TestHelper.CreateHtmxRequestContext();
+        var detail = new TriggerEventDetail { Text = "before" };
+
+        context.Response.Htmx(static (htmx, state) =>
+        {
+            var info = TriggerEventJsonSerializerContext.Default.TriggerEventDetail;
+            htmx.TriggerEvent("ModelChanged", state, info);
+        }, detail);
+
+        detail.Text = "after";
+
+        var events = context.Response.GetHtmxHeaders().Trigger!;
+        PendingEvents.GetOrCreate(context.Response).Flush();
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(events["ModelChanged"], Is.EqualTo("{\"text\":\"before\"}"));
+            Assert.That(
+                context.Response.Headers[HtmxResponseHeaderNames.Trigger].ToString(),
+                Is.EqualTo("{\"modelChanged\":{\"text\":\"before\"}}"));
+        });
+    }
+
+    [Test]
+    public void TriggerEvent_ReservedProxyEventName_ThrowsArgumentException()
+    {
+        var context = TestHelper.CreateHtmxRequestContext();
+
+        var exception = Assert.Throws<ArgumentException>(() =>
+            context.Response.Htmx(static htmx => htmx.TriggerEvent("rs:event")));
+
+        Assert.That(exception?.ParamName, Is.EqualTo("eventName"));
     }
 
     [Test]
@@ -242,4 +281,13 @@ public class HtmxResponseTests
             Assert.That(headers.TriggerAfterSettle, Is.SameAs(events));
         });
     }
+}
+
+[JsonSourceGenerationOptions(WriteIndented = true, PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase)]
+[JsonSerializable(typeof(TriggerEventDetail))]
+internal partial class TriggerEventJsonSerializerContext : JsonSerializerContext;
+
+internal sealed class TriggerEventDetail
+{
+    public string Text { get; set; } = "";
 }

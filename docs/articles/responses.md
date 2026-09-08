@@ -124,6 +124,27 @@ Response.Htmx(htmx => htmx.TriggerEvent(
     HtmxTriggerTiming.AfterSwap));
 ```
 
+The object overload uses reflection to serialize event details. For trimming and Native AOT,
+pass source-generated JSON metadata instead:
+
+```csharp
+var detail = new ProductSaved(product.Id);
+
+Response.Htmx(
+    static (htmx, detail) => htmx.TriggerEvent(
+        "product-saved",
+        detail,
+        AppJsonContext.Default.ProductSaved,
+        HtmxTriggerTiming.AfterSwap),
+    detail);
+
+[JsonSourceGenerationOptions(PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase)]
+[JsonSerializable(typeof(ProductSaved))]
+internal partial class AppJsonContext : JsonSerializerContext;
+
+internal sealed record ProductSaved(int Id);
+```
+
 ```html
 <aside hx-get="/products/summary"
        hx-trigger="product-saved from:body">

@@ -19,6 +19,11 @@ internal partial class HtmxLocationOptionsJsonSerializerContext : JsonSerializer
     static HtmxLocationOptionsJsonSerializerContext()
     {
         JsonOptions.ConfigureHtmlSafeUnicode(s_defaultOptions);
+
+        #if NET8_0_OR_GREATER
+        Default = new HtmxLocationOptionsJsonSerializerContext(s_defaultOptions);
+        #else
         s_defaultContext = new HtmxLocationOptionsJsonSerializerContext(s_defaultOptions);
+        #endif
     }
 }

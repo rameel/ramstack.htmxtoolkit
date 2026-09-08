@@ -1,3 +1,5 @@
+using System.Buffers;
+using System.Text;
 using System.Text.Json;
 
 using Microsoft.AspNetCore.Http;
@@ -15,10 +17,11 @@ namespace Ramstack.HtmxToolkit;
 /// </summary>
 internal sealed class PendingEvents
 {
-    private const string ProxyEventName = "rs:events";
+    private const string ProxyEventName = "rs:event";
 
     private readonly HttpResponse _response;
     private readonly HtmxTargetVersion _version;
+    private readonly ArrayBufferWriter<byte> _buffer = new();
 
     private SmallDictionary<string, object>? _receive;
     private SmallDictionary<string, object>? _afterSwap;
@@ -34,13 +37,16 @@ internal sealed class PendingEvents
     /// <summary>
     /// Adds the specified event to the pending set for <paramref name="timing" />.
     /// When an event name already exists, the duplicate is stored under the
-    /// <c>rs:events</c> key for client-side replay.
+    /// <c>rs:event</c> key for client-side replay.
     /// </summary>
     /// <param name="timing">The time at which to trigger the events.</param>
     /// <param name="eventName">The event name.</param>
     /// <param name="detail">The event detail.</param>
-    public void AddEvent(HtmxTriggerTiming timing, string eventName, object detail)
+    public void AddEvent(HtmxTriggerTiming timing, string eventName, string detail)
     {
+        if (eventName == ProxyEventName)
+            throw new ArgumentException($"The event name '{ProxyEventName}' is reserved.", nameof(eventName));
+
         timing = NormalizeTiming(timing);
 
         var current = timing switch
@@ -52,13 +58,14 @@ internal sealed class PendingEvents
 
         if (!current.TryAdd(eventName, detail))
         {
-            if (!current.TryGetValue(ProxyEventName, out var value) || value is not List<KeyValuePair<string, object>> collection)
+            if (!current.TryGetValue(ProxyEventName, out var value)
+                || value is not List<KeyValuePair<string, string>> collection)
             {
                 collection = [];
                 current[ProxyEventName] = collection;
             }
 
-            collection.Add(new KeyValuePair<string, object>(eventName, detail));
+            collection.Add(new KeyValuePair<string, string>(eventName, detail));
         }
     }
 
@@ -79,30 +86,6 @@ internal sealed class PendingEvents
             HtmxTriggerTiming.AfterSwap => _afterSwap,
             _ => _afterSettle
         };
-    }
-
-    /// <summary>
-    /// Replaces the pending events for the specified <paramref name="timing" />.
-    /// </summary>
-    /// <param name="timing">The time at which to trigger the events.</param>
-    /// <param name="events">The replacement event names and their associated details.</param>
-    public void SetEvents(HtmxTriggerTiming timing, IReadOnlyDictionary<string, object> events)
-    {
-        timing = NormalizeTiming(timing);
-
-        var replacement = new SmallDictionary<string, object>(events, StringComparer.Ordinal);
-        switch (timing)
-        {
-            case HtmxTriggerTiming.Receive:
-                _receive = replacement;
-                break;
-            case HtmxTriggerTiming.AfterSwap:
-                _afterSwap = replacement;
-                break;
-            default:
-                _afterSettle = replacement;
-                break;
-        }
     }
 
     /// <summary>
@@ -161,8 +144,44 @@ internal sealed class PendingEvents
     /// <param name="events">The events to serialize.</param>
     private void SetHeader(string name, SmallDictionary<string, object>? events)
     {
-        if (events is not null)
-            _response.Headers[name] = JsonSerializer.Serialize(events, JsonOptions.CamelCase);
+        if (events is null)
+            return;
+
+        _buffer.Clear();
+
+        using (var writer = new Utf8JsonWriter(_buffer, new JsonWriterOptions { Encoder = JsonOptions.Encoder, SkipValidation = true }))
+        {
+            writer.WriteStartObject();
+
+            foreach (var (key, value) in events)
+            {
+                writer.WritePropertyName(JsonNamingPolicy.CamelCase.ConvertName(key));
+
+                if (key == ProxyEventName)
+                {
+                    writer.WriteStartArray();
+
+                    foreach (var (k, v) in (List<KeyValuePair<string, string>>)value)
+                    {
+                        writer.WriteStartObject();
+                            writer.WriteString("key", k);
+                            writer.WritePropertyName("value");
+                            writer.WriteRawValue(v);
+                        writer.WriteEndObject();
+                    }
+
+                    writer.WriteEndArray();
+                }
+                else
+                {
+                    writer.WriteRawValue((string)value);
+                }
+            }
+
+            writer.WriteEndObject();
+        }
+
+        _response.Headers[name] = Encoding.UTF8.GetString(_buffer.WrittenSpan);
     }
 
     /// <summary>
@@ -178,8 +197,7 @@ internal sealed class PendingEvents
             : timing;
 
     /// <summary>
-    /// Returns the configured HTMX target version, defaulting to HTMX 2.x
-    /// when toolkit services are unavailable.
+    /// Returns the configured HTMX target version, defaulting to HTMX 2.x when toolkit services are unavailable.
     /// </summary>
     /// <param name="response">The response whose request services are inspected.</param>
     /// <returns>

@@ -18,9 +18,6 @@ public class HtmxResponseHeadersTests
         headers.Retarget = "#target";
         headers.Reselect = "#select";
         headers.Reswap = HtmxSwap.OuterHtml;
-        headers.Trigger = new Dictionary<string, object> { ["message"] = "hello" };
-        headers.TriggerAfterSwap = new Dictionary<string, object> { ["swapped"] = true };
-        headers.TriggerAfterSettle = new Dictionary<string, object> { ["settled"] = 1 };
 
         Assert.That(headers.Location, Is.EqualTo("/foo"));
         Assert.That(context.Response.Headers[HtmxResponseHeaderNames.Location], Is.EqualTo("/foo"));
@@ -31,12 +28,6 @@ public class HtmxResponseHeadersTests
         Assert.That(headers.Reselect, Is.EqualTo("#select"));
         Assert.That(headers.Reswap, Is.EqualTo(HtmxSwap.OuterHtml));
         Assert.That(context.Response.Headers[HtmxResponseHeaderNames.Reswap], Is.EqualTo("outerHTML"));
-        Assert.That(headers.Trigger.Count, Is.EqualTo(1));
-        Assert.That(headers.Trigger["message"], Is.EqualTo("hello"));
-        Assert.That(headers.TriggerAfterSwap.Count, Is.EqualTo(1));
-        Assert.That(headers.TriggerAfterSwap["swapped"], Is.True);
-        Assert.That(headers.TriggerAfterSettle.Count, Is.EqualTo(1));
-        Assert.That(headers.TriggerAfterSettle["settled"], Is.EqualTo(1));
     }
 
     [Test]
@@ -119,15 +110,15 @@ public class HtmxResponseHeadersTests
     {
         var context = TestHelper.CreateHtmxRequestContext(HtmxTargetVersion.V4);
         var headers = context.Response.GetHtmxHeaders();
-        var events = new Dictionary<string, object> { ["swapped"] = true };
 
-        headers.TriggerAfterSwap = events;
+        context.Response.Htmx(htmx => htmx.TriggerEvent("swapped", true, HtmxTriggerTiming.AfterSwap));
 
         Assert.Multiple(() =>
         {
-            Assert.That(headers.Trigger, Is.EqualTo(events));
-            Assert.That(headers.TriggerAfterSwap, Is.EqualTo(events));
-            Assert.That(headers.TriggerAfterSettle, Is.EqualTo(events));
+            Assert.That(headers.Trigger, Is.Not.Null);
+            Assert.That(headers.Trigger, Is.SameAs(headers.Trigger));
+            Assert.That(headers.TriggerAfterSwap, Is.SameAs(headers.Trigger));
+            Assert.That(headers.TriggerAfterSettle, Is.SameAs(headers.Trigger));
         });
 
         PendingEvents.GetOrCreate(context.Response).Flush();
