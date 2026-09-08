@@ -38,6 +38,7 @@ internal static class JsonOptions
     /// </summary>
     public static readonly JsonSerializerOptions CamelCase = new()
     {
+        Encoder = s_encoder,
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
         DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
         DictionaryKeyPolicy = JsonNamingPolicy.CamelCase,

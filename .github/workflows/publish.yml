@@ -35,6 +35,8 @@ jobs:
       - name: Build (AOT Analyze)
         run: dotnet build src/Ramstack.HtmxToolkit/Ramstack.HtmxToolkit.csproj -c Release -f net8.0 --no-incremental --no-restore --warnaserror -p:EnableAotAnalysis=true
 
+      # NOTE: net8.0 is CI-only (AOT analysis above); the package ships net6.0 assets only.
+      # Do not "fix" this to pack all TargetFrameworks without also updating the csproj comment.
       - name: Restore NuGet Package
         run: dotnet restore src/Ramstack.HtmxToolkit/Ramstack.HtmxToolkit.csproj -p:TargetFrameworks=net6.0
 
