@@ -15,6 +15,11 @@ internal partial class HtmxDictionaryJsonSerializerContext : JsonSerializerConte
     static HtmxDictionaryJsonSerializerContext()
     {
         JsonOptions.ConfigureHtmlSafeUnicode(s_defaultOptions);
+
+        #if NET8_0_OR_GREATER
+        Default = new HtmxDictionaryJsonSerializerContext(s_defaultOptions);
+        #else
         s_defaultContext = new HtmxDictionaryJsonSerializerContext(s_defaultOptions);
+        #endif
     }
 }

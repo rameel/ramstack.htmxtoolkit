@@ -20,7 +20,9 @@ jobs:
       - name: Install .NET
         uses: actions/setup-dotnet@v6
         with:
-          dotnet-version: 10.x
+          dotnet-version: |
+            8.x
+            10.x
 
       - name: Checkout
         uses: actions/checkout@v7
@@ -28,10 +30,13 @@ jobs:
           fetch-depth: 1
 
       - name: Build
-        run: dotnet build -c Release
+        run: dotnet build -c Release --warnaserror
+
+      - name: Restore NuGet Package
+        run: dotnet restore src/Ramstack.HtmxToolkit/Ramstack.HtmxToolkit.csproj -p:TargetFrameworks=net6.0
 
       - name: Create NuGet Packages
-        run: dotnet pack -c Release -o ./nuget --no-build
+        run: dotnet pack src/Ramstack.HtmxToolkit/Ramstack.HtmxToolkit.csproj -c Release -o ./nuget --no-build --no-restore -p:TargetFrameworks=net6.0
 
       - name: NuGet login (OIDC)
         id: login
