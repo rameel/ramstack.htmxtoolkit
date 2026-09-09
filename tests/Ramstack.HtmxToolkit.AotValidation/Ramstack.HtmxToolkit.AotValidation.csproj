@@ -17,7 +17,7 @@
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Ramstack.HtmxToolkit" Version="$(AotPackageVersion)" />
     <!-- Analyze every library method, including APIs not called by Program.cs. -->
-    <TrimmerRootAssembly Include="Ramstack.HtmxToolkit" />
+    <TrimmerRootDescriptor Include="TrimmerRoots.xml" />
   </ItemGroup>
 
 </Project>

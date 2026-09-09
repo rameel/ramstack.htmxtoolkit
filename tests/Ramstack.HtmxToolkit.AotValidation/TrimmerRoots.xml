@@ -1,0 +1,24 @@
+<linker>
+  <!--
+    Roots the full API surface of Ramstack.HtmxToolkit so trimming and Native AOT analyze
+    every reachable member, even APIs that Program.cs never calls.
+
+    HtmxUrlTagHelper is intentionally excluded: it is marked [RequiresUnreferencedCode]
+    (Razor Page URL generation is trim-incompatible), and rooting it leaks IL2026 from the
+    unannotated framework UrlHelperExtensions. Everything else must stay AOT-clean.
+
+    When a new tag helper is added, list it here unless it is genuinely trim-incompatible.
+  -->
+  <assembly fullname="Ramstack.HtmxToolkit">
+    <namespace fullname="Ramstack.HtmxToolkit" />
+    <namespace fullname="Ramstack.HtmxToolkit.Collections" />
+    <namespace fullname="Ramstack.HtmxToolkit.Configuration" />
+    <namespace fullname="Ramstack.HtmxToolkit.Hosting" />
+    <namespace fullname="Ramstack.HtmxToolkit.Internal" />
+    <namespace fullname="Ramstack.HtmxToolkit.Serialization" />
+    <type fullname="Ramstack.HtmxToolkit.TagHelpers.HtmxConfigTagHelper" />
+    <type fullname="Ramstack.HtmxToolkit.TagHelpers.HtmxHeaderTagHelper" />
+    <type fullname="Ramstack.HtmxToolkit.TagHelpers.HtmxRequestTagHelper" />
+    <type fullname="Ramstack.HtmxToolkit.TagHelpers.HtmxValsTagHelper" />
+  </assembly>
+</linker>
