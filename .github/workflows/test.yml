@@ -28,8 +28,17 @@ jobs:
       - name: Build (Release)
         run: dotnet build -c Release
 
-      - name: Build (AOT Analyze)
-        run: dotnet build src/Ramstack.HtmxToolkit/Ramstack.HtmxToolkit.csproj -c Release -f net8.0 --no-incremental --no-restore --warnaserror -p:EnableAotAnalysis=true
+      - name: Pack (AOT validation)
+        run: dotnet pack src/Ramstack.HtmxToolkit/Ramstack.HtmxToolkit.csproj -c Release -o "${RUNNER_TEMP}/aot-packages" --no-build --no-restore -p:MinVerVersionOverride=0.0.0-aot
+
+      - name: Restore (AOT validation)
+        run: dotnet restore tests/Ramstack.HtmxToolkit.AotValidation/Ramstack.HtmxToolkit.AotValidation.csproj -r linux-x64 --source "${RUNNER_TEMP}/aot-packages" --source https://api.nuget.org/v3/index.json
+
+      - name: Publish (AOT validation)
+        run: dotnet publish tests/Ramstack.HtmxToolkit.AotValidation/Ramstack.HtmxToolkit.AotValidation.csproj -c Release -r linux-x64 --no-restore --warnaserror
+
+      - name: Run (AOT validation)
+        run: tests/Ramstack.HtmxToolkit.AotValidation/bin/Release/net8.0/linux-x64/publish/Ramstack.HtmxToolkit.AotValidation
 
       - name: Test (Debug)
         run: dotnet test -c Debug --no-build

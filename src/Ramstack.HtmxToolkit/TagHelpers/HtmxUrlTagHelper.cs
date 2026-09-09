@@ -26,6 +26,7 @@ namespace Ramstack.HtmxToolkit.TagHelpers;
 [HtmlTargetElement(Attributes = HostAttributeName)]
 [HtmlTargetElement(Attributes = ProtocolAttributeName)]
 [HtmlTargetElement(Attributes = FragmentAttributeName)]
+[RequiresUnreferencedCode("Razor Page URL generation is not compatible with trimming.")]
 public sealed class HtmxUrlTagHelper(IUrlHelperFactory factory) : TagHelper
 {
     private const string ActionAttributeName = "hx-action";

@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <PublishAot>true</PublishAot>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <TrimmerSingleWarn>false</TrimmerSingleWarn>
+    <ILLinkTreatWarningsAsErrors>true</ILLinkTreatWarningsAsErrors>
+    <!-- CI restores this synthetic version from its runner-local package source. -->
+    <AotPackageVersion Condition="'$(AotPackageVersion)' == ''">0.0.0-aot</AotPackageVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Ramstack.HtmxToolkit" Version="$(AotPackageVersion)" />
+    <!-- Analyze every library method, including APIs not called by Program.cs. -->
+    <TrimmerRootAssembly Include="Ramstack.HtmxToolkit" />
+  </ItemGroup>
+
+</Project>
