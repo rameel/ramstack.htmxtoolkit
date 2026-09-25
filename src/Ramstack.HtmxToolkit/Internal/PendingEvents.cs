@@ -9,7 +9,7 @@ using Ramstack.HtmxToolkit.Collections;
 using Ramstack.HtmxToolkit.Configuration;
 using Ramstack.HtmxToolkit.Serialization;
 
-namespace Ramstack.HtmxToolkit;
+namespace Ramstack.HtmxToolkit.Internal;
 
 /// <summary>
 /// Accumulates HTMX events by <see cref="HtmxTriggerTiming" /> for a single request,
