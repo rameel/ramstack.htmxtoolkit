@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using Microsoft.AspNetCore.Routing;
 
+using Ramstack.HtmxToolkit.Collections;
+
 namespace Ramstack.HtmxToolkit.TagHelpers;
 
 /// <summary>
@@ -136,7 +138,7 @@ public sealed class HtmxUrlTagHelper(IUrlHelperFactory factory) : TagHelper
     [HtmlAttributeName(RouteValuesDictionaryName, DictionaryAttributePrefix = RouteValuesPrefix)]
     public IDictionary<string, string> RouteValues
     {
-        get => _routeValues ??= new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        get => _routeValues ??= new SmallDictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         set => _routeValues = value;
     }
 
