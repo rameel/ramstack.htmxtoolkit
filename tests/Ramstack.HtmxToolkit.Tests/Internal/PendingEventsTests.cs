@@ -2,7 +2,7 @@ using System.Text.Json;
 
 using Ramstack.HtmxToolkit.Configuration;
 
-namespace Ramstack.HtmxToolkit.Tests;
+namespace Ramstack.HtmxToolkit.Tests.Internal;
 
 [TestFixture]
 public class PendingEventsTests
