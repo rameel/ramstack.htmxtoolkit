@@ -109,7 +109,8 @@ declarations can still use `*-append` to merge with inherited objects.
 
 ## Prevent swaps for status codes
 
-`NoSwap` accepts exact status codes and wildcard patterns:
+HTMX 4.x replaces `responseHandling` with `noSwap` and swaps `4xx` and `5xx` responses by default.
+To restore the default HTMX 2.x behavior for those errors, set `NoSwap` using exact status codes and wildcard patterns:
 
 ```csharp
 config.NoSwap = ["204", "304", "4xx", "5xx"];
@@ -117,6 +118,9 @@ config.NoSwap = ["204", "304", "4xx", "5xx"];
 
 The HTMX default contains 204 and 304. Assigning the property replaces that list, so preserve those entries
 if the application still relies on their default behavior.
+
+This policy also prevents `422` validation responses from swapping. Omit or narrow the `4xx` pattern if those
+responses should continue to update the page. See the [HTMX 4.x migration guide](https://four.htmx.org/docs/#migrating-from-htmx-2x-to-4x).
 
 ## Morphing
 

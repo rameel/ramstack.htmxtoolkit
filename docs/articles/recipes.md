@@ -74,7 +74,8 @@ This keeps the server response in control while allowing independently targeted 
 
 ## Poll a background operation
 
-Return markup that contains the next poll while work is incomplete:
+For polling that works with every supported HTMX version, return the polling element itself and replace it with
+`outerHTML`. Each replacement element schedules the next request with `load delay:1s` while work is incomplete:
 
 ```html
 @model ProgressState
@@ -89,7 +90,7 @@ else
          hx-page="/Jobs/Status"
          hx-page-handler="Progress"
          hx-route-progress="@Model.Percent"
-         hx-trigger="every 500ms"
+         hx-trigger="load delay:1s"
          hx-target="this"
          hx-swap="outerHTML">
         @Model.Percent%
@@ -105,7 +106,8 @@ public IActionResult OnGetProgress(int progress)
 }
 ```
 
-Polling stops naturally because completed markup no longer contains `hx-trigger="every ..."`.
+Polling stops when the server returns the completed element without the request and trigger attributes.
+This pattern does not depend on status code `286`, whose behavior [differs between HTMX versions](version-compatibility.md#polling).
 
 ## Handle boosted navigation progressively
 
