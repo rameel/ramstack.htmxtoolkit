@@ -15,12 +15,12 @@ function trim() {
 }
 
 export default {
-    input: "src/Ramstack.HtmxToolkit/Assets/htmx-toolkit.js",
+    input: "src/Ramstack.HtmxToolkit/wwwroot/htmx-toolkit.js",
     treeshake: "smallest",
     output: [{
-        file: "src/Ramstack.HtmxToolkit/Assets/htmx-toolkit.js",
+        file: "src/Ramstack.HtmxToolkit/wwwroot/htmx-toolkit.js",
     }, {
-        file: "src/Ramstack.HtmxToolkit/Assets/htmx-toolkit.min.js",
+        file: "src/Ramstack.HtmxToolkit/wwwroot/htmx-toolkit.min.js",
         plugins: [terser({
             output: {
                 comments: false

@@ -1,3 +1,10 @@
+using Microsoft.AspNetCore.Http;
 using Ramstack.HtmxToolkit;
 
-Console.WriteLine(HtmxAssets.Hash);
+var request = new DefaultHttpContext().Request;
+request.Headers[HtmxRequestHeaderNames.Request] = "true";
+
+if (!request.IsHtmxRequest())
+    throw new InvalidOperationException("HTMX request detection failed.");
+
+Console.WriteLine("HTMX request detected.");

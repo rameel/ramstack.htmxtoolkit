@@ -16,16 +16,44 @@ Otherwise, it is added to the request parameters under the configured form-field
 
 ## Configure the layout
 
-Map the script endpoint in `Program.cs`:
+Enable static files in `Program.cs`:
 
 ```csharp
-using Ramstack.HtmxToolkit.Hosting;
-
 var app = builder.Build();
 
-app.MapHtmxToolkitScript();
+app.UseStaticFiles();
 app.MapRazorPages();
 ```
+
+On ASP.NET Core 9 or later, use `MapStaticAssets()` and associate the asset collection with the page endpoints
+instead to enable build-time compression and fingerprinted URLs:
+
+```csharp
+app.MapStaticAssets();
+app.MapRazorPages().WithStaticAssets();
+```
+
+For MVC, apply `.WithStaticAssets()` to the controller endpoint builder, for example:
+
+```csharp
+app.MapStaticAssets();
+app.MapDefaultControllerRoute().WithStaticAssets();
+```
+
+A hybrid Razor Pages and MVC application applies it to each endpoint set that renders views:
+
+```csharp
+app.MapStaticAssets();
+app.MapRazorPages().WithStaticAssets();
+app.MapControllers().WithStaticAssets();
+```
+
+`MapControllers()` covers attribute-routed controllers; with conventional or area routing, apply
+`.WithStaticAssets()` to each `MapControllerRoute` or `MapAreaControllerRoute` call.
+
+> [!NOTE]
+> ASP.NET Core reads the asset collection from the current endpoint's metadata. An endpoint without it still
+> renders a working URL: the resolver falls back to a `?v=...` version instead of a fingerprinted URL.
 
 Render configuration metadata in `<head>`, then load HTMX before the Toolkit script:
 
@@ -37,7 +65,7 @@ Render configuration metadata in `<head>`, then load HTMX before the Toolkit scr
     @RenderBody()
 
     <script src="~/js/htmx.min.js"></script>
-    <script src="@Html.HtmxToolkitScriptPath()"></script>
+    <script src="~/_content/Ramstack.HtmxToolkit/htmx-toolkit.min.js" asp-append-version="true"></script>
 </body>
 ```
 
@@ -79,42 +107,47 @@ No token input is required in this form because the layout metadata and Toolkit 
 When a boosted navigation returns a new full document, the Toolkit script reads antiforgery metadata from that response
 and updates the token used for later requests. Ensure the returned document contains `<htmx-config />`.
 
-## Script endpoint and caching
+## Static web assets and caching
 
-The default endpoint path contains a content hash:
+The NuGet package includes both script variants as ASP.NET Core static web assets:
 
 ```text
-/htmxtoolkit/{content-hash}
+/_content/Ramstack.HtmxToolkit/htmx-toolkit.min.js
+/_content/Ramstack.HtmxToolkit/htmx-toolkit.js
 ```
 
-It returns the minified script with `Cache-Control: public,max-age=31536000`. A new embedded script receives a new default URL.
+Reference the minified file from the layout with an app-relative path:
 
-Pass a custom path when routing conventions require one:
-
-```csharp
-app.MapHtmxToolkitScript("/assets/htmx-toolkit.js");
+```html
+<script src="~/_content/Ramstack.HtmxToolkit/htmx-toolkit.min.js"
+        asp-append-version="true"></script>
 ```
 
-When using a stable custom path, account for cache invalidation in deployment or proxy configuration.
+This form requires `@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers` in `_ViewImports.cshtml`.
+ASP.NET Core resolves the `~` path and applies content-based versioning:
+
+- On ASP.NET Core 9 or later, when the current endpoint's asset collection contains the script, the framework
+  selects the fingerprinted URL, such as `htmx-toolkit.min.{fingerprint}.js`. In production, `MapStaticAssets()`
+  serves fingerprinted assets with long-lived, immutable caching and supports precompressed Gzip and Brotli
+  representations.
+- Otherwise, `asp-append-version="true"` appends a `?v=...` version computed and cached from the file content.
+  This includes ASP.NET Core 6–8 and applications using `UseStaticFiles()`.
+
+Both forms account for the application's path base. When the file changes, its versioned URL changes. Cache
+headers are managed by the application's static asset or static file configuration; adding `?v=...` does not
+itself set a cache lifetime.
+
+Static web assets work with both project references and NuGet packages. On publish, ASP.NET Core copies
+the scripts into the application's `wwwroot/_content/Ramstack.HtmxToolkit` directory.
 
 Request the readable script while diagnosing browser behavior:
 
 ```html
-<script src="@Html.HtmxToolkitScriptPath(debug: true)"></script>
+<script src="~/_content/Ramstack.HtmxToolkit/htmx-toolkit.js"
+        asp-append-version="true"></script>
 ```
 
-The debug URL adds `?debug` and the endpoint returns the unminified asset.
-
-## Inline the script
-
-Applications that cannot map the endpoint can render the embedded asset inside a script element:
-
-```html
-<script>@Html.HtmxToolkitScript()</script>
-```
-
-Inlining removes a request but changes the content security policy and repeats the script in every full document.
-Prefer the cacheable endpoint for most applications.
+If you use `defer`, apply it to both HTMX and the Toolkit script so their execution order is preserved.
 
 ## Disable automatic antiforgery
 
@@ -135,6 +168,6 @@ The Toolkit script can still be used for morph compatibility after antiforgery m
 - Antiforgery protects cookie-authenticated state-changing requests; it does not replace authentication or authorization.
 - A custom `hx-header-*` value is client-controlled and must not be trusted as proof of identity.
 - Cross-origin permissions still require correct ASP.NET Core CORS and credential configuration.
-- An inline Toolkit script may require a CSP nonce or hash. The endpoint form works naturally with a policy that allows scripts from the application's origin.
+- The Toolkit static web asset works with a CSP policy that allows scripts from the application's origin.
 
 If a protected request returns 400, see [Troubleshooting](troubleshooting.md#post-returns-http-400).

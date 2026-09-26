@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk.Razor">
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <Description>Enables seamless integration of HTMX with ASP.NET Core (https://htmx.org).</Description>
@@ -50,17 +50,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="Assets\htmx-toolkit.js" />
-    <None Remove="Assets\htmx-toolkit.min.js" />
-  </ItemGroup>
-
-  <ItemGroup>
     <InternalsVisibleTo Include="Ramstack.HtmxToolkit.Tests" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Include="Assets\htmx-toolkit.js" LogicalName="htmx-toolkit.js" />
-    <EmbeddedResource Include="Assets\htmx-toolkit.min.js" LogicalName="htmx-toolkit.min.js" />
   </ItemGroup>
 
   <ItemGroup>
