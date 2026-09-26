@@ -32,17 +32,3 @@ example:
   - |-
     [!code-razor[](../snippets/tag-helpers/ConfigTagHelper.cshtml)]
 ---
-
----
-uid: Ramstack.HtmxToolkit.HtmlHelperExtensions.HtmxToolkitScriptPath(Microsoft.AspNetCore.Mvc.Rendering.IHtmlHelper,System.Boolean)
-example:
-  - |-
-    [!code-razor[](../snippets/tag-helpers/ToolkitScript.cshtml)]
----
-
----
-uid: Ramstack.HtmxToolkit.Hosting.EndpointRouteBuilderExtensions.MapHtmxToolkitScript(Microsoft.AspNetCore.Routing.IEndpointRouteBuilder)
-example:
-  - |-
-    [!code-csharp[](../snippets/tag-helpers/MapToolkitScriptEndpoint.cs)]
----

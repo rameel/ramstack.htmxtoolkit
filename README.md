@@ -56,6 +56,7 @@ Make the Tag Helpers and toolkit types available to Razor views in `_ViewImports
 
 ```html
 @using Ramstack.HtmxToolkit
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @addTagHelper *, Ramstack.HtmxToolkit
 ```
 
@@ -67,20 +68,26 @@ Render the configuration metadata in the document `<head>`:
 </head>
 ```
 
-Map the companion script endpoint in `Program.cs`:
+On ASP.NET Core 9 or later, enable static assets and associate them with the endpoints that render views in `Program.cs`:
 
 ```csharp
-app.MapHtmxToolkitScript();
+app.MapStaticAssets();
+app.MapRazorPages().WithStaticAssets();
 ```
 
-Load HTMX first, then the toolkit script in the layout:
+For MVC, apply `.WithStaticAssets()` to the controller endpoint builder instead; a hybrid Razor Pages and MVC
+application applies it to each endpoint set. On ASP.NET Core 6–8, enable static files:
+
+```csharp
+app.UseStaticFiles();
+```
+
+The NuGet package includes the toolkit script as a static web asset. Load it after HTMX in the layout:
 
 ```html
 <script src="/path/to/htmx.min.js"></script>
-<script src="@Html.HtmxToolkitScriptPath()"></script>
+<script src="~/_content/Ramstack.HtmxToolkit/htmx-toolkit.min.js" asp-append-version="true"></script>
 ```
-
-The default script URL contains a content hash, so the script can be cached indefinitely. When the script changes, its URL changes automatically.
 
 You can now generate an HTMX URL from ASP.NET Core route information:
 
@@ -444,20 +451,15 @@ builder.Services.AddHtmxToolkit(options =>
 });
 ```
 
-Instead of mapping an endpoint, the companion script can be embedded directly:
+Use the readable script during development with:
 
 ```html
-<script>
-    @Html.HtmxToolkitScript()
-</script>
+<script src="~/_content/Ramstack.HtmxToolkit/htmx-toolkit.js" asp-append-version="true"></script>
 ```
 
-Pass `debug: true` to `HtmxToolkitScript` or `HtmxToolkitScriptPath` to use the readable script during development.
-A custom endpoint path is also supported:
+Load HTMX before the toolkit; if deferring execution, apply `defer` to both scripts.
 
-```csharp
-app.MapHtmxToolkitScript("/assets/htmx-toolkit.js");
-```
+See [Antiforgery and Toolkit script](docs/articles/antiforgery.md) for static asset and caching details.
 
 ## Compatibility Notes
 
@@ -506,9 +508,7 @@ Idiomorph library before the first morph swap:
 
     <script src="https://unpkg.com/htmx.org@2"></script>
     <script src="https://unpkg.com/idiomorph@0.7.4"></script>
-    <script>
-        @Html.HtmxToolkitScript()
-    </script>
+    <script src="~/_content/Ramstack.HtmxToolkit/htmx-toolkit.min.js" asp-append-version="true"></script>
 </body>
 ```
 

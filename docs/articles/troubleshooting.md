@@ -28,7 +28,7 @@ Common causes are missing or invalid antiforgery data.
 
 1. Inspect the document for `<meta name="htmx-config">` and its `data-antiforgery-*` attributes.
 2. Confirm HTMX loads before the Toolkit script.
-3. Confirm the Toolkit script endpoint returns JavaScript rather than 404 or HTML.
+3. Confirm the Toolkit script URL returns JavaScript rather than 404 or HTML.
 4. Inspect the request for the antiforgery header or form value configured by ASP.NET Core.
 5. After boosted navigation, confirm the returned full document also includes `<htmx-config />`.
 
@@ -36,15 +36,33 @@ See [Antiforgery and Toolkit script](antiforgery.md).
 
 ## Toolkit script returns 404
 
-Map the endpoint before the application finishes endpoint registration:
+Enable static files and reference the script from the layout:
 
 ```csharp
-app.MapHtmxToolkitScript();
+app.UseStaticFiles();
 app.MapRazorPages();
 ```
 
-Use `@Html.HtmxToolkitScriptPath()` instead of copying the default hash URL. If a custom path is passed
-to `MapHtmxToolkitScript`, ensure the helper is rendered after that mapping is configured during application startup.
+For ASP.NET Core 9 or later with `MapStaticAssets()`, configure the page endpoints with the asset collection:
+
+```csharp
+app.MapStaticAssets();
+app.MapRazorPages().WithStaticAssets();
+```
+
+```html
+<script src="~/_content/Ramstack.HtmxToolkit/htmx-toolkit.min.js"
+        asp-append-version="true"></script>
+```
+
+The resolved URL points to `/_content/Ramstack.HtmxToolkit/htmx-toolkit.min.js` or its fingerprinted variant
+under the application's path base. Ensure `_ViewImports.cshtml` registers the standard MVC Tag Helpers
+(`@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers`) and that deployment includes the published
+static assets and manifests.
+
+When running from build output in an environment other than `Development`, enable discovery of static web assets
+with `builder.WebHost.UseStaticWebAssets()` before building the app. This extra call is unnecessary when running
+from published output.
 
 ## Response has no HX headers
 

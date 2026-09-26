@@ -15,7 +15,7 @@ The package targets .NET 6 and can be used by applications running on .NET 6 or 
 | Razor | Tag Helpers for routes, values, headers, and per-request options |
 | Configuration | Version-specific HTMX configuration rendered by `<htmx-config />` |
 | Security | Automatic ASP.NET Core antiforgery headers for unsafe HTMX requests |
-| Assets | A small companion script with a cacheable endpoint or inline rendering |
+| Assets | A companion static web asset referenced from the layout with automatic content-based URL versioning |
 
 HtmxToolkit does not include the HTMX library and does not replace HTMX attributes such as `hx-target`, `hx-trigger`,
 or `hx-swap`. Add a supported HTMX release to the application separately.

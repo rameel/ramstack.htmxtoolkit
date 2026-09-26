@@ -14,7 +14,7 @@ This example assumes HTMX 2.x, which is the toolkit default.
 
 ## 2. Register HtmxToolkit
 
-Register Razor Pages and the toolkit in `Program.cs`, then map the companion script endpoint:
+Register Razor Pages and the toolkit in `Program.cs`, and enable static files:
 
 ```csharp
 using Ramstack.HtmxToolkit.Hosting;
@@ -27,7 +27,6 @@ builder.Services.AddHtmxToolkit();
 var app = builder.Build();
 
 app.UseStaticFiles();
-app.MapHtmxToolkitScript();
 app.MapRazorPages();
 
 app.Run();
@@ -36,17 +35,32 @@ app.Run();
 No configuration delegate is required for HTMX 2.x. To use another major version,
 see [Choose an HTMX version](choosing-version.md).
 
+The setup above works on ASP.NET Core 6 or later. On ASP.NET Core 9 or later, use the following instead of
+`UseStaticFiles()` and `MapRazorPages()` to enable build-time compression and fingerprinted asset URLs:
+
+```csharp
+app.MapStaticAssets();
+app.MapRazorPages().WithStaticAssets();
+```
+
+> [!NOTE]
+> In a hybrid Razor Pages and MVC application, call `.WithStaticAssets()` on every endpoint set that renders
+> views, for example `app.MapControllers().WithStaticAssets()` as well.
+
 ## 3. Enable the Razor helpers
 
 Add the namespace and Tag Helpers to `Pages/_ViewImports.cshtml`:
 
 ```html
 @using Ramstack.HtmxToolkit
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @addTagHelper *, Ramstack.HtmxToolkit
 ```
 
-The `@using` directive makes `Html.HtmxToolkitScriptPath()` and toolkit types available.
-The `@addTagHelper` directive enables attributes such as `hx-page`, `hx-route-*`, and the `<htmx-config />` element.
+The `@using` directive makes toolkit types available.
+The first `@addTagHelper` directive enables the standard ASP.NET Core Tag Helpers used by the layout snippet
+(`~` path resolution and `asp-append-version`). The second enables attributes such as `hx-page` and `hx-route-*`,
+as well as the `<htmx-config />` element.
 
 ## 4. Configure the layout
 
@@ -64,13 +78,15 @@ Render the configuration metadata in `<head>`. Load HTMX first and the Toolkit s
     @RenderBody()
 
     <script src="~/js/htmx.min.js"></script>
-    <script src="@Html.HtmxToolkitScriptPath()"></script>
+    <script src="~/_content/Ramstack.HtmxToolkit/htmx-toolkit.min.js" asp-append-version="true"></script>
 </body>
 </html>
 ```
 
-The default Toolkit script URL includes a content hash and is served with a one-year cache lifetime.
-When the embedded script changes, its default URL changes too.
+The Toolkit script is a static web asset supplied by the NuGet package. ASP.NET Core resolves the `~` path, and
+`asp-append-version="true"` makes the URL content-based: on ASP.NET Core 9 or later the framework selects a
+fingerprinted URL when available, otherwise it appends a `?v=...` version. Both forms account for the application's
+path base. Cache headers are managed by the application's static asset or static file configuration.
 
 > [!IMPORTANT]
 > `<htmx-config />` and the Toolkit script work together to add ASP.NET Core antiforgery data to unsafe HTMX requests. Omitting either one disables that automatic behavior.
