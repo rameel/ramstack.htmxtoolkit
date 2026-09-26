@@ -69,5 +69,7 @@ the compatibility extension on HTMX 1.9.x.
 </body>
 ```
 
+See [Morph swaps](version-compatibility.md#morph-swaps) for script setup and fallback behavior.
+
 Use the [API reference](../api/Ramstack.HtmxToolkit.Configuration.HtmxV1Config.yml) for property types and declared defaults,
 and review [Version compatibility](version-compatibility.md) before migrating.

@@ -16,6 +16,7 @@ and the companion script generate the matching contract.
 | Prompt result | `HX-Prompt` | Not supported | `Prompt` |
 | Expected response | Not reported | `HX-Request-Type`: `partial` or `full` | `RequestType` |
 
+In HTMX 4.x, a target value such as `div#results` includes the tag name as well as the ID.
 Code shared across versions should tolerate null for version-specific properties.
 
 ```csharp
@@ -79,6 +80,49 @@ Review the target version's guide rather than copying a configuration delegate u
 HTMX 1.x and 2.x distinguish `HX-Trigger`, `HX-Trigger-After-Swap`, and `HX-Trigger-After-Settle`.
 HTMX 4.x emits Toolkit events through `HX-Trigger` when the request completes.
 An `AfterSettle` timing therefore cannot retain its separate V1/V2 timing under V4.
+
+## Polling
+
+Status code `286` stops polling in HTMX 1.9.x and 2.x. HTMX 4.x treats it as a regular successful response.
+For a cross-version approach, return the polling element with `hx-trigger="load delay:1s"` and `hx-swap="outerHTML"`
+to schedule the next request, then omit the request and trigger attributes when polling should stop.
+See [Poll a background operation](recipes.md#poll-a-background-operation) for a complete example.
+
+## Morph swaps
+
+`HtmxSwap.InnerMorph`, `OuterMorph`, and `OuterSync` use native swap styles in HTMX 4.x.
+Do not enable the `ramstack-morph` extension with that version.
+
+With HTMX 1.9.x or 2.x, enable the extension supplied by the Toolkit script. Load the optional Idiomorph library
+before the first morph swap to preserve morphing behavior:
+
+```html
+<body hx-ext="ramstack-morph">
+    <div id="profile">Current profile</div>
+
+    <button hx-get="/profile/morph"
+            hx-target="#profile"
+            hx-swap="outerMorph">
+        Refresh profile
+    </button>
+
+    <script src="https://unpkg.com/htmx.org@2"></script>
+    <script src="https://unpkg.com/idiomorph@0.7.4"></script>
+    <script src="~/_content/Ramstack.HtmxToolkit/htmx-toolkit.min.js" asp-append-version="true"></script>
+</body>
+```
+
+The `/profile/morph` endpoint should return the replacement root, such as `<div id="profile">Updated profile</div>`.
+
+The Toolkit script does not bundle HTMX or Idiomorph and must be loaded after HTMX. Idiomorph may be loaded
+before or after the Toolkit script because the adapter resolves it when each morph swap runs.
+
+If Idiomorph is unavailable, the adapter logs a warning and falls back from `innerMorph` to `innerHTML` and from
+`outerMorph` to `outerHTML`. With HTMX 1.9.x and 2.x, `outerSync` falls back to synchronizing the target's attributes
+and then replacing its children using `innerHTML`.
+
+`HtmxSwap.TextContent` is also handled by the `ramstack-morph` extension and does not require Idiomorph.
+It is supported natively by HTMX 2.x and 4.x; only HTMX 1.9.x needs the extension.
 
 ## Migration checklist
 

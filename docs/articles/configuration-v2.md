@@ -83,4 +83,6 @@ otherwise the extension uses its documented fallback behavior.
 </main>
 ```
 
+See [Morph swaps](version-compatibility.md#morph-swaps) for script setup and fallback behavior.
+
 Use the [API reference](../api/Ramstack.HtmxToolkit.Configuration.HtmxV2Config.yml) for property types and declared defaults.
