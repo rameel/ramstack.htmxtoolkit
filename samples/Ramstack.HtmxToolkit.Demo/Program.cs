@@ -17,10 +17,9 @@ var app = builder.Build();
 if (!app.Environment.IsDevelopment())
     app.UseExceptionHandler("/Error");
 
-app.UseStaticFiles();
+app.MapStaticAssets();
 app.UseRouting();
-app.MapHtmxToolkitScript();
 app.MapDefaultControllerRoute();
-app.MapRazorPages();
+app.MapRazorPages().WithStaticAssets();
 
 app.Run();
