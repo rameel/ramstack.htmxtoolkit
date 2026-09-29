@@ -32,6 +32,8 @@ SOFTWARE. */
 // ReSharper disable CheckNamespace
 // ReSharper disable ConvertToPrimaryConstructor
 
+using System.Diagnostics.CodeAnalysis;
+
 namespace JetBrains.Annotations;
 
 /// <summary>
@@ -163,6 +165,8 @@ internal enum ImplicitUseKindFlags
 /// with <see cref="MeansImplicitUseAttribute"/> or <see cref="UsedImplicitlyAttribute"/>.
 /// </summary>
 [Flags]
+[SuppressMessage("Design", "CA1069:Enums values should not be duplicated",
+    Justification = "JetBrains annotations intentionally declare Default as an alias before Itself.")]
 internal enum ImplicitUseTargetFlags
 {
     Default = Itself,

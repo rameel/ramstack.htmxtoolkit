@@ -322,7 +322,7 @@ public class HtmxResponseTests
 
 [JsonSourceGenerationOptions(WriteIndented = true, PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase)]
 [JsonSerializable(typeof(TriggerEventDetail))]
-internal partial class TriggerEventJsonSerializerContext : JsonSerializerContext;
+internal sealed partial class TriggerEventJsonSerializerContext : JsonSerializerContext;
 
 internal sealed class TriggerEventDetail
 {

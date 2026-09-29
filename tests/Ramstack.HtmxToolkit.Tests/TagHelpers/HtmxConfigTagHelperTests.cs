@@ -151,8 +151,8 @@ public class HtmxConfigTagHelperTests
 
         var json = await RenderJson(options);
 
-        Assert.That(json.Keys, Is.EquivalentTo(new[]
-        {
+        Assert.That(json.Keys, Is.EquivalentTo(
+        [
             "historyEnabled", "historyCacheSize", "refreshOnHistoryMiss", "defaultSwapStyle",
             "defaultSwapDelay", "defaultSettleDelay", "includeIndicatorStyles", "indicatorClass",
             "requestClass", "addedClass", "swappingClass", "settlingClass", "allowEval",
@@ -161,7 +161,7 @@ public class HtmxConfigTagHelperTests
             "selfRequestsOnly", "scrollBehavior", "defaultFocusScroll", "getCacheBusterParam",
             "globalViewTransitions", "methodsThatUseUrlParams", "ignoreTitle", "scrollIntoViewOnBoost",
             "triggerSpecsCache"
-        }));
+        ]));
         Assert.That(json["defaultSwapStyle"].GetString(), Is.EqualTo("outerHTML"));
         Assert.That(json["wsBinaryType"].GetString(), Is.EqualTo("arraybuffer"));
         Assert.That(json["scrollBehavior"].GetString(), Is.EqualTo("smooth"));
@@ -219,8 +219,8 @@ public class HtmxConfigTagHelperTests
 
         var json = await RenderJson(options);
 
-        Assert.That(json.Keys, Is.EquivalentTo(new[]
-        {
+        Assert.That(json.Keys, Is.EquivalentTo(
+        [
             "historyEnabled", "historyCacheSize", "refreshOnHistoryMiss", "defaultSwapStyle",
             "defaultSwapDelay", "defaultSettleDelay", "includeIndicatorStyles", "indicatorClass",
             "requestClass", "addedClass", "swappingClass", "settlingClass", "allowEval",
@@ -230,7 +230,7 @@ public class HtmxConfigTagHelperTests
             "getCacheBusterParam", "globalViewTransitions", "methodsThatUseUrlParams", "ignoreTitle",
             "scrollIntoViewOnBoost", "triggerSpecsCache", "responseHandling", "allowNestedOobSwaps",
             "historyRestoreAsHxRequest", "reportValidityOfForms"
-        }));
+        ]));
         Assert.That(json["defaultSwapStyle"].GetString(), Is.EqualTo("innerHTML"));
         Assert.That(json["scrollBehavior"].GetString(), Is.EqualTo("instant"));
 
@@ -270,14 +270,14 @@ public class HtmxConfigTagHelperTests
 
         var json = await RenderJson(options);
 
-        Assert.That(json.Keys, Is.EquivalentTo(new[]
-        {
+        Assert.That(json.Keys, Is.EquivalentTo(
+        [
             "logAll", "prefix", "history", "defaultSwap", "allowEmptySwapAfterOOB",
             "defaultSettleDelay", "includeIndicatorCSS", "indicatorClass", "requestClass",
             "inlineScriptNonce", "extensions", "implicitInheritance", "defaultTimeout", "mode",
             "defaultFocusScroll", "transitions", "morphIgnore", "morphSkip", "morphSkipChildren",
             "morphScanLimit", "noSwap"
-        }));
+        ]));
         Assert.That(json["history"].GetString(), Is.EqualTo("reload"));
         Assert.That(json["defaultSwap"].GetString(), Is.EqualTo("outerMorph"));
         Assert.That(json["mode"].GetString(), Is.EqualTo("no-cors"));
