@@ -3,6 +3,7 @@
     <File Path=".editorconfig" />
     <File Path=".gitattributes" />
     <File Path=".gitignore" />
+    <File Path="Directory.Build.props" />
     <File Path="LICENSE" />
     <File Path="package.json" />
     <File Path="README.md" />

@@ -9,6 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Using Include="System.Diagnostics.CodeAnalysis" />
     <Using Include="NUnit.Framework" />
     <Using Include="Ramstack.HtmxToolkit.Internal" />
     <Using Include="Ramstack.HtmxToolkit.TagHelpers" />

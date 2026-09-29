@@ -100,14 +100,14 @@ public class SmallDictionaryTests
     public void Constructor_NullCollection_ThrowsArgumentNullException()
     {
         Assert.Throws<ArgumentNullException>(
-            () => new SmallDictionary<int, string>(null!, Comparer<int>.Default));
+            () => _ = new SmallDictionary<int, string>(null!, Comparer<int>.Default));
     }
 
     [Test]
     public void Constructor_NullComparer_ThrowsArgumentNullException()
     {
         Assert.Throws<ArgumentNullException>(
-            () => new SmallDictionary<int, string>([], null!));
+            () => _ = new SmallDictionary<int, string>([], null!));
     }
 
     [Test]
@@ -642,6 +642,8 @@ public class SmallDictionaryTests
     }
 
     [Test]
+    [SuppressMessage("Performance", "CA1841:Prefer dictionary Contains methods",
+        Justification = "The test exercises the Keys collection's Contains implementation.")]
     public void ConfiguredComparer_AllOperations_UseComparerForKeyIdentity()
     {
         IDictionary<string, int> dictionary = new SmallDictionary<string, int>(StringComparer.OrdinalIgnoreCase);

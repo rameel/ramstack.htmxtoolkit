@@ -60,6 +60,9 @@ public class HtmxFieldValuesTests
     }
 
     [Test]
+    [SuppressMessage("ReSharper", "UseArrayEmptyMethod")]
+    [SuppressMessage("Performance", "CA1825:Avoid zero-length array allocations",
+        Justification = "A distinct empty array verifies that the constructor preserves reference identity.")]
     public void Constructor_EmptyArray_PreservesArrayRepresentation()
     {
         var source = new string [0];
