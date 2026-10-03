@@ -409,12 +409,8 @@ See [Building the documentation locally](docs/README.md) for build and preview c
 
 ## Contributing
 
-Bug reports and pull requests are welcome. To validate a change locally:
-
-```console
-dotnet build
-dotnet test
-```
+Bug reports and pull requests are welcome. See [Contributing](CONTRIBUTING.md) for development setup,
+validation commands, and pull request and commit guidelines.
 
 ## Supported versions
 
