@@ -1,17 +1,17 @@
 # Contributing
 
-Bug reports and pull requests are welcome.
+Bug reports, fixes, and documentation improvements are welcome. Small contributions are welcome too.
 
 ## Reporting bugs
 
-Include a minimal reproduction, the expected and actual behavior, and the versions of HtmxToolkit, .NET, and HTMX.
-For browser-side issues, also include the browser version and relevant console errors.
+Tell us what happened and what you expected. Include the HtmxToolkit, .NET, and HTMX versions you're using.
+A small example that reproduces the problem helps.
+
+For browser issues, include your browser version and any relevant console errors.
 
 ## Development setup
 
-- Install the .NET 10 SDK to build the solution and run the tests and demo. The library itself targets .NET 6.
-- Install Node.js and pnpm when working on the companion script.
-- For documentation tooling and preview instructions, see [Building the documentation locally](docs/README.md).
+Install the .NET 10 SDK or later to build from source.
 
 Run the commands below from the repository root.
 
@@ -25,34 +25,22 @@ dotnet test
 
 Compiler and analyzer warnings are treated as errors.
 
-### Native AOT validation
-
-The AOT validation project checks the built NuGet package and runs separately from the solution's unit tests.
-On Linux x64, use [build-aot-validation.sh](build-aot-validation.sh) to build, pack, publish, and run the validation:
-
-```console
-bash build-aot-validation.sh
-```
-
-This requires the platform's [Native AOT prerequisites](https://learn.microsoft.com/dotnet/core/deploying/native-aot/#prerequisites),
-including a native compiler and development libraries.
-
 ## Code style
 
-- Follow [.editorconfig](.editorconfig).
-- Match the naming, formatting, and coding patterns of the surrounding code.
-- Avoid unrelated reformatting when making functional changes.
-- Name tests using the `Method_Condition_ExpectedResult` convention.
+Follow [.editorconfig](.editorconfig) and the style of the surrounding code.
+Keep formatting changes limited to the code you're working on.
 
 ## Working on scripts and documentation
 
 ### Companion script
 
+Install Node.js and pnpm when working on the companion script.
+
 Edit `src/Ramstack.HtmxToolkit/wwwroot/htmx-toolkit.js`, then rebuild the script assets:
 
 ```console
 pnpm install --frozen-lockfile
-pnpm build
+pnpm run build
 ```
 
 Include the updated `htmx-toolkit.js` and `htmx-toolkit.min.js` in the same commit.
@@ -63,16 +51,33 @@ Use the [demo application](README.md#demo) to check browser-side behavior with t
 Guides live in `docs/articles`. API examples are maintained in `docs/api-overwrites` and `docs/snippets`.
 See [Building the documentation locally](docs/README.md) for build commands and instructions for adding API examples.
 
+## Additional checks
+
+The optional scripts in [`eng/`](eng/) run additional checks.
+Choose `Test`, `Aot`, `JavaScript`, or `Docs`, or use `All` to run them together.
+
+- Linux and macOS: `bash eng/validate.sh <target>`
+- Windows: `.\eng\validate.cmd <target>`
+
+### Native AOT validation
+
+The AOT check validates the built NuGet package. It requires the platform's
+[Native AOT prerequisites](https://learn.microsoft.com/dotnet/core/deploying/native-aot/#prerequisites).
+
+```console
+dotnet msbuild eng/Validate.proj -t:Aot -tl:off
+```
+
 ## Pull requests
 
-- Keep each pull request focused on one coherent change.
-- Explain what changed and why, and link to related issues when applicable.
+- Keep each pull request focused on one change.
+- Explain what changed and why, and link to related issues if there are any.
 - When fixing a reproducible bug, add a regression test. Add tests for new behavior where appropriate.
-- Update the relevant documentation when public behavior changes.
-- Preserve compatibility with the library's .NET 6 target and account for differences between supported HTMX versions.
+- Update the documentation if your change affects how people use the library.
+- Keep changes compatible with .NET 6 and the supported HTMX versions.
   See [Version compatibility](docs/articles/version-compatibility.md).
 
-Discuss substantial public API changes in an issue before starting implementation.
+For major public API changes, open an issue first so we can agree on the approach before you spend time on it.
 
 Use the [scoped commit style](#commit-messages) for pull request titles. For a pull request that spans multiple scopes,
 choose the scope that best matches its main change. The title does not need to summarize every supporting commit.
