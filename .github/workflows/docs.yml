@@ -25,17 +25,13 @@ jobs:
       - name: Install .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: 9.0.x
+          dotnet-version: 10.x
 
       - name: Configure GitHub Pages
-        id: pages
         uses: actions/configure-pages@v5
 
-      - name: Restore documentation tools
-        run: dotnet tool restore
-
       - name: Build documentation
-        run: dotnet docfx docs/docfx.json --basePath "${{ steps.pages.outputs.base_path }}"
+        run: bash eng/validate.sh Docs
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3

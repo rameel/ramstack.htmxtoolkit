@@ -1,0 +1,90 @@
+<Project DefaultTargets="All">
+  <PropertyGroup>
+    <RepoRoot>$([MSBuild]::NormalizeDirectory('$(MSBuildThisFileDirectory)', '..'))</RepoRoot>
+    <Solution>$(RepoRoot)Ramstack.HtmxToolkit.slnx</Solution>
+    <LibraryProject>$(RepoRoot)src/Ramstack.HtmxToolkit/Ramstack.HtmxToolkit.csproj</LibraryProject>
+    <AotProjectDirectory>$(RepoRoot)tests/Ramstack.HtmxToolkit.AotValidation</AotProjectDirectory>
+    <AotProject>$(AotProjectDirectory)/Ramstack.HtmxToolkit.AotValidation.csproj</AotProject>
+    <AllDependsOn>Test;Aot;JavaScript;Docs</AllDependsOn>
+    <TestDependsOn>BuildDebug;BuildRelease;TestDebug;TestRelease</TestDependsOn>
+    <AotDependsOn>BuildRelease</AotDependsOn>
+  </PropertyGroup>
+
+  <Target Name="All" DependsOnTargets="$(AllDependsOn)" />
+  <Target Name="Test" DependsOnTargets="$(TestDependsOn)" />
+
+  <Target Name="BuildDebug">
+    <Message Importance="high" Text="==&gt; Build (Debug)" />
+    <Exec WorkingDirectory="$(RepoRoot)" Command="dotnet build &quot;$(Solution)&quot; -c Debug --tl:off" />
+  </Target>
+
+  <Target Name="TestDebug">
+    <Message Importance="high" Text="==&gt; Test (Debug)" />
+    <Exec WorkingDirectory="$(RepoRoot)" IgnoreStandardErrorWarningFormat="true"
+          Command="dotnet test &quot;$(Solution)&quot; -c Debug --no-build --tl:off" />
+  </Target>
+
+  <Target Name="BuildRelease">
+    <Message Importance="high" Text="==&gt; Build (Release)" />
+    <Exec WorkingDirectory="$(RepoRoot)" Command="dotnet build &quot;$(Solution)&quot; -c Release --tl:off" />
+  </Target>
+
+  <Target Name="TestRelease">
+    <Message Importance="high" Text="==&gt; Test (Release)" />
+    <Exec WorkingDirectory="$(RepoRoot)" IgnoreStandardErrorWarningFormat="true"
+          Command="dotnet test &quot;$(Solution)&quot; -c Release --no-build --tl:off" />
+  </Target>
+
+  <Target Name="Aot" DependsOnTargets="$(AotDependsOn)">
+    <PropertyGroup>
+      <RuntimeIdentifier Condition="'$(RuntimeIdentifier)' == ''">$([System.Runtime.InteropServices.RuntimeInformation]::RuntimeIdentifier)</RuntimeIdentifier>
+      <_AotDirectory>$(AotProjectDirectory)/obj/validation</_AotDirectory>
+      <_AotFeedDirectory>$(_AotDirectory)/feed</_AotFeedDirectory>
+      <_AotPackagesDirectory>$(_AotDirectory)/packages</_AotPackagesDirectory>
+      <_AotPublishDirectory>$(_AotDirectory)/publish/$(RuntimeIdentifier)</_AotPublishDirectory>
+      <_AotExecutable>$(_AotPublishDirectory)/Ramstack.HtmxToolkit.AotValidation</_AotExecutable>
+      <_AotExecutable Condition="$([MSBuild]::IsOSPlatform('Windows'))">$(_AotExecutable).exe</_AotExecutable>
+    </PropertyGroup>
+
+    <!-- Keep a separate restore cache so the synthetic package is always fresh without touching the user's global cache. -->
+    <RemoveDir Directories="$(_AotFeedDirectory);$(_AotPackagesDirectory)/ramstack.htmxtoolkit/0.0.0-aot;$(_AotPublishDirectory)" />
+
+    <Message Importance="high" Text="==&gt; Pack (AOT validation)" />
+    <Exec WorkingDirectory="$(RepoRoot)" Command="dotnet pack &quot;$(LibraryProject)&quot; -c Release --no-build --no-restore --tl:off -p:MinVerVersionOverride=0.0.0-aot -o &quot;$(_AotFeedDirectory)&quot;" />
+
+    <Message Importance="high" Text="==&gt; Restore (AOT validation)" />
+    <Exec WorkingDirectory="$(RepoRoot)" Command="dotnet restore &quot;$(AotProject)&quot; -r $(RuntimeIdentifier) --tl:off --packages &quot;$(_AotPackagesDirectory)&quot; --source &quot;$(_AotFeedDirectory)&quot; --source https://api.nuget.org/v3/index.json" />
+
+    <Message Importance="high" Text="==&gt; Publish (AOT validation)" />
+    <Exec WorkingDirectory="$(RepoRoot)" Command="dotnet publish &quot;$(AotProject)&quot; -c Release -r $(RuntimeIdentifier) --no-restore --warnaserror --tl:off -p:RestorePackagesPath=&quot;$(_AotPackagesDirectory)&quot; -o &quot;$(_AotPublishDirectory)&quot;" />
+
+    <Message Importance="high" Text="==&gt; Run (AOT validation)" />
+    <Exec WorkingDirectory="$(RepoRoot)" Command="&quot;$(_AotExecutable)&quot;" />
+  </Target>
+
+  <Target Name="JavaScript">
+    <Message Importance="high" Text="==&gt; Restore (JavaScript)" />
+    <Exec WorkingDirectory="$(RepoRoot)" Command="pnpm install --frozen-lockfile" />
+    <ItemGroup>
+      <_JavaScriptFiles Include="$(RepoRoot)src/Ramstack.HtmxToolkit/wwwroot/htmx-toolkit.js;$(RepoRoot)src/Ramstack.HtmxToolkit/wwwroot/htmx-toolkit.min.js" />
+    </ItemGroup>
+    <GetFileHash Files="@(_JavaScriptFiles)">
+      <Output TaskParameter="Items" ItemName="_JavaScriptBefore" />
+    </GetFileHash>
+    <Message Importance="high" Text="==&gt; Build and verify JavaScript assets" />
+    <Exec WorkingDirectory="$(RepoRoot)" Command="pnpm build" />
+    <GetFileHash Files="@(_JavaScriptFiles)">
+      <Output TaskParameter="Items" ItemName="_JavaScriptAfter" />
+    </GetFileHash>
+    <Error Condition="'@(_JavaScriptBefore->'%(FileHash)')' != '@(_JavaScriptAfter->'%(FileHash)')'"
+           Text="JavaScript assets were out of date. Review and commit the regenerated htmx-toolkit.js and htmx-toolkit.min.js files, then rerun validation." />
+  </Target>
+
+  <Target Name="Docs">
+    <Message Importance="high" Text="==&gt; Restore (documentation)" />
+    <Exec WorkingDirectory="$(RepoRoot)" Command="dotnet restore &quot;$(LibraryProject)&quot; --tl:off" />
+    <Exec WorkingDirectory="$(RepoRoot)" Command="dotnet tool restore" />
+    <Message Importance="high" Text="==&gt; Build documentation" />
+    <Exec WorkingDirectory="$(RepoRoot)" Command="dotnet docfx docs/docfx.json --warningsAsErrors" />
+  </Target>
+</Project>

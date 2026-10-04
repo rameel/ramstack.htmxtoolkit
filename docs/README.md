@@ -1,16 +1,13 @@
 # Building the documentation locally
 
-Restore the repository-local DocFX version:
+From the repository root, restore the tools and build the static site using the same validation target as CI:
 
 ```console
-dotnet tool restore
+dotnet msbuild eng/Validate.proj -t:Docs -tl:off
 ```
 
-Build the static site:
-
-```console
-dotnet docfx docs/docfx.json
-```
+This requires the .NET 10 SDK or later.
+Documentation warnings are treated as errors.
 
 Run a local preview server and open <http://localhost:8080>:
 

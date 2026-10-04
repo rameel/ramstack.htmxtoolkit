@@ -29,6 +29,9 @@ jobs:
         with:
           fetch-depth: 1
 
+      - name: Verify tag commit is main HEAD
+        run: test "$GITHUB_SHA" = "$(git ls-remote origin refs/heads/main | cut -f1)"
+
       - name: Build
         run: dotnet build -c Release
 

@@ -390,6 +390,9 @@ See [Morph swaps](docs/articles/version-compatibility.md#morph-swaps) for script
 
 ## Running Locally
 
+Building from source requires the .NET 10 SDK or later (C# 14).
+See [Development setup](CONTRIBUTING.md#development-setup) for details.
+
 ### Demo
 
 The [`samples/Ramstack.HtmxToolkit.Demo`](samples/Ramstack.HtmxToolkit.Demo) project demonstrates request detection,
