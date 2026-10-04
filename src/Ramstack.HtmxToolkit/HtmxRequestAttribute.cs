@@ -12,25 +12,30 @@ public sealed class HtmxRequestAttribute : Attribute, IActionConstraint
     public int Order => 0;
 
     /// <summary>
-    /// Gets or sets a value indicating whether the action accepts boosted
-    /// or non-boosted HTMX requests.
+    /// Gets or sets the kind of HTMX request accepted by the action.
     /// </summary>
     /// <remarks>
     /// <list type="bullet">
-    ///   <item><see langword="true" /> accepts only boosted requests.</item>
-    ///   <item><see langword="false" /> accepts only non-boosted requests.</item>
-    ///   <item><see langword="null" /> accepts any HTMX request.</item>
+    ///   <item><see cref="HtmxRequestKind.Any" />, the default, accepts any HTMX request.</item>
+    ///   <item><see cref="HtmxRequestKind.Boosted" /> accepts only boosted HTMX requests.</item>
+    ///   <item><see cref="HtmxRequestKind.NonBoosted" /> accepts only non-boosted HTMX requests.</item>
     /// </list>
     /// </remarks>
-    public bool? Boosted { get; set; }
+    public HtmxRequestKind Kind { get; set; }
 
     /// <inheritdoc />
     public bool Accept(ActionConstraintContext context)
     {
         var request = context.RouteContext.HttpContext.Request;
-        if (request.IsHtmxRequest())
-            return Boosted is null || request.IsHtmxBoosted() == Boosted.GetValueOrDefault();
+        if (!request.IsHtmxRequest())
+            return false;
 
-        return false;
+        return Kind switch
+        {
+            HtmxRequestKind.Any => true,
+            HtmxRequestKind.Boosted => request.IsHtmxBoosted(),
+            HtmxRequestKind.NonBoosted => !request.IsHtmxBoosted(),
+            _ => false
+        };
     }
 }
