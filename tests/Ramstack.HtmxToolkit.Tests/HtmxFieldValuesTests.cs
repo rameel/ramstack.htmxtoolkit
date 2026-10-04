@@ -65,7 +65,7 @@ public class HtmxFieldValuesTests
         Justification = "A distinct empty array verifies that the constructor preserves reference identity.")]
     public void Constructor_EmptyArray_PreservesArrayRepresentation()
     {
-        var source = new string [0];
+        var source = new string[0];
         var values = new HtmxFieldValues(source);
 
         Assert.Multiple(() =>

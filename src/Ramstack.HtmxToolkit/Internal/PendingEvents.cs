@@ -176,9 +176,11 @@ internal sealed class PendingEvents
                     foreach (var (k, v) in (List<KeyValuePair<string, string>>)value)
                     {
                         writer.WriteStartObject();
+                        {
                             writer.WriteString("key", k);
                             writer.WritePropertyName("value");
                             writer.WriteRawValue(v);
+                        }
                         writer.WriteEndObject();
                     }
 
