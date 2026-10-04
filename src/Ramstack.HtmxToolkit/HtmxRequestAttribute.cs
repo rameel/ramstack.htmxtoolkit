@@ -30,12 +30,13 @@ public sealed class HtmxRequestAttribute : Attribute, IActionConstraint
         if (!request.IsHtmxRequest())
             return false;
 
-        return Kind switch
-        {
-            HtmxRequestKind.Any => true,
-            HtmxRequestKind.Boosted => request.IsHtmxBoosted(),
-            HtmxRequestKind.NonBoosted => !request.IsHtmxBoosted(),
-            _ => false
-        };
+        if (Kind == HtmxRequestKind.Any)
+            return true;
+
+        var kind = request.IsHtmxBoosted()
+            ? HtmxRequestKind.Boosted
+            : HtmxRequestKind.NonBoosted;
+
+        return Kind == kind;
     }
 }
