@@ -99,7 +99,7 @@ document._r_htmx ||= ((document, htmx) => {
     const update_antiforgery = content => {
         let doc = new DOMParser().parseFromString(content || "", "text/html");
         let val = read_antiforgery(doc);
-        val && (antiforgery = val);
+        val.requestToken && (antiforgery = val);
     };
 
     listen("htmx:afterOnLoad", e => {
