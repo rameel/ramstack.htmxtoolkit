@@ -100,7 +100,8 @@ See [Version compatibility](version-compatibility.md).
 `[HtmxRequest]` is an MVC action constraint. A normal browser request cannot select an action
 that has only that constrained route. Provide a normal action for the route or handle both representations in one action.
 
-Also check `Boosted`: `true` accepts only boosted requests, `false` only non-boosted HTMX requests, and `null` either kind.
+Also check `Kind`: `HtmxRequestKind.Boosted` accepts only boosted HTMX requests,
+`HtmxRequestKind.NonBoosted` only non-boosted HTMX requests, and `HtmxRequestKind.Any` (the default) either kind.
 
 ## URL generation throws an exception
 

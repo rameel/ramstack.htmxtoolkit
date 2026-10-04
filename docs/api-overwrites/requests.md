@@ -27,7 +27,7 @@ example:
 ---
 
 ---
-uid: Ramstack.HtmxToolkit.HtmxRequestAttribute.Boosted
+uid: Ramstack.HtmxToolkit.HtmxRequestAttribute.Kind
 example:
   - |-
     [!code-csharp[](../snippets/requests/BoostedRequestAttributeExample.cs)]

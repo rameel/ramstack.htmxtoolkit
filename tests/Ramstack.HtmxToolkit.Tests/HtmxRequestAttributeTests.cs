@@ -7,56 +7,61 @@ namespace Ramstack.HtmxToolkit.Tests;
 [TestFixture]
 public class HtmxRequestAttributeTests
 {
-    [Test]
-    public void Accept_ReturnsFalse_ForNonHtmxRequest()
+    [TestCase(false)]
+    [TestCase(true)]
+    public void Accept_ReturnsTrue_ForHtmxRequest_WhenKindIsNotSet(bool boosted)
     {
         var req = new HtmxRequestAttribute();
-        var ctx = CreateContext(TestHelper.CreateHttpContext());
-
-        Assert.That(req.Accept(ctx), Is.False);
-    }
-
-    [Test]
-    public void Accept_ReturnsTrue_ForHtmxRequest_WhenBoostedIsNull()
-    {
-        var req = new HtmxRequestAttribute { Boosted = null };
-        var ctx = CreateContext(TestHelper.CreateHtmxRequestContext());
+        var ctx = CreateContext(TestHelper.CreateHtmxRequestContext(boosted));
 
         Assert.That(req.Accept(ctx), Is.True);
     }
 
-    [Test]
-    public void Accept_ReturnsTrue_ForBoostedRequest_WhenBoostedIsTrue()
+    [TestCase(HtmxRequestKind.Any, null, true)]
+    [TestCase(HtmxRequestKind.Any, "false", true)]
+    [TestCase(HtmxRequestKind.Any, "true", true)]
+    [TestCase(HtmxRequestKind.Boosted, null, false)]
+    [TestCase(HtmxRequestKind.Boosted, "false", false)]
+    [TestCase(HtmxRequestKind.Boosted, "true", true)]
+    [TestCase(HtmxRequestKind.NonBoosted, null, true)]
+    [TestCase(HtmxRequestKind.NonBoosted, "false", true)]
+    [TestCase(HtmxRequestKind.NonBoosted, "true", false)]
+    public void Accept_UsesKind_ForHtmxRequest(HtmxRequestKind kind, string? boostedHeader, bool expected)
     {
-        var req = new HtmxRequestAttribute { Boosted = true };
-        var ctx = CreateContext(TestHelper.CreateHtmxRequestContext(boosted: true));
+        var req = new HtmxRequestAttribute { Kind = kind };
+        var ctx = TestHelper.CreateHtmxRequestContext();
 
-        Assert.That(req.Accept(ctx), Is.True);
+        if (boostedHeader is not null)
+            ctx.Request.Headers[HtmxRequestHeaderNames.Boosted] = boostedHeader;
+
+        Assert.That(
+            req.Accept(CreateContext(ctx)),
+            Is.EqualTo(expected));
     }
 
-    [Test]
-    public void Accept_ReturnsFalse_ForNonBoostedRequest_WhenBoostedIsTrue()
+    [TestCase(HtmxRequestKind.Any, false)]
+    [TestCase(HtmxRequestKind.Any, true)]
+    [TestCase(HtmxRequestKind.Boosted, false)]
+    [TestCase(HtmxRequestKind.Boosted, true)]
+    [TestCase(HtmxRequestKind.NonBoosted, false)]
+    [TestCase(HtmxRequestKind.NonBoosted, true)]
+    public void Accept_ReturnsFalse_ForNonHtmxRequest(HtmxRequestKind kind, bool boosted)
     {
-        var req = new HtmxRequestAttribute { Boosted = true };
-        var ctx = CreateContext(TestHelper.CreateHtmxRequestContext());
+        var req = new HtmxRequestAttribute { Kind = kind };
+        var ctx = TestHelper.CreateHttpContext();
 
-        Assert.That(req.Accept(ctx), Is.False);
+        if (boosted)
+            ctx.Request.Headers[HtmxRequestHeaderNames.Boosted] = "true";
+
+        Assert.That(req.Accept(CreateContext(ctx)), Is.False);
     }
 
-    [Test]
-    public void Accept_ReturnsTrue_ForNonBoostedRequest_WhenBoostedIsFalse()
+    [TestCase(false)]
+    [TestCase(true)]
+    public void Accept_ReturnsFalse_ForUnknownKind(bool boosted)
     {
-        var req = new HtmxRequestAttribute { Boosted = false };
-        var ctx = CreateContext(TestHelper.CreateHtmxRequestContext());
-
-        Assert.That(req.Accept(ctx), Is.True);
-    }
-
-    [Test]
-    public void Accept_ReturnsFalse_ForBoostedRequest_WhenBoostedIsFalse()
-    {
-        var req = new HtmxRequestAttribute { Boosted = false };
-        var ctx = CreateContext(TestHelper.CreateHtmxRequestContext(boosted: true));
+        var req = new HtmxRequestAttribute { Kind = (HtmxRequestKind)999 };
+        var ctx = CreateContext(TestHelper.CreateHtmxRequestContext(boosted));
 
         Assert.That(req.Accept(ctx), Is.False);
     }
