@@ -6,15 +6,31 @@ indent_size = 4
 indent_style = space
 trim_trailing_whitespace = true
 insert_final_newline = true
-resharper_csharp_max_line_length = 160
 
-[*.{cshtml,css,yml,props,targets,csproj}]
+[*.{html,cshtml,css,yml,yaml}]
+indent_size = 2
+
+[*.{slnx,csproj,proj,props,targets}]
 indent_size = 2
 
 [*.min.js]
 insert_final_newline = false
 
 [*.cs]
+resharper_csharp_max_line_length = 160
+
+# Using directive options
+dotnet_sort_system_directives_first = true
+dotnet_separate_import_directive_groups = true
+
+# Prefer var whenever possible
+csharp_style_var_for_built_in_types = true:suggestion
+csharp_style_var_when_type_is_apparent = true:suggestion
+csharp_style_var_elsewhere = true:suggestion
+
+# Indentation preferences
+csharp_indent_labels = no_change
+
 # IDE0079: Remove unnecessary suppression
 dotnet_remove_unnecessary_suppression_exclusions = category:ReSharper
 
@@ -26,3 +42,9 @@ dotnet_diagnostic.CA1707.severity = none
 # CA1859: Use concrete types when possible for improved performance
 # Tests exercise interface contracts and use abstract ASP.NET Core types.
 dotnet_diagnostic.CA1859.severity = none
+
+[*.sh]
+end_of_line = lf
+
+[*.{cmd, bat}]
+end_of_line = crlf
