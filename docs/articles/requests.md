@@ -97,19 +97,19 @@ public IActionResult InventoryFragment(string sku) =>
     PartialView("_Inventory", inventory.Find(sku));
 ```
 
-Set `Boosted` to accept only boosted or non-boosted requests:
+Set `Kind` to accept only boosted or non-boosted requests:
 
 ```csharp
-[HtmxRequest(Boosted = true)]
+[HtmxRequest(Kind = HtmxRequestKind.Boosted)]
 public IActionResult BoostedNavigation() =>
     PartialView("_Navigation");
 
-[HtmxRequest(Boosted = false)]
+[HtmxRequest(Kind = HtmxRequestKind.NonBoosted)]
 public IActionResult ComponentRequest() =>
     PartialView("_Component");
 ```
 
-`Boosted = null`, the default, accepts either kind of HTMX request. If no action satisfies all routing
+`Kind = HtmxRequestKind.Any`, the default, accepts either kind of HTMX request. If no action satisfies all routing
 and action constraints, MVC reports that no endpoint matched; the attribute does not automatically fall back
 to a different URL.
 

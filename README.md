@@ -148,15 +148,18 @@ public IActionResult ProfileFragment()
 }
 ```
 
-Set `Boosted` to restrict action selection to boosted or non-boosted HTMX requests:
+Set `Kind` to restrict action selection to boosted or non-boosted HTMX requests:
 
 ```csharp
-[HtmxRequest(Boosted = true)]
+[HtmxRequest(Kind = HtmxRequestKind.Boosted)]
 public IActionResult BoostedNavigation()
 {
     return PartialView("_Navigation");
 }
 ```
+
+Use `HtmxRequestKind.NonBoosted` for only non-boosted HTMX requests.
+The default, `HtmxRequestKind.Any`, accepts either kind.
 
 ## Responses
 
