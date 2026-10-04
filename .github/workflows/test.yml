@@ -22,26 +22,33 @@ jobs:
         with:
           fetch-depth: 1
 
+      - name: Install Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: latest
+
       - name: Build (Debug)
         run: dotnet build -c Debug
 
       - name: Build (Release)
         run: dotnet build -c Release
 
-      - name: Pack (AOT validation)
-        run: dotnet pack src/Ramstack.HtmxToolkit/Ramstack.HtmxToolkit.csproj -c Release -o "${RUNNER_TEMP}/aot-packages" --no-build --no-restore -p:MinVerVersionOverride=0.0.0-aot
-
-      - name: Restore (AOT validation)
-        run: dotnet restore tests/Ramstack.HtmxToolkit.AotValidation/Ramstack.HtmxToolkit.AotValidation.csproj -r linux-x64 --source "${RUNNER_TEMP}/aot-packages" --source https://api.nuget.org/v3/index.json
-
-      - name: Publish (AOT validation)
-        run: dotnet publish tests/Ramstack.HtmxToolkit.AotValidation/Ramstack.HtmxToolkit.AotValidation.csproj -c Release -r linux-x64 --no-restore --warnaserror
-
-      - name: Run (AOT validation)
-        run: tests/Ramstack.HtmxToolkit.AotValidation/bin/Release/net8.0/linux-x64/publish/Ramstack.HtmxToolkit.AotValidation
+      - name: Native AOT validation
+        run: bash eng/validate.sh Aot
 
       - name: Test (Debug)
         run: dotnet test -c Debug --no-build
 
       - name: Test (Release)
         run: dotnet test -c Release --no-build
+
+      - name: Validate JavaScript assets
+        run: bash eng/validate.sh JavaScript
+
+      - name: Validate documentation
+        run: bash eng/validate.sh Docs
