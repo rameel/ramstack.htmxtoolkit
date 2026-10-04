@@ -1,5 +1,5 @@
 <Solution>
-  <Folder Name="/Solution Items/">
+  <Folder Name="/.common/">
     <File Path=".editorconfig" />
     <File Path=".gitattributes" />
     <File Path=".gitignore" />
@@ -9,6 +9,11 @@
     <File Path="package.json" />
     <File Path="README.md" />
     <File Path="rollup.config.js" />
+  </Folder>
+  <Folder Name="/.eng/">
+    <File Path="eng/Validate.proj" />
+    <File Path="eng/validate.cmd" />
+    <File Path="eng/validate.sh" />
   </Folder>
   <Project Path="src/Ramstack.HtmxToolkit/Ramstack.HtmxToolkit.csproj" />
   <Project Path="samples/Ramstack.HtmxToolkit.Demo/Ramstack.HtmxToolkit.Demo.csproj" />
