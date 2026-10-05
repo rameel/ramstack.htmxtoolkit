@@ -37,10 +37,10 @@ public class HttpRequestExtensionsTests
         Assert.That(request.IsHtmxBoosted(), Is.False);
 
         request.Headers[HtmxRequestHeaderNames.Boosted] = "false";
-        Assert.That(request.IsHtmxFullRequest(), Is.False);
+        Assert.That(request.IsHtmxBoosted(), Is.False);
 
         request.Headers[HtmxRequestHeaderNames.Boosted] = "true";
-        Assert.That(request.IsHtmxFullRequest(), Is.True);
+        Assert.That(request.IsHtmxBoosted(), Is.True);
     }
 
     [Test]
@@ -63,7 +63,7 @@ public class HttpRequestExtensionsTests
 
         Assert.That(request.IsHtmxPartialRequest(), Is.False);
 
-        request.Headers[HtmxRequestHeaderNames.RequestType] = "full";
+        request.Headers[HtmxRequestHeaderNames.RequestType] = "partial";
         Assert.That(request.IsHtmxPartialRequest(), Is.True);
     }
 }
