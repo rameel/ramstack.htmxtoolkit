@@ -370,7 +370,13 @@ internal sealed class SmallDictionary<TKey, TValue> : IDictionary<TKey, TValue>,
 
             while (lo <= hi)
             {
-                var mi = (lo + hi) >> 1;
+                //
+                // Both lo and hi are non-negative and within [0..int.MaxValue],
+                // so their sum fits in uint. With unchecked addition, the unsigned
+                // right shift handles any int wraparound, making this equivalent to
+                // (int)(((uint)lo + (uint)hi) >> 1), but cleaner and easier to read.
+                //
+                var mi = (lo + hi) >>> 1;
                 if ((uint)mi >= (uint)array.Length)
                     break;
 
@@ -424,7 +430,13 @@ internal sealed class SmallDictionary<TKey, TValue> : IDictionary<TKey, TValue>,
 
         while (lo <= hi)
         {
-            var mi = lo + (hi - lo >>> 1);
+            //
+            // Both lo and hi are non-negative and within [0..int.MaxValue],
+            // so their sum fits in uint. With unchecked addition, the unsigned
+            // right shift handles any int wraparound, making this equivalent to
+            // (int)(((uint)lo + (uint)hi) >> 1), but cleaner and easier to read.
+            //
+            var mi = (lo + hi) >>> 1;
             if ((uint)mi >= (uint)array.Length)
                 break;
 
