@@ -18,7 +18,7 @@ public static class HttpResponseExtensions
         new(response);
 
     /// <summary>
-    /// Configures the HTMX response headers.
+    /// Configures the HTMX response headers when the current request is an HTMX request.
     /// </summary>
     /// <param name="response">The HTTP response to configure.</param>
     /// <param name="configure">The delegate that configures the HTMX response headers.</param>
@@ -29,7 +29,7 @@ public static class HttpResponseExtensions
     }
 
     /// <summary>
-    /// Configures the HTMX response headers.
+    /// Configures the HTMX response headers when the current request is an HTMX request.
     /// </summary>
     /// <param name="response">The HTTP response to configure.</param>
     /// <param name="configure">The delegate that configures the HTMX response headers

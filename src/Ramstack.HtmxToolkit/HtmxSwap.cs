@@ -25,7 +25,7 @@ public enum HtmxSwap
     /// <para>
     ///   With HTMX 1.9.x or 2.x, activate the <c>ramstack-morph</c> extension
     ///   and optionally load Idiomorph. Without Idiomorph, the extension
-    ///   falls back to <c>innerHTML</c>.
+    ///   falls back to <see cref="InnerHtml" />.
     /// </para>
     /// </remarks>
     InnerMorph,
@@ -40,7 +40,7 @@ public enum HtmxSwap
     /// <para>
     ///   With HTMX 1.9.x or 2.x, activate the <c>ramstack-morph</c> extension
     ///   and optionally load Idiomorph. Without Idiomorph, the extension
-    ///   falls back to <c>outerHTML</c>.
+    ///   falls back to <see cref="OuterHtml" />.
     /// </para>
     /// </remarks>
     OuterMorph,
@@ -54,7 +54,7 @@ public enum HtmxSwap
     /// </para>
     /// <para>
     ///   With HTMX 1.9.x or 2.x, activate the <c>ramstack-morph</c> extension
-    ///   to fall back to attribute synchronization and <c>innerHTML</c>.
+    ///   to fall back to attribute synchronization and <see cref="InnerHtml" />.
     /// </para>
     /// </remarks>
     OuterSync,

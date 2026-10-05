@@ -16,13 +16,13 @@ public sealed class HtmxLocationOptions
     public string? Path { get; internal set; }
 
     /// <summary>
-    /// Gets or sets the source element that initiated the request.
+    /// Gets or sets the CSS selector for the element used as the source of the new request.
     /// </summary>
     /// <remarks>Supported in HTMX 1.9.x, HTMX 2.x, and HTMX 4.x.</remarks>
     public string? Source { get; set; }
 
     /// <summary>
-    /// Gets or sets the target element into which the response will be swapped.
+    /// Gets or sets the selector for the target element into which the response will be swapped.
     /// </summary>
     /// <remarks>Supported in HTMX 1.9.x, HTMX 2.x, and HTMX 4.x.</remarks>
     public string? Target { get; set; }
@@ -37,14 +37,27 @@ public sealed class HtmxLocationOptions
     /// <summary>
     /// Gets or sets the form field values to submit with the request.
     /// </summary>
-    /// <remarks>Supported in HTMX 1.9.x, HTMX 2.x, and HTMX 4.x.</remarks>
+    /// <remarks>
+    /// <para>Supported in HTMX 1.9.x, HTMX 2.x, and HTMX 4.x.</para>
+    /// <para>
+    ///   HTMX 1.9.x and 2.x submit array values as repeated parameters.
+    ///   HTMX 4.0.0 converts an array to a single comma-separated field value.
+    /// </para>
+    /// </remarks>
     public IDictionary<string, HtmxFieldValues>? Values { get; set; }
 
     /// <summary>
     /// Gets or sets the headers to include with the request.
-    /// Header values must be strings. Pass complex data as a pre-serialized JSON string.
     /// </summary>
-    /// <remarks>Supported in HTMX 1.9.x, HTMX 2.x, and HTMX 4.x.</remarks>
+    /// <remarks>
+    /// <para>
+    ///   Supported in HTMX 1.9.x, HTMX 2.x, and HTMX 4.x.
+    /// </para>
+    /// <para>
+    ///   Header values must be strings.
+    ///   Pass complex data as a pre-serialized JSON string.
+    /// </para>
+    /// </remarks>
     public IDictionary<string, string>? Headers { get; set; }
 
     /// <summary>
@@ -54,9 +67,10 @@ public sealed class HtmxLocationOptions
     public string? Select { get; set; }
 
     /// <summary>
-    /// Gets or sets a selector used to select content for out-of-band swaps from the response.
+    /// Gets or sets a comma-separated list of selectors, optionally followed by swap styles,
+    /// used to select content for out-of-band swaps from the response.
     /// </summary>
-    /// <remarks>Supported in HTMX 2.x and HTMX 4.x.</remarks>
+    /// <remarks>Supported in HTMX 2.0.8 and later 2.x releases, and in HTMX 4.x.</remarks>
     [JsonPropertyName("selectOOB")]
     public string? SelectOob { get; set; }
 
@@ -64,7 +78,7 @@ public sealed class HtmxLocationOptions
     /// Gets or sets the path to push into the browser history.
     /// Set this property to <c>"false"</c> to prevent the URL from being pushed.
     /// </summary>
-    /// <remarks>Supported in HTMX 2.x and HTMX 4.x.</remarks>
+    /// <remarks>Supported in HTMX 2.0.8 and later 2.x releases, and in HTMX 4.x.</remarks>
     public string? Push { get; set; }
 
     /// <summary>

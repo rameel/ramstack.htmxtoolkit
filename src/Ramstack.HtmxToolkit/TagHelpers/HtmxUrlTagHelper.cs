@@ -65,7 +65,8 @@ public sealed class HtmxUrlTagHelper(IUrlHelperFactory factory) : TagHelper
     /// Gets or sets the name of the area.
     /// </summary>
     /// <remarks>
-    /// Must be <see langword="null" /> if <see cref="Route" /> is not <see langword="null" />.
+    /// Can be combined with a named route, controller action, or Razor Page.
+    /// When not <see langword="null" />, overrides any <c>area</c> value in <see cref="RouteValues" />.
     /// </remarks>
     [AspMvcArea]
     [HtmlAttributeName(AreaAttributeName)]

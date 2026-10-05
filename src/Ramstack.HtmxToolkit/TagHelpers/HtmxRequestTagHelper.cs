@@ -102,9 +102,13 @@ public sealed class HtmxRequestTagHelper(IOptions<HtmxToolkitOptions> options) :
     }
 
     /// <summary>
-    /// Gets or sets a value indicating whether HTMX-specific request headers are omitted.
+    /// Gets or sets a value indicating whether headers set by HTMX are omitted,
+    /// including custom headers supplied through <c>hx-headers</c>.
     /// </summary>
-    /// <remarks>Supported in HTMX 1.x and 2.x. Removed in HTMX 4.x.</remarks>
+    /// <remarks>
+    /// <para>Supported in HTMX 1.x and 2.x. Removed in HTMX 4.x.</para>
+    /// <para>Headers added by the browser are unaffected.</para>
+    /// </remarks>
     [HtmlAttributeName(RequestNoHeadersAttributeName)]
     public bool? NoHeaders
     {
@@ -135,9 +139,13 @@ public sealed class HtmxRequestTagHelper(IOptions<HtmxToolkitOptions> options) :
     }
 
     /// <summary>
-    /// Gets or sets the referrer URL or referrer policy for the request.
+    /// Gets or sets the Fetch API <c>referrer</c> value for the request.
     /// </summary>
-    /// <remarks>Supported only in HTMX 4.x.</remarks>
+    /// <remarks>
+    /// Supported only in HTMX 4.x. Accepts a same-origin URL, an empty string to omit
+    /// the referrer, or <c>about:client</c> to use the default referrer.
+    /// The separate Fetch API <c>referrerPolicy</c> option is not configured by this property.
+    /// </remarks>
     [HtmlAttributeName(RequestReferrerAttributeName)]
     public string? Referrer
     {
