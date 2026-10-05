@@ -52,11 +52,21 @@ public class HtmxRequestHeadersTests
         Assert.That(headers.Request, Is.True);
     }
 
-    [Test]
-    public void RequestType_ReturnsHeaderValue()
+    [TestCase("full", HtmxRequestType.Full)]
+    [TestCase("partial", HtmxRequestType.Partial)]
+    [TestCase("", HtmxRequestType.Unspecified)]
+    [TestCase("unknown", HtmxRequestType.Unspecified)]
+    public void RequestType_ReturnsHeaderValue(string value, HtmxRequestType expected)
     {
-        var headers = CreateHeaders((HtmxRequestHeaderNames.RequestType, "partial"));
-        Assert.That(headers.RequestType, Is.EqualTo("partial"));
+        var headers = CreateHeaders((HtmxRequestHeaderNames.RequestType, value));
+        Assert.That(headers.RequestType, Is.EqualTo(expected));
+    }
+
+    [Test]
+    public void RequestType_IsUnspecified_WhenHeaderAbsent()
+    {
+        var headers = CreateHeaders((HtmxRequestHeaderNames.Boosted, "true"));
+        Assert.That(headers.RequestType, Is.EqualTo(HtmxRequestType.Unspecified));
     }
 
     [Test]
@@ -94,7 +104,6 @@ public class HtmxRequestHeadersTests
 
         Assert.That(headers.CurrentUrl, Is.Null);
         Assert.That(headers.Prompt, Is.Null);
-        Assert.That(headers.RequestType, Is.Null);
         Assert.That(headers.Source, Is.Null);
         Assert.That(headers.Target, Is.Null);
         Assert.That(headers.TriggerName, Is.Null);

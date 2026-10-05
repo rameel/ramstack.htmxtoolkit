@@ -46,20 +46,34 @@ public static class HttpRequestExtensions
         request.Headers.TryGetValue(HtmxRequestHeaderNames.Boosted, out var value) && value is ["true"];
 
     /// <summary>
-    /// Determines whether the specified HTTP request was made using AJAX instead of a normal navigation.
+    /// Determines whether the specified HTTP request has an <c>HX-Request-Type</c> value of <c>"full"</c>.
     /// </summary>
     /// <param name="request">The HTTP request.</param>
-    /// <param name="headers">When this method returns, contains the <see cref="HtmxRequestHeaders" />
-    /// that provides access to well-known HTMX headers.</param>
     /// <returns>
-    /// <see langword="true" /> if the specified HTTP request is boosted;
+    /// <see langword="true" /> if the header value is <c>"full"</c>;
     /// otherwise, <see langword="false" />.
     /// </returns>
-    public static bool IsHtmxBoosted(this HttpRequest request, out HtmxRequestHeaders headers)
-    {
-        headers = new HtmxRequestHeaders(request);
-        return request.IsHtmxBoosted();
-    }
+    /// <remarks>
+    /// Returns <see langword="false" /> when the header is absent,
+    /// including HTMX 1.x and 2.x requests without this header.
+    /// </remarks>
+    public static bool IsHtmxFullRequest(this HttpRequest request) =>
+        request.Headers.TryGetValue(HtmxRequestHeaderNames.RequestType, out var value) && value is ["full"];
+
+    /// <summary>
+    /// Determines whether the specified HTTP request has an <c>HX-Request-Type</c> value of <c>"partial"</c>.
+    /// </summary>
+    /// <param name="request">The HTTP request.</param>
+    /// <returns>
+    /// <see langword="true" /> if the header value is <c>"partial"</c>;
+    /// otherwise, <see langword="false" />.
+    /// </returns>
+    /// <remarks>
+    /// Returns <see langword="false" /> when the header is absent,
+    /// including HTMX 1.x and 2.x requests without this header.
+    /// </remarks>
+    public static bool IsHtmxPartialRequest(this HttpRequest request) =>
+        request.Headers.TryGetValue(HtmxRequestHeaderNames.RequestType, out var value) && value is ["partial"];
 
     /// <summary>
     /// Returns a strongly typed view of the HTMX request headers.

@@ -110,7 +110,7 @@ You can now generate an HTMX URL from ASP.NET Core route information:
 
 ## Requests
 
-Use `IsHtmxRequest` when an endpoint should return a partial response for an HTMX request and a full-page response otherwise:
+For HTMX 1.x and 2.x, use `IsHtmxRequest` to return a partial response for an HTMX request and a full-page response otherwise:
 
 ```csharp
 public IActionResult Help()
@@ -122,8 +122,17 @@ public IActionResult Help()
 }
 ```
 
-Checking `HistoryRestoreRequest` ensures that an HTMX history cache miss receives the full page it expects.
+Checking `HistoryRestoreRequest` ensures that history restoration receives the full page it expects.
 The `out` parameter provides strongly typed access to the request headers.
+
+With HTMX 4, this can be written more simply:
+
+```csharp
+public IActionResult Help() =>
+    Request.IsHtmxPartialRequest()
+        ? PartialView("_Help")
+        : View();
+```
 
 Call `Request.GetHtmxHeaders()` to access the same headers separately from request detection.
 
@@ -133,7 +142,9 @@ Available headers and their formats vary by HTMX version; see the
 `HtmxRequestHeaderNames` exposes the corresponding header-name constants for lower-level APIs.
 
 Use `Request.IsHtmxBoosted()` when only boosted navigation matters.
-An overload also provides access to the strongly typed headers.
+Use `Request.IsHtmxFullRequest()` or `Request.IsHtmxPartialRequest()` to check the type of an HTMX request.
+Both return `false` when `HX-Request-Type` is absent, as in HTMX 1.x and 2.x.
+When other request metadata is needed, use `IsHtmxRequest(out var htmx)`.
 
 ### MVC Action Selection
 
@@ -148,18 +159,22 @@ public IActionResult ProfileFragment()
 }
 ```
 
-Set `Kind` to restrict action selection to boosted or non-boosted HTMX requests:
+Set `BoostedFilter` to restrict action selection to boosted or non-boosted HTMX requests:
 
 ```csharp
-[HtmxRequest(Kind = HtmxRequestKind.Boosted)]
+[HtmxRequest(BoostedFilter = HtmxBoostedFilter.Boosted)]
 public IActionResult BoostedNavigation()
 {
     return PartialView("_Navigation");
 }
 ```
 
-Use `HtmxRequestKind.NonBoosted` for only non-boosted HTMX requests.
-The default, `HtmxRequestKind.Any`, accepts either kind.
+Use `HtmxBoostedFilter.NonBoosted` for only non-boosted HTMX requests.
+The default, `HtmxBoostedFilter.Any`, does not restrict boosted navigation.
+
+Set `RequestType` to `HtmxRequestType.Full` or `HtmxRequestType.Partial` to require a matching
+`HX-Request-Type` header. Its default, `HtmxRequestType.Unspecified`, does not restrict the request type.
+When both properties are set, both conditions must match.
 
 ## Responses
 

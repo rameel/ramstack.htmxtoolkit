@@ -71,13 +71,39 @@ public readonly struct HtmxRequestHeaders
     /// Gets the type of the expected response, either a partial or a full page.
     /// </summary>
     /// <remarks>
-    /// <para>The header name is <see cref="HtmxRequestHeaderNames.RequestType" />.</para>
     /// <para>
-    ///  Supported only in HTMX 4.x. The value is <c>"partial"</c> for targeted swaps
-    ///  and <c>"full"</c> for body-level or <c>hx-select</c> requests.
+    ///   The header name is <see cref="HtmxRequestHeaderNames.RequestType" />.
+    /// </para>
+    /// <para>
+    ///   Supported only in HTMX 4.x. The value is <c>"partial"</c> for targeted swaps
+    ///   and <c>"full"</c> for body-level or <c>hx-select</c> requests.
+    /// </para>
+    /// <para>
+    ///   Returns <see cref="HtmxRequestType.Unspecified" /> when the header is absent.
+    ///   The request type is not inferred from boosted navigation.
     /// </para>
     /// </remarks>
-    public string? RequestType => GetString(_headers, HtmxRequestHeaderNames.RequestType);
+    public HtmxRequestType RequestType
+    {
+        get
+        {
+            static HtmxRequestType GetRequestType(IHeaderDictionary dictionary)
+            {
+                if (dictionary.TryGetValue(HtmxRequestHeaderNames.RequestType, out var value) && value.Count == 1)
+                {
+                    switch (value[0])
+                    {
+                        case "full": return HtmxRequestType.Full;
+                        case "partial": return HtmxRequestType.Partial;
+                    }
+                }
+
+                return HtmxRequestType.Unspecified;
+            }
+
+            return GetRequestType(_headers);
+        }
+    }
 
     /// <summary>
     /// Gets the identifier of the element that triggered the request.
