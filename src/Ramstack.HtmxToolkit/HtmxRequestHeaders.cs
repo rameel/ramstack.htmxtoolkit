@@ -158,7 +158,7 @@ public readonly struct HtmxRequestHeaders
     /// <see langword="true" /> if the header value is <c>"true"</c>; otherwise, <see langword="false" />.
     /// </returns>
     private static bool GetBoolean(IHeaderDictionary dictionary, string key) =>
-        dictionary.TryGetValue(key, out var value) && value[0] == "true";
+        dictionary.TryGetValue(key, out var value) && value is ["true"];
 
     /// <summary>
     /// Gets the value of the specified header.
