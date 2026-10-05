@@ -62,6 +62,36 @@ public static class HttpRequestExtensions
     }
 
     /// <summary>
+    /// Determines whether the specified HTTP request has an <c>HX-Request-Type</c> value of <c>"full"</c>.
+    /// </summary>
+    /// <param name="request">The HTTP request.</param>
+    /// <returns>
+    /// <see langword="true" /> if the header value is <c>"full"</c>;
+    /// otherwise, <see langword="false" />.
+    /// </returns>
+    /// <remarks>
+    /// Returns <see langword="false" /> when the header is absent,
+    /// including HTMX 1.x and 2.x requests without this header.
+    /// </remarks>
+    public static bool IsHtmxFullRequest(this HttpRequest request) =>
+        request.Headers.TryGetValue(HtmxRequestHeaderNames.RequestType, out var value) && value is ["full"];
+
+    /// <summary>
+    /// Determines whether the specified HTTP request has an <c>HX-Request-Type</c> value of <c>"partial"</c>.
+    /// </summary>
+    /// <param name="request">The HTTP request.</param>
+    /// <returns>
+    /// <see langword="true" /> if the header value is <c>"partial"</c>;
+    /// otherwise, <see langword="false" />.
+    /// </returns>
+    /// <remarks>
+    /// Returns <see langword="false" /> when the header is absent,
+    /// including HTMX 1.x and 2.x requests without this header.
+    /// </remarks>
+    public static bool IsHtmxPartialRequest(this HttpRequest request) =>
+        request.Headers.TryGetValue(HtmxRequestHeaderNames.RequestType, out var value) && value is ["partial"];
+
+    /// <summary>
     /// Returns a strongly typed view of the HTMX request headers.
     /// </summary>
     /// <param name="request">The HTTP request.</param>

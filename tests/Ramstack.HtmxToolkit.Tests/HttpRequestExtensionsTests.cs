@@ -18,13 +18,6 @@ public class HttpRequestExtensionsTests
     }
 
     [Test]
-    public void IsHtmxRequest_ReturnsTrue_RegardlessOfHeaderValue()
-    {
-        var context = TestHelper.CreateHttpContext((HtmxRequestHeaderNames.Request, ""));
-        Assert.That(context.Request.IsHtmxRequest(), Is.True);
-    }
-
-    [Test]
     public void IsHtmxRequest_WithOutParameter_ReturnsHeaders()
     {
         var context = TestHelper.CreateHttpContext(
@@ -36,32 +29,41 @@ public class HttpRequestExtensionsTests
     }
 
     [Test]
-    public void IsHtmxBoosted_ReturnsFalse_WhenHeaderAbsent()
+    public void IsHtmxBoosted_ReturnsExpectedValue()
     {
-        var context = TestHelper.CreateHttpContext((HtmxRequestHeaderNames.Request, "true"));
-        Assert.That(context.Request.IsHtmxBoosted(), Is.False);
+        var context = TestHelper.CreateHttpContext();
+        var request = context.Request;
+
+        Assert.That(request.IsHtmxBoosted(), Is.False);
+
+        request.Headers[HtmxRequestHeaderNames.Boosted] = "false";
+        Assert.That(request.IsHtmxFullRequest(), Is.False);
+
+        request.Headers[HtmxRequestHeaderNames.Boosted] = "true";
+        Assert.That(request.IsHtmxFullRequest(), Is.True);
     }
 
     [Test]
-    public void IsHtmxBoosted_ReturnsTrue_WhenHeaderIsTrue()
+    public void IsHtmxFullRequest_ReturnsExpectedValue()
     {
-        var context = TestHelper.CreateHttpContext((HtmxRequestHeaderNames.Boosted, "true"));
-        Assert.That(context.Request.IsHtmxBoosted(), Is.True);
+        var context = TestHelper.CreateHttpContext();
+        var request = context.Request;
+
+        Assert.That(request.IsHtmxFullRequest(), Is.False);
+
+        request.Headers[HtmxRequestHeaderNames.RequestType] = "full";
+        Assert.That(request.IsHtmxFullRequest(), Is.True);
     }
 
     [Test]
-    public void IsHtmxBoosted_ReturnsFalse_WhenHeaderIsFalse()
+    public void IsHtmxPartialRequest_ReturnsExpectedValue()
     {
-        var context = TestHelper.CreateHttpContext((HtmxRequestHeaderNames.Boosted, "false"));
-        Assert.That(context.Request.IsHtmxBoosted(), Is.False);
-    }
+        var context = TestHelper.CreateHttpContext();
+        var request = context.Request;
 
-    [Test]
-    public void IsHtmxBoosted_WithOutParameter_ReturnsHeaders()
-    {
-        var context = TestHelper.CreateHttpContext((HtmxRequestHeaderNames.Boosted, "true"));
+        Assert.That(request.IsHtmxPartialRequest(), Is.False);
 
-        Assert.That(context.Request.IsHtmxBoosted(out var headers), Is.True);
-        Assert.That(headers.Boosted, Is.True);
+        request.Headers[HtmxRequestHeaderNames.RequestType] = "full";
+        Assert.That(request.IsHtmxPartialRequest(), Is.True);
     }
 }
