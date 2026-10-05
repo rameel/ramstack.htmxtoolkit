@@ -1,9 +1,9 @@
 namespace Ramstack.HtmxToolkit;
 
 /// <summary>
-/// Specifies the kind of HTMX request accepted by an action.
+/// Specifies whether an action accepts boosted or non-boosted HTMX requests.
 /// </summary>
-public enum HtmxRequestKind
+public enum HtmxBoostedFilter
 {
     /// <summary>
     /// Accepts both boosted and non-boosted HTMX requests.
