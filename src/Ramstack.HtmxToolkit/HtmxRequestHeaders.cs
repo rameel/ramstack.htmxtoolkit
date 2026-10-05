@@ -22,8 +22,8 @@ public readonly struct HtmxRequestHeaders
         _headers = request.Headers;
 
     /// <summary>
-    /// Gets a value indicating whether the request was made
-    /// using AJAX instead of a normal navigation.
+    /// Gets a value indicating whether the request came from a link
+    /// or form enhanced with <c>hx-boost</c>.
     /// </summary>
     /// <remarks>
     /// The header name is <see cref="HtmxRequestHeaderNames.Boosted" />.
@@ -39,11 +39,14 @@ public readonly struct HtmxRequestHeaders
     public string? CurrentUrl => GetString(_headers, HtmxRequestHeaderNames.CurrentUrl);
 
     /// <summary>
-    /// Gets a value indicating whether the request restores history
-    /// after a miss in the local history cache.
+    /// Gets a value indicating whether the request fetches content for history restoration.
     /// </summary>
     /// <remarks>
-    /// The header name is <see cref="HtmxRequestHeaderNames.HistoryRestoreRequest" />.
+    /// <para>The header name is <see cref="HtmxRequestHeaderNames.HistoryRestoreRequest" />.</para>
+    /// <para>
+    ///   HTMX 1.x and 2.x send this header after a history cache miss.
+    ///   HTMX 4.x refetches history content by default; local caching requires an extension.
+    /// </para>
     /// </remarks>
     public bool HistoryRestoreRequest => GetBoolean(_headers, HtmxRequestHeaderNames.HistoryRestoreRequest);
 
@@ -53,8 +56,9 @@ public readonly struct HtmxRequestHeaders
     /// <remarks>
     /// <para>The header name is <see cref="HtmxRequestHeaderNames.Prompt" />.</para>
     /// <para>
-    ///   Supported only in HTMX 1.x and 2.x; HTMX 4.x removed <c>hx-prompt</c>
-    ///   and does not send this header.
+    ///   Supported natively in HTMX 1.x and 2.x. In HTMX 4.x, the
+    ///   <see href="https://four.htmx.org/extensions/hx-prompt">hx-prompt extension</see>
+    ///   restores this header.
     /// </para>
     /// </remarks>
     public string? Prompt => GetString(_headers, HtmxRequestHeaderNames.Prompt);
@@ -79,7 +83,6 @@ public readonly struct HtmxRequestHeaders
     ///   and <c>"full"</c> for body-level or <c>hx-select</c> requests.
     /// </para>
     /// <para>
-    ///   Returns <see cref="HtmxRequestType.Unspecified" /> when the header is absent.
     ///   The request type is not inferred from boosted navigation.
     /// </para>
     /// </remarks>
@@ -111,7 +114,9 @@ public readonly struct HtmxRequestHeaders
     /// <remarks>
     /// <para>The header name is <see cref="HtmxRequestHeaderNames.Source" />.</para>
     /// <para>
-    ///   Supported only in HTMX 4.x. The value is in <c>tag#id</c> format, for example <c>button#submit</c>.
+    ///   Supported only in HTMX 4.x. The value contains the lowercase tag name and,
+    ///   when the element has an ID, <c>#</c> followed by its URI-encoded ID.
+    ///   Examples include <c>button#submit</c> and <c>button</c>.
     /// </para>
     /// </remarks>
     public string? Source => GetString(_headers, HtmxRequestHeaderNames.Source);
@@ -122,12 +127,16 @@ public readonly struct HtmxRequestHeaders
     /// <remarks>
     /// <para>The header name is <see cref="HtmxRequestHeaderNames.Target" />.</para>
     /// <para>In HTMX 1.x and 2.x, the value is the ID of the target element.</para>
-    /// <para>In HTMX 4.x, the value is in <c>tag#id</c> format, for example <c>div#results</c>.</para>
+    /// <para>
+    ///   In HTMX 4.x, the value contains the lowercase tag name and,
+    ///   when the element has an ID, <c>#</c> followed by its URI-encoded ID.
+    ///   Examples include <c>div#results</c> and <c>body</c>.
+    /// </para>
     /// </remarks>
     public string? Target => GetString(_headers, HtmxRequestHeaderNames.Target);
 
     /// <summary>
-    /// Gets the name of the triggered element, if present.
+    /// Gets the <c>name</c> attribute of the element that issued the request, if present.
     /// </summary>
     /// <remarks>
     /// <para>The header name is <see cref="HtmxRequestHeaderNames.TriggerName" />.</para>
@@ -139,12 +148,13 @@ public readonly struct HtmxRequestHeaders
     public string? TriggerName => GetString(_headers, HtmxRequestHeaderNames.TriggerName);
 
     /// <summary>
-    /// Gets the ID of the triggered element, if present.
+    /// Gets the ID of the element that issued the request, if present.
     /// </summary>
     /// <remarks>
     /// <para>The header name is <see cref="HtmxRequestHeaderNames.Trigger" />.</para>
     /// <para>
-    ///   Supported only in HTMX 1.x and 2.x; HTMX 4.x identifies the source element  with <c>HX-Source</c> instead.
+    ///   Supported only in HTMX 1.x and 2.x; HTMX 4.x identifies the source element
+    ///   with <c>HX-Source</c> instead.
     /// </para>
     /// </remarks>
     public string? Trigger => GetString(_headers, HtmxRequestHeaderNames.Trigger);
@@ -155,7 +165,8 @@ public readonly struct HtmxRequestHeaders
     /// <param name="dictionary">The header collection to inspect.</param>
     /// <param name="key">The name of the header.</param>
     /// <returns>
-    /// <see langword="true" /> if the header value is <c>"true"</c>; otherwise, <see langword="false" />.
+    /// <see langword="true" /> if the header value is <c>"true"</c>;
+    /// otherwise, <see langword="false" />.
     /// </returns>
     private static bool GetBoolean(IHeaderDictionary dictionary, string key) =>
         dictionary.TryGetValue(key, out var value) && value is ["true"];
@@ -184,8 +195,8 @@ public readonly struct HtmxRequestHeaders
     private sealed class HtmxRequestHeadersDebugView(HtmxRequestHeaders headers)
     {
         /// <summary>
-        /// Gets the collection of all HTTP headers stored
-        /// in the associated <see cref="HtmxRequestHeaders"/> instance
+        /// Gets the collection of request headers whose names start with <c>HX-</c>
+        /// from the associated <see cref="HtmxRequestHeaders"/> instance
         /// as an array of key-value pairs.
         /// </summary>
         [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]

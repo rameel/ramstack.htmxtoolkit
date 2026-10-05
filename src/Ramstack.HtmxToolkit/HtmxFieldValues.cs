@@ -54,22 +54,20 @@ public readonly struct HtmxFieldValues : IReadOnlyList<string>
     }
 
     /// <summary>
-    /// Gets the underlying storage: a string, a string array, or <see langword="null" />.
+    /// Gets the underlying storage: a <see langword="string" />, an array of <see langword="string" /> values,
+    /// or <see langword="null" />.
     /// </summary>
     internal object? Values => _values;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="HtmxFieldValues" /> structure
-    /// with a single value.
+    /// Initializes a new instance of the <see cref="HtmxFieldValues" /> structure with a single value.
     /// </summary>
-    /// <param name="value">The value to store, or <see langword="null" />
-    /// to represent no values.</param>
+    /// <param name="value">The value to store, or <see langword="null" /> to represent no values.</param>
     public HtmxFieldValues(string? value) =>
         _values = value;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="HtmxFieldValues" /> structure
-    /// with the specified values.
+    /// Initializes a new instance of the <see cref="HtmxFieldValues" /> structure with the specified values.
     /// </summary>
     /// <remarks>The specified array is stored directly and is not copied.</remarks>
     /// <param name="values">The values to store, or <see langword="null" />
@@ -95,7 +93,7 @@ public readonly struct HtmxFieldValues : IReadOnlyList<string>
     }
 
     /// <summary>
-    /// Converts a string to an <see cref="HtmxFieldValues" />.
+    /// Converts a <see langword="string" /> to an <see cref="HtmxFieldValues" />.
     /// </summary>
     /// <param name="value">The value to convert, or <see langword="null" />
     /// to represent no values.</param>
@@ -106,10 +104,9 @@ public readonly struct HtmxFieldValues : IReadOnlyList<string>
         new(value);
 
     /// <summary>
-    /// Converts an array of strings to an <see cref="HtmxFieldValues" />.
+    /// Converts an array of <see langword="string" /> values to an <see cref="HtmxFieldValues" />.
     /// </summary>
-    /// <param name="values">The values to convert, or <see langword="null" />
-    /// to represent no values.</param>
+    /// <param name="values">The values to convert, or <see langword="null" /> to represent no values.</param>
     /// <returns>
     /// An <see cref="HtmxFieldValues" /> containing <paramref name="values" />.
     /// </returns>
@@ -152,14 +149,8 @@ public readonly struct HtmxFieldValues : IReadOnlyList<string>
     /// Copies the specified read-only span to a new array.
     /// </summary>
     /// <remarks>
-    /// <para>
-    ///   The JIT compiler inlines the implementation of <see cref="ReadOnlySpan{T}.ToArray" />
-    ///   into its caller, producing a disproportionately large amount of native code
-    ///   at the call site.
-    /// </para>
-    /// <para>
-    ///   This non-inlined wrapper keeps that implementation out of <see cref="Create" />.
-    /// </para>
+    /// This non-inlined wrapper keeps the implementation of <see cref="ReadOnlySpan{T}.ToArray" />
+    /// out of <see cref="Create" /> to limit native code growth at its call sites.
     /// </remarks>
     /// <param name="s">The values to copy.</param>
     /// <returns>
@@ -172,7 +163,7 @@ public readonly struct HtmxFieldValues : IReadOnlyList<string>
     #region Inner type: Enumerator
 
     /// <summary>
-    /// Enumerates the strings represented by an <see cref="HtmxFieldValues" />.
+    /// Enumerates the string values represented by an <see cref="HtmxFieldValues" />.
     /// </summary>
     public struct Enumerator : IEnumerator<string>
     {
@@ -186,7 +177,7 @@ public readonly struct HtmxFieldValues : IReadOnlyList<string>
         /// <summary>
         /// Initializes a new enumerator for the specified <see cref="HtmxFieldValues" />.
         /// </summary>
-        /// <param name="value">The value whose strings to enumerate.</param>
+        /// <param name="value">The value containing the strings to enumerate.</param>
         public Enumerator(HtmxFieldValues value)
         {
             if (value.Values is string s)

@@ -103,7 +103,7 @@ public readonly struct HtmxResponse
         SetHeader(this, HtmxResponseHeaderNames.PushUrl, "false");
 
     /// <summary>
-    /// Sets the <c>HX-Redirect</c> header to perform a client-side redirect to a new location.
+    /// Sets the <c>HX-Redirect</c> header to perform a client-side redirect with a full-page reload.
     /// </summary>
     /// <param name="value">The header value to set.</param>
     /// <returns>
@@ -243,7 +243,8 @@ public readonly struct HtmxResponse
     /// <typeparam name="T">The event detail type.</typeparam>
     /// <param name="eventName">The event name to trigger.</param>
     /// <param name="detail">The event detail.</param>
-    /// <param name="jsonTypeInfo">The source-generated JSON metadata for the event detail.</param>
+    /// <param name="jsonTypeInfo">The JSON metadata for the event detail.
+    /// Use source-generated metadata for trimming and Native AOT.</param>
     /// <param name="timing">The event timing. Defaults to <see cref="HtmxTriggerTiming.Receive" />.</param>
     /// <returns>
     /// The current <see cref="HtmxResponse" /> instance.
@@ -306,7 +307,7 @@ public readonly struct HtmxResponse
     private sealed class HtmxResponseDebugView(HtmxResponse response)
     {
         /// <summary>
-        /// Gets the collection of HTTP response headers
+        /// Gets the collection of HTMX response headers
         /// from the associated <see cref="HtmxResponse"/> instance
         /// as an array of key-value pairs.
         /// </summary>

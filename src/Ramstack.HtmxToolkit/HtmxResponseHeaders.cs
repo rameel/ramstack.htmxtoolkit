@@ -45,7 +45,7 @@ public readonly struct HtmxResponseHeaders
 
     /// <summary>
     /// Gets or sets the value of the <c>HX-Redirect</c> header, which performs
-    /// a client-side redirect to a new location.
+    /// a client-side redirect with a full-page reload.
     /// </summary>
     [MaybeNull]
     public string Redirect
@@ -218,7 +218,7 @@ public readonly struct HtmxResponseHeaders
     private sealed class HtmxResponseHeadersDebugView(HtmxResponseHeaders headers)
     {
         /// <summary>
-        /// Gets the collection of HTTP response headers
+        /// Gets the collection of HTMX response headers
         /// from the associated <see cref="HtmxResponseHeaders"/> instance
         /// as an array of key-value pairs.
         /// </summary>

@@ -19,7 +19,7 @@ public static class HtmxResponseHeaderNames
     public const string PushUrl = "HX-Push-Url";
 
     /// <summary>
-    /// The <c>HX-Redirect</c> header performs a client-side redirect to a new location.
+    /// The <c>HX-Redirect</c> header performs a client-side redirect with a full-page reload.
     /// </summary>
     public const string Redirect = "HX-Redirect";
 

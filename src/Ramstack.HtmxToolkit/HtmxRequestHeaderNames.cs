@@ -9,8 +9,8 @@ namespace Ramstack.HtmxToolkit;
 public static class HtmxRequestHeaderNames
 {
     /// <summary>
-    /// The <c>HX-Boosted</c> header indicates whether the request was made using AJAX
-    /// instead of a normal navigation.
+    /// The <c>HX-Boosted</c> header indicates that the request came from a link or form
+    /// enhanced with <c>hx-boost</c>.
     /// </summary>
     public const string Boosted = "HX-Boosted";
 
@@ -21,16 +21,21 @@ public static class HtmxRequestHeaderNames
 
     /// <summary>
     /// The <c>HX-History-Restore-Request</c> header indicates whether the request
-    /// is for history restoration after a miss in the local history cache.
+    /// fetches content for history restoration.
     /// </summary>
+    /// <remarks>
+    /// HTMX 1.x and 2.x send this header after a history cache miss.
+    /// HTMX 4.x refetches history content by default; local caching requires an extension.
+    /// </remarks>
     public const string HistoryRestoreRequest = "HX-History-Restore-Request";
 
     /// <summary>
     /// The <c>HX-Prompt</c> header contains the user's response to an <c>hx-prompt</c>.
     /// </summary>
     /// <remarks>
-    /// Supported only in HTMX 1.x and 2.x. HTMX 4.x removed <c>hx-prompt</c>
-    /// and does not send this header.
+    /// Supported natively in HTMX 1.x and 2.x. In HTMX 4.x, the
+    /// <see href="https://four.htmx.org/extensions/hx-prompt">hx-prompt extension</see>
+    /// restores this header.
     /// </remarks>
     public const string Prompt = "HX-Prompt";
 
@@ -54,7 +59,9 @@ public static class HtmxRequestHeaderNames
     /// The <c>HX-Source</c> header identifies the element that triggered the request.
     /// </summary>
     /// <remarks>
-    /// Supported only in HTMX 4.x. The value is in <c>tag#id</c> format, for example <c>button#submit</c>.
+    /// Supported only in HTMX 4.x. The value contains the lowercase tag name and,
+    /// when the element has an ID, <c>#</c> followed by its URI-encoded ID.
+    /// Examples include <c>button#submit</c> and <c>button</c>.
     /// </remarks>
     public const string Source = "HX-Source";
 
@@ -63,12 +70,16 @@ public static class HtmxRequestHeaderNames
     /// </summary>
     /// <remarks>
     /// <para>In HTMX 1.x and 2.x, the value is the ID of the target element.</para>
-    /// <para>In HTMX 4.x, the value is in <c>tag#id</c> format, for example <c>div#results</c>.</para>
+    /// <para>
+    ///   In HTMX 4.x, the value contains the lowercase tag name and, when the element has an ID,
+    ///   <c>#</c> followed by its URI-encoded ID. Examples include <c>div#results</c> and <c>body</c>.
+    /// </para>
     /// </remarks>
     public const string Target = "HX-Target";
 
     /// <summary>
-    /// The <c>HX-Trigger-Name</c> header contains the name of the triggered element, if present.
+    /// The <c>HX-Trigger-Name</c> header contains the <c>name</c> attribute of the element
+    /// that issued the request, if present.
     /// </summary>
     /// <remarks>
     /// Supported only in HTMX 1.x and 2.x. HTMX 4.x identifies the source element with <c>HX-Source</c> instead.
@@ -76,7 +87,7 @@ public static class HtmxRequestHeaderNames
     public const string TriggerName = "HX-Trigger-Name";
 
     /// <summary>
-    /// The <c>HX-Trigger</c> header contains the ID of the triggered element, if present.
+    /// The <c>HX-Trigger</c> header contains the ID of the element that issued the request, if present.
     /// </summary>
     /// <remarks>
     /// Supported only in HTMX 1.x and 2.x. HTMX 4.x identifies the source element with <c>HX-Source</c> instead.

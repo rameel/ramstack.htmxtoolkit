@@ -49,12 +49,12 @@ internal static class EnumHelper
 
     /// <summary>
     /// Converts a <see cref="HtmxSwap" /> value to its corresponding string representation,
-    /// or returns <see langword="null" /> if the value is <see langword="null" />.
+    /// or returns <see langword="null" /> if <paramref name="value" /> is <see langword="null" />.
     /// </summary>
     /// <param name="value">The nullable <see cref="HtmxSwap" /> value.</param>
     /// <returns>
-    /// The string representation of the value,
-    /// or <see langword="null" /> if the value is <see langword="null" />.
+    /// The string representation of <paramref name="value" />,
+    /// or <see langword="null" /> if <paramref name="value" /> is <see langword="null" />.
     /// </returns>
     public static string? GetSwapValue(this HtmxSwap? value) =>
         value?.GetSwapValue();

@@ -9,7 +9,7 @@ using Ramstack.HtmxToolkit.Configuration;
 namespace Ramstack.HtmxToolkit.TagHelpers;
 
 /// <summary>
-/// Renders the application-wide HTMX configuration as a <c>meta</c> element.
+/// Renders the application-wide HTMX configuration as a <c>&lt;meta&gt;</c> element.
 /// </summary>
 /// <param name="antiforgery">The service used to generate antiforgery tokens.</param>
 /// <param name="options">The configured HTMX Toolkit options.</param>
