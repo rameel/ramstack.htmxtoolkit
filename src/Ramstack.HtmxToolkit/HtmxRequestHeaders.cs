@@ -65,7 +65,7 @@ public readonly struct HtmxRequestHeaders
     /// <remarks>
     /// The header name is <see cref="HtmxRequestHeaderNames.Request" />.
     /// </remarks>
-    public bool Request => GetBoolean(_headers, HtmxRequestHeaderNames.Request);
+    public bool Request => _headers.ContainsKey(HtmxRequestHeaderNames.Request);
 
     /// <summary>
     /// Gets the type of the expected response, either a partial or a full page.

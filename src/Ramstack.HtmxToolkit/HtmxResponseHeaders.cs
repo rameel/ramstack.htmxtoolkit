@@ -202,7 +202,9 @@ public readonly struct HtmxResponseHeaders
     /// <param name="value">The header value.</param>
     private static void SetHeader(IHeaderDictionary headers, string key, string? value)
     {
-        if (value is not null)
+        if (string.IsNullOrEmpty(value))
+            headers.Remove(key);
+        else
             headers[key] = value;
     }
 
