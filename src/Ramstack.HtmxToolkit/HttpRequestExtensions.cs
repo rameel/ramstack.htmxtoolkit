@@ -16,7 +16,7 @@ public static class HttpRequestExtensions
     /// otherwise, <see langword="false" />.
     /// </returns>
     public static bool IsHtmxRequest(this HttpRequest request) =>
-        request.Headers.ContainsKey(HtmxRequestHeaderNames.Request);
+        request.GetHtmxHeaders().Request;
 
     /// <summary>
     /// Determines whether the specified HTTP request is an HTMX request.
@@ -31,11 +31,11 @@ public static class HttpRequestExtensions
     public static bool IsHtmxRequest(this HttpRequest request, out HtmxRequestHeaders headers)
     {
         headers = new HtmxRequestHeaders(request);
-        return request.IsHtmxRequest();
+        return headers.Request;
     }
 
     /// <summary>
-    /// Determines whether the specified HTTP request was made using AJAX instead of a normal navigation.
+    /// Determines whether the request came from a link or form enhanced with <c>hx-boost</c>.
     /// </summary>
     /// <param name="request">The HTTP request.</param>
     /// <returns>
@@ -43,7 +43,7 @@ public static class HttpRequestExtensions
     /// otherwise, <see langword="false" />.
     /// </returns>
     public static bool IsHtmxBoosted(this HttpRequest request) =>
-        request.Headers.TryGetValue(HtmxRequestHeaderNames.Boosted, out var value) && value is ["true"];
+        request.GetHtmxHeaders().Boosted;
 
     /// <summary>
     /// Determines whether the specified HTTP request has an <c>HX-Request-Type</c> value of <c>"full"</c>.
