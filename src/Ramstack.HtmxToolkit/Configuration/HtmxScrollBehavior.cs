@@ -1,7 +1,7 @@
 namespace Ramstack.HtmxToolkit.Configuration;
 
 /// <summary>
-/// Specifies the scrolling behavior for a boosted link during page transitions.
+/// Specifies how HTMX scrolls elements into view with the <c>show</c> swap modifier.
 /// </summary>
 public enum HtmxScrollBehavior
 {
@@ -17,7 +17,6 @@ public enum HtmxScrollBehavior
 
     /// <summary>
     /// Uses the <c>instant</c> scrolling behavior.
-    /// Supported only in HTMX 2.x.
     /// </summary>
     Instant
 }

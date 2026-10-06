@@ -22,7 +22,7 @@ public sealed class ResponseHandlingConfig
     public bool? Error { get; set; }
 
     /// <summary>
-    /// Gets or sets a value indicating whether HTMX should ignore title tags in the response.
+    /// Gets or sets a value indicating whether HTMX should ignore <c>&lt;title&gt;</c> tags in the response.
     /// </summary>
     public bool? IgnoreTitle { get; set; }
 

@@ -143,7 +143,7 @@ public sealed class HtmxV1Config() : HtmxConfig(HtmxTargetVersion.V1)
     }
 
     /// <summary>
-    /// Gets or sets a value indicating whether script tags should be processed in new content.
+    /// Gets or sets a value indicating whether <c>&lt;script&gt;</c> tags should be processed in new content.
     /// The HTMX default is <see langword="true" />.
     /// </summary>
     public bool? AllowScriptTags
@@ -173,7 +173,7 @@ public sealed class HtmxV1Config() : HtmxConfig(HtmxTargetVersion.V1)
     }
 
     /// <summary>
-    /// Gets or sets a value indicating whether HTML template tags are used to parse content.
+    /// Gets or sets a value indicating whether HTML <c>&lt;template&gt;</c> tags are used to parse content.
     /// The HTMX default is <see langword="false" />.
     /// </summary>
     public bool? UseTemplateFragments
@@ -244,7 +244,7 @@ public sealed class HtmxV1Config() : HtmxConfig(HtmxTargetVersion.V1)
     }
 
     /// <summary>
-    /// Gets or sets the scrolling behavior for boosted links.
+    /// Gets or sets the scrolling behavior used by the <c>show</c> modifier of <c>hx-swap</c>.
     /// The HTMX default is <see cref="HtmxScrollBehavior.Smooth" />.
     /// </summary>
     [JsonConverter(typeof(HtmxScrollBehaviorJsonConverter))]
@@ -265,7 +265,7 @@ public sealed class HtmxV1Config() : HtmxConfig(HtmxTargetVersion.V1)
     }
 
     /// <summary>
-    /// Gets or sets a value indicating whether GET requests use a cache-busting parameter.
+    /// Gets or sets a value indicating whether <c>GET</c> requests use a cache-busting parameter.
     /// The HTMX default is <see langword="false" />.
     /// </summary>
     public bool? GetCacheBusterParam
