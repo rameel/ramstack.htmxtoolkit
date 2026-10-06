@@ -48,6 +48,8 @@ public class HtmxResponseTests
         var json = JsonHelper.ParseJson(header);
 
         Assert.That(json["path"].GetString(), Is.EqualTo("/bar"));
+        Assert.That(json["push"].GetString(), Is.EqualTo("true"));
+        Assert.That(json["replace"].GetString(), Is.EqualTo("false"));
         Assert.That(json.ContainsKey("source"), Is.False);
         Assert.That(json.ContainsKey("swap"), Is.False);
     }
@@ -84,8 +86,8 @@ public class HtmxResponseTests
         context.Response.Htmx(r => r.Location("/bar", new HtmxLocationOptions
         {
             SelectOob = "#alerts",
-            Push = "false",
-            Replace = "/replaced"
+            HistoryUrl = "/replaced",
+            HistoryAction = HtmxHistoryAction.Replace
         }));
 
         var header = context.Response.Headers[HtmxResponseHeaderNames.Location].ToString();

@@ -65,7 +65,9 @@ public readonly struct HtmxResponse
         {
             options.Path = path;
 
-            var json = JsonSerializer.Serialize(options, HtmxLocationOptionsJsonSerializerContext.Default.HtmxLocationOptions);
+            var view = new HtmxLocationOptionsJsonView(options);
+            var json = JsonSerializer.Serialize(view, HtmxLocationOptionsJsonSerializerContext.Default.HtmxLocationOptionsJsonView);
+
             return SetHeader(response, HtmxResponseHeaderNames.Location, json);
         }
     }

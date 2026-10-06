@@ -10,7 +10,7 @@ namespace Ramstack.HtmxToolkit.Serialization;
     PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase,
     DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
     GenerationMode = JsonSourceGenerationMode.Default)]
-[JsonSerializable(typeof(HtmxLocationOptions))]
+[JsonSerializable(typeof(HtmxLocationOptionsJsonView))]
 internal partial class HtmxLocationOptionsJsonSerializerContext : JsonSerializerContext
 {
     /// <summary>

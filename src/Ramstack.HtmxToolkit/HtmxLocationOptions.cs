@@ -1,7 +1,3 @@
-using System.Text.Json.Serialization;
-
-using Ramstack.HtmxToolkit.Serialization;
-
 namespace Ramstack.HtmxToolkit;
 
 /// <summary>
@@ -31,7 +27,6 @@ public sealed class HtmxLocationOptions
     /// Gets or sets how the response will be swapped relative to the target element.
     /// </summary>
     /// <remarks>Supported in HTMX 1.9.x, HTMX 2.x, and HTMX 4.x.</remarks>
-    [JsonConverter(typeof(HtmxSwapJsonConverter))]
     public HtmxSwap? Swap { get; set; }
 
     /// <summary>
@@ -71,19 +66,21 @@ public sealed class HtmxLocationOptions
     /// used to select content for out-of-band swaps from the response.
     /// </summary>
     /// <remarks>Supported in HTMX 2.0.8 and later 2.x releases, and in HTMX 4.x.</remarks>
-    [JsonPropertyName("selectOOB")]
     public string? SelectOob { get; set; }
 
     /// <summary>
-    /// Gets or sets the path to push into the browser history.
-    /// Set this property to <c>"false"</c> to prevent the URL from being pushed.
+    /// Gets or sets the URL used to update the browser history.
+    /// If <see langword="null" />, the URL of the loaded page is used.
     /// </summary>
-    /// <remarks>Supported in HTMX 2.0.8 and later 2.x releases, and in HTMX 4.x.</remarks>
-    public string? Push { get; set; }
+    /// <remarks>
+    /// Ignored when <see cref="HistoryAction" /> is <see cref="HtmxHistoryAction.None" />.
+    /// Custom history URLs are supported in HTMX 2.0.8 and later 2.x releases, and in HTMX 4.x.
+    /// </remarks>
+    public string? HistoryUrl { get; set; }
 
     /// <summary>
-    /// Gets or sets the path that replaces the current URL in the browser history.
+    /// Gets or sets how the browser history is updated.
+    /// The default is <see cref="HtmxHistoryAction.Push" />.
     /// </summary>
-    /// <remarks>Supported in HTMX 2.x and HTMX 4.x.</remarks>
-    public string? Replace { get; set; }
+    public HtmxHistoryAction HistoryAction { get; set; }
 }
