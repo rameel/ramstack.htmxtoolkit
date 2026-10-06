@@ -10,7 +10,7 @@ public enum HtmxHistoryMode
     /// </summary>
     /// <remarks>
     /// In HTMX 4.x, history navigation requests the URL from the server and swaps
-    /// the response. Local DOM snapshots require the optional HTMX history-cache extension.
+    /// the response. Local DOM snapshots require the optional HTMX <c>hx-history-cache</c> extension.
     /// </remarks>
     Enabled,
 

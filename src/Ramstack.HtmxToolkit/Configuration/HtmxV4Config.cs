@@ -54,11 +54,14 @@ public sealed class HtmxV4Config() : HtmxConfig(HtmxTargetVersion.V4)
 
     /// <summary>
     /// Gets or sets a value indicating whether the main swap is performed
-    /// when the response contained only out-of-band elements.
-    /// <c>&lt;hx-partial&gt;</c> content always prevents the main swap.
-    /// The HTMX default is <see langword="false" /> and can be overridden
-    /// using the <c>swapEmpty</c> modifier on <c>hx-swap</c>.
+    /// when no content remains after processing out-of-band elements.
+    /// The HTMX default is <see langword="false" />.
     /// </summary>
+    /// <remarks>
+    /// Processed <c>&lt;hx-partial&gt;</c> elements suppress an empty main swap regardless
+    /// of this setting. The <c>swapEmpty</c> modifier on <c>hx-swap</c> overrides either default.
+    /// Nonempty main content is still swapped, and the <see cref="HtmxSwap.Delete" /> swap style always runs.
+    /// </remarks>
     [JsonPropertyName("allowEmptySwapAfterOOB")]
     public bool? AllowEmptySwapAfterOob
     {
@@ -149,7 +152,7 @@ public sealed class HtmxV4Config() : HtmxConfig(HtmxTargetVersion.V4)
 
     /// <summary>
     /// Gets or sets the request mode passed to the Fetch API.
-    /// The HTMX default is <c>same-origin</c>.
+    /// The HTMX default is <see cref="HtmxFetchMode.SameOrigin" />.
     /// </summary>
     [JsonConverter(typeof(HtmxFetchModeJsonConverter))]
     public HtmxFetchMode? Mode

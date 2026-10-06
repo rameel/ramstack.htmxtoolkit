@@ -143,7 +143,7 @@ public sealed class HtmxV2Config() : HtmxConfig(HtmxTargetVersion.V2)
     }
 
     /// <summary>
-    /// Gets or sets a value indicating whether script tags should be processed in new content.
+    /// Gets or sets a value indicating whether <c>&lt;script&gt;</c> tags should be processed in new content.
     /// The HTMX default is <see langword="true" />.
     /// </summary>
     public bool? AllowScriptTags
@@ -186,6 +186,7 @@ public sealed class HtmxV2Config() : HtmxConfig(HtmxTargetVersion.V2)
     /// Gets or sets the WebSocket reconnection delay strategy.
     /// The HTMX default is <c>full-jitter</c>.
     /// </summary>
+    /// <remarks>Requires the HTMX WebSocket extension.</remarks>
     public string? WsReconnectDelay
     {
         get;
@@ -196,6 +197,7 @@ public sealed class HtmxV2Config() : HtmxConfig(HtmxTargetVersion.V2)
     /// Gets or sets the type of binary data received over WebSocket connections.
     /// The HTMX default is <see cref="HtmxBinaryType.Blob" />.
     /// </summary>
+    /// <remarks>Requires the HTMX WebSocket extension.</remarks>
     [JsonConverter(typeof(HtmxBinaryTypeJsonConverter))]
     public HtmxBinaryType? WsBinaryType
     {
@@ -254,7 +256,7 @@ public sealed class HtmxV2Config() : HtmxConfig(HtmxTargetVersion.V2)
     }
 
     /// <summary>
-    /// Gets or sets the scrolling behavior for boosted links.
+    /// Gets or sets the scrolling behavior used by the <c>show</c> modifier of <c>hx-swap</c>.
     /// The HTMX default is <see cref="HtmxScrollBehavior.Instant" />.
     /// </summary>
     [JsonConverter(typeof(HtmxScrollBehaviorJsonConverter))]
@@ -275,7 +277,7 @@ public sealed class HtmxV2Config() : HtmxConfig(HtmxTargetVersion.V2)
     }
 
     /// <summary>
-    /// Gets or sets a value indicating whether GET requests use a cache-busting parameter.
+    /// Gets or sets a value indicating whether <c>GET</c> requests use a cache-busting parameter.
     /// The HTMX default is <see langword="false" />.
     /// </summary>
     public bool? GetCacheBusterParam
@@ -362,6 +364,7 @@ public sealed class HtmxV2Config() : HtmxConfig(HtmxTargetVersion.V2)
     /// as HTMX requests.
     /// The HTMX default is <see langword="true" />.
     /// </summary>
+    /// <remarks>Available since HTMX 2.0.5.</remarks>
     public bool? HistoryRestoreAsHxRequest
     {
         get;
@@ -373,6 +376,7 @@ public sealed class HtmxV2Config() : HtmxConfig(HtmxTargetVersion.V2)
     /// a request is issued.
     /// The HTMX default is <see langword="false" />.
     /// </summary>
+    /// <remarks>Available since HTMX 2.0.7.</remarks>
     public bool? ReportValidityOfForms
     {
         get;
