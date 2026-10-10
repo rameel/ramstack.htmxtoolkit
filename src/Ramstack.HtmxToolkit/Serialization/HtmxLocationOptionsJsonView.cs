@@ -5,13 +5,14 @@ namespace Ramstack.HtmxToolkit.Serialization;
 /// <summary>
 /// Exposes location options in the JSON format expected by HTMX.
 /// </summary>
+/// <param name="path">The path used for the AJAX request.</param>
 /// <param name="options">The location options to serialize.</param>
-internal readonly struct HtmxLocationOptionsJsonView(HtmxLocationOptions options)
+internal readonly struct HtmxLocationOptionsJsonView(string path, HtmxLocationOptions options)
 {
     /// <summary>
     /// Gets the path used for the AJAX request.
     /// </summary>
-    public string? Path => options.Path;
+    public string Path => path;
 
     /// <summary>
     /// Gets the source selector.

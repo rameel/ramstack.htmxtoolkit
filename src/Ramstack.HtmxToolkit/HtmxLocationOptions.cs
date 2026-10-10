@@ -6,12 +6,6 @@ namespace Ramstack.HtmxToolkit;
 public sealed class HtmxLocationOptions
 {
     /// <summary>
-    /// Gets the path used for the AJAX request.
-    /// </summary>
-    /// <remarks>Supported in HTMX 1.9.x, HTMX 2.x, and HTMX 4.x.</remarks>
-    public string? Path { get; internal set; }
-
-    /// <summary>
     /// Gets or sets the CSS selector for the element used as the source of the new request.
     /// </summary>
     /// <remarks>Supported in HTMX 1.9.x, HTMX 2.x, and HTMX 4.x.</remarks>

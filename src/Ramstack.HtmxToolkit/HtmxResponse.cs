@@ -63,9 +63,7 @@ public readonly struct HtmxResponse
 
         static HtmxResponse LocationImpl(HtmxResponse response, string path, HtmxLocationOptions options)
         {
-            options.Path = path;
-
-            var view = new HtmxLocationOptionsJsonView(options);
+            var view = new HtmxLocationOptionsJsonView(path, options);
             var json = JsonSerializer.Serialize(view, HtmxLocationOptionsJsonSerializerContext.Default.HtmxLocationOptionsJsonView);
 
             return SetHeader(response, HtmxResponseHeaderNames.Location, json);
