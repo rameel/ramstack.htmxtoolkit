@@ -36,11 +36,30 @@ public readonly struct HtmxResponseHeaders
     /// Gets or sets the value of the <c>HX-Push-Url</c> header, which pushes a new URL
     /// onto the browser's history stack.
     /// </summary>
+    /// <remarks>
+    /// Unlike <see cref="HtmxResponse.PushUrl" />, setting this property
+    /// does not remove the <c>HX-Replace-Url</c> header.
+    /// </remarks>
     [MaybeNull]
     public string PushUrl
     {
         get => GetHeader(_response.Headers, HtmxResponseHeaderNames.PushUrl);
         set => SetHeader(_response.Headers, HtmxResponseHeaderNames.PushUrl, value);
+    }
+
+    /// <summary>
+    /// Gets or sets the value of the <c>HX-Replace-Url</c> header, which replaces the current URL
+    /// without pushing a new entry to the browser's history stack.
+    /// </summary>
+    /// <remarks>
+    /// Unlike <see cref="HtmxResponse.ReplaceUrl" />, setting this property
+    /// does not remove the <c>HX-Push-Url</c> header.
+    /// </remarks>
+    [MaybeNull]
+    public string ReplaceUrl
+    {
+        get => GetHeader(_response.Headers, HtmxResponseHeaderNames.ReplaceUrl);
+        set => SetHeader(_response.Headers, HtmxResponseHeaderNames.ReplaceUrl, value);
     }
 
     /// <summary>
@@ -61,17 +80,6 @@ public readonly struct HtmxResponseHeaders
     {
         get => GetHeader(_response.Headers, HtmxResponseHeaderNames.Refresh) == "true";
         set => SetHeader(_response.Headers, HtmxResponseHeaderNames.Refresh, value ? "true" : null);
-    }
-
-    /// <summary>
-    /// Gets or sets the value of the <c>HX-Replace-Url</c> header, which replaces the current URL
-    /// without pushing a new entry to the browser's history stack.
-    /// </summary>
-    [MaybeNull]
-    public string ReplaceUrl
-    {
-        get => GetHeader(_response.Headers, HtmxResponseHeaderNames.ReplaceUrl);
-        set => SetHeader(_response.Headers, HtmxResponseHeaderNames.ReplaceUrl, value);
     }
 
     /// <summary>

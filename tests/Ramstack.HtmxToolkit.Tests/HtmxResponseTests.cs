@@ -221,12 +221,72 @@ public class HtmxResponseTests
     }
 
     [Test]
-    public void PreventPushUrl_SetsFalse()
+    public void PushUrl_RemovesReplaceUrl()
     {
         var context = TestHelper.CreateHtmxRequestContext();
-        context.Response.Htmx(r => r.PreventPushUrl());
+        context.Response.Htmx(r => r.ReplaceUrl("/foo").PushUrl("/bar"));
+
+        Assert.That(context.Response.Headers[HtmxResponseHeaderNames.PushUrl], Is.EqualTo("/bar"));
+        Assert.That(context.Response.Headers.ContainsKey(HtmxResponseHeaderNames.ReplaceUrl), Is.False);
+    }
+
+    [Test]
+    public void PushUrl_AfterPreventHistoryUpdate_SetsUrl()
+    {
+        var context = TestHelper.CreateHtmxRequestContext();
+        context.Response.Htmx(r => r.PreventHistoryUpdate().PushUrl("/foo"));
+
+        Assert.That(context.Response.Headers[HtmxResponseHeaderNames.PushUrl], Is.EqualTo("/foo"));
+    }
+
+    [Test]
+    public void PushUrl_RemovesLegacyPush()
+    {
+        var context = TestHelper.CreateHtmxRequestContext();
+        context.Response.Headers["HX-Push"] = "/legacy";
+        context.Response.Htmx(r => r.PushUrl("/foo"));
+
+        Assert.That(context.Response.Headers[HtmxResponseHeaderNames.PushUrl], Is.EqualTo("/foo"));
+        Assert.That(context.Response.Headers.ContainsKey("HX-Push"), Is.False);
+    }
+
+    [Test]
+    public void PreventHistoryUpdate_SetsPushUrlFalse()
+    {
+        var context = TestHelper.CreateHtmxRequestContext();
+        context.Response.Htmx(r => r.PreventHistoryUpdate());
 
         Assert.That(context.Response.Headers[HtmxResponseHeaderNames.PushUrl], Is.EqualTo("false"));
+    }
+
+    [Test]
+    public void PreventHistoryUpdate_RemovesReplaceUrl()
+    {
+        var context = TestHelper.CreateHtmxRequestContext();
+        context.Response.Htmx(r => r.ReplaceUrl("/foo").PreventHistoryUpdate());
+
+        Assert.That(context.Response.Headers[HtmxResponseHeaderNames.PushUrl], Is.EqualTo("false"));
+        Assert.That(context.Response.Headers.ContainsKey(HtmxResponseHeaderNames.ReplaceUrl), Is.False);
+    }
+
+    [Test]
+    public void PreventHistoryUpdate_AfterPushUrl_SetsFalse()
+    {
+        var context = TestHelper.CreateHtmxRequestContext();
+        context.Response.Htmx(r => r.PushUrl("/foo").PreventHistoryUpdate());
+
+        Assert.That(context.Response.Headers[HtmxResponseHeaderNames.PushUrl], Is.EqualTo("false"));
+    }
+
+    [Test]
+    public void PreventHistoryUpdate_RemovesLegacyPush()
+    {
+        var context = TestHelper.CreateHtmxRequestContext();
+        context.Response.Headers["HX-Push"] = "/legacy";
+        context.Response.Htmx(r => r.PreventHistoryUpdate());
+
+        Assert.That(context.Response.Headers[HtmxResponseHeaderNames.PushUrl], Is.EqualTo("false"));
+        Assert.That(context.Response.Headers.ContainsKey("HX-Push"), Is.False);
     }
 
     [Test]
@@ -257,12 +317,46 @@ public class HtmxResponseTests
     }
 
     [Test]
-    public void PreventReplaceUrl_SetsFalse()
+    public void ReplaceUrl_RemovesPushUrl()
     {
         var context = TestHelper.CreateHtmxRequestContext();
-        context.Response.Htmx(r => r.PreventReplaceUrl());
+        context.Response.Htmx(r => r.PushUrl("/foo").ReplaceUrl("/bar"));
 
-        Assert.That(context.Response.Headers[HtmxResponseHeaderNames.ReplaceUrl], Is.EqualTo("false"));
+        Assert.That(context.Response.Headers[HtmxResponseHeaderNames.ReplaceUrl], Is.EqualTo("/bar"));
+        Assert.That(context.Response.Headers.ContainsKey(HtmxResponseHeaderNames.PushUrl), Is.False);
+    }
+
+    [Test]
+    public void ReplaceUrl_RemovesLegacyPush()
+    {
+        var context = TestHelper.CreateHtmxRequestContext();
+        context.Response.Headers["HX-Push"] = "/legacy";
+        context.Response.Htmx(r => r.ReplaceUrl("/foo"));
+
+        Assert.That(context.Response.Headers[HtmxResponseHeaderNames.ReplaceUrl], Is.EqualTo("/foo"));
+        Assert.That(context.Response.Headers.ContainsKey("HX-Push"), Is.False);
+    }
+
+    [Test]
+    public void ReplaceUrl_AfterPreventHistoryUpdate_RemovesPushUrl()
+    {
+        var context = TestHelper.CreateHtmxRequestContext();
+        context.Response.Htmx(r => r.PreventHistoryUpdate().ReplaceUrl("/foo"));
+
+        Assert.That(context.Response.Headers[HtmxResponseHeaderNames.ReplaceUrl], Is.EqualTo("/foo"));
+        Assert.That(context.Response.Headers.ContainsKey(HtmxResponseHeaderNames.PushUrl), Is.False);
+    }
+
+    [TestCase(null)]
+    [TestCase("")]
+    public void ReplaceUrl_NullOrEmpty_ThrowsArgumentException(string? url)
+    {
+        var context = TestHelper.CreateHtmxRequestContext();
+
+        var exception = Assert.Throws<ArgumentException>(() =>
+            context.Response.Htmx(r => r.ReplaceUrl(url!)));
+
+        Assert.That(exception?.ParamName, Is.EqualTo("url"));
     }
 
     [Test]
@@ -369,7 +463,7 @@ public class HtmxResponseTests
     public void TriggerEvent_NullObjectDetail_SerializesAsNull()
     {
         var context = TestHelper.CreateHtmxRequestContext();
-        context.Response.Htmx(r => r.TriggerEvent("e", (object?)null!));
+        context.Response.Htmx(r => r.TriggerEvent("e", null!));
 
         PendingEvents.GetOrCreate(context.Response).Flush();
 
