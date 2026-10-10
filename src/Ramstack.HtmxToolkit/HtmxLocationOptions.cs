@@ -1,3 +1,5 @@
+using Ramstack.HtmxToolkit.Internal;
+
 namespace Ramstack.HtmxToolkit;
 
 /// <summary>
@@ -20,8 +22,25 @@ public sealed class HtmxLocationOptions
     /// <summary>
     /// Gets or sets how the response will be swapped relative to the target element.
     /// </summary>
+    /// <remarks>
+    /// <para>Supported in HTMX 1.9.x, HTMX 2.x, and HTMX 4.x.</para>
+    /// <para>
+    ///   Reads the style from <see cref="SwapExpression" />, or returns <see langword="null" />
+    ///   if the style is not recognized. Assigning a style replaces the complete expression,
+    ///   including any modifiers. Assigning <see langword="null" /> clears the swap.
+    /// </para>
+    /// </remarks>
+    public HtmxSwap? Swap
+    {
+        get => EnumHelper.ParseHtmxSwap(SwapExpression);
+        set => SwapExpression = value.GetSwapValue();
+    }
+
+    /// <summary>
+    /// Gets or sets the complete swap expression, including any swap modifiers.
+    /// </summary>
     /// <remarks>Supported in HTMX 1.9.x, HTMX 2.x, and HTMX 4.x.</remarks>
-    public HtmxSwap? Swap { get; set; }
+    public string? SwapExpression { get; set; }
 
     /// <summary>
     /// Gets or sets the form field values to submit with the request.

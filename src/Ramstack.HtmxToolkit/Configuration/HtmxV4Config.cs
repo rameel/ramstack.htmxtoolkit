@@ -121,9 +121,13 @@ public sealed class HtmxV4Config() : HtmxConfig(HtmxTargetVersion.V4)
     }
 
     /// <summary>
-    /// Gets or sets a comma-separated list of extensions that HTMX is allowed to load.
-    /// The HTMX default is an empty string.
+    /// Gets or sets a comma-separated list of extensions that HTMX is allowed to register.
+    /// The HTMX default is an empty string, which allows all extensions.
     /// </summary>
+    /// <remarks>
+    /// HTMX compares extension names exactly. Whitespace is allowed only after a comma;
+    /// any other whitespace becomes part of a name, so <c>"sse ,ws"</c> does not allow <c>sse</c>.
+    /// </remarks>
     public string? Extensions
     {
         get;

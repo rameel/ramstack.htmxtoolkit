@@ -197,10 +197,10 @@ public readonly struct HtmxResponse
         SetHeader(this, HtmxResponseHeaderNames.Reselect, value);
 
     /// <summary>
-    /// Adds a client-side event to the response header selected by <paramref name="trigger" />.
+    /// Adds a client-side event to the response header selected by <paramref name="timing" />.
     /// </summary>
     /// <param name="eventName">The event name to trigger.</param>
-    /// <param name="trigger">The event timing. Defaults to <see cref="HtmxTriggerTiming.Receive" />.</param>
+    /// <param name="timing">The event timing. Defaults to <see cref="HtmxTriggerTiming.Receive" />.</param>
     /// <returns>
     /// The current <see cref="HtmxResponse" /> instance.
     /// </returns>
@@ -209,8 +209,8 @@ public readonly struct HtmxResponse
     /// <c>HX-Trigger</c> and runs when the request completes (after the swap whenever one is performed).
     /// See <see href="https://github.com/bigskysoftware/htmx/pull/3900">PR #3900</see>.
     /// </remarks>
-    public HtmxResponse TriggerEvent(string eventName, HtmxTriggerTiming trigger = HtmxTriggerTiming.Receive) =>
-        AddToPendingEvent(this, eventName, "{}", trigger);
+    public HtmxResponse TriggerEvent(string eventName, HtmxTriggerTiming timing = HtmxTriggerTiming.Receive) =>
+        AddToPendingEvent(this, eventName, "{}", timing);
 
     /// <summary>
     /// Adds a client-side event and its detail to the response header selected by

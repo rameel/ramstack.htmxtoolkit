@@ -91,7 +91,7 @@ public class HtmxConfigTagHelperTests
                 IgnoreTitle = true,
                 Select = "#content",
                 Target = "#target",
-                SwapOverride = "innerHTML"
+                SwapOverride = HtmxSwap.InnerHtml
             }
         ]);
 
@@ -108,6 +108,84 @@ public class HtmxConfigTagHelperTests
             Assert.That(entry.GetProperty("target").GetString(), Is.EqualTo("#target"));
             Assert.That(entry.GetProperty("swapOverride").GetString(), Is.EqualTo("innerHTML"));
         });
+    }
+
+    [TestCase(HtmxSwap.InnerHtml, "innerHTML")]
+    [TestCase(HtmxSwap.OuterHtml, "outerHTML")]
+    [TestCase(HtmxSwap.None, "none")]
+    public async Task ProcessAsync_SerializesResponseHandlingSwapOverride(HtmxSwap swap, string expected)
+    {
+        var options = new HtmxToolkitOptions();
+        options.UseHtmxV2(config =>
+            config.ResponseHandling = [new() { SwapOverride = swap }]);
+
+        var json = await RenderJson(options);
+
+        Assert.That(
+            json["responseHandling"].GetRawText(),
+            Is.EqualTo("[{\"swapOverride\":\"" + expected + "\"}]"));
+    }
+
+    [TestCase("outerHTML settle:200ms", HtmxSwap.OuterHtml)]
+    [TestCase("customSwap settle:200ms", null)]
+    public async Task ProcessAsync_SerializesResponseHandlingSwapOverrideExpression(string expression, HtmxSwap? expectedStyle)
+    {
+        var handlingConfig = new ResponseHandlingConfig
+        {
+            SwapOverride = HtmxSwap.InnerHtml,
+            SwapOverrideExpression = expression
+        };
+
+        var options = new HtmxToolkitOptions();
+        options.UseHtmxV2(config => config.ResponseHandling = [handlingConfig]);
+
+        var json = await RenderJson(options);
+
+        Assert.That(handlingConfig.SwapOverride, Is.EqualTo(expectedStyle));
+        Assert.That(
+            json["responseHandling"].GetRawText(),
+            Is.EqualTo("[{\"swapOverride\":\"" + expression + "\"}]"));
+    }
+
+    [Test]
+    public async Task ProcessAsync_ResponseHandlingTypedSwapOverride_ReplacesExpression()
+    {
+        var handlingConfig = new ResponseHandlingConfig
+        {
+            SwapOverrideExpression = "innerHTML settle:200ms",
+            SwapOverride = HtmxSwap.OuterHtml
+        };
+
+        var options = new HtmxToolkitOptions();
+        options.UseHtmxV2(config => config.ResponseHandling = [handlingConfig]);
+
+        var json = await RenderJson(options);
+
+        Assert.That(handlingConfig.SwapOverrideExpression, Is.EqualTo("outerHTML"));
+        Assert.That(
+            json["responseHandling"].GetRawText(),
+            Is.EqualTo("[{\"swapOverride\":\"outerHTML\"}]"));
+    }
+
+    [TestCase(false)]
+    [TestCase(true)]
+    public async Task ProcessAsync_OmitsClearedResponseHandlingSwapOverride(bool clearExpression)
+    {
+        var handlingConfig = new ResponseHandlingConfig { SwapOverrideExpression = "outerHTML settle:200ms" };
+
+        if (clearExpression)
+            handlingConfig.SwapOverrideExpression = null;
+        else
+            handlingConfig.SwapOverride = null;
+
+        var options = new HtmxToolkitOptions();
+        options.UseHtmxV2(config => config.ResponseHandling = [handlingConfig]);
+
+        var json = await RenderJson(options);
+
+        Assert.That(handlingConfig.SwapOverride, Is.Null);
+        Assert.That(handlingConfig.SwapOverrideExpression, Is.Null);
+        Assert.That(json["responseHandling"].GetRawText(), Is.EqualTo("[{}]"));
     }
 
     [Test]
@@ -133,7 +211,6 @@ public class HtmxConfigTagHelperTests
             htmx.InlineScriptNonce = "script-nonce";
             htmx.AttributesToSettle = ["class", "style"];
             htmx.UseTemplateFragments = true;
-            htmx.WsReconnectDelay = "exponential";
             htmx.WsBinaryType = HtmxBinaryType.ArrayBuffer;
             htmx.DisableSelector = "[data-disable]";
             htmx.WithCredentials = true;
@@ -157,7 +234,7 @@ public class HtmxConfigTagHelperTests
             "defaultSwapDelay", "defaultSettleDelay", "includeIndicatorStyles", "indicatorClass",
             "requestClass", "addedClass", "swappingClass", "settlingClass", "allowEval",
             "allowScriptTags", "inlineScriptNonce", "attributesToSettle", "useTemplateFragments",
-            "wsReconnectDelay", "wsBinaryType", "disableSelector", "withCredentials", "timeout",
+            "wsBinaryType", "disableSelector", "withCredentials", "timeout",
             "selfRequestsOnly", "scrollBehavior", "defaultFocusScroll", "getCacheBusterParam",
             "globalViewTransitions", "methodsThatUseUrlParams", "ignoreTitle", "scrollIntoViewOnBoost",
             "triggerSpecsCache"
@@ -192,7 +269,6 @@ public class HtmxConfigTagHelperTests
             htmx.InlineScriptNonce = "script-nonce";
             htmx.InlineStyleNonce = "style-nonce";
             htmx.AttributesToSettle = ["class", "style"];
-            htmx.WsReconnectDelay = "exponential";
             htmx.WsBinaryType = HtmxBinaryType.Blob;
             htmx.DisableSelector = "[data-disable]";
             htmx.WithCredentials = true;
@@ -225,7 +301,7 @@ public class HtmxConfigTagHelperTests
             "defaultSwapDelay", "defaultSettleDelay", "includeIndicatorStyles", "indicatorClass",
             "requestClass", "addedClass", "swappingClass", "settlingClass", "allowEval",
             "allowScriptTags", "inlineScriptNonce", "inlineStyleNonce", "attributesToSettle",
-            "wsReconnectDelay", "wsBinaryType", "disableSelector", "withCredentials",
+            "wsBinaryType", "disableSelector", "withCredentials",
             "disableInheritance", "timeout", "selfRequestsOnly", "scrollBehavior", "defaultFocusScroll",
             "getCacheBusterParam", "globalViewTransitions", "methodsThatUseUrlParams", "ignoreTitle",
             "scrollIntoViewOnBoost", "triggerSpecsCache", "responseHandling", "allowNestedOobSwaps",

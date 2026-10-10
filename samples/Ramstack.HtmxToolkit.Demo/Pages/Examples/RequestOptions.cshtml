@@ -13,8 +13,8 @@
 
   <section class="demo-card">
     <div class="demo-card__header">
-      <h2><code>hx-request-timeout</code></h2>
-      <p>The toolkit emits an HTMX 4 <code>hx-config</code> timeout for this report preview.</p>
+      <h2><code>hx-request-*</code></h2>
+      <p>The toolkit emits an HTMX 4 <code>hx-config</code> with a timeout, cache mode, and redirect mode for this report preview.</p>
     </div>
 
     <div class="demo-actions">
@@ -22,6 +22,8 @@
               hx-page="/Examples/RequestOptions"
               hx-page-handler="Preview"
               hx-request-timeout="2000"
+              hx-request-cache="@HtmxRequestCache.NoCache"
+              hx-request-redirect="@HtmxRequestRedirect.Error"
               hx-target="#preview-result">
         Generate report preview
       </button>

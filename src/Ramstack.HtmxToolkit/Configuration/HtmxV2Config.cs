@@ -183,17 +183,6 @@ public sealed class HtmxV2Config() : HtmxConfig(HtmxTargetVersion.V2)
     }
 
     /// <summary>
-    /// Gets or sets the WebSocket reconnection delay strategy.
-    /// The HTMX default is <c>full-jitter</c>.
-    /// </summary>
-    /// <remarks>Requires the HTMX WebSocket extension.</remarks>
-    public string? WsReconnectDelay
-    {
-        get;
-        set => SetField(ref field, value);
-    }
-
-    /// <summary>
     /// Gets or sets the type of binary data received over WebSocket connections.
     /// The HTMX default is <see cref="HtmxBinaryType.Blob" />.
     /// </summary>

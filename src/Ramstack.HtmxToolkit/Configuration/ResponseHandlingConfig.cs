@@ -1,3 +1,7 @@
+using System.Text.Json.Serialization;
+
+using Ramstack.HtmxToolkit.Internal;
+
 namespace Ramstack.HtmxToolkit.Configuration;
 
 /// <summary>
@@ -37,7 +41,23 @@ public sealed class ResponseHandlingConfig
     public string? Target { get; set; }
 
     /// <summary>
-    /// Gets or sets an alternative swap mechanism for the response.
+    /// Gets or sets an alternative swap style for the response.
     /// </summary>
-    public string? SwapOverride { get; set; }
+    /// <remarks>
+    /// Reads the style from <see cref="SwapOverrideExpression" />, or returns <see langword="null" />
+    /// if the style is not recognized. Assigning a style replaces the complete expression,
+    /// including any modifiers. Assigning <see langword="null" /> clears the override.
+    /// </remarks>
+    [JsonIgnore]
+    public HtmxSwap? SwapOverride
+    {
+        get => EnumHelper.ParseHtmxSwap(SwapOverrideExpression);
+        set => SwapOverrideExpression = value.GetSwapValue();
+    }
+
+    /// <summary>
+    /// Gets or sets the complete swap override expression, including any swap modifiers.
+    /// </summary>
+    [JsonPropertyName("swapOverride")]
+    public string? SwapOverrideExpression { get; set; }
 }
