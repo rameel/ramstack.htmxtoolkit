@@ -94,7 +94,7 @@ public class HtmxRequestTagHelperTests
         helper.Credentials = HtmxRequestCredentials.Omit;
         helper.NoHeaders = true;
         helper.Cache = HtmxRequestCache.NoCache;
-        helper.Redirect = "manual";
+        helper.Redirect = HtmxRequestRedirect.Manual;
         helper.Referrer = "no-referrer";
         helper.Integrity = "sha384-example";
         helper.Validate = true;
@@ -152,6 +152,64 @@ public class HtmxRequestTagHelperTests
 
         Assert.That(output.Attributes["hx-config"]!.Value.ToString(), Is.EqualTo("{\"cache\":\"" + expected + "\"}"));
         Assert.That(output.Attributes["hx-request"], Is.Null);
+    }
+
+    [TestCase(HtmxRequestRedirect.Follow, "follow")]
+    [TestCase(HtmxRequestRedirect.Error, "error")]
+    [TestCase(HtmxRequestRedirect.Manual, "manual")]
+    public async Task ProcessAsync_SerializesHtmx4RedirectMode(HtmxRequestRedirect redirect, string expected)
+    {
+        var output = TestHelper.CreateTagHelperOutput();
+        var helper = CreateHelper(HtmxTargetVersion.V4);
+        helper.Redirect = redirect;
+
+        await helper.ProcessAsync(TestHelper.CreateTagHelperContext(), output);
+
+        Assert.That(output.Attributes["hx-config"]!.Value.ToString(), Is.EqualTo("{\"redirect\":\"" + expected + "\"}"));
+        Assert.That(output.Attributes["hx-request"], Is.Null);
+    }
+
+    [Test]
+    public async Task ProcessAsync_Htmx4_OmitsClearedCacheAndRedirectModes()
+    {
+        var output = TestHelper.CreateTagHelperOutput();
+        var helper = CreateHelper(HtmxTargetVersion.V4);
+        helper.Timeout = 500;
+        helper.Cache = HtmxRequestCache.Default;
+        helper.Redirect = HtmxRequestRedirect.Follow;
+        helper.Cache = null;
+        helper.Redirect = null;
+
+        await helper.ProcessAsync(TestHelper.CreateTagHelperContext(), output);
+
+        Assert.That(output.Attributes["hx-config"]!.Value.ToString(), Is.EqualTo("{\"timeout\":500}"));
+    }
+
+    [TestCase(HtmxTargetVersion.V1)]
+    [TestCase(HtmxTargetVersion.V2)]
+    public async Task ProcessAsync_OmitsCacheAndRedirectModesForPriorVersions(HtmxTargetVersion version)
+    {
+        var output = TestHelper.CreateTagHelperOutput();
+        var helper = CreateHelper(version);
+        helper.Timeout = 500;
+        helper.Cache = HtmxRequestCache.NoCache;
+        helper.Redirect = HtmxRequestRedirect.Manual;
+
+        await helper.ProcessAsync(TestHelper.CreateTagHelperContext(), output);
+
+        Assert.That(output.Attributes["hx-request"]!.Value.ToString(), Is.EqualTo("{\"timeout\":500}"));
+        Assert.That(output.Attributes["hx-config"], Is.Null);
+    }
+
+    [Test]
+    public async Task ProcessAsync_Htmx4_OmitsUnsetConfiguration()
+    {
+        var output = TestHelper.CreateTagHelperOutput();
+        var helper = CreateHelper(HtmxTargetVersion.V4);
+
+        await helper.ProcessAsync(TestHelper.CreateTagHelperContext(), output);
+
+        Assert.That(output.Attributes, Is.Empty);
     }
 
     [Test]
