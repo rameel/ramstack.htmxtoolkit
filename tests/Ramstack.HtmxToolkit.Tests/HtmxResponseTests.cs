@@ -98,6 +98,36 @@ public class HtmxResponseTests
         Assert.That(json["replace"].GetString(), Is.EqualTo("/replaced"));
     }
 
+    [TestCase(HtmxHistoryAction.Push, null, "true", "false")]
+    [TestCase(HtmxHistoryAction.Push, "/history", "/history", "false")]
+    [TestCase(HtmxHistoryAction.Replace, null, "false", "true")]
+    [TestCase(HtmxHistoryAction.Replace, "/history", "false", "/history")]
+    [TestCase(HtmxHistoryAction.None, null, "false", "false")]
+    [TestCase(HtmxHistoryAction.None, "/history", "false", "false")]
+    public void Location_WithHistoryAction_SerializesHtmxHistoryOptions(HtmxHistoryAction action, string? url, string expectedPush, string expectedReplace)
+    {
+        var context = TestHelper.CreateHtmxRequestContext();
+        var options = new HtmxLocationOptions
+        {
+            HistoryUrl = url,
+            HistoryAction = action
+        };
+
+        context.Response.Htmx(r => r.Location("/bar", options));
+
+        var header = context.Response.Headers[HtmxResponseHeaderNames.Location].ToString();
+        var json = JsonHelper.ParseJson(header);
+
+        Assert.That(json["path"].GetString(), Is.EqualTo("/bar"));
+        Assert.That(json["push"].GetString(), Is.EqualTo(expectedPush));
+        Assert.That(json["replace"].GetString(), Is.EqualTo(expectedReplace));
+        Assert.That(json.ContainsKey("historyUrl"), Is.False);
+        Assert.That(json.ContainsKey("historyAction"), Is.False);
+
+        Assert.That(options.HistoryUrl, Is.EqualTo(url));
+        Assert.That(options.HistoryAction, Is.EqualTo(action));
+    }
+
     [Test]
     public void PushUrl_SetsHeader()
     {
