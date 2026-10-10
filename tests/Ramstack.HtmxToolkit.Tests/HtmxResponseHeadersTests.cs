@@ -60,13 +60,15 @@ public class HtmxResponseHeadersTests
         Assert.That(headers.Reswap, Is.Null);
     }
 
-    [Test]
-    public void Reswap_IsNull_WhenHeaderUnknown()
+    [TestCase("bogus")]
+    [TestCase("OuterHTML")]
+    [TestCase("1")]
+    public void Reswap_IsNull_WhenHeaderUnknown(string value)
     {
         var context = TestHelper.CreateHttpContext();
         var headers = context.Response.GetHtmxHeaders();
 
-        context.Response.Headers[HtmxResponseHeaderNames.Reswap] = "bogus";
+        context.Response.Headers[HtmxResponseHeaderNames.Reswap] = value;
 
         Assert.That(headers.Reswap, Is.Null);
     }

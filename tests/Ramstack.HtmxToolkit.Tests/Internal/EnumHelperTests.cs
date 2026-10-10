@@ -42,21 +42,41 @@ public class EnumHelperTests
     public void ParseHtmxSwap_ParsesValue(string expression, HtmxSwap expected) =>
         Assert.That(EnumHelper.ParseHtmxSwap(expression), Is.EqualTo(expected));
 
-    [Test]
-    public void ParseHtmxSwap_IgnoresModifiers() =>
-        Assert.That(EnumHelper.ParseHtmxSwap("innerHTML show:#content"), Is.EqualTo(HtmxSwap.InnerHtml));
+    [TestCase("innerHTML show:#content", HtmxSwap.InnerHtml)]
+    [TestCase("outerHTML\tsettle:200ms", HtmxSwap.OuterHtml)]
+    [TestCase("beforeend\n  swap:1s", HtmxSwap.BeforeEnd)]
+    public void ParseHtmxSwap_IgnoresModifiers(string expression, HtmxSwap expected) =>
+        Assert.That(EnumHelper.ParseHtmxSwap(expression), Is.EqualTo(expected));
 
-    [Test]
-    public void ParseHtmxSwap_IsCaseInsensitive() =>
-        Assert.That(EnumHelper.ParseHtmxSwap("OuterHTML"), Is.EqualTo(HtmxSwap.OuterHtml));
+    [TestCase(" outerHTML", HtmxSwap.OuterHtml)]
+    [TestCase("\t outerHTML show:top", HtmxSwap.OuterHtml)]
+    public void ParseHtmxSwap_IgnoresLeadingWhitespace(string expression, HtmxSwap expected) =>
+        Assert.That(EnumHelper.ParseHtmxSwap(expression), Is.EqualTo(expected));
 
-    [Test]
-    public void ParseHtmxSwap_ReturnsNull_ForUnknownValue() =>
-        Assert.That(EnumHelper.ParseHtmxSwap("bogus"), Is.Null);
+    [TestCase("OuterHTML")]
+    [TestCase("outerhtml")]
+    [TestCase("InnerHtml")]
+    [TestCase("BEFOREEND")]
+    public void ParseHtmxSwap_IsCaseSensitive(string expression) =>
+        Assert.That(EnumHelper.ParseHtmxSwap(expression), Is.Null);
 
-    [Test]
-    public void ParseHtmxSwap_ReturnsNull_ForNullExpression() =>
-        Assert.That(EnumHelper.ParseHtmxSwap(null), Is.Null);
+    [TestCase("bogus")]
+    [TestCase("1")]
+    [TestCase("42")]
+    [TestCase("-1")]
+    [TestCase("innerHTML,outerHTML")]
+    [TestCase("before")]
+    [TestCase("append")]
+    public void ParseHtmxSwap_ReturnsNull_ForUnknownValue(string expression) =>
+        Assert.That(EnumHelper.ParseHtmxSwap(expression), Is.Null);
+
+    [TestCase(null)]
+    [TestCase("")]
+    [TestCase("   ")]
+    [TestCase("show:top")]
+    [TestCase("swap:1s settle:200ms")]
+    public void ParseHtmxSwap_ReturnsNull_WithoutStyle(string? expression) =>
+        Assert.That(EnumHelper.ParseHtmxSwap(expression), Is.Null);
 
     [TestCase(HttpVerb.Get, "get")]
     [TestCase(HttpVerb.Head, "head")]
