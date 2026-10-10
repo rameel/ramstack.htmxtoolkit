@@ -178,25 +178,44 @@ internal static class EnumHelper
     }
 
     /// <summary>
-    /// Parses a string into a <see cref="HtmxSwap" /> value.
+    /// Parses the swap style at the start of a swap expression into a <see cref="HtmxSwap" /> value.
     /// </summary>
-    /// <param name="expression">The string to parse.</param>
+    /// <param name="expression">The swap expression to parse.</param>
     /// <returns>
     /// The parsed <see cref="HtmxSwap" /> value if successful;
     /// otherwise, <see langword="null" />.
     /// </returns>
+    /// <remarks>
+    /// Like HTMX, ignores leading whitespace, treats any whitespace as the separator
+    /// before swap modifiers, and compares the style case-sensitively.
+    /// Only the values returned by <see cref="GetSwapValue(HtmxSwap)" /> are recognized.
+    /// </remarks>
     public static HtmxSwap? ParseHtmxSwap(string? expression)
     {
-        expression ??= "";
+        var s = expression.AsSpan().TrimStart();
 
-        var index = expression.IndexOf(' ');
-        if (index < 0)
-            index = expression.Length;
+        var index = 0;
+        while ((uint)index < (uint)s.Length && !char.IsWhiteSpace(s[index]))
+            index++;
 
-        var s = expression.AsSpan(0, index);
-        if (Enum.TryParse<HtmxSwap>(s, ignoreCase: true, out var value))
-            return value;
+        if ((uint)index < (uint)s.Length)
+            s = s[..index];
 
-        return null;
+        return s switch
+        {
+            "innerHTML" => HtmxSwap.InnerHtml,
+            "outerHTML" => HtmxSwap.OuterHtml,
+            "innerMorph" => HtmxSwap.InnerMorph,
+            "outerMorph" => HtmxSwap.OuterMorph,
+            "outerSync" => HtmxSwap.OuterSync,
+            "textContent" => HtmxSwap.TextContent,
+            "beforebegin" => HtmxSwap.BeforeBegin,
+            "afterbegin" => HtmxSwap.AfterBegin,
+            "beforeend" => HtmxSwap.BeforeEnd,
+            "afterend" => HtmxSwap.AfterEnd,
+            "delete" => HtmxSwap.Delete,
+            "none" => HtmxSwap.None,
+            _ => null
+        };
     }
 }
