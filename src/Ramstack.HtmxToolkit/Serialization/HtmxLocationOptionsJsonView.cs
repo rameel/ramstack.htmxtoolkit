@@ -25,10 +25,9 @@ internal readonly struct HtmxLocationOptionsJsonView(string path, HtmxLocationOp
     public string? Target => options.Target;
 
     /// <summary>
-    /// Gets the serialized swap style.
+    /// Gets the swap expression.
     /// </summary>
-    [JsonConverter(typeof(HtmxSwapJsonConverter))]
-    public HtmxSwap? Swap => options.Swap;
+    public string? Swap => options.SwapExpression;
 
     /// <summary>
     /// Gets the form field values.

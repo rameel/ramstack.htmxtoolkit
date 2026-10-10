@@ -54,6 +54,67 @@ public class HtmxResponseTests
         Assert.That(json.ContainsKey("swap"), Is.False);
     }
 
+    [TestCase("outerHTML settle:200ms", HtmxSwap.OuterHtml)]
+    [TestCase("customSwap settle:200ms", null)]
+    public void Location_WithSwapExpression_SerializesExpression(string expression, HtmxSwap? expectedStyle)
+    {
+        var context = TestHelper.CreateHtmxRequestContext();
+        var options = new HtmxLocationOptions
+        {
+            Swap = HtmxSwap.InnerHtml,
+            SwapExpression = expression
+        };
+
+        context.Response.Htmx(r => r.Location("/bar", options));
+
+        var header = context.Response.Headers[HtmxResponseHeaderNames.Location].ToString();
+        var json = JsonHelper.ParseJson(header);
+
+        Assert.That(options.Swap, Is.EqualTo(expectedStyle));
+        Assert.That(json["swap"].GetString(), Is.EqualTo(expression));
+    }
+
+    [Test]
+    public void Location_WithTypedSwap_ReplacesExpression()
+    {
+        var context = TestHelper.CreateHtmxRequestContext();
+        var options = new HtmxLocationOptions
+        {
+            SwapExpression = "innerHTML settle:200ms",
+            Swap = HtmxSwap.OuterHtml
+        };
+
+        context.Response.Htmx(r => r.Location("/bar", options));
+
+        var header = context.Response.Headers[HtmxResponseHeaderNames.Location].ToString();
+        var json = JsonHelper.ParseJson(header);
+
+        Assert.That(options.SwapExpression, Is.EqualTo("outerHTML"));
+        Assert.That(json["swap"].GetString(), Is.EqualTo("outerHTML"));
+    }
+
+    [TestCase(false)]
+    [TestCase(true)]
+    public void Location_WithClearedSwap_OmitsSwap(bool clearExpression)
+    {
+        var context = TestHelper.CreateHtmxRequestContext();
+        var options = new HtmxLocationOptions { SwapExpression = "outerHTML settle:200ms" };
+
+        if (clearExpression)
+            options.SwapExpression = null;
+        else
+            options.Swap = null;
+
+        context.Response.Htmx(r => r.Location("/bar", options));
+
+        var header = context.Response.Headers[HtmxResponseHeaderNames.Location].ToString();
+        var json = JsonHelper.ParseJson(header);
+
+        Assert.That(options.Swap, Is.Null);
+        Assert.That(options.SwapExpression, Is.Null);
+        Assert.That(json.ContainsKey("swap"), Is.False);
+    }
+
     [Test]
     public void Location_WithOptions_SerializesValuesAndHeaders()
     {
