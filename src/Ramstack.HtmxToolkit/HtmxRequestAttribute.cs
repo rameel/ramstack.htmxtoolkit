@@ -51,7 +51,7 @@ public sealed class HtmxRequestAttribute : Attribute, IActionConstraint
         if (BoostedFilter == HtmxBoostedFilter.Any)
             return true;
 
-        var filter = request.IsHtmxBoosted()
+        var filter = headers.Boosted
             ? HtmxBoostedFilter.Boosted
             : HtmxBoostedFilter.NonBoosted;
 
