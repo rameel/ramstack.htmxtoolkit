@@ -211,7 +211,6 @@ public class HtmxConfigTagHelperTests
             htmx.InlineScriptNonce = "script-nonce";
             htmx.AttributesToSettle = ["class", "style"];
             htmx.UseTemplateFragments = true;
-            htmx.WsReconnectDelay = "exponential";
             htmx.WsBinaryType = HtmxBinaryType.ArrayBuffer;
             htmx.DisableSelector = "[data-disable]";
             htmx.WithCredentials = true;
@@ -235,7 +234,7 @@ public class HtmxConfigTagHelperTests
             "defaultSwapDelay", "defaultSettleDelay", "includeIndicatorStyles", "indicatorClass",
             "requestClass", "addedClass", "swappingClass", "settlingClass", "allowEval",
             "allowScriptTags", "inlineScriptNonce", "attributesToSettle", "useTemplateFragments",
-            "wsReconnectDelay", "wsBinaryType", "disableSelector", "withCredentials", "timeout",
+            "wsBinaryType", "disableSelector", "withCredentials", "timeout",
             "selfRequestsOnly", "scrollBehavior", "defaultFocusScroll", "getCacheBusterParam",
             "globalViewTransitions", "methodsThatUseUrlParams", "ignoreTitle", "scrollIntoViewOnBoost",
             "triggerSpecsCache"
@@ -270,7 +269,6 @@ public class HtmxConfigTagHelperTests
             htmx.InlineScriptNonce = "script-nonce";
             htmx.InlineStyleNonce = "style-nonce";
             htmx.AttributesToSettle = ["class", "style"];
-            htmx.WsReconnectDelay = "exponential";
             htmx.WsBinaryType = HtmxBinaryType.Blob;
             htmx.DisableSelector = "[data-disable]";
             htmx.WithCredentials = true;
@@ -303,7 +301,7 @@ public class HtmxConfigTagHelperTests
             "defaultSwapDelay", "defaultSettleDelay", "includeIndicatorStyles", "indicatorClass",
             "requestClass", "addedClass", "swappingClass", "settlingClass", "allowEval",
             "allowScriptTags", "inlineScriptNonce", "inlineStyleNonce", "attributesToSettle",
-            "wsReconnectDelay", "wsBinaryType", "disableSelector", "withCredentials",
+            "wsBinaryType", "disableSelector", "withCredentials",
             "disableInheritance", "timeout", "selfRequestsOnly", "scrollBehavior", "defaultFocusScroll",
             "getCacheBusterParam", "globalViewTransitions", "methodsThatUseUrlParams", "ignoreTitle",
             "scrollIntoViewOnBoost", "triggerSpecsCache", "responseHandling", "allowNestedOobSwaps",
