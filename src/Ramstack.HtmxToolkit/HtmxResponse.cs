@@ -73,24 +73,65 @@ public readonly struct HtmxResponse
     /// <summary>
     /// Sets the <c>HX-Push-Url</c> header to push a new URL onto the browser's history stack.
     /// </summary>
-    /// <param name="value">The header value to set.</param>
+    /// <param name="url">
+    /// A relative or same-origin absolute URL to push into the location bar,
+    /// as supported by <see href="https://developer.mozilla.org/en-US/docs/Web/API/History/pushState">history.pushState()</see>.
+    /// </param>
     /// <returns>
     /// The current <see cref="HtmxResponse" /> instance.
     /// </returns>
     /// <remarks>
-    /// The possible values for this header are:
-    /// <list type="bullet">
-    ///   <item>
-    ///     A relative or same-origin absolute URL to be pushed into the location bar,
-    ///     as supported by <see href="https://developer.mozilla.org/en-US/docs/Web/API/History/pushState">history.pushState()</see>.
-    ///   </item>
-    ///   <item>
-    ///     <c>"false"</c>, which prevents the browser's history from being updated.
-    ///   </item>
-    /// </list>
+    /// <para>
+    ///   Also removes the <c>HX-Replace-Url</c> header and the legacy <c>HX-Push</c> header,
+    ///   which HTMX 1.9.x and 2.x would otherwise prefer. When <see cref="PushUrl" />,
+    ///   <see cref="ReplaceUrl" />, and <see cref="PreventHistoryUpdate" /> are combined,
+    ///   the last call takes effect.
+    /// </para>
+    /// <para>
+    ///   HTMX treats <c>"false"</c> and <c>"true"</c> as control values. Use <see cref="PreventHistoryUpdate" />
+    ///   instead of <c>"false"</c>. HTMX 4.x replaces <c>"true"</c> with the response URL, while HTMX 1.9.x
+    ///   and 2.x push it as the relative URL <c>true</c>.
+    /// </para>
     /// </remarks>
-    public HtmxResponse PushUrl(string value) =>
-        SetHeader(this, HtmxResponseHeaderNames.PushUrl, value);
+    public HtmxResponse PushUrl(string url)
+    {
+        if (string.IsNullOrEmpty(url))
+            throw new ArgumentException("URL cannot be null or empty.", nameof(url));
+
+        return SetHistoryHeader(this, HtmxResponseHeaderNames.PushUrl, url, HtmxResponseHeaderNames.ReplaceUrl);
+    }
+
+    /// <summary>
+    /// Sets the <c>HX-Replace-Url</c> header to replace the current URL.
+    /// </summary>
+    /// <param name="url">
+    /// A URL to replace the current URL in the location bar. This may be relative or absolute,
+    /// as supported by <see href="https://developer.mozilla.org/en-US/docs/Web/API/History/replaceState">history.replaceState()</see>,
+    /// but must have the same origin as the current URL.
+    /// </param>
+    /// <returns>
+    /// The current <see cref="HtmxResponse" /> instance.
+    /// </returns>
+    /// <remarks>
+    /// <para>
+    ///   Also removes the <c>HX-Push-Url</c> header and the legacy <c>HX-Push</c> header,
+    ///   which HTMX 1.9.x and 2.x would otherwise prefer. When <see cref="PushUrl" />,
+    ///   <see cref="ReplaceUrl" />, and <see cref="PreventHistoryUpdate" /> are combined,
+    ///   the last call takes effect.
+    /// </para>
+    /// <para>
+    ///   HTMX treats <c>"false"</c> and <c>"true"</c> as control values. Use <see cref="PreventHistoryUpdate" />
+    ///   instead of <c>"false"</c>. HTMX 4.x replaces <c>"true"</c> with the response URL, while HTMX 1.9.x
+    ///   and 2.x use it as the relative URL <c>true</c>.
+    /// </para>
+    /// </remarks>
+    public HtmxResponse ReplaceUrl(string url)
+    {
+        if (string.IsNullOrEmpty(url))
+            throw new ArgumentException("URL cannot be null or empty.", nameof(url));
+
+        return SetHistoryHeader(this, HtmxResponseHeaderNames.ReplaceUrl, url, HtmxResponseHeaderNames.PushUrl);
+    }
 
     /// <summary>
     /// Sets the <c>HX-Push-Url</c> header to <c>"false"</c> to prevent the browser's
@@ -99,8 +140,20 @@ public readonly struct HtmxResponse
     /// <returns>
     /// The current <see cref="HtmxResponse" /> instance.
     /// </returns>
-    public HtmxResponse PreventPushUrl() =>
-        SetHeader(this, HtmxResponseHeaderNames.PushUrl, "false");
+    /// <remarks>
+    /// <para>
+    ///   Also removes the <c>HX-Replace-Url</c> header and the legacy <c>HX-Push</c> header,
+    ///   which HTMX 1.9.x and 2.x would otherwise prefer. When <see cref="PushUrl" />,
+    ///   <see cref="ReplaceUrl" />, and <see cref="PreventHistoryUpdate" /> are combined,
+    ///   the last call takes effect.
+    /// </para>
+    /// <para>
+    ///   The history is not updated even when the <c>hx-push-url</c> or <c>hx-replace-url</c> attribute
+    ///   or boosted navigation requests it.
+    /// </para>
+    /// </remarks>
+    public HtmxResponse PreventHistoryUpdate() =>
+        SetHistoryHeader(this, HtmxResponseHeaderNames.PushUrl, "false", HtmxResponseHeaderNames.ReplaceUrl);
 
     /// <summary>
     /// Sets the <c>HX-Redirect</c> header to perform a client-side redirect with a full-page reload.
@@ -120,40 +173,6 @@ public readonly struct HtmxResponse
     /// </returns>
     public HtmxResponse Refresh() =>
         SetHeader(this, HtmxResponseHeaderNames.Refresh, "true");
-
-    /// <summary>
-    /// Sets the <c>HX-Replace-Url</c> header to replace the current URL.
-    /// </summary>
-    /// <param name="value">The header value to set.</param>
-    /// <returns>
-    /// The current <see cref="HtmxResponse" /> instance.
-    /// </returns>
-    /// <remarks>
-    /// The possible values for this header are:
-    /// <list type="bullet">
-    ///   <item>
-    ///     A URL to replace the current URL in the location bar. This may be relative
-    ///     or absolute, as supported by
-    ///     <see href="https://developer.mozilla.org/en-US/docs/Web/API/History/replaceState">history.replaceState()</see>,
-    ///     but must have the same origin as the current URL.
-    ///   </item>
-    ///   <item>
-    ///     <c>"false"</c>, which prevents the browser's current URL from being updated.
-    ///   </item>
-    /// </list>
-    /// </remarks>
-    public HtmxResponse ReplaceUrl(string value) =>
-        SetHeader(this, HtmxResponseHeaderNames.ReplaceUrl, value);
-
-    /// <summary>
-    /// Sets the <c>HX-Replace-Url</c> header to <c>"false"</c> to prevent the browser's
-    /// current URL from being updated.
-    /// </summary>
-    /// <returns>
-    /// The current <see cref="HtmxResponse" /> instance.
-    /// </returns>
-    public HtmxResponse PreventReplaceUrl() =>
-        SetHeader(this, HtmxResponseHeaderNames.ReplaceUrl, "false");
 
     /// <summary>
     /// Sets the <c>HX-Reswap</c> header to specify how the response will be swapped.
@@ -270,6 +289,28 @@ public readonly struct HtmxResponse
     {
         response._response.Headers[key] = [with(value)];
         return response;
+    }
+
+    /// <summary>
+    /// Sets a browser history header and removes the other history headers, including the legacy
+    /// <c>HX-Push</c> header, so that the last history call takes effect.
+    /// </summary>
+    /// <param name="response">The response wrapper to update.</param>
+    /// <param name="key">The name of the history header to set.</param>
+    /// <param name="value">The header value.</param>
+    /// <param name="conflictingKey">The name of the history header to remove.</param>
+    /// <returns>
+    /// The updated response wrapper.
+    /// </returns>
+    private static HtmxResponse SetHistoryHeader(HtmxResponse response, string key, string value, string conflictingKey)
+    {
+        // The name of the legacy "HX-Push" header.
+        // - HTMX 1.9.x and 2.x check it before "HX-Push-Url" and "HX-Replace-Url";
+        // - HTMX 4.x ignores it.
+        response._response.Headers.Remove("HX-Push");
+
+        response._response.Headers.Remove(conflictingKey);
+        return SetHeader(response, key, value);
     }
 
     [RequiresDynamicCode("Event details are serialized using reflection.")]
