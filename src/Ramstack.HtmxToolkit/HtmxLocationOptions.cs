@@ -75,10 +75,18 @@ public sealed class HtmxLocationOptions
     public string? Select { get; set; }
 
     /// <summary>
-    /// Gets or sets a comma-separated list of selectors, optionally followed by swap styles,
-    /// used to select content for out-of-band swaps from the response.
+    /// Gets or sets a comma-separated list of elements, each optionally followed by a colon
+    /// and a swap style, used to select content for out-of-band swaps from the response.
     /// </summary>
-    /// <remarks>Supported in HTMX 2.0.8 and later 2.x releases, and in HTMX 4.x.</remarks>
+    /// <remarks>
+    /// <para>Supported in HTMX 2.0.8 and later 2.x releases, and in HTMX 4.x.</para>
+    /// <para>
+    ///   HTMX 2.x accepts only element IDs, with or without a leading <c>#</c>,
+    ///   for example <c>#alerts,#cart:innerHTML</c>. HTMX 4.x accepts CSS selectors.
+    ///   Neither version supports IDs or selectors that contain a comma or a colon,
+    ///   such as <c>li:first-child</c>.
+    /// </para>
+    /// </remarks>
     public string? SelectOob { get; set; }
 
     /// <summary>

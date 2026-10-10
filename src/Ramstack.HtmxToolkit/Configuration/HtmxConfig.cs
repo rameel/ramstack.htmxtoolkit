@@ -7,6 +7,11 @@ namespace Ramstack.HtmxToolkit.Configuration;
 /// <summary>
 /// Represents configuration for a specific major version of HTMX.
 /// </summary>
+/// <remarks>
+/// Configuration JSON is cached until a configuration property is assigned.
+/// Changes made in place to arrays, collections, or their items do not invalidate the cache;
+/// reassign the containing property after making such changes.
+/// </remarks>
 public abstract class HtmxConfig
 {
     private HtmlString? _json;
@@ -28,7 +33,7 @@ public abstract class HtmxConfig
 
     /// <summary>
     /// Returns this configuration serialized as JSON. The result is
-    /// cached and reused until the configuration changes.
+    /// cached and reused until a configuration property is assigned.
     /// </summary>
     /// <returns>
     /// An <see cref="HtmlString" /> containing the configuration serialized as JSON.

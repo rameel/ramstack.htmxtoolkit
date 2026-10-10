@@ -58,6 +58,9 @@ public static class HttpRequestExtensions
     /// including HTMX 1.x and 2.x requests without this header.
     /// </remarks>
     public static bool IsHtmxFullRequest(this HttpRequest request) =>
+        // PERF: Compare the header directly instead of using GetHtmxHeaders().RequestType.
+        // The parser also recognizes "partial", and the JIT does not reliably eliminate
+        // that extra comparison even when the parser is inlined.
         request.Headers.TryGetValue(HtmxRequestHeaderNames.RequestType, out var value) && value is ["full"];
 
     /// <summary>
@@ -73,6 +76,7 @@ public static class HttpRequestExtensions
     /// including HTMX 1.x and 2.x requests without this header.
     /// </remarks>
     public static bool IsHtmxPartialRequest(this HttpRequest request) =>
+        // PERF: See IsHtmxFullRequest.
         request.Headers.TryGetValue(HtmxRequestHeaderNames.RequestType, out var value) && value is ["partial"];
 
     /// <summary>
