@@ -95,7 +95,7 @@ public class HtmxRequestTagHelperTests
         helper.NoHeaders = true;
         helper.Cache = HtmxRequestCache.NoCache;
         helper.Redirect = HtmxRequestRedirect.Manual;
-        helper.Referrer = "no-referrer";
+        helper.Referrer = "/reports";
         helper.Integrity = "sha384-example";
         helper.Validate = true;
 
@@ -110,7 +110,7 @@ public class HtmxRequestTagHelperTests
         Assert.That(json["credentials"].GetString(), Is.EqualTo("omit"));
         Assert.That(json["cache"].GetString(), Is.EqualTo("no-cache"));
         Assert.That(json["redirect"].GetString(), Is.EqualTo("manual"));
-        Assert.That(json["referrer"].GetString(), Is.EqualTo("no-referrer"));
+        Assert.That(json["referrer"].GetString(), Is.EqualTo("/reports"));
         Assert.That(json["integrity"].GetString(), Is.EqualTo("sha384-example"));
         Assert.That(json["validate"].GetBoolean(), Is.True);
         Assert.That(json.ContainsKey("noHeaders"), Is.False);
@@ -183,6 +183,18 @@ public class HtmxRequestTagHelperTests
         await helper.ProcessAsync(TestHelper.CreateTagHelperContext(), output);
 
         Assert.That(output.Attributes["hx-config"]!.Value.ToString(), Is.EqualTo("{\"timeout\":500}"));
+    }
+
+    [Test]
+    public async Task ProcessAsync_Htmx4_SerializesEmptyReferrer()
+    {
+        var output = TestHelper.CreateTagHelperOutput();
+        var helper = CreateHelper(HtmxTargetVersion.V4);
+        helper.Referrer = "";
+
+        await helper.ProcessAsync(TestHelper.CreateTagHelperContext(), output);
+
+        Assert.That(output.Attributes["hx-config"]!.Value.ToString(), Is.EqualTo("{\"referrer\":\"\"}"));
     }
 
     [TestCase(HtmxTargetVersion.V1)]
