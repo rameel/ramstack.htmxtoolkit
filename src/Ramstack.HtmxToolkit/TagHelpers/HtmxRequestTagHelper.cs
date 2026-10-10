@@ -142,9 +142,17 @@ public sealed class HtmxRequestTagHelper(IOptions<HtmxToolkitOptions> options) :
     /// Gets or sets the Fetch API <c>referrer</c> value for the request.
     /// </summary>
     /// <remarks>
-    /// Supported only in HTMX 4.x. Accepts a same-origin URL, an empty string to omit
-    /// the referrer, or <c>about:client</c> to use the default referrer.
-    /// The separate Fetch API <c>referrerPolicy</c> option is not configured by this property.
+    /// <para>Supported only in HTMX 4.x.</para>
+    /// <para>
+    ///   Accepts a same-origin URL, an empty string to omit the referrer,
+    ///   or <c>about:client</c> to use the default referrer.
+    ///   The browser replaces a URL from another origin with the default referrer.
+    /// </para>
+    /// <para>
+    ///   The separate Fetch API <c>referrerPolicy</c> option is not configured by this property.
+    ///   Policy values such as <c>no-referrer</c> are treated as relative URLs;
+    ///   use an empty string to omit the referrer.
+    /// </para>
     /// </remarks>
     [HtmlAttributeName(RequestReferrerAttributeName)]
     public string? Referrer
