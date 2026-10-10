@@ -121,7 +121,7 @@ public sealed class HtmxRequestTagHelper(IOptions<HtmxToolkitOptions> options) :
     /// </summary>
     /// <remarks>Supported only in HTMX 4.x.</remarks>
     [HtmlAttributeName(RequestCacheAttributeName)]
-    public string? Cache
+    public HtmxRequestCache? Cache
     {
         get => _request.Cache;
         set => _request.Cache = value;
@@ -217,7 +217,7 @@ public sealed class HtmxRequestTagHelper(IOptions<HtmxToolkitOptions> options) :
         public bool? NoHeaders { get; set; }
 
         /// <inheritdoc cref="HtmxRequestTagHelper.Cache" />
-        public string? Cache { get; set; }
+        public HtmxRequestCache? Cache { get; set; }
 
         /// <inheritdoc cref="HtmxRequestTagHelper.Redirect" />
         public string? Redirect { get; set; }
@@ -286,7 +286,16 @@ public sealed class HtmxRequestTagHelper(IOptions<HtmxToolkitOptions> options) :
         };
 
         /// <inheritdoc cref="HtmxRequestData.Cache" />
-        public string? Cache => data.Cache;
+        public string? Cache => data.Cache switch
+        {
+            HtmxRequestCache.Default => "default",
+            HtmxRequestCache.NoStore => "no-store",
+            HtmxRequestCache.Reload => "reload",
+            HtmxRequestCache.NoCache => "no-cache",
+            HtmxRequestCache.ForceCache => "force-cache",
+            HtmxRequestCache.OnlyIfCached => "only-if-cached",
+            _ => null
+        };
 
         /// <inheritdoc cref="HtmxRequestData.Redirect" />
         public string? Redirect => data.Redirect;
