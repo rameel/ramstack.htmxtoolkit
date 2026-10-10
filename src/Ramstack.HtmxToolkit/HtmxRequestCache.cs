@@ -8,6 +8,7 @@ public enum HtmxRequestCache
 {
     /// <summary>
     /// Uses the browser's normal HTTP cache behavior.
+    /// This is the Fetch default.
     /// </summary>
     Default,
 

@@ -8,6 +8,7 @@ public enum HtmxRequestRedirect
 {
     /// <summary>
     /// Follows redirects automatically.
+    /// This is the Fetch default.
     /// </summary>
     Follow,
 
