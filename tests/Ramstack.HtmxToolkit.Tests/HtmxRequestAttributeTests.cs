@@ -76,6 +76,17 @@ public class HtmxRequestAttributeTests
         Assert.That(req.Accept(CreateContext(ctx)), Is.EqualTo(expected));
     }
 
+    [TestCase(HtmxRequestType.Full, true)]
+    [TestCase(HtmxRequestType.Partial, false)]
+    public void Accept_TreatsHistoryRestoreRequestAsFull(HtmxRequestType requestType, bool expected)
+    {
+        var req = new HtmxRequestAttribute { RequestType = requestType };
+        var ctx = TestHelper.CreateHtmxRequestContext();
+        ctx.Request.Headers[HtmxRequestHeaderNames.HistoryRestoreRequest] = "true";
+
+        Assert.That(req.Accept(CreateContext(ctx)), Is.EqualTo(expected));
+    }
+
     [TestCase(HtmxRequestType.Full, HtmxBoostedFilter.Boosted, "full", true, true)]
     [TestCase(HtmxRequestType.Full, HtmxBoostedFilter.Boosted, "full", false, false)]
     [TestCase(HtmxRequestType.Full, HtmxBoostedFilter.Boosted, "partial", true, false)]

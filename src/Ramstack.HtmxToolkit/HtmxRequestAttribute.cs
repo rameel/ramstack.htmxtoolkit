@@ -17,10 +17,11 @@ public sealed class HtmxRequestAttribute : Attribute, IActionConstraint
     /// <remarks>
     /// <para>
     ///   The default, <see cref="HtmxRequestType.Unspecified" />, does not restrict the request type.
-    ///   Other values require a matching <c>HX-Request-Type</c> header.
+    ///   Other values require a matching <see cref="HtmxRequestHeaders.RequestType" />.
     /// </para>
     /// <para>
-    ///   HTMX 1.x and 2.x do not send this header. The request type is not inferred from boosted navigation.
+    ///   HTMX 1.x and 2.x send the <c>HX-Request-Type</c> header only when the page includes
+    ///   the companion script <c>htmx-toolkit.js</c>.
     ///   When <see cref="BoostedFilter" /> is also set, both conditions must be satisfied.
     /// </para>
     /// </remarks>

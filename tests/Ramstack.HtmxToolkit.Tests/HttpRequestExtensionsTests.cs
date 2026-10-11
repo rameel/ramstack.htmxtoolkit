@@ -55,6 +55,29 @@ public class HttpRequestExtensionsTests
         Assert.That(request.IsHtmxFullRequest(), Is.True);
     }
 
+    [TestCase(null, true)]
+    [TestCase("full", true)]
+    [TestCase("partial", false)]
+    [TestCase("unknown", false)]
+    public void IsHtmxFullRequest_ForHistoryRestoreRequest(string? requestType, bool expected)
+    {
+        var context = TestHelper.CreateHttpContext((HtmxRequestHeaderNames.HistoryRestoreRequest, "true"));
+        var request = context.Request;
+
+        if (requestType is not null)
+            request.Headers[HtmxRequestHeaderNames.RequestType] = requestType;
+
+        Assert.That(request.IsHtmxFullRequest(), Is.EqualTo(expected));
+        Assert.That(request.IsHtmxFullRequest(), Is.EqualTo(request.GetHtmxHeaders().RequestType == HtmxRequestType.Full));
+    }
+
+    [Test]
+    public void IsHtmxFullRequest_ReturnsFalse_WhenHistoryRestoreRequestIsFalse()
+    {
+        var context = TestHelper.CreateHttpContext((HtmxRequestHeaderNames.HistoryRestoreRequest, "false"));
+        Assert.That(context.Request.IsHtmxFullRequest(), Is.False);
+    }
+
     [Test]
     public void IsHtmxPartialRequest_ReturnsExpectedValue()
     {
@@ -65,5 +88,15 @@ public class HttpRequestExtensionsTests
 
         request.Headers[HtmxRequestHeaderNames.RequestType] = "partial";
         Assert.That(request.IsHtmxPartialRequest(), Is.True);
+    }
+
+    [Test]
+    public void IsHtmxPartialRequest_ReturnsFalse_ForHistoryRestoreRequest()
+    {
+        var context = TestHelper.CreateHttpContext(
+            (HtmxRequestHeaderNames.Request, "true"),
+            (HtmxRequestHeaderNames.HistoryRestoreRequest, "true"));
+
+        Assert.That(context.Request.IsHtmxPartialRequest(), Is.False);
     }
 }
