@@ -49,11 +49,8 @@ internal sealed class PendingEvents
     /// <param name="detailJson">The event detail as JSON.</param>
     public void AddEvent(HtmxTriggerTiming timing, string eventName, string detailJson)
     {
-        if (string.IsNullOrWhiteSpace(eventName))
-            throw new ArgumentException("Event name cannot be null or whitespace.", nameof(eventName));
-
-        if (string.IsNullOrWhiteSpace(detailJson))
-            throw new ArgumentException("Event detail JSON cannot be null or whitespace.", nameof(detailJson));
+        Argument.ThrowIfNullOrWhiteSpace(eventName);
+        Argument.ThrowIfNullOrWhiteSpace(detailJson);
 
         if (eventName == ProxyEventName)
             throw new ArgumentException(

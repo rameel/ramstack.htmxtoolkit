@@ -95,8 +95,7 @@ public readonly struct HtmxResponse
     /// </remarks>
     public HtmxResponse PushUrl(string url)
     {
-        if (string.IsNullOrEmpty(url))
-            throw new ArgumentException("URL cannot be null or empty.", nameof(url));
+        Argument.ThrowIfNullOrEmpty(url);
 
         return SetHistoryHeader(this, HtmxResponseHeaderNames.PushUrl, url, HtmxResponseHeaderNames.ReplaceUrl);
     }
@@ -127,8 +126,7 @@ public readonly struct HtmxResponse
     /// </remarks>
     public HtmxResponse ReplaceUrl(string url)
     {
-        if (string.IsNullOrEmpty(url))
-            throw new ArgumentException("URL cannot be null or empty.", nameof(url));
+        Argument.ThrowIfNullOrEmpty(url);
 
         return SetHistoryHeader(this, HtmxResponseHeaderNames.ReplaceUrl, url, HtmxResponseHeaderNames.PushUrl);
     }
@@ -344,7 +342,7 @@ public readonly struct HtmxResponse
 
     private static string SerializeEventDetail<T>(T detail, JsonTypeInfo<T> jsonTypeInfo)
     {
-        ArgumentNullException.ThrowIfNull(jsonTypeInfo);
+        Argument.ThrowIfNull(jsonTypeInfo);
 
         var buffer = new ArrayBufferWriter<byte>();
         using (var writer = new Utf8JsonWriter(buffer, new JsonWriterOptions { Encoder = JsonOptions.Encoder, SkipValidation = true }))

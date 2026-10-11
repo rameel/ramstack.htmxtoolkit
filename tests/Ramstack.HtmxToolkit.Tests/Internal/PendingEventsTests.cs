@@ -357,7 +357,7 @@ public class PendingEventsTests
         var context = TestHelper.CreateHttpContext();
         var pending = PendingEvents.GetOrCreate(context.Response);
 
-        var exception = Assert.Throws<ArgumentException>(() =>
+        var exception = Assert.Catch<ArgumentException>(() =>
             pending.AddEvent(HtmxTriggerTiming.Receive, "e", detail!));
 
         Assert.That(exception?.ParamName, Is.EqualTo("detailJson"));
@@ -371,7 +371,7 @@ public class PendingEventsTests
         var context = TestHelper.CreateHttpContext();
         var pending = PendingEvents.GetOrCreate(context.Response);
 
-        var exception = Assert.Throws<ArgumentException>(() =>
+        var exception = Assert.Catch<ArgumentException>(() =>
             pending.AddEvent(HtmxTriggerTiming.Receive, eventName!, "1"));
 
         Assert.That(exception?.ParamName, Is.EqualTo("eventName"));
