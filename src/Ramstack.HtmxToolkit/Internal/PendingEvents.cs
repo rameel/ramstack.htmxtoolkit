@@ -17,6 +17,9 @@ namespace Ramstack.HtmxToolkit.Internal;
 /// </summary>
 internal sealed class PendingEvents
 {
+    /// <summary>
+    /// The name of the event that carries all events of a header when an event name repeats.
+    /// </summary>
     private const string ProxyEventName = "rs:event";
 
     /// <summary>
@@ -148,7 +151,7 @@ internal sealed class PendingEvents
     /// </summary>
     /// <remarks>
     /// A JSON object cannot hold repeated names. If an event name repeats, all events
-    /// are written in order under the <c>rs:event</c> key, and the Toolkit script replays them.
+    /// are written in order under the <see cref="ProxyEventName" /> key, and the Toolkit script replays them.
     /// Writing only the repeats there would change the order in which the events are triggered.
     /// </remarks>
     /// <param name="name">The response header name.</param>
