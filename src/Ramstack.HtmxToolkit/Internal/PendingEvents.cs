@@ -26,7 +26,6 @@ internal sealed class PendingEvents
 
     private readonly HttpResponse _response;
     private readonly HtmxTargetVersion _version;
-    private readonly ArrayBufferWriter<byte> _buffer = new();
 
     private EventList? _receive;
     private EventList? _afterSwap;
@@ -99,9 +98,11 @@ internal sealed class PendingEvents
     /// </summary>
     public void Flush()
     {
-        SetHeader(HtmxResponseHeaderNames.Trigger, _receive);
-        SetHeader(HtmxResponseHeaderNames.TriggerAfterSwap, _afterSwap);
-        SetHeader(HtmxResponseHeaderNames.TriggerAfterSettle, _afterSettle);
+        var buffer = new ArrayBufferWriter<byte>();
+
+        SetHeader(HtmxResponseHeaderNames.Trigger, _receive, buffer);
+        SetHeader(HtmxResponseHeaderNames.TriggerAfterSwap, _afterSwap, buffer);
+        SetHeader(HtmxResponseHeaderNames.TriggerAfterSettle, _afterSettle, buffer);
     }
 
     /// <summary>
@@ -152,14 +153,15 @@ internal sealed class PendingEvents
     /// </remarks>
     /// <param name="name">The response header name.</param>
     /// <param name="events">The events to serialize.</param>
-    private void SetHeader(string name, EventList? events)
+    /// <param name="buffer">The buffer that receives the serialized header value.</param>
+    private void SetHeader(string name, EventList? events, ArrayBufferWriter<byte> buffer)
     {
         if (events is null)
             return;
 
-        _buffer.Clear();
+        buffer.Clear();
 
-        using (var writer = new Utf8JsonWriter(_buffer, new JsonWriterOptions { Encoder = JsonOptions.Encoder, SkipValidation = true }))
+        using (var writer = new Utf8JsonWriter(buffer, new JsonWriterOptions { Encoder = JsonOptions.Encoder, SkipValidation = true }))
         {
             writer.WriteStartObject();
 
@@ -192,7 +194,7 @@ internal sealed class PendingEvents
             writer.WriteEndObject();
         }
 
-        _response.Headers[name] = Encoding.UTF8.GetString(_buffer.WrittenSpan);
+        _response.Headers[name] = Encoding.UTF8.GetString(buffer.WrittenSpan);
     }
 
     /// <summary>
