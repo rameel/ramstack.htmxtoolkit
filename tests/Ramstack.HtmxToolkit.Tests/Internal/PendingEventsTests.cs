@@ -8,23 +8,23 @@ namespace Ramstack.HtmxToolkit.Tests.Internal;
 public class PendingEventsTests
 {
     [Test]
-    public void AddEvent_StoresDistinctKeys()
+    public void AddEvent_StoresEventsInOrder()
     {
         var context = TestHelper.CreateHttpContext();
         var pending = PendingEvents.GetOrCreate(context.Response);
 
-        pending.AddEvent(HtmxTriggerTiming.Receive, "a", "1");
-        pending.AddEvent(HtmxTriggerTiming.Receive, "b", "2");
+        pending.AddEvent(HtmxTriggerTiming.Receive, "b", "1");
+        pending.AddEvent(HtmxTriggerTiming.Receive, "a", "2");
 
-        var events = pending.GetEvents(HtmxTriggerTiming.Receive)!;
-
-        Assert.That(events.Count, Is.EqualTo(2));
-        Assert.That(events["a"], Is.EqualTo("1"));
-        Assert.That(events["b"], Is.EqualTo("2"));
+        Assert.That(
+            pending.GetEvents(HtmxTriggerTiming.Receive),
+            Is.EqualTo([
+                KeyValuePair.Create("b", "1"),
+                KeyValuePair.Create("a", "2")]));
     }
 
     [Test]
-    public void AddEvent_AccumulatesDuplicateKeys_UnderProxy()
+    public void AddEvent_KeepsRepeatedNames()
     {
         var context = TestHelper.CreateHttpContext();
         var pending = PendingEvents.GetOrCreate(context.Response);
@@ -32,17 +32,89 @@ public class PendingEventsTests
         pending.AddEvent(HtmxTriggerTiming.Receive, "message", "\"first\"");
         pending.AddEvent(HtmxTriggerTiming.Receive, "message", "\"second\"");
 
-        var events = pending.GetEvents(HtmxTriggerTiming.Receive)!;
+        Assert.That(
+            pending.GetEvents(HtmxTriggerTiming.Receive),
+            Is.EqualTo([
+                KeyValuePair.Create("message", "\"first\""),
+                KeyValuePair.Create("message", "\"second\"")]));
+    }
 
-        Assert.That(events.Count, Is.EqualTo(2));
-        Assert.That(events["message"], Is.EqualTo("\"first\""));
-        Assert.That(events["rs:event"], Is.EqualTo([KeyValuePair.Create("message", "\"second\"")]));
+    [Test]
+    public void Flush_WithRepeatedName_WritesAllEventsInOrderUnderProxy()
+    {
+        var context = TestHelper.CreateHttpContext();
+        var pending = PendingEvents.GetOrCreate(context.Response);
+
+        pending.AddEvent(HtmxTriggerTiming.Receive, "a", "1");
+        pending.AddEvent(HtmxTriggerTiming.Receive, "a", "2");
+        pending.AddEvent(HtmxTriggerTiming.Receive, "b", "3");
+        pending.AddEvent(HtmxTriggerTiming.Receive, "a", "4");
+        pending.Flush();
+
+        Assert.That(
+            context.Response.Headers[HtmxResponseHeaderNames.Trigger].ToString(),
+            Is.EqualTo(
+                "{\"rs:event\":[" +
+                "{\"key\":\"a\",\"value\":1}," +
+                "{\"key\":\"a\",\"value\":2}," +
+                "{\"key\":\"b\",\"value\":3}," +
+                "{\"key\":\"a\",\"value\":4}]}"));
+    }
+
+    [Test]
+    public void Flush_WithoutRepeatedNames_WritesEventsInOrder()
+    {
+        var context = TestHelper.CreateHttpContext();
+        var pending = PendingEvents.GetOrCreate(context.Response);
+
+        foreach (var name in new[] { "g", "f", "e", "d", "c", "b", "a" })
+            pending.AddEvent(HtmxTriggerTiming.Receive, name, "1");
 
         pending.Flush();
 
         Assert.That(
             context.Response.Headers[HtmxResponseHeaderNames.Trigger].ToString(),
-            Is.EqualTo("{\"message\":\"first\",\"rs:event\":[{\"key\":\"message\",\"value\":\"second\"}]}"));
+            Is.EqualTo("{\"g\":1,\"f\":1,\"e\":1,\"d\":1,\"c\":1,\"b\":1,\"a\":1}"));
+    }
+
+    [TestCase(8)]
+    [TestCase(9)]
+    [TestCase(20)]
+    public void Flush_WithManyEvents_WritesRepeatedNameUnderProxy(int count)
+    {
+        var context = TestHelper.CreateHttpContext();
+        var pending = PendingEvents.GetOrCreate(context.Response);
+
+        for (var i = 1; i < count; i++)
+            pending.AddEvent(HtmxTriggerTiming.Receive, "e" + i, "1");
+
+        pending.AddEvent(HtmxTriggerTiming.Receive, "e1", "2");
+        pending.Flush();
+
+        var header = context.Response.Headers[HtmxResponseHeaderNames.Trigger].ToString();
+
+        Assert.That(header, Does.StartWith("{\"rs:event\":[{\"key\":\"e1\",\"value\":1},"));
+        Assert.That(header, Does.EndWith(",{\"key\":\"e1\",\"value\":2}]}"));
+    }
+
+    [TestCase(8)]
+    [TestCase(9)]
+    [TestCase(20)]
+    public void Flush_WithManyDistinctEvents_WritesProperties(int count)
+    {
+        var context = TestHelper.CreateHttpContext();
+        var pending = PendingEvents.GetOrCreate(context.Response);
+
+        for (var i = 1; i <= count; i++)
+            pending.AddEvent(HtmxTriggerTiming.Receive, "e" + i, "1");
+
+        pending.Flush();
+
+        var expected = "{" + string.Join(",", Enumerable.Range(1, count).Select(i => $"\"e{i}\":1")) + "}";
+
+        Assert.That(
+            context.Response.Headers[HtmxResponseHeaderNames.Trigger].ToString(),
+            Is.EqualTo(expected));
     }
 
     [Test]
@@ -55,9 +127,9 @@ public class PendingEventsTests
         pending.AddEvent(HtmxTriggerTiming.AfterSettle, "t", "3");
         pending.AddEvent(HtmxTriggerTiming.AfterSwap, "s", "2");
 
-        Assert.That(pending.GetEvents(HtmxTriggerTiming.Receive), Is.EqualTo(CreateDictionary(("r", "1"))));
-        Assert.That(pending.GetEvents(HtmxTriggerTiming.AfterSettle), Is.EqualTo(CreateDictionary(("t", "3"))));
-        Assert.That(pending.GetEvents(HtmxTriggerTiming.AfterSwap), Is.EqualTo(CreateDictionary(("s", "2"))));
+        Assert.That(pending.GetEvents(HtmxTriggerTiming.Receive), Is.EqualTo([KeyValuePair.Create("r", "1")]));
+        Assert.That(pending.GetEvents(HtmxTriggerTiming.AfterSettle), Is.EqualTo([KeyValuePair.Create("t", "3")]));
+        Assert.That(pending.GetEvents(HtmxTriggerTiming.AfterSwap), Is.EqualTo([KeyValuePair.Create("s", "2")]));
     }
 
     [TestCase(HtmxTargetVersion.V1)]
@@ -103,9 +175,17 @@ public class PendingEventsTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(events.Keys, Is.EqualTo(["received", "swapped", "settled"]));
-            Assert.That(pending.GetEvents(HtmxTriggerTiming.AfterSwap), Is.SameAs(events));
-            Assert.That(pending.GetEvents(HtmxTriggerTiming.AfterSettle), Is.SameAs(events));
+            Assert.That(
+                events.Select(e => e.Key),
+                Is.EqualTo(["received", "swapped", "settled"]));
+
+            Assert.That(
+                pending.GetEvents(HtmxTriggerTiming.AfterSwap),
+                Is.SameAs(events));
+
+            Assert.That(
+                pending.GetEvents(HtmxTriggerTiming.AfterSettle),
+                Is.SameAs(events));
 
             Assert.That(
                 context.Response.Headers[HtmxResponseHeaderNames.Trigger].ToString(),
@@ -126,25 +206,22 @@ public class PendingEventsTests
         pending.AddEvent(HtmxTriggerTiming.AfterSwap, "message", "\"second\"");
         pending.AddEvent(HtmxTriggerTiming.AfterSettle, "message", "\"third\"");
 
-        var events = pending.GetEvents(HtmxTriggerTiming.Receive)!;
-
-        Assert.Multiple(() =>
-        {
-            Assert.That(events["message"], Is.EqualTo("\"first\""));
-            Assert.That(
-                events["rs:event"],
-                Is.EqualTo(
-                [
-                    KeyValuePair.Create("message", "\"second\""),
-                    KeyValuePair.Create("message", "\"third\"")
-                ]));
-        });
+        Assert.That(
+            pending.GetEvents(HtmxTriggerTiming.Receive),
+            Is.EqualTo([
+                KeyValuePair.Create("message", "\"first\""),
+                KeyValuePair.Create("message", "\"second\""),
+                KeyValuePair.Create("message", "\"third\"")]));
 
         pending.Flush();
 
         Assert.That(
             context.Response.Headers[HtmxResponseHeaderNames.Trigger].ToString(),
-            Is.EqualTo("{\"message\":\"first\",\"rs:event\":[{\"key\":\"message\",\"value\":\"second\"},{\"key\":\"message\",\"value\":\"third\"}]}"));
+            Is.EqualTo(
+                "{\"rs:event\":[" +
+                "{\"key\":\"message\",\"value\":\"first\"}," +
+                "{\"key\":\"message\",\"value\":\"second\"}," +
+                "{\"key\":\"message\",\"value\":\"third\"}]}"));
     }
 
     [Test]
@@ -159,7 +236,7 @@ public class PendingEventsTests
     }
 
     [Test]
-    public void Flush_WritesCamelCaseJsonToHeaders()
+    public void Flush_WritesEventDetailToHeader()
     {
         var context = TestHelper.CreateHttpContext();
         var pending = PendingEvents.GetOrCreate(context.Response);
@@ -171,6 +248,50 @@ public class PendingEventsTests
         var header = context.Response.Headers[HtmxResponseHeaderNames.Trigger];
 
         Assert.That(header.ToString(), Is.EqualTo("{\"message\":\"hello\"}"));
+    }
+
+    [Test]
+    public void Flush_PreservesEventNameCase()
+    {
+        var context = TestHelper.CreateHttpContext();
+        var pending = PendingEvents.GetOrCreate(context.Response);
+
+        pending.AddEvent(HtmxTriggerTiming.Receive, "ShowMessage", "1");
+        pending.Flush();
+
+        Assert.That(
+            context.Response.Headers[HtmxResponseHeaderNames.Trigger].ToString(),
+            Is.EqualTo("{\"ShowMessage\":1}"));
+    }
+
+    [Test]
+    public void Flush_PreservesEventNameCase_InReplayedEvents()
+    {
+        var context = TestHelper.CreateHttpContext();
+        var pending = PendingEvents.GetOrCreate(context.Response);
+
+        pending.AddEvent(HtmxTriggerTiming.Receive, "ShowMessage", "1");
+        pending.AddEvent(HtmxTriggerTiming.Receive, "ShowMessage", "2");
+        pending.Flush();
+
+        Assert.That(
+            context.Response.Headers[HtmxResponseHeaderNames.Trigger].ToString(),
+            Is.EqualTo("{\"rs:event\":[{\"key\":\"ShowMessage\",\"value\":1},{\"key\":\"ShowMessage\",\"value\":2}]}"));
+    }
+
+    [Test]
+    public void Flush_WritesEventNamesThatDifferOnlyInCaseSeparately()
+    {
+        var context = TestHelper.CreateHttpContext();
+        var pending = PendingEvents.GetOrCreate(context.Response);
+
+        pending.AddEvent(HtmxTriggerTiming.Receive, "Message", "1");
+        pending.AddEvent(HtmxTriggerTiming.Receive, "message", "2");
+        pending.Flush();
+
+        Assert.That(
+            context.Response.Headers[HtmxResponseHeaderNames.Trigger].ToString(),
+            Is.EqualTo("{\"Message\":1,\"message\":2}"));
     }
 
     [Test]
@@ -189,7 +310,7 @@ public class PendingEventsTests
     }
 
     [Test]
-    public void Flush_SerializesNullEventDetail_AsNull()
+    public void Flush_WrapsNullEventDetail()
     {
         var context = TestHelper.CreateHttpContext();
         var pending = PendingEvents.GetOrCreate(context.Response);
@@ -198,7 +319,34 @@ public class PendingEventsTests
         pending.Flush();
 
         var header = context.Response.Headers[HtmxResponseHeaderNames.Trigger].ToString();
-        Assert.That(header, Is.EqualTo("{\"e\":null}"));
+        Assert.That(header, Is.EqualTo("{\"e\":{\"value\":null}}"));
+    }
+
+    [Test]
+    public void Flush_WrapsNullEventDetail_InReplayedEvents()
+    {
+        var context = TestHelper.CreateHttpContext();
+        var pending = PendingEvents.GetOrCreate(context.Response);
+
+        pending.AddEvent(HtmxTriggerTiming.Receive, "e", "null");
+        pending.AddEvent(HtmxTriggerTiming.Receive, "e", "1");
+        pending.Flush();
+
+        var header = context.Response.Headers[HtmxResponseHeaderNames.Trigger].ToString();
+        Assert.That(header, Is.EqualTo("{\"rs:event\":[{\"key\":\"e\",\"value\":{\"value\":null}},{\"key\":\"e\",\"value\":1}]}"));
+    }
+
+    [Test]
+    public void GetEvents_KeepsStoredNullEventDetail()
+    {
+        var context = TestHelper.CreateHttpContext();
+        var pending = PendingEvents.GetOrCreate(context.Response);
+
+        pending.AddEvent(HtmxTriggerTiming.Receive, "e", "null");
+
+        Assert.That(
+            pending.GetEvents(HtmxTriggerTiming.Receive),
+            Is.EqualTo([KeyValuePair.Create("e", "null")]));
     }
 
     [TestCase(null)]
@@ -230,19 +378,35 @@ public class PendingEventsTests
     }
 
     [Test]
-    public void GetEvents_MutatingReturnedView_BreaksFlush()
+    public void GetEvents_ReturnsReadOnlyView()
     {
-        // The returned dictionary is a live inspection-only view: writing a value
-        // that is not a serialized JSON fragment corrupts the pending events.
         var context = TestHelper.CreateHttpContext();
         var pending = PendingEvents.GetOrCreate(context.Response);
 
         pending.AddEvent(HtmxTriggerTiming.Receive, "a", "1");
 
-        var mutable = (IDictionary<string, object>)pending.GetEvents(HtmxTriggerTiming.Receive)!;
-        mutable["a"] = 2;
+        var events = (ICollection<KeyValuePair<string, string>>)pending.GetEvents(HtmxTriggerTiming.Receive)!;
 
-        Assert.Throws<InvalidCastException>(pending.Flush);
+        Assert.That(events.IsReadOnly, Is.True);
+        Assert.Throws<NotSupportedException>(() => events.Add(KeyValuePair.Create("b", "2")));
+    }
+
+    [Test]
+    public void GetEvents_ReturnsLiveView()
+    {
+        var context = TestHelper.CreateHttpContext();
+        var pending = PendingEvents.GetOrCreate(context.Response);
+
+        pending.AddEvent(HtmxTriggerTiming.Receive, "a", "1");
+        var events = pending.GetEvents(HtmxTriggerTiming.Receive);
+
+        pending.AddEvent(HtmxTriggerTiming.Receive, "b", "2");
+
+        Assert.That(
+            events,
+            Is.EqualTo([
+                KeyValuePair.Create("a", "1"),
+                KeyValuePair.Create("b", "2")]));
     }
 
     [Test]
@@ -273,14 +437,5 @@ public class PendingEventsTests
         var pending = PendingEvents.GetOrCreate(context.Response);
 
         Assert.That(context.Items[typeof(PendingEvents)], Is.SameAs(pending));
-    }
-
-    private static Dictionary<string, string> CreateDictionary(params (string, string)[] parameters)
-    {
-        var dictionary = new Dictionary<string, string>();
-        foreach (var (k, v) in parameters)
-            dictionary[k] = v;
-
-        return dictionary;
     }
 }

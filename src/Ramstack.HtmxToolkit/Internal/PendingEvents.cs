@@ -1,11 +1,11 @@
 using System.Buffers;
+using System.Collections.ObjectModel;
 using System.Text;
 using System.Text.Json;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 
-using Ramstack.HtmxToolkit.Collections;
 using Ramstack.HtmxToolkit.Configuration;
 using Ramstack.HtmxToolkit.Serialization;
 
@@ -17,15 +17,22 @@ namespace Ramstack.HtmxToolkit.Internal;
 /// </summary>
 internal sealed class PendingEvents
 {
+    /// <summary>
+    /// The name of the event that carries all events of a header when an event name repeats.
+    /// </summary>
     private const string ProxyEventName = "rs:event";
+
+    /// <summary>
+    /// The maximum number of events for which repeated names are found using a linear scan.
+    /// </summary>
+    private const int LinearScanThreshold = 8;
 
     private readonly HttpResponse _response;
     private readonly HtmxTargetVersion _version;
-    private readonly ArrayBufferWriter<byte> _buffer = new();
 
-    private SmallDictionary<string, object>? _receive;
-    private SmallDictionary<string, object>? _afterSwap;
-    private SmallDictionary<string, object>? _afterSettle;
+    private EventList? _receive;
+    private EventList? _afterSwap;
+    private EventList? _afterSettle;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="PendingEvents" /> class.
@@ -35,9 +42,7 @@ internal sealed class PendingEvents
         (_response, _version) = (response, GetTargetVersion(response));
 
     /// <summary>
-    /// Adds the specified event to the pending set for <paramref name="timing" />.
-    /// When an event name already exists, the duplicate is stored under the
-    /// <c>rs:event</c> key for client-side replay.
+    /// Adds the specified event to the end of the pending events for <paramref name="timing" />.
     /// </summary>
     /// <param name="timing">The time at which to trigger the events.</param>
     /// <param name="eventName">The event name.</param>
@@ -57,38 +62,28 @@ internal sealed class PendingEvents
 
         timing = NormalizeTiming(timing);
 
-        var current = timing switch
+        var events = timing switch
         {
-            HtmxTriggerTiming.Receive => _receive ??= new SmallDictionary<string, object>(StringComparer.Ordinal),
-            HtmxTriggerTiming.AfterSwap => _afterSwap ??= new SmallDictionary<string, object>(StringComparer.Ordinal),
-            _ => _afterSettle ??= new SmallDictionary<string, object>(StringComparer.Ordinal)
+            HtmxTriggerTiming.Receive => _receive ??= new EventList(),
+            HtmxTriggerTiming.AfterSwap => _afterSwap ??= new EventList(),
+            _ => _afterSettle ??= new EventList()
         };
 
-        if (!current.TryAdd(eventName, detailJson))
-        {
-            if (!current.TryGetValue(ProxyEventName, out var value)
-                || value is not List<KeyValuePair<string, string>> collection)
-            {
-                collection = [];
-                current[ProxyEventName] = collection;
-            }
-
-            collection.Add(new KeyValuePair<string, string>(eventName, detailJson));
-        }
+        events.Add(eventName, detailJson);
     }
 
     /// <summary>
-    /// Returns the pending events for the specified <paramref name="timing" />.
+    /// Returns the pending events for the specified <paramref name="timing" />
+    /// in the order they were added.
     /// </summary>
     /// <param name="timing">The time at which to trigger the events.</param>
     /// <returns>
     /// The pending events, or <see langword="null" /> if none were registered.
     /// </returns>
     /// <remarks>
-    /// Returns a live view of the internal accumulator for inspection only;
-    /// callers must not mutate it.
+    /// Returns a read-only live view of the internal accumulator.
     /// </remarks>
-    public IReadOnlyDictionary<string, object>? GetEvents(HtmxTriggerTiming timing)
+    public IReadOnlyList<KeyValuePair<string, string>>? GetEvents(HtmxTriggerTiming timing)
     {
         timing = NormalizeTiming(timing);
 
@@ -106,9 +101,11 @@ internal sealed class PendingEvents
     /// </summary>
     public void Flush()
     {
-        SetHeader(HtmxResponseHeaderNames.Trigger, _receive);
-        SetHeader(HtmxResponseHeaderNames.TriggerAfterSwap, _afterSwap);
-        SetHeader(HtmxResponseHeaderNames.TriggerAfterSettle, _afterSettle);
+        var buffer = new ArrayBufferWriter<byte>();
+
+        SetHeader(HtmxResponseHeaderNames.Trigger, _receive, buffer);
+        SetHeader(HtmxResponseHeaderNames.TriggerAfterSwap, _afterSwap, buffer);
+        SetHeader(HtmxResponseHeaderNames.TriggerAfterSettle, _afterSettle, buffer);
     }
 
     /// <summary>
@@ -152,50 +149,108 @@ internal sealed class PendingEvents
     /// Serializes the specified events into a response header
     /// when the collection is not <see langword="null" />.
     /// </summary>
+    /// <remarks>
+    /// A JSON object cannot hold repeated names. If an event name repeats, all events
+    /// are written in order under the <see cref="ProxyEventName" /> key, and the Toolkit script replays them.
+    /// Writing only the repeats there would change the order in which the events are triggered.
+    /// </remarks>
     /// <param name="name">The response header name.</param>
     /// <param name="events">The events to serialize.</param>
-    private void SetHeader(string name, SmallDictionary<string, object>? events)
+    /// <param name="buffer">The buffer that receives the serialized header value.</param>
+    private void SetHeader(string name, EventList? events, ArrayBufferWriter<byte> buffer)
     {
         if (events is null)
             return;
 
-        _buffer.Clear();
+        buffer.Clear();
 
-        using (var writer = new Utf8JsonWriter(_buffer, new JsonWriterOptions { Encoder = JsonOptions.Encoder, SkipValidation = true }))
+        using (var writer = new Utf8JsonWriter(buffer, new JsonWriterOptions { Encoder = JsonOptions.Encoder, SkipValidation = true }))
         {
             writer.WriteStartObject();
 
-            foreach (var (key, value) in events)
+            if (HasRepeatedNames(events))
             {
-                writer.WritePropertyName(JsonNamingPolicy.CamelCase.ConvertName(key));
+                writer.WriteStartArray(ProxyEventName);
 
-                if (key == ProxyEventName)
+                foreach (var (key, value) in events.Storage)
                 {
-                    writer.WriteStartArray();
-
-                    foreach (var (k, v) in (List<KeyValuePair<string, string>>)value)
+                    writer.WriteStartObject();
                     {
-                        writer.WriteStartObject();
-                        {
-                            writer.WriteString("key", k);
-                            writer.WritePropertyName("value");
-                            writer.WriteRawValue(v);
-                        }
-                        writer.WriteEndObject();
+                        writer.WriteString("key", key);
+                        writer.WritePropertyName("value");
+                        WriteDetail(writer, value);
                     }
-
-                    writer.WriteEndArray();
+                    writer.WriteEndObject();
                 }
-                else
+
+                writer.WriteEndArray();
+            }
+            else
+            {
+                foreach (var (key, value) in events.Storage)
                 {
-                    writer.WriteRawValue((string)value);
+                    writer.WritePropertyName(key);
+                    WriteDetail(writer, value);
                 }
             }
 
             writer.WriteEndObject();
         }
 
-        _response.Headers[name] = Encoding.UTF8.GetString(_buffer.WrittenSpan);
+        _response.Headers[name] = Encoding.UTF8.GetString(buffer.WrittenSpan);
+    }
+
+    /// <summary>
+    /// Determines whether any event name occurs more than once.
+    /// </summary>
+    /// <param name="events">The events to inspect.</param>
+    /// <returns>
+    /// <see langword="true" /> if an event name repeats; otherwise, <see langword="false" />.
+    /// </returns>
+    private static bool HasRepeatedNames(EventList events)
+    {
+        // A response usually carries only a few events, and for them a quadratic scan
+        // is cheaper than allocating a set. Events can be added in a loop, though,
+        // so a set protects against a large number of them.
+        var storage = events.Storage;
+
+        if (storage.Count <= LinearScanThreshold)
+        {
+            for (var i = 1; i < storage.Count; i++)
+                for (var j = 0; j < i; j++)
+                    if (storage[i].Key == storage[j].Key)
+                        return true;
+
+            return false;
+        }
+
+        var names = new HashSet<string>(storage.Count, StringComparer.Ordinal);
+        foreach (var (key, _) in storage)
+            if (!names.Add(key))
+                return true;
+
+        return false;
+    }
+
+    /// <summary>
+    /// Writes the serialized event detail.
+    /// </summary>
+    /// <param name="writer">The JSON writer.</param>
+    /// <param name="detailJson">The event detail as JSON.</param>
+    private static void WriteDetail(Utf8JsonWriter writer, string detailJson)
+    {
+        // HTMX 1.x and 2.x pass a null detail to listeners as { value: null },
+        // while HTMX 4.x fails on it. Write the wrapped form for all versions.
+        if (detailJson == "null")
+        {
+            writer.WriteStartObject();
+            writer.WriteNull("value");
+            writer.WriteEndObject();
+        }
+        else
+        {
+            writer.WriteRawValue(detailJson);
+        }
     }
 
     /// <summary>
@@ -224,4 +279,45 @@ internal sealed class PendingEvents
 
         return options?.Value.TargetVersion ?? HtmxTargetVersion.V2;
     }
+
+    #region Inner type: EventList
+
+    /// <summary>
+    /// Represents a read-only view of the events for a single timing, in the order they were added.
+    /// </summary>
+    private sealed class EventList : ReadOnlyCollection<KeyValuePair<string, string>>
+    {
+        /// <summary>
+        /// Gets the list that stores the events.
+        /// </summary>
+        /// <remarks>
+        /// Used internally instead of the inherited members,
+        /// which access the list through interface calls.
+        /// </remarks>
+        public List<KeyValuePair<string, string>> Storage { get; }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EventList" /> class.
+        /// </summary>
+        public EventList() : this([])
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EventList" /> class that wraps the specified list.
+        /// </summary>
+        /// <param name="storage">The list that stores the events.</param>
+        private EventList(List<KeyValuePair<string, string>> storage) : base(storage) =>
+            Storage = storage;
+
+        /// <summary>
+        /// Adds an event to the end of the list.
+        /// </summary>
+        /// <param name="eventName">The event name.</param>
+        /// <param name="detailJson">The event detail as JSON.</param>
+        public void Add(string eventName, string detailJson) =>
+            Storage.Add(new KeyValuePair<string, string>(eventName, detailJson));
+    }
+
+    #endregion
 }

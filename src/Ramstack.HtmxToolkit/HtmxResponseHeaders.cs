@@ -129,13 +129,11 @@ public readonly struct HtmxResponseHeaders
     /// </summary>
     /// <remarks>
     /// <para>
-    ///   Event values are serialized JSON fragments accumulated for the current response
-    ///   and written into the header immediately before the response starts.
-    /// </para>
-    /// <para>
-    ///   The returned dictionary is a live view of the accumulated events, provided for
-    ///   inspection only. Do not cast it to a mutable interface or modify it: doing so
-    ///   corrupts the pending events and breaks header serialization.
+    ///   Each entry pairs an event name with its detail serialized as JSON. Events are listed
+    ///   in the order they were added, including repeated names. The list is a read-only live view
+    ///   of the events accumulated for the current response, which are written into the header
+    ///   immediately before the response starts. If no events have been added,
+    ///   the property returns <see langword="null" />.
     /// </para>
     /// <para>
     ///   HTMX 1.x and 2.x trigger these events when the response is received,
@@ -143,20 +141,18 @@ public readonly struct HtmxResponseHeaders
     ///   (after the swap whenever one is performed).
     /// </para>
     /// </remarks>
-    public IReadOnlyDictionary<string, object>? Trigger => PendingEvents.TryGet(_response)?.GetEvents(HtmxTriggerTiming.Receive);
+    public IReadOnlyList<KeyValuePair<string, string>>? Trigger => PendingEvents.TryGet(_response)?.GetEvents(HtmxTriggerTiming.Receive);
 
     /// <summary>
     /// Gets the client-side events to trigger through the <c>HX-Trigger-After-Swap</c> header after the swap step.
     /// </summary>
     /// <remarks>
     /// <para>
-    ///   Event values are serialized JSON fragments accumulated for the current response
-    ///   and written into the header immediately before the response starts.
-    /// </para>
-    /// <para>
-    ///   The returned dictionary is a live view of the accumulated events, provided for
-    ///   inspection only. Do not cast it to a mutable interface or modify it: doing so
-    ///   corrupts the pending events and breaks header serialization.
+    ///   Each entry pairs an event name with its detail serialized as JSON. Events are listed
+    ///   in the order they were added, including repeated names. The list is a read-only live view
+    ///   of the events accumulated for the current response, which are written into the header
+    ///   immediately before the response starts. If no events have been added,
+    ///   the property returns <see langword="null" />.
     /// </para>
     /// <para>
     ///   In HTMX 4.x, assigned events are accumulated in <see cref="Trigger" />
@@ -164,20 +160,18 @@ public readonly struct HtmxResponseHeaders
     ///   (after the swap whenever one is performed).
     /// </para>
     /// </remarks>
-    public IReadOnlyDictionary<string, object>? TriggerAfterSwap => PendingEvents.TryGet(_response)?.GetEvents(HtmxTriggerTiming.AfterSwap);
+    public IReadOnlyList<KeyValuePair<string, string>>? TriggerAfterSwap => PendingEvents.TryGet(_response)?.GetEvents(HtmxTriggerTiming.AfterSwap);
 
     /// <summary>
     /// Gets the client-side events to trigger through the <c>HX-Trigger-After-Settle</c> header after the settle step.
     /// </summary>
     /// <remarks>
     /// <para>
-    ///   Event values are serialized JSON fragments accumulated for the current response
-    ///   and written into the header immediately before the response starts.
-    /// </para>
-    /// <para>
-    ///   The returned dictionary is a live view of the accumulated events, provided for
-    ///   inspection only. Do not cast it to a mutable interface or modify it: doing so
-    ///   corrupts the pending events and breaks header serialization.
+    ///   Each entry pairs an event name with its detail serialized as JSON. Events are listed
+    ///   in the order they were added, including repeated names. The list is a read-only live view
+    ///   of the events accumulated for the current response, which are written into the header
+    ///   immediately before the response starts. If no events have been added,
+    ///   the property returns <see langword="null" />.
     /// </para>
     /// <para>
     ///   In HTMX 4.x, assigned events are accumulated in <see cref="Trigger" />
@@ -186,7 +180,7 @@ public readonly struct HtmxResponseHeaders
     ///   cannot be preserved.
     /// </para>
     /// </remarks>
-    public IReadOnlyDictionary<string, object>? TriggerAfterSettle => PendingEvents.TryGet(_response)?.GetEvents(HtmxTriggerTiming.AfterSettle);
+    public IReadOnlyList<KeyValuePair<string, string>>? TriggerAfterSettle => PendingEvents.TryGet(_response)?.GetEvents(HtmxTriggerTiming.AfterSettle);
 
     /// <summary>
     /// Gets the value of the specified header.

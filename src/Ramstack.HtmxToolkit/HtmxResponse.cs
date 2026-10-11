@@ -224,9 +224,16 @@ public readonly struct HtmxResponse
     /// The current <see cref="HtmxResponse" /> instance.
     /// </returns>
     /// <remarks>
-    /// In HTMX 4.x, every <see cref="HtmxTriggerTiming" /> value is emitted through
-    /// <c>HX-Trigger</c> and runs when the request completes (after the swap whenever one is performed).
-    /// See <see href="https://github.com/bigskysoftware/htmx/pull/3900">PR #3900</see>.
+    /// <para>
+    ///   In HTMX 4.x, every <see cref="HtmxTriggerTiming" /> value is emitted through
+    ///   <c>HX-Trigger</c> and runs when the request completes (after the swap whenever one is performed).
+    ///   See <see href="https://github.com/bigskysoftware/htmx/pull/3900">PR #3900</see>.
+    /// </para>
+    /// <para>
+    ///   Events are triggered in the order they are added. If an event name is added more than once
+    ///   for the same header, all events of that header are replayed by the Toolkit script,
+    ///   which must be loaded for any of them to be triggered.
+    /// </para>
     /// </remarks>
     public HtmxResponse TriggerEvent(string eventName, HtmxTriggerTiming timing = HtmxTriggerTiming.Receive) =>
         AddToPendingEvent(this, eventName, "{}", timing);
@@ -236,9 +243,16 @@ public readonly struct HtmxResponse
     /// <paramref name="timing" />.
     /// </summary>
     /// <remarks>
-    /// In HTMX 4.x, every <see cref="HtmxTriggerTiming" /> value is emitted through <c>HX-Trigger</c>
-    /// and runs when the request completes (after the swap whenever one is performed).
-    /// See <see href="https://github.com/bigskysoftware/htmx/pull/3900">PR #3900</see>.
+    /// <para>
+    ///   In HTMX 4.x, every <see cref="HtmxTriggerTiming" /> value is emitted through <c>HX-Trigger</c>
+    ///   and runs when the request completes (after the swap whenever one is performed).
+    ///   See <see href="https://github.com/bigskysoftware/htmx/pull/3900">PR #3900</see>.
+    /// </para>
+    /// <para>
+    ///   Events are triggered in the order they are added. If an event name is added more than once
+    ///   for the same header, all events of that header are replayed by the Toolkit script,
+    ///   which must be loaded for any of them to be triggered.
+    /// </para>
     /// </remarks>
     /// <param name="eventName">The event name to trigger.</param>
     /// <param name="detail">The event detail.</param>
@@ -269,9 +283,16 @@ public readonly struct HtmxResponse
     /// The current <see cref="HtmxResponse" /> instance.
     /// </returns>
     /// <remarks>
-    /// In HTMX 4.x, every <see cref="HtmxTriggerTiming" /> value is emitted through <c>HX-Trigger</c>
-    /// and runs when the request completes (after the swap whenever one is performed).
-    /// See <see href="https://github.com/bigskysoftware/htmx/pull/3900">PR #3900</see>.
+    /// <para>
+    ///   In HTMX 4.x, every <see cref="HtmxTriggerTiming" /> value is emitted through <c>HX-Trigger</c>
+    ///   and runs when the request completes (after the swap whenever one is performed).
+    ///   See <see href="https://github.com/bigskysoftware/htmx/pull/3900">PR #3900</see>.
+    /// </para>
+    /// <para>
+    ///   Events are triggered in the order they are added. If an event name is added more than once
+    ///   for the same header, all events of that header are replayed by the Toolkit script,
+    ///   which must be loaded for any of them to be triggered.
+    /// </para>
     /// </remarks>
     public HtmxResponse TriggerEvent<T>(string eventName, T detail, JsonTypeInfo<T> jsonTypeInfo, HtmxTriggerTiming timing = HtmxTriggerTiming.Receive) =>
         TriggerEventCore(this, eventName, detail, jsonTypeInfo, timing);
