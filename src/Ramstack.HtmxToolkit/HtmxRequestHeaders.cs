@@ -79,11 +79,13 @@ public readonly struct HtmxRequestHeaders
     ///   The header name is <see cref="HtmxRequestHeaderNames.RequestType" />.
     /// </para>
     /// <para>
-    ///   Supported only in HTMX 4.x. The value is <c>"partial"</c> for targeted swaps
-    ///   and <c>"full"</c> for body-level or <c>hx-select</c> requests.
+    ///   The value is <c>"partial"</c> for targeted swaps and <c>"full"</c> for body-level
+    ///   or <c>hx-select</c> requests. HTMX 4.x sends the header itself; for HTMX 1.x and 2.x,
+    ///   the companion script <c>htmx-toolkit.js</c> adds it.
     /// </para>
     /// <para>
-    ///   The request type is not inferred from boosted navigation.
+    ///   A history restoration request without the header is reported as
+    ///   <see cref="HtmxRequestType.Full" />, because HTMX restores the whole page from it.
     /// </para>
     /// </remarks>
     public HtmxRequestType RequestType
@@ -92,14 +94,23 @@ public readonly struct HtmxRequestHeaders
         {
             static HtmxRequestType GetRequestType(IHeaderDictionary dictionary)
             {
-                if (dictionary.TryGetValue(HtmxRequestHeaderNames.RequestType, out var value) && value.Count == 1)
+                if (dictionary.TryGetValue(HtmxRequestHeaderNames.RequestType, out var value))
                 {
-                    switch (value[0])
+                    if (value.Count == 1)
                     {
-                        case "full": return HtmxRequestType.Full;
-                        case "partial": return HtmxRequestType.Partial;
+                        switch (value[0])
+                        {
+                            case "full": return HtmxRequestType.Full;
+                            case "partial": return HtmxRequestType.Partial;
+                        }
                     }
+
+                    return HtmxRequestType.Unspecified;
                 }
+
+                // HTMX 1.x and 2.x send history restoration requests without HX-Request-Type.
+                if (GetBoolean(dictionary, HtmxRequestHeaderNames.HistoryRestoreRequest))
+                    return HtmxRequestType.Full;
 
                 return HtmxRequestType.Unspecified;
             }

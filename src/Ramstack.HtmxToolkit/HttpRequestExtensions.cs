@@ -46,34 +46,41 @@ public static class HttpRequestExtensions
         request.GetHtmxHeaders().Boosted;
 
     /// <summary>
-    /// Determines whether the specified HTTP request has an <c>HX-Request-Type</c> value of <c>"full"</c>.
+    /// Determines whether the specified HTTP request expects a full page.
     /// </summary>
     /// <param name="request">The HTTP request.</param>
     /// <returns>
-    /// <see langword="true" /> if the header value is <c>"full"</c>;
+    /// <see langword="true" /> if the <c>HX-Request-Type</c> header value is <c>"full"</c>,
+    /// or the header is absent and the request restores history;
     /// otherwise, <see langword="false" />.
     /// </returns>
     /// <remarks>
-    /// Returns <see langword="false" /> when the header is absent,
-    /// including HTMX 1.x and 2.x requests without this header.
+    /// HTMX 4.x sends the header itself; for HTMX 1.x and 2.x, the companion
+    /// script <c>htmx-toolkit.js</c> adds it. See <see cref="HtmxRequestHeaders.RequestType" />.
     /// </remarks>
-    public static bool IsHtmxFullRequest(this HttpRequest request) =>
+    public static bool IsHtmxFullRequest(this HttpRequest request)
+    {
         // PERF: Compare the header directly instead of using GetHtmxHeaders().RequestType.
         // The parser also recognizes "partial", and the JIT does not reliably eliminate
         // that extra comparison even when the parser is inlined.
-        request.Headers.TryGetValue(HtmxRequestHeaderNames.RequestType, out var value) && value is ["full"];
+        var headers = request.Headers;
+        if (headers.TryGetValue(HtmxRequestHeaderNames.RequestType, out var value))
+            return value is ["full"];
+
+        return headers.TryGetValue(HtmxRequestHeaderNames.HistoryRestoreRequest, out value) && value is ["true"];
+    }
 
     /// <summary>
-    /// Determines whether the specified HTTP request has an <c>HX-Request-Type</c> value of <c>"partial"</c>.
+    /// Determines whether the specified HTTP request expects an HTML fragment.
     /// </summary>
     /// <param name="request">The HTTP request.</param>
     /// <returns>
-    /// <see langword="true" /> if the header value is <c>"partial"</c>;
+    /// <see langword="true" /> if the <c>HX-Request-Type</c> header value is <c>"partial"</c>;
     /// otherwise, <see langword="false" />.
     /// </returns>
     /// <remarks>
-    /// Returns <see langword="false" /> when the header is absent,
-    /// including HTMX 1.x and 2.x requests without this header.
+    /// HTMX 4.x sends the header itself; for HTMX 1.x and 2.x, the companion
+    /// script <c>htmx-toolkit.js</c> adds it. Without the header, the method returns <see langword="false" />.
     /// </remarks>
     public static bool IsHtmxPartialRequest(this HttpRequest request) =>
         // PERF: See IsHtmxFullRequest.

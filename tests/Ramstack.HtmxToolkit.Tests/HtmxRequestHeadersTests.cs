@@ -69,6 +69,26 @@ public class HtmxRequestHeadersTests
         Assert.That(headers.RequestType, Is.EqualTo(HtmxRequestType.Unspecified));
     }
 
+    [TestCase(null, HtmxRequestType.Full)]
+    [TestCase("full", HtmxRequestType.Full)]
+    [TestCase("partial", HtmxRequestType.Partial)]
+    [TestCase("unknown", HtmxRequestType.Unspecified)]
+    public void RequestType_IsFull_ForHistoryRestoreRequestWithoutHeader(string? value, HtmxRequestType expected)
+    {
+        var headers = value is null
+            ? CreateHeaders((HtmxRequestHeaderNames.HistoryRestoreRequest, "true"))
+            : CreateHeaders((HtmxRequestHeaderNames.HistoryRestoreRequest, "true"), (HtmxRequestHeaderNames.RequestType, value));
+
+        Assert.That(headers.RequestType, Is.EqualTo(expected));
+    }
+
+    [Test]
+    public void RequestType_IsUnspecified_WhenHistoryRestoreRequestIsFalse()
+    {
+        var headers = CreateHeaders((HtmxRequestHeaderNames.HistoryRestoreRequest, "false"));
+        Assert.That(headers.RequestType, Is.EqualTo(HtmxRequestType.Unspecified));
+    }
+
     [Test]
     public void Source_ReturnsHeaderValue()
     {

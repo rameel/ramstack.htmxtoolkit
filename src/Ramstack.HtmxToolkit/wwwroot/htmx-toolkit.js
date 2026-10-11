@@ -1,8 +1,16 @@
 document._r_htmx ||= ((document, htmx) => {
     const warn = message => console.warn(`ramstack.htmxtoolkit: ${message}`);
+    const htmx_major = parseInt(htmx.version);
+
+    // The internal API of HTMX 1.x and 2.x. HTMX passes it to init when the extension is defined,
+    // whether or not any element enables the extension with hx-ext.
+    let api;
 
     if (htmx.defineExtension) {
         htmx.defineExtension("ramstack-morph", {
+            init(internal_api) {
+                api = internal_api;
+            },
             isInlineSwap(swap_style) {
                 return swap_style === "outerMorph" || swap_style === "outerSync";
             },
@@ -122,11 +130,49 @@ document._r_htmx ||= ((document, htmx) => {
         add_antiforgery(request.method, request.headers, request.body);
     });
 
+    // HTMX reads hx-request from the element and its ancestors; the nearest value wins.
+    // Values computed with "js:" cannot be read without evaluating them, so they are skipped.
+    const no_headers = elt => {
+        let result = false;
+        api.getClosestMatch(elt, e => {
+            let value = api.getAttributeValue(e, "hx-request")?.trim();
+            if (value && !/^(js|javascript):/.test(value)) {
+                try {
+                    let { noHeaders } = JSON.parse(value[0] === "{" ? value : `{${value}}`);
+                    if (noHeaders != null) {
+                        result = !!noHeaders;
+                        return true;
+                    }
+                }
+                catch {
+                    // HTMX reports the invalid value itself.
+                }
+            }
+        });
+
+        return result;
+    };
+
+    // HTMX 4.x sends HX-Request-Type; HTMX 1.x and 2.x do not, so it is computed here
+    // the same way: "full" when the response replaces the body or is filtered with a selector.
+    // htmx:configRequest does not see the select of htmx.ajax and HX-Location requests;
+    // htmx:beforeRequest does, and its request is open but not yet sent.
+    listen("htmx:beforeRequest", e => {
+        if (htmx_major < 4) {
+            let elt = e.target;
+            let { xhr, target, select, requestConfig } = e.detail;
+
+            if (requestConfig.headers["HX-Request-Type"] == null && !no_headers(elt)) {
+                select ||= api.getClosestAttributeValue(elt, "hx-select");
+                let request_type = target === document.body || select && select !== "unset" ? "full" : "partial";
+                xhr.setRequestHeader("HX-Request-Type", request_type);
+            }
+        }
+    });
+
     // A JSON object cannot hold repeated names, so when an event name repeats, the server
     // sends all events of the header under "rs:event". Each event is prepared the way HTMX
     // prepares an HX-Trigger entry before passing it to htmx.trigger.
-    const htmx_major = parseInt(htmx.version);
-
     listen("rs:event", e => {
         let elt = e.target;
 
