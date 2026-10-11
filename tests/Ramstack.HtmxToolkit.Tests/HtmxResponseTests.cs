@@ -402,8 +402,7 @@ public class HtmxResponseTests
         context.Response.Htmx(r => r.TriggerEvent("notify", "hello"));
 
         var events = context.Response.GetHtmxHeaders().Trigger!;
-        Assert.That(events.Count, Is.EqualTo(1));
-        Assert.That(events["notify"], Is.EqualTo("\"hello\""));
+        Assert.That(events, Is.EqualTo([KeyValuePair.Create("notify", "\"hello\"")]));
     }
 
     [Test]
@@ -413,9 +412,7 @@ public class HtmxResponseTests
         context.Response.Htmx(r => r.TriggerEvent("done", HtmxTriggerTiming.AfterSettle));
 
         var events = context.Response.GetHtmxHeaders().TriggerAfterSettle!;
-
-        Assert.That(events.Count, Is.EqualTo(1));
-        Assert.That(events["done"], Is.EqualTo("{}"));
+        Assert.That(events, Is.EqualTo([KeyValuePair.Create("done", "{}")]));
     }
 
     [Test]
@@ -452,15 +449,15 @@ public class HtmxResponseTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(events["ModelChanged"], Is.EqualTo("{\"text\":\"before\"}"));
+            Assert.That(events, Is.EqualTo([KeyValuePair.Create("ModelChanged", "{\"text\":\"before\"}")]));
             Assert.That(
                 context.Response.Headers[HtmxResponseHeaderNames.Trigger].ToString(),
-                Is.EqualTo("{\"modelChanged\":{\"text\":\"before\"}}"));
+                Is.EqualTo("{\"ModelChanged\":{\"text\":\"before\"}}"));
         });
     }
 
     [Test]
-    public void TriggerEvent_NullObjectDetail_SerializesAsNull()
+    public void TriggerEvent_NullObjectDetail_SerializesAsNullValue()
     {
         var context = TestHelper.CreateHtmxRequestContext();
         context.Response.Htmx(r => r.TriggerEvent("e", null!));
@@ -469,7 +466,7 @@ public class HtmxResponseTests
 
         Assert.That(
             context.Response.Headers[HtmxResponseHeaderNames.Trigger].ToString(),
-            Is.EqualTo("{\"e\":null}"));
+            Is.EqualTo("{\"e\":{\"value\":null}}"));
     }
 
     [Test]
@@ -522,9 +519,17 @@ public class HtmxResponseTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(events.Keys, Is.EqualTo(["received", "swapped", "settled"]));
-            Assert.That(headers.TriggerAfterSwap, Is.SameAs(events));
-            Assert.That(headers.TriggerAfterSettle, Is.SameAs(events));
+            Assert.That(
+                events.Select(static e => e.Key),
+                Is.EqualTo(["received", "swapped", "settled"]));
+
+            Assert.That(
+                headers.TriggerAfterSwap,
+                Is.SameAs(events));
+
+            Assert.That(
+                headers.TriggerAfterSettle,
+                Is.SameAs(events));
         });
     }
 }
