@@ -122,9 +122,42 @@ document._r_htmx ||= ((document, htmx) => {
         add_antiforgery(request.method, request.headers, request.body);
     });
 
+    // A JSON object cannot hold repeated names, so when an event name repeats, the server
+    // sends all events of the header under "rs:event". Each event is prepared the way HTMX
+    // prepares an HX-Trigger entry before passing it to htmx.trigger.
+    const htmx_major = parseInt(htmx.version);
+
     listen("rs:event", e => {
-        for (let kvp of e.detail.value || e.detail) {
-            htmx.trigger(e.target, kvp.key, kvp.value);
+        let elt = e.target;
+
+        // HTMX 1.x and 2.x wrap the array in { value }.
+        // HTMX 4.x passes it as is.
+        for (let { key, value: detail } of e.detail.value || e.detail) {
+            let target = elt;
+
+            if (htmx_major >= 4) {
+                // HTMX 4.x passes any object, including an array, as is.
+                // "target" applies to this event only.
+                if (detail?.target) {
+                    target = htmx.find(detail.target);
+                }
+
+                if (typeof detail !== "object") {
+                    detail = { value: detail };
+                }
+            }
+            else if (Object.prototype.toString.call(detail) === "[object Object]") {
+                // HTMX 2.x applies "target" to this and all following events.
+                // HTMX 1.x ignores it.
+                if (htmx_major === 2 && detail.target !== undefined) {
+                    elt = target = detail.target;
+                }
+            }
+            else {
+                detail = { value: detail };
+            }
+
+            htmx.trigger(target, key, detail);
         }
     });
     return true;
