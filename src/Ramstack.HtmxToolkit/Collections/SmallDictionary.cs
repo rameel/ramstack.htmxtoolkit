@@ -77,7 +77,7 @@ internal sealed class SmallDictionary<TKey, TValue> : IDictionary<TKey, TValue>,
     /// <param name="comparer">The comparer to use when comparing keys.</param>
     public SmallDictionary(IComparer<TKey> comparer)
     {
-        ArgumentNullException.ThrowIfNull(comparer);
+        Argument.ThrowIfNull(comparer);
         _comparer = comparer;
     }
 
@@ -90,7 +90,7 @@ internal sealed class SmallDictionary<TKey, TValue> : IDictionary<TKey, TValue>,
     /// <param name="comparer">The comparer to use when comparing keys.</param>
     public SmallDictionary(IEnumerable<KeyValuePair<TKey, TValue>> collection, IComparer<TKey> comparer) : this(comparer)
     {
-        ArgumentNullException.ThrowIfNull(collection);
+        Argument.ThrowIfNull(collection);
 
         if (collection is Dictionary<TKey, TValue> dictionary)
         {

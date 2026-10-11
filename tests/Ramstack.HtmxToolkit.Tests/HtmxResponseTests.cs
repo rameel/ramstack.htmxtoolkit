@@ -353,7 +353,7 @@ public class HtmxResponseTests
     {
         var context = TestHelper.CreateHtmxRequestContext();
 
-        var exception = Assert.Throws<ArgumentException>(() =>
+        var exception = Assert.Catch<ArgumentException>(() =>
             context.Response.Htmx(r => r.ReplaceUrl(url!)));
 
         Assert.That(exception?.ParamName, Is.EqualTo("url"));
