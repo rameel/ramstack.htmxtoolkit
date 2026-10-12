@@ -1,3 +1,20 @@
 # API reference
 
+Find types by the task you want to perform. Each API page lists its members, accepted values, and remarks;
+the guides show how those pieces fit into an application.
+
+| Task | Main types | Guide |
+|---|---|---|
+| Detect HTMX requests and read headers | [HttpRequestExtensions](xref:Ramstack.HtmxToolkit.HttpRequestExtensions), [HtmxRequestHeaders](xref:Ramstack.HtmxToolkit.HtmxRequestHeaders) | [Requests](../articles/requests.md) |
+| Set response headers, navigation, and events | [HttpResponseExtensions](xref:Ramstack.HtmxToolkit.HttpResponseExtensions), [HtmxResponse](xref:Ramstack.HtmxToolkit.HtmxResponse), [HtmxResponseHeaders](xref:Ramstack.HtmxToolkit.HtmxResponseHeaders) | [Responses](../articles/responses.md) |
+| Set swap styles, event timing, or a follow-up request | [HtmxSwap](xref:Ramstack.HtmxToolkit.HtmxSwap), [HtmxTriggerTiming](xref:Ramstack.HtmxToolkit.HtmxTriggerTiming), [HtmxLocationOptions](xref:Ramstack.HtmxToolkit.HtmxLocationOptions) | [Response instructions](../articles/responses.md#choose-a-response-instruction) |
+| Select or configure MVC actions | [HtmxRequestAttribute](xref:Ramstack.HtmxToolkit.HtmxRequestAttribute), [HtmxResponseAttribute](xref:Ramstack.HtmxToolkit.HtmxResponseAttribute) | [MVC action selection](../articles/requests.md#select-mvc-actions-declaratively) |
+| Generate URLs in Razor | [HtmxUrlTagHelper](xref:Ramstack.HtmxToolkit.TagHelpers.HtmxUrlTagHelper) | [Request URLs](../articles/tag-helpers.md#generate-request-urls) |
+| Add values, headers, or request options | [HtmxValsTagHelper](xref:Ramstack.HtmxToolkit.TagHelpers.HtmxValsTagHelper), [HtmxHeaderTagHelper](xref:Ramstack.HtmxToolkit.TagHelpers.HtmxHeaderTagHelper), [HtmxRequestTagHelper](xref:Ramstack.HtmxToolkit.TagHelpers.HtmxRequestTagHelper) | [Tag Helpers](../articles/tag-helpers.md) |
+| Register the toolkit and render configuration | [ServiceCollectionExtensions](xref:Ramstack.HtmxToolkit.Hosting.ServiceCollectionExtensions), [HtmxToolkitOptions](xref:Ramstack.HtmxToolkit.Configuration.HtmxToolkitOptions), [HtmxConfigTagHelper](xref:Ramstack.HtmxToolkit.TagHelpers.HtmxConfigTagHelper) | [Configuration](../articles/configuration.md) |
+| Configure a specific HTMX version | [HtmxV1Config](xref:Ramstack.HtmxToolkit.Configuration.HtmxV1Config), [HtmxV2Config](xref:Ramstack.HtmxToolkit.Configuration.HtmxV2Config), [HtmxV4Config](xref:Ramstack.HtmxToolkit.Configuration.HtmxV4Config) | [Choose a version](../articles/choosing-version.md) |
+
+New to the library? Start with [Getting started](../articles/getting-started.md) for a working Razor Pages
+application, or choose the [MVC](../articles/mvc.md) or [Minimal API](../articles/minimal-apis.md) example.
+
 This reference is generated from the public API and XML documentation comments in `Ramstack.HtmxToolkit`.

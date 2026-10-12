@@ -27,6 +27,35 @@
   font-weight: 600;
 }
 
+/* DocFX renders [!IMPORTANT] with the same red "danger" style as [!CAUTION]; give it a calmer accent. */
+.alert.IMPORTANT {
+  --important-accent: #6f42c1;
+  --bs-alert-color: var(--bs-body-color);
+  --bs-alert-bg: color-mix(in srgb, var(--important-accent) 8%, var(--bs-body-bg));
+  --bs-alert-border-color: color-mix(in srgb, var(--important-accent) 30%, var(--bs-body-bg));
+}
+
+[data-bs-theme="dark"] .alert.IMPORTANT {
+  --important-accent: #a98eda;
+}
+
+.alert.IMPORTANT h5 {
+  color: var(--important-accent);
+}
+
+.alert.IMPORTANT h5:before {
+  content: "\f339";
+}
+
+/* Razor expressions (@Model.Id) from the grammar registered in main.js. */
+.hljs-razor-expr {
+  color: #795e26;
+}
+
+[data-bs-theme="dark"] .hljs-razor-expr {
+  color: #dcdcaa;
+}
+
 .docs-hero {
   margin-block: 0.5rem 2rem;
   padding: clamp(1.5rem, 4vw, 3rem);

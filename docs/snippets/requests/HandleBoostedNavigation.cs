@@ -1,4 +1,7 @@
-public IActionResult OnGetBoostedCheck() =>
-    Request.IsHtmxBoosted()
-        ? Content("Boosted HTMX request detected.")
-        : RedirectToPage();
+public IActionResult Navigation()
+{
+    if (Request.IsHtmxBoosted())
+        return PartialView("_Navigation", menu.Items);
+
+    return RedirectToAction("Index");
+}

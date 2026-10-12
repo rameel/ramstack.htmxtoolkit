@@ -32,7 +32,10 @@ Only non-null settings are written to `<meta name="htmx-config">`.
 | Requests | `WithCredentials`, `Timeout`, `SelfRequestsOnly`, `MethodsThatUseUrlParams`, `GetCacheBusterParam` |
 | Navigation and focus | `ScrollBehavior`, `DefaultFocusScroll`, `ScrollIntoViewOnBoost`, `IgnoreTitle` |
 | Transitions and parsing | `GlobalViewTransitions`, `UseTemplateFragments`, `TriggerSpecsCacheEnabled` |
-| WebSocket | `WsReconnectDelay`, `WsBinaryType` |
+| WebSocket | `WsBinaryType` |
+
+`wsReconnectDelay` is not exposed: in JSON, HTMX accepts only its default value `"full-jitter"`.
+To customize the WebSocket reconnection delay, assign a function to `htmx.config.wsReconnectDelay` in JavaScript.
 
 ## Common profiles
 
@@ -59,12 +62,12 @@ options.UseHtmxV1(config =>
 ## Morphing compatibility
 
 `HtmxSwap.InnerMorph`, `OuterMorph`, and `OuterSync` are native HTMX 4.x swap styles. For HTMX 1.9.x,
-activate the `ramstack-morph` extension supplied by the Toolkit script. `InnerMorph` and `OuterMorph` can use Idiomorph
+activate the `ramstack-swap` extension supplied by the Toolkit script. `InnerMorph` and `OuterMorph` can use Idiomorph
 when the application loads it; otherwise they fall back to ordinary HTML replacement. `TextContent` also uses
 the compatibility extension on HTMX 1.9.x.
 
 ```html
-<body hx-ext="ramstack-morph">
+<body hx-ext="ramstack-swap">
     ...
 </body>
 ```

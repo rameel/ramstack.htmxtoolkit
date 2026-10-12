@@ -24,7 +24,7 @@ builder.Services.AddHtmxToolkit(options =>
 
 Render the selected configuration once in the document head:
 
-```html
+```razor
 <head>
     <htmx-config />
 </head>

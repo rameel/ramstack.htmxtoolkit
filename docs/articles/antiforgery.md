@@ -1,7 +1,20 @@
 # Antiforgery and Toolkit script
 
-The companion Toolkit script integrates ASP.NET Core antiforgery tokens with HTMX requests and supplies compatibility swaps for older HTMX versions.
-It is not the HTMX library itself.
+The Toolkit script delivers ASP.NET Core antiforgery tokens with HTMX requests. This page explains
+how that works and what the server still has to do, and lists the script's other features.
+
+## What the Toolkit script does
+
+The Toolkit script, `htmx-toolkit.min.js`, comes with the package as a static web asset.
+It is not the HTMX library itself. Load it after HTMX on every page that uses HTMX;
+see [Static assets and deployment](static-assets.md) for the URL and caching.
+
+| Feature | HTMX versions | Without the script |
+|---|---|---|
+| Adds the antiforgery token to non-GET HTMX requests and refreshes it after boosted navigation | All | Non-GET requests without a token field fail server-side antiforgery validation, usually with HTTP 400 |
+| Sends `HX-Request-Type`; see [Check full or partial requests](requests.md#check-full-or-partial-requests) | 1.x and 2.x; HTMX 4.x sends it itself | `IsHtmxPartialRequest()` and `IsHtmxFullRequest()` return `false`, and `[HtmxRequest]` with a `RequestType` does not match |
+| Replays events whose name repeats in one response header; see [Timing and repeated events](responses.md#timing-and-repeated-events) | All | None of the events in that header fire |
+| Adds the `ramstack-swap` extension with `innerMorph`, `outerMorph`, and a simplified `outerSync`, plus `textContent` for HTMX 1.9.x; see [Morph swaps](version-compatibility.md#morph-swaps) | 1.9.x and 2.x; HTMX 4.x supports these swap styles natively | These swap styles are not available |
 
 ## How automatic antiforgery works
 
@@ -9,73 +22,59 @@ It is not the HTMX library itself.
 2. The Tag Helper writes the request token, header name, and form-field name as data attributes on `<meta name="htmx-config">`.
 3. The Toolkit script reads those attributes during page load.
 4. Before each non-GET HTMX request, the script adds the token unless the form data already contains the configured antiforgery form field.
-5. ASP.NET Core validates the token normally.
+5. The application validates the token through Razor Pages, an MVC filter, or its Minimal API validation setup.
 
 The token is sent as the configured antiforgery header when a header name is available.
 Otherwise, it is added to the request parameters under the configured form-field name.
 
 ## Configure the layout
 
-Enable static files in `Program.cs`:
+Use the registration and layout from [Getting started](getting-started.md). Render `<htmx-config />`
+in the document head and load HTMX before the Toolkit script. Both pieces are needed for automatic token delivery.
+See [Static assets and deployment](static-assets.md) for script URLs, caching, and `MapStaticAssets()`.
+
+## Enable server-side validation
+
+Sending a token and validating it are separate steps. `AddHtmxToolkit()` configures toolkit services;
+it does not add an antiforgery validation filter or middleware to your application.
+
+### Razor Pages
+
+Razor Pages validates unsafe requests by default. Keep that behavior enabled. The
+[forms tutorial](forms-and-validation.md) shows model binding, validation errors, and a successful save.
+
+### MVC
+
+Enable validation for unsafe controller actions, for example with a global filter:
 
 ```csharp
-var app = builder.Build();
+using Microsoft.AspNetCore.Mvc;
 
-app.UseStaticFiles();
-app.MapRazorPages();
+builder.Services.AddControllersWithViews(options =>
+{
+    options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
+});
 ```
 
-On ASP.NET Core 9 or later, use `MapStaticAssets()` and associate the asset collection with the page endpoints
-instead to enable build-time compression and fingerprinted URLs:
+You can instead apply `[ValidateAntiForgeryToken]` to individual POST actions, but then every relevant action
+needs that attribute. `[HtmxRequest]` only affects action selection; it does not validate a token or authorize a user.
 
-```csharp
-app.MapStaticAssets();
-app.MapRazorPages().WithStaticAssets();
-```
+### Minimal APIs
 
-For MVC, apply `.WithStaticAssets()` to the controller endpoint builder, for example:
+MVC antiforgery attributes do not protect Minimal API delegates. Register `AddAntiforgery()` and use an
+appropriate validation path for your endpoints. The [Minimal API example](minimal-apis.md) explicitly calls
+`IAntiforgery.IsRequestValidAsync()` before processing the form and returns 400 when validation fails.
 
-```csharp
-app.MapStaticAssets();
-app.MapDefaultControllerRoute().WithStaticAssets();
-```
-
-A hybrid Razor Pages and MVC application applies it to each endpoint set that renders views:
-
-```csharp
-app.MapStaticAssets();
-app.MapRazorPages().WithStaticAssets();
-app.MapControllers().WithStaticAssets();
-```
-
-`MapControllers()` covers attribute-routed controllers; with conventional or area routing, apply
-`.WithStaticAssets()` to each `MapControllerRoute` or `MapAreaControllerRoute` call.
-
-> [!NOTE]
-> ASP.NET Core reads the asset collection from the current endpoint's metadata. An endpoint without it still
-> renders a working URL: the resolver falls back to a `?v=...` version instead of a fingerprinted URL.
-
-Render configuration metadata in `<head>`, then load HTMX before the Toolkit script:
-
-```html
-<head>
-    <htmx-config />
-</head>
-<body>
-    @RenderBody()
-
-    <script src="~/js/htmx.min.js"></script>
-    <script src="~/_content/Ramstack.HtmxToolkit/htmx-toolkit.min.js" asp-append-version="true"></script>
-</body>
-```
-
-Both pieces are required for automatic antiforgery. The Tag Helper creates the token; the script attaches it to requests.
+For endpoints that bind form parameters through ASP.NET Core's built-in antiforgery support, configure
+`UseAntiforgery()` after authentication and authorization middleware when those are present. Follow the
+[ASP.NET Core antiforgery guide](https://learn.microsoft.com/aspnet/core/security/anti-request-forgery)
+for the target framework and endpoint style. Loading the Toolkit script alone does not enable server validation.
 
 ## Submit a protected form
 
-Razor Pages validates non-GET handlers by default:
+For a Razor Page with a `Save` POST handler:
 
-```html
+```razor
 <form hx-post
       hx-page="/Account/Profile"
       hx-page-handler="Save"
@@ -94,60 +93,48 @@ Razor Pages validates non-GET handlers by default:
 public IActionResult OnPostSave(string? displayName)
 {
     if (string.IsNullOrWhiteSpace(displayName))
-        return BadRequest("Display name is required.");
+        return Content("Display name is required.");
 
     return Content("Profile saved.");
 }
 ```
 
-No token input is required in this form because the layout metadata and Toolkit script supply it.
+No token input is required in this HTMX form because the layout metadata and Toolkit script supply it.
+The validation message returns 200 so HTMX 2.x displays it with its default response handling.
+For a form that also works without JavaScript, include a normal POST action and let the standard Form Tag Helper
+render a token, as shown in the [forms tutorial](forms-and-validation.md).
 
 ## Token refresh after boosted navigation
 
-When a boosted navigation returns a new full document, the Toolkit script reads antiforgery metadata from that response
-and updates the token used for later requests. Ensure the returned document contains `<htmx-config />`.
+After a boosted navigation, the Toolkit script looks for antiforgery metadata in the response. If it contains
+a nonempty request token, the script updates the saved token and associated names. A fragment without token
+metadata leaves the existing values in place.
+
+Keep `<htmx-config />` in full document layouts. After signing in, signing out, or changing identity,
+obtain a token for the new identity. A full navigation with `HX-Redirect` is a straightforward way to do that;
+see [Redirect after authentication](recipes.md#redirect-after-authentication). Keeping an old token does not refresh it.
 
 ## Static web assets and caching
 
-The NuGet package includes both script variants as ASP.NET Core static web assets:
+Script loading, versioned URLs, and deployment are covered in [Static assets and deployment](static-assets.md).
+Do not put HTML containing user-specific antiforgery tokens in a shared response cache.
+See [Caching full pages and fragments](pages-and-fragments.md#cache-full-pages-and-fragments-separately)
+when one URL can return different HTML.
 
-```text
-/_content/Ramstack.HtmxToolkit/htmx-toolkit.min.js
-/_content/Ramstack.HtmxToolkit/htmx-toolkit.js
+## Change the header or field name
+
+Configure names through ASP.NET Core's antiforgery options:
+
+```csharp
+builder.Services.AddAntiforgery(options =>
+{
+    options.HeaderName = "X-CSRF-TOKEN";
+    options.FormFieldName = "__CsrfToken";
+});
 ```
 
-Reference the minified file from the layout with an app-relative path:
-
-```html
-<script src="~/_content/Ramstack.HtmxToolkit/htmx-toolkit.min.js"
-        asp-append-version="true"></script>
-```
-
-This form requires `@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers` in `_ViewImports.cshtml`.
-ASP.NET Core resolves the `~` path and applies content-based versioning:
-
-- On ASP.NET Core 9 or later, when the current endpoint's asset collection contains the script, the framework
-  selects the fingerprinted URL, such as `htmx-toolkit.min.{fingerprint}.js`. In production, `MapStaticAssets()`
-  serves fingerprinted assets with long-lived, immutable caching and supports precompressed Gzip and Brotli
-  representations.
-- Otherwise, `asp-append-version="true"` appends a `?v=...` version computed and cached from the file content.
-  This includes ASP.NET Core 6–8 and applications using `UseStaticFiles()`.
-
-Both forms account for the application's path base. When the file changes, its versioned URL changes. Cache
-headers are managed by the application's static asset or static file configuration; adding `?v=...` does not
-itself set a cache lifetime.
-
-Static web assets work with both project references and NuGet packages. On publish, ASP.NET Core copies
-the scripts into the application's `wwwroot/_content/Ramstack.HtmxToolkit` directory.
-
-Request the readable script while diagnosing browser behavior:
-
-```html
-<script src="~/_content/Ramstack.HtmxToolkit/htmx-toolkit.js"
-        asp-append-version="true"></script>
-```
-
-If you use `defer`, apply it to both HTMX and the Toolkit script so their execution order is preserved.
+The configuration Tag Helper reads these options. You do not need to repeat the names in client-side code.
+A form field already present under the configured name takes precedence over automatic token injection.
 
 ## Disable automatic antiforgery
 
@@ -161,7 +148,7 @@ builder.Services.AddHtmxToolkit(options =>
 });
 ```
 
-The Toolkit script can still be used for morph compatibility after antiforgery metadata is disabled.
+Keep loading the Toolkit script: its [other features](#what-the-toolkit-script-does) do not depend on antiforgery metadata.
 
 ## Security considerations
 

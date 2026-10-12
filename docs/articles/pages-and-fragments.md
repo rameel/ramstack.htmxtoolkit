@@ -4,7 +4,7 @@ An HTMX application usually returns a small HTML fragment for an HTMX request an
 for normal browser navigation. Supporting both paths keeps links usable without JavaScript
 and gives history restoration a full-page fallback.
 
-## Use one URL for both representations
+## Return a full page or a fragment from the same URL
 
 An MVC action can select the result from the request:
 
@@ -13,7 +13,7 @@ public IActionResult Details(int id)
 {
     var product = catalog.Get(id);
 
-    if (Request.IsHtmxRequest(out var htmx) && !htmx.HistoryRestoreRequest)
+    if (Request.IsHtmxPartialRequest())
         return PartialView("_ProductDetails", product);
 
     return View(product);
@@ -27,17 +27,20 @@ public IActionResult OnGet(int id)
 {
     Product = catalog.Get(id);
 
-    if (Request.IsHtmxRequest(out var htmx) && !htmx.HistoryRestoreRequest)
+    if (Request.IsHtmxPartialRequest())
         return Partial("_ProductDetails", Product);
 
     return Page();
 }
 ```
 
-When HTMX marks a request with `HX-History-Restore-Request`, return the complete document it expects to restore.
-In HTMX 1.x and 2.x this commonly follows a miss in the local snapshot cache.
-HTMX 4.x normally retrieves history entries from the server rather than keeping local DOM snapshots;
-the optional `hx-history-cache` extension restores snapshot caching.
+`IsHtmxPartialRequest()` is `true` only when HTMX swaps the response into an element inside the page.
+A boosted link that replaces the `<body>`, an `hx-select` request, and a history restoration
+get the complete document. The method reads the `HX-Request-Type` header;
+see [Check full or partial requests](requests.md#check-full-or-partial-requests) for how it is computed.
+
+With HTMX 1.x and 2.x, the header comes from the Toolkit script, so load the script on every page that uses HTMX.
+Without it, the endpoints above return the full page to every request.
 
 ## Use a dedicated fragment endpoint
 
@@ -48,7 +51,7 @@ public IActionResult OnGetInventory(int productId) =>
     Partial("_Inventory", inventory.Get(productId));
 ```
 
-```html
+```razor
 <button hx-page="/Products/Details"
         hx-page-handler="Inventory"
         hx-route-productid="@Model.Product.Id"
@@ -62,7 +65,9 @@ This style works well for validation, polling, autocomplete, dialogs, and inline
 ## Avoid rendering a layout into a target
 
 If a response unexpectedly inserts navigation, `<head>`, or the whole page into a component,
-the endpoint returned `View()` or `Page()` instead of a partial. Inspect the response body in browser developer tools
+the endpoint returned `View()` or `Page()` instead of a partial. With the shared endpoint above and HTMX 1.x or 2.x,
+the usual reason is a page without the Toolkit script: the request has no `HX-Request-Type` header, so
+`IsHtmxPartialRequest()` returns `false`. Inspect the request headers and the response body in browser developer tools
 before changing `hx-target` or `hx-swap`.
 
 Keep the full page and partial view separate:
@@ -78,7 +83,7 @@ The page owns the document layout. The partial owns only the element intended fo
 
 Prefer real links and forms when there is a meaningful non-HTMX behavior:
 
-```html
+```razor
 <a asp-page="/Products/Details"
    asp-route-id="@product.Id"
    hx-boost="true"
@@ -93,7 +98,7 @@ Buttons that exist only to update a local widget can use generated `hx-*` URLs w
 
 ## MVC action selection
 
-Controllers can expose separate actions for the same route and constrain one to HTMX requests:
+Controllers can expose separate actions for the same route and let MVC choose between them:
 
 ```csharp
 [HttpGet("/products/{id:int}")]
@@ -101,13 +106,17 @@ public IActionResult Details(int id) =>
     View(catalog.Get(id));
 
 [HttpGet("/products/{id:int}")]
-[HtmxRequest]
+[HtmxRequest(RequestType = HtmxRequestType.Partial)]
 public IActionResult DetailsFragment(int id) =>
     PartialView("_ProductDetails", catalog.Get(id));
 ```
 
+HTMX requests for a fragment select `DetailsFragment`. Everything else, including boosted navigation
+and history restoration, selects `Details`.
+
 `[HtmxRequest]` participates in MVC action selection. It does not reject requests inside an already selected action
 and it does not apply to Razor Page handlers or Minimal API delegates.
+See [Select MVC actions declaratively](requests.md#select-mvc-actions-declaratively) for its options.
 
 ## Minimal APIs
 
@@ -117,11 +126,47 @@ Minimal APIs can make the same decision and return HTML explicitly:
 app.MapGet("/products/{id:int}", (int id, HttpRequest request) =>
 {
     var product = catalog.Get(id);
-    var html = render.Product(product, includeLayout: !request.IsHtmxRequest());
+    var fragment = request.IsHtmxPartialRequest();
+    var html = render.Product(product, includeLayout: !fragment);
     return Results.Content(html, "text/html");
 });
 ```
 
-HtmxToolkit detects and configures requests and responses, but it does not provide an HTML renderer for Minimal APIs.
+Here `catalog` and `render` stand for your application's data service and renderer. HtmxToolkit does not provide
+an HTML renderer. See [Minimal APIs](minimal-apis.md) for a complete example without those placeholders.
+
+## Cache full pages and fragments separately
+
+If you cache a URL that returns different HTML based on request headers, those headers must be part of the
+cache key. Otherwise a normal navigation can receive a cached fragment, or a widget can receive a cached page.
+For the shared endpoint above, append a `Vary` header before returning either result:
+
+```csharp
+Response.Headers.Append("Vary", "HX-Request, HX-History-Restore-Request, HX-Request-Type");
+```
+
+Include any other headers that change the result, such as `HX-Boosted` or `HX-Target` if your endpoint uses them.
+Appending preserves existing `Vary` values. If you generate ETags, distinguish full and partial responses too.
+See [HTMX caching](https://htmx.org/docs/#caching).
+
+ASP.NET Core output caching needs its own policy; a `Vary` response header is not a substitute for its cache-key settings.
+On ASP.NET Core 7 or later, a policy for public, cacheable HTML could include:
+
+```csharp
+builder.Services.AddOutputCache(options =>
+{
+    options.AddPolicy("HtmxHtml", policy => policy.SetVaryByHeader(
+        "HX-Request", "HX-History-Restore-Request", "HX-Request-Type"));
+});
+```
+
+Register `app.UseOutputCache()` in the request pipeline and apply the named policy with
+`[OutputCache(PolicyName = "HtmxHtml")]` in MVC or `.CacheOutput("HtmxHtml")` on a Minimal API endpoint.
+The MVC attribute is in `Microsoft.AspNetCore.OutputCaching`.
+See [ASP.NET Core output caching](https://learn.microsoft.com/aspnet/core/performance/caching/output)
+for middleware placement and cache eligibility.
+
+Do not use a shared cache for user-specific content or documents containing antiforgery tokens.
+The introductory examples leave HTML response caching disabled.
 
 Continue with [Read HTMX requests](requests.md) and [Control HTMX responses](responses.md).

@@ -1,7 +1,7 @@
 # Choose an HTMX version
 
-HtmxToolkit generates version-sensitive configuration, request options, request-header access, and compatibility behavior.
-Configure the same major HTMX version that the browser loads.
+HtmxToolkit adapts configuration, request options, and response event headers to the selected HTMX version.
+Select the same major version that the browser loads.
 
 HTMX 2.x is selected when no version is specified.
 
@@ -42,10 +42,10 @@ trying to select a different version causes startup validation to fail.
 | Global config type | `HtmxV1Config` | `HtmxV2Config` | `HtmxV4Config` |
 | Per-request attribute | `hx-request` | `hx-request` | `hx-config` |
 | Triggering element header | `HX-Trigger` | `HX-Trigger` | `HX-Source` |
-| Expected response kind | Not reported | Not reported | `HX-Request-Type` |
+| Expected response kind | `HX-Request-Type` from the Toolkit script | `HX-Request-Type` from the Toolkit script | `HX-Request-Type` |
 | Morph swap support | Toolkit compatibility extension | Toolkit compatibility extension | Native |
 
-See [Version compatibility](version-compatibility.md) for the complete application-facing differences.
+See [Version compatibility](version-compatibility.md) for the differences that affect application code.
 
 ## Configure while selecting
 
@@ -63,14 +63,15 @@ builder.Services.AddHtmxToolkit(options =>
 });
 ```
 
-Only assigned properties are emitted. A `null` property leaves the corresponding HTMX default unchanged.
+Only settings you assign a value are included in the generated configuration. A `null` property leaves the HTMX default unchanged.
 
 ## Decide which version to use
 
 For an existing application, select the version it already loads and review [Version compatibility](version-compatibility.md) before upgrading.
 
-For a new application, choose the release required by its HTMX attributes and extensions. HtmxToolkit's default is HTMX 2.x;
-choosing V4 enables the V4 request contract and its native morphing and Fetch API options.
+For a new application with no version-specific requirements, start with HTMX 2.x to follow the introductory
+tutorials without changes. It is HtmxToolkit's default target. Choose V4 when you want its native morphing
+or Fetch API options, and check that the extensions you plan to use support it.
 
 Continue with [Application configuration](configuration.md), then use the dedicated [HTMX 1.x](configuration-v1.md),
 [HTMX 2.x](configuration-v2.md), or [HTMX 4.x](configuration-v4.md) reference guide.

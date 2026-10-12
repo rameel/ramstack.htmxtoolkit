@@ -1,7 +1,11 @@
 @addTagHelper *, Ramstack.HtmxToolkit
 
-<button hx-page="/Examples/UrlTagHelper"
-        hx-page-handler="Status"
-        hx-target="#result">
-    Check service status
+<button hx-post
+        hx-page="/Orders/Edit"
+        hx-page-handler="Archive"
+        hx-route-id="@Model.OrderId"
+        hx-target="#order-status">
+    Archive
 </button>
+
+@* For order 42, renders hx-post="/Orders/Edit?id=42&amp;handler=Archive". *@
