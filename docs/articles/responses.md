@@ -205,14 +205,17 @@ The `hx-trigger` listener can still refresh a component while JavaScript handles
 ### Timing and repeated events
 
 HTMX 1.x and 2.x distinguish receive, after-swap, and after-settle response headers.
-HTMX 4.x delivers these Toolkit events through `HX-Trigger` when the request completes, after the swap when one occurs.
+HTMX 4.x delivers these Toolkit events through `HX-Trigger` when the request completes,
+after the swap and settle steps when a swap occurs.
 See [Version compatibility](version-compatibility.md#response-events).
 
-Calling `TriggerEvent` several times adds events to the same response, and the browser receives them in call order.
-A JSON header cannot hold the same name twice, so when a name repeats within one header, all events of that header
-are sent under the reserved `rs:event` name and the [Toolkit script](antiforgery.md#what-the-toolkit-script-does)
-replays them in order. Keep the script loaded when using repeated event names: without it, none of the events
-in that header are triggered. Do not use the name `rs:event`.
+Calling `TriggerEvent` several times adds events to the same response, and the browser receives the events
+of each header in call order. A JSON header cannot hold the same name twice, so when a name repeats within
+one header, all events of that header are sent under the reserved `rs:event` name and
+the [Toolkit script](antiforgery.md#what-the-toolkit-script-does) replays them in order.
+Keep the script loaded when using repeated event names: without it, none of the events
+in that header are triggered. In HTMX 4.x all timings share `HX-Trigger`, so this also applies to a name
+added with different timings. Do not use the name `rs:event`.
 
 ### Serialize details with Native AOT
 

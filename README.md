@@ -280,9 +280,9 @@ Where possible, it also smooths out the differences between versions:
   these natively, so skip the extension there.
 - **Features that HTMX 4 dropped.** Where HTMX 4 has a close equivalent, the toolkit uses it.
   For example, HTMX 4 has no `HX-Trigger-After-Swap` and `HX-Trigger-After-Settle` headers,
-  so events with these timings are sent in `HX-Trigger` and fire when the request completes.
+  so events with these timings are sent in `HX-Trigger`, which HTMX 4 handles after the swap and settle steps.
 
-Some differences can't be hidden. For example, in HTMX 4 an event can't wait for the settle step.
+Some differences can't be hidden. For example, in HTMX 4 a response event can't fire before the swap.
 
 If you aren't sure which version to pick, see [Choose an HTMX version](https://rameel.github.io/ramstack.htmxtoolkit/articles/choosing-version.html).
 For all the differences, see [Version compatibility](https://rameel.github.io/ramstack.htmxtoolkit/articles/version-compatibility.html).

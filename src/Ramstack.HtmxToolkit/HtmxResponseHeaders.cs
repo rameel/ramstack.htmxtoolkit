@@ -138,7 +138,9 @@ public readonly struct HtmxResponseHeaders
     /// <para>
     ///   HTMX 1.x and 2.x trigger these events when the response is received,
     ///   whereas HTMX 4.x triggers them when the request completes
-    ///   (after the swap whenever one is performed).
+    ///   (after the swap and settle steps whenever a swap is performed).
+    ///   In HTMX 4.x, the list also includes the events added with other timings,
+    ///   because all timings share the <c>HX-Trigger</c> header.
     /// </para>
     /// </remarks>
     public IReadOnlyList<KeyValuePair<string, string>>? Trigger => PendingEvents.TryGet(_response)?.GetEvents(HtmxTriggerTiming.Receive);
@@ -155,9 +157,9 @@ public readonly struct HtmxResponseHeaders
     ///   the property returns <see langword="null" />.
     /// </para>
     /// <para>
-    ///   In HTMX 4.x, assigned events are accumulated in <see cref="Trigger" />
-    ///   and emitted through <c>HX-Trigger</c> when the request completes
-    ///   (after the swap whenever one is performed).
+    ///   HTMX 4.x has no <c>HX-Trigger-After-Swap</c> header, so these events are accumulated
+    ///   in <see cref="Trigger" /> and emitted through <c>HX-Trigger</c> when the request completes
+    ///   (after the swap and settle steps whenever a swap is performed).
     /// </para>
     /// </remarks>
     public IReadOnlyList<KeyValuePair<string, string>>? TriggerAfterSwap => PendingEvents.TryGet(_response)?.GetEvents(HtmxTriggerTiming.AfterSwap);
@@ -174,10 +176,9 @@ public readonly struct HtmxResponseHeaders
     ///   the property returns <see langword="null" />.
     /// </para>
     /// <para>
-    ///   In HTMX 4.x, assigned events are accumulated in <see cref="Trigger" />
-    ///   and emitted through <c>HX-Trigger</c> when the request completes
-    ///   (after the swap whenever one is performed); the requested after-settle timing
-    ///   cannot be preserved.
+    ///   HTMX 4.x has no <c>HX-Trigger-After-Settle</c> header, so these events are accumulated
+    ///   in <see cref="Trigger" /> and emitted through <c>HX-Trigger</c> when the request completes
+    ///   (after the swap and settle steps whenever a swap is performed).
     /// </para>
     /// </remarks>
     public IReadOnlyList<KeyValuePair<string, string>>? TriggerAfterSettle => PendingEvents.TryGet(_response)?.GetEvents(HtmxTriggerTiming.AfterSettle);

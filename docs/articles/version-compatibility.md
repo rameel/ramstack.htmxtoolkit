@@ -74,8 +74,23 @@ Review the target version's guide rather than copying a configuration delegate u
 ## Response events
 
 HTMX 1.x and 2.x distinguish `HX-Trigger`, `HX-Trigger-After-Swap`, and `HX-Trigger-After-Settle`.
-HTMX 4.x emits Toolkit events through `HX-Trigger` when the request completes.
-An `AfterSettle` timing therefore cannot retain its separate V1/V2 timing under V4.
+HTMX 4.x has only `HX-Trigger`, so the Toolkit emits events of every `HtmxTriggerTiming` through it.
+
+| Timing | HTMX 1.x and 2.x | HTMX 4.x |
+|---|---|---|
+| `Receive` | When the response is received, before the swap | When the request completes |
+| `AfterSwap` | After the swap step, only if the response is swapped | When the request completes |
+| `AfterSettle` | After the settle step, only if the response is swapped | When the request completes |
+
+HTMX 4.x completes the request after the swap and settle steps, so `AfterSwap` and `AfterSettle` events
+still fire after the DOM is updated. Two differences remain:
+
+- `Receive` events no longer fire before the swap. To act before the swap, handle `htmx:before:swap` on the client.
+- `AfterSwap` and `AfterSettle` events also fire when the response is not swapped,
+  for example with status code 204 or an `HX-Location` header.
+
+Because all timings share one header, events fire in call order regardless of timing, and a name added
+with different timings counts as repeated. See [Timing and repeated events](responses.md#timing-and-repeated-events).
 
 ## Polling
 

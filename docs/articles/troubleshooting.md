@@ -237,8 +237,15 @@ If no method is present, the URL Tag Helper generates `hx-get`.
 ## Event timing differs after moving to HTMX 4
 
 HTMX 1.x and 2.x have separate trigger response headers for receive, after swap, and after settle.
-HTMX 4.x receives Toolkit events through `HX-Trigger` at request completion.
-Review uses of `HtmxTriggerTiming.AfterSettle` during migration.
+HTMX 4.x receives all Toolkit events through `HX-Trigger` when the request completes, after the swap and settle steps.
+During migration, review:
+
+- `HtmxTriggerTiming.Receive` events whose handlers must run before the swap.
+  Move that logic to an `htmx:before:swap` listener.
+- `AfterSwap` and `AfterSettle` events that must not fire when the response is not swapped,
+  for example with status code 204.
+
+See [Response events](version-compatibility.md#response-events).
 
 ## A response event does not refresh another component
 
