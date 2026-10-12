@@ -14,7 +14,7 @@
     <RepositoryUrl>https://github.com/rameel/ramstack.htmxtoolkit</RepositoryUrl>
     <Authors>Rameel</Authors>
     <PackageTags>htmx;aspnetcore</PackageTags>
-    <PackageProjectUrl>https://github.com/rameel/ramstack.htmxtoolkit#readme</PackageProjectUrl>
+    <PackageProjectUrl>https://rameel.github.io/ramstack.htmxtoolkit/</PackageProjectUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageIcon>Icon.png</PackageIcon>
