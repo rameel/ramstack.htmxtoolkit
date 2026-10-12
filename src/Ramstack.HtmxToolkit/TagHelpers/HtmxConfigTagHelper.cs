@@ -12,7 +12,12 @@ namespace Ramstack.HtmxToolkit.TagHelpers;
 /// Renders the application-wide HTMX configuration as a <c>&lt;meta&gt;</c> element.
 /// </summary>
 /// <param name="antiforgery">The service used to generate antiforgery tokens.</param>
-/// <param name="options">The configured HTMX Toolkit options.</param>
+/// <param name="options">The configured HtmxToolkit options.</param>
+/// <remarks>
+/// When <see cref="HtmxToolkitOptions.IncludeAntiforgeryToken" /> is <see langword="true" />,
+/// the element also includes the antiforgery metadata that the Toolkit script uses
+/// to send the token with HTMX requests.
+/// </remarks>
 [HtmlTargetElement("meta", Attributes = "htmx-config", TagStructure = TagStructure.WithoutEndTag)]
 [HtmlTargetElement("htmx-config", TagStructure = TagStructure.NormalOrSelfClosing)]
 public sealed class HtmxConfigTagHelper(IAntiforgery antiforgery, IOptions<HtmxToolkitOptions> options) : TagHelper

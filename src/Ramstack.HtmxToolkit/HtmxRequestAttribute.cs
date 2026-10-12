@@ -21,7 +21,7 @@ public sealed class HtmxRequestAttribute : Attribute, IActionConstraint
     /// </para>
     /// <para>
     ///   HTMX 1.x and 2.x send the <c>HX-Request-Type</c> header only when the page includes
-    ///   the companion script <c>htmx-toolkit.js</c>.
+    ///   the Toolkit script.
     ///   When <see cref="BoostedFilter" /> is also set, both conditions must be satisfied.
     /// </para>
     /// </remarks>

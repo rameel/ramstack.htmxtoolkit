@@ -51,14 +51,16 @@ internal readonly struct HtmxLocationOptionsJsonView(string path, HtmxLocationOp
     public string? SelectOob => options.SelectOob;
 
     /// <summary>
-    /// Gets the URL to push, or the string that disables pushing.
+    /// Gets the URL to push, <c>"true"</c> to push the URL of the loaded page,
+    /// or <c>"false"</c> to disable pushing.
     /// </summary>
     public string Push => options.HistoryAction == HtmxHistoryAction.Push
         ? options.HistoryUrl ?? "true"
         : "false";
 
     /// <summary>
-    /// Gets the URL to replace, or the string that disables replacement.
+    /// Gets the replacement URL, <c>"true"</c> to use the URL of the loaded page,
+    /// or <c>"false"</c> to disable replacement.
     /// </summary>
     public string Replace => options.HistoryAction == HtmxHistoryAction.Replace
         ? options.HistoryUrl ?? "true"

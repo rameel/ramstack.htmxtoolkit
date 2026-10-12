@@ -232,7 +232,7 @@ public readonly struct HtmxResponse
     ///   Events of one header are triggered in the order they are added. If an event name is added
     ///   more than once for the same header, all events of that header are replayed by the Toolkit script,
     ///   which must be loaded for any of them to be triggered. In HTMX 4.x, this also applies
-    ///   to a name added with different timings.
+    ///   to a name added with different timings. The name <c>rs:event</c> is reserved for this replay.
     /// </para>
     /// </remarks>
     public HtmxResponse TriggerEvent(string eventName, HtmxTriggerTiming timing = HtmxTriggerTiming.Receive) =>
@@ -242,6 +242,12 @@ public readonly struct HtmxResponse
     /// Adds a client-side event and its detail to the response header selected by
     /// <paramref name="timing" />.
     /// </summary>
+    /// <param name="eventName">The event name to trigger.</param>
+    /// <param name="detail">The event detail.</param>
+    /// <param name="timing">The event timing. Defaults to <see cref="HtmxTriggerTiming.Receive" />.</param>
+    /// <returns>
+    /// The current <see cref="HtmxResponse" /> instance.
+    /// </returns>
     /// <remarks>
     /// <para>
     ///   HTMX 4.x has only the <c>HX-Trigger</c> header, so every <see cref="HtmxTriggerTiming" /> value
@@ -253,15 +259,9 @@ public readonly struct HtmxResponse
     ///   Events of one header are triggered in the order they are added. If an event name is added
     ///   more than once for the same header, all events of that header are replayed by the Toolkit script,
     ///   which must be loaded for any of them to be triggered. In HTMX 4.x, this also applies
-    ///   to a name added with different timings.
+    ///   to a name added with different timings. The name <c>rs:event</c> is reserved for this replay.
     /// </para>
     /// </remarks>
-    /// <param name="eventName">The event name to trigger.</param>
-    /// <param name="detail">The event detail.</param>
-    /// <param name="timing">The event timing. Defaults to <see cref="HtmxTriggerTiming.Receive" />.</param>
-    /// <returns>
-    /// The current <see cref="HtmxResponse" /> instance.
-    /// </returns>
     [RequiresDynamicCode("Event details are serialized using reflection. Use the TriggerEvent overload that accepts JsonTypeInfo<T> for Native AOT applications.")]
     [RequiresUnreferencedCode("Event details are serialized using reflection. Use the TriggerEvent overload that accepts JsonTypeInfo<T> for trimmed applications.")]
     public HtmxResponse TriggerEvent(string eventName, object detail, HtmxTriggerTiming timing = HtmxTriggerTiming.Receive)
@@ -295,7 +295,7 @@ public readonly struct HtmxResponse
     ///   Events of one header are triggered in the order they are added. If an event name is added
     ///   more than once for the same header, all events of that header are replayed by the Toolkit script,
     ///   which must be loaded for any of them to be triggered. In HTMX 4.x, this also applies
-    ///   to a name added with different timings.
+    ///   to a name added with different timings. The name <c>rs:event</c> is reserved for this replay.
     /// </para>
     /// </remarks>
     public HtmxResponse TriggerEvent<T>(string eventName, T detail, JsonTypeInfo<T> jsonTypeInfo, HtmxTriggerTiming timing = HtmxTriggerTiming.Receive) =>

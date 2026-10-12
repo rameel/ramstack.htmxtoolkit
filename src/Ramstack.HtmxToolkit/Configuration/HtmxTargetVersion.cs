@@ -1,7 +1,7 @@
 namespace Ramstack.HtmxToolkit.Configuration;
 
 /// <summary>
-/// Specifies the HTMX major version targeted by generated markup.
+/// Specifies the HTMX major version targeted by generated markup and response headers.
 /// </summary>
 public enum HtmxTargetVersion
 {

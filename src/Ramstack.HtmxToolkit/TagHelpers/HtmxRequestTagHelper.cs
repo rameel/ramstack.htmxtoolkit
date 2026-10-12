@@ -108,6 +108,7 @@ public sealed class HtmxRequestTagHelper(IOptions<HtmxToolkitOptions> options) :
     /// <remarks>
     /// <para>Supported in HTMX 1.x and 2.x. Removed in HTMX 4.x.</para>
     /// <para>Headers added by the browser are unaffected.</para>
+    /// <para>The Toolkit script also omits the <c>HX-Request-Type</c> header.</para>
     /// </remarks>
     [HtmlAttributeName(RequestNoHeadersAttributeName)]
     public bool? NoHeaders

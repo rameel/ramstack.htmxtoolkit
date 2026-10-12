@@ -32,9 +32,9 @@ Keep formatting changes limited to the code you're working on.
 
 ## Working on scripts and documentation
 
-### Companion script
+### Toolkit script
 
-Install Node.js and pnpm when working on the companion script.
+Install Node.js and pnpm when working on the Toolkit script.
 
 Edit `src/Ramstack.HtmxToolkit/wwwroot/htmx-toolkit.js`, then rebuild the script assets:
 
@@ -111,7 +111,7 @@ Put ticket references and implementation details in the message body when needed
 | `tag-helpers` | Razor Tag Helpers                                                                         |
 | `config`      | Application, version-specific, and antiforgery configuration                              |
 | `hosting`     | Endpoint mapping, dependency registration, and server-side asset delivery                 |
-| `script`      | Browser-side companion script behavior that does not belong to another product area       |
+| `script`      | Browser-side Toolkit script behavior that does not belong to another product area         |
 | `internals`   | Shared collection, serialization, debugging, and compatibility code                       |
 | `docs`        | Documentation covering multiple product areas and DocFX tooling                           |
 | `demo`        | Demo-only application structure and presentation                                          |
@@ -131,7 +131,7 @@ use the first rule that applies:
 
 1. **It changes behavior or public API.** Use the scope of the area where the change is visible,
    even if the implementation spans other areas. Antiforgery behavior belongs to `config`, even when
-   its implementation spans Tag Helpers and the companion script. If several areas change, use the one
+   its implementation spans Tag Helpers and the Toolkit script. If several areas change, use the one
    whose documentation describes the change.
 2. **It introduces or updates one thing that the rest of the commit adopts.** Use the scope of that thing:
    `internals: validate arguments with the Argument helper`,

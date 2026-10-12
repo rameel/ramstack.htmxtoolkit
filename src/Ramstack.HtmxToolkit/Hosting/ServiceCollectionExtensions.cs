@@ -5,15 +5,15 @@ using Ramstack.HtmxToolkit.Configuration;
 namespace Ramstack.HtmxToolkit.Hosting;
 
 /// <summary>
-/// Provides HTMX Toolkit service registration for an <see cref="IServiceCollection" />.
+/// Provides HtmxToolkit service registration for an <see cref="IServiceCollection" />.
 /// </summary>
 public static class ServiceCollectionExtensions
 {
     /// <summary>
-    /// Registers and configures HTMX Toolkit services.
+    /// Registers and configures HtmxToolkit services.
     /// </summary>
     /// <param name="services">The service collection.</param>
-    /// <param name="configure">An optional delegate used to configure HTMX Toolkit.</param>
+    /// <param name="configure">An optional delegate used to configure HtmxToolkit.</param>
     /// <returns>
     /// The same <paramref name="services" /> collection.
     /// </returns>

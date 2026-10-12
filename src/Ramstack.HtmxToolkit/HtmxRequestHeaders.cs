@@ -81,7 +81,7 @@ public readonly struct HtmxRequestHeaders
     /// <para>
     ///   The value is <c>"partial"</c> for targeted swaps and <c>"full"</c> for body-level
     ///   or <c>hx-select</c> requests. HTMX 4.x sends the header itself; for HTMX 1.x and 2.x,
-    ///   the companion script <c>htmx-toolkit.js</c> adds it.
+    ///   the Toolkit script adds it.
     /// </para>
     /// <para>
     ///   A history restoration request without the header is reported as

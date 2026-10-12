@@ -38,8 +38,8 @@ public sealed class HtmxValsTagHelper(IOptions<HtmxToolkitOptions> options) : Ta
     /// Gets or sets a value indicating whether <c>hx-vals</c> is explicitly inherited.
     /// </summary>
     /// <remarks>
-    /// HTMX 1.x and 2.x merge-inherit values without a modifier.
-    /// HTMX 4.x emits the <c>inherited</c> modifier when this property is <see langword="true" />.
+    /// <para>HTMX 1.x and 2.x merge-inherit values without a modifier.</para>
+    /// <para>HTMX 4.x emits the <c>inherited</c> modifier when this property is <see langword="true" />.</para>
     /// </remarks>
     [HtmlAttributeName(InheritedAttributeName)]
     public bool Inherited { get; set; }

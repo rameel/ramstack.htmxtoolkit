@@ -4,7 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace Ramstack.HtmxToolkit.Configuration;
 
 /// <summary>
-/// Represents configuration options for services provided by HTMX Toolkit.
+/// Represents configuration options for services provided by HtmxToolkit.
 /// </summary>
 public sealed class HtmxToolkitOptions
 {
@@ -35,8 +35,12 @@ public sealed class HtmxToolkitOptions
     public bool IncludeAntiforgeryToken { get; set; } = true;
 
     /// <summary>
-    /// Gets the HTMX major version used for version-sensitive generated markup.
+    /// Gets the HTMX major version used for version-sensitive generated markup and response headers.
     /// </summary>
+    /// <remarks>
+    /// For example, with HTMX 4.x, <see cref="HtmxResponse.TriggerEvent(string, HtmxTriggerTiming)" />
+    /// emits events of every <see cref="HtmxTriggerTiming" /> through the <c>HX-Trigger</c> header.
+    /// </remarks>
     public HtmxTargetVersion TargetVersion => HtmxConfig.TargetVersion;
 
     /// <summary>

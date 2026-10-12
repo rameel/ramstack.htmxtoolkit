@@ -277,6 +277,7 @@ htmx.Reswap = HtmxSwap.OuterHtml;
 Unlike `Response.Htmx(...)`, direct header access is not conditional: the caller decides whether the headers should be written.
 The properties can also be read, for example by a filter that sets a default `Retarget` only when the action
 has not chosen one.
+Assigning `null` or an empty string to a string property, such as `Retarget`, removes its header.
 
 `HtmxResponseHeaderNames` exposes header-name constants for lower-level integrations.
 
