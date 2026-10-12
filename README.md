@@ -2,7 +2,7 @@
 
 [![NuGet](https://img.shields.io/nuget/v/Ramstack.HtmxToolkit.svg)](https://www.nuget.org/packages/Ramstack.HtmxToolkit/)
 [![Build](https://github.com/rameel/ramstack.htmxtoolkit/actions/workflows/test.yml/badge.svg)](https://github.com/rameel/ramstack.htmxtoolkit/actions/workflows/test.yml)
-[![License: MIT](https://img.shields.io/github/license/rameel/ramstack.htmxtoolkit)](LICENSE)
+[![License: MIT](https://img.shields.io/github/license/rameel/ramstack.htmxtoolkit)](https://github.com/rameel/ramstack.htmxtoolkit/blob/main/LICENSE)
 
 HtmxToolkit helps you build [HTMX](https://htmx.org/) applications with ASP.NET Core.
 
@@ -68,7 +68,7 @@ with the package. It adds the token to HTMX requests and, with HTMX 1.x and 2.x,
 whether a request expects a fragment or a full page (see [Handling requests](#handling-requests)).
 The script is served like any other static file, so make sure the application calls `UseStaticFiles()`
 or `MapStaticAssets()`.
-See [Static assets](docs/articles/static-assets.md) for details.
+See [Static assets](https://rameel.github.io/ramstack.htmxtoolkit/articles/static-assets.html) for details.
 
 **5. Send your first request.** In a view, describe where the request goes in ASP.NET Core terms:
 
@@ -97,8 +97,8 @@ public IActionResult List(string category)
 
 Click the button, and the list appears in `#results` without a page reload.
 
-For a step-by-step tutorial, see [Getting started](docs/articles/getting-started.md).
-If you use Minimal APIs, see [Minimal API setup](docs/articles/minimal-apis.md).
+For a step-by-step tutorial, see [Getting started](https://rameel.github.io/ramstack.htmxtoolkit/articles/getting-started.html).
+If you use Minimal APIs, see [Minimal API setup](https://rameel.github.io/ramstack.htmxtoolkit/articles/minimal-apis.html).
 
 ## Handling requests
 
@@ -121,7 +121,7 @@ or goes through `hx-select`. A history restore always counts as a full page.
 HTMX 4 sends this header itself. HTMX 1.x and 2.x don't, so the Toolkit script adds it the same way.
 That's why the example above works with every supported version, as long as the script is on the page.
 If you cache such responses, add a `Vary` header so that the page and the fragment are cached separately.
-See [Full pages and fragments](docs/articles/pages-and-fragments.md).
+See [Full pages and fragments](https://rameel.github.io/ramstack.htmxtoolkit/articles/pages-and-fragments.html).
 
 To read other HTMX headers, use `IsHtmxRequest`. It gives you the headers as typed properties:
 
@@ -147,7 +147,7 @@ public IActionResult ProfileFragment() => PartialView("_Profile");
 
 HTMX requests for a fragment go to `ProfileFragment`. Everything else, including direct visits
 and boosted navigation, goes to `Profile`. The attribute can also filter by boosted navigation.
-See [Read HTMX requests](docs/articles/requests.md) for all headers and `[HtmxRequest]` options.
+See [Read HTMX requests](https://rameel.github.io/ramstack.htmxtoolkit/articles/requests.html) for all headers and `[HtmxRequest]` options.
 
 ## Controlling responses
 
@@ -172,7 +172,7 @@ In MVC controllers, common headers can also be set with an attribute:
 public IActionResult LoadMore() => PartialView("_MoreResults");
 ```
 
-See [Control HTMX responses](docs/articles/responses.md) for all options,
+See [Control HTMX responses](https://rameel.github.io/ramstack.htmxtoolkit/articles/responses.html) for all options,
 including Native AOT support and overloads that avoid closures in hot paths.
 
 ## Tag Helpers
@@ -209,7 +209,7 @@ Other Tag Helpers build HTMX attributes that otherwise need hand-written JSON:
 | `hx-request-*` | `hx-request` (HTMX 1.x, 2.x) or `hx-config` (HTMX 4), request options such as a timeout |
 
 The toolkit builds and escapes the JSON for you.
-See [Tag Helpers](docs/articles/tag-helpers.md) for the full list of attributes.
+See [Tag Helpers](https://rameel.github.io/ramstack.htmxtoolkit/articles/tag-helpers.html) for the full list of attributes.
 
 ## Configuration
 
@@ -230,7 +230,7 @@ Use `UseHtmxV1`, `UseHtmxV2`, or `UseHtmxV4`, depending on the version you use.
 Each version has its own set of options. `<htmx-config />` renders only the options you set,
 so everything else keeps the HTMX defaults.
 
-See [Application configuration](docs/articles/configuration.md) for the available settings.
+See [Application configuration](https://rameel.github.io/ramstack.htmxtoolkit/articles/configuration.html) for the available settings.
 
 ## Antiforgery
 
@@ -248,7 +248,7 @@ builder.Services.AddControllersWithViews(options =>
 ```
 
 If antiforgery is handled some other way, turn the feature off with `options.IncludeAntiforgeryToken = false`.
-See [Antiforgery](docs/articles/antiforgery.md) for more.
+See [Antiforgery](https://rameel.github.io/ramstack.htmxtoolkit/articles/antiforgery.html) for more.
 
 ## HTMX versions
 
@@ -283,12 +283,12 @@ Where possible, it also smooths out the differences between versions:
 
 Some differences can't be hidden. For example, in HTMX 4 an event can't wait for the settle step.
 
-If you aren't sure which version to pick, see [Choose an HTMX version](docs/articles/choosing-version.md).
-For all the differences, see [Version compatibility](docs/articles/version-compatibility.md).
+If you aren't sure which version to pick, see [Choose an HTMX version](https://rameel.github.io/ramstack.htmxtoolkit/articles/choosing-version.html).
+For all the differences, see [Version compatibility](https://rameel.github.io/ramstack.htmxtoolkit/articles/version-compatibility.html).
 
 ## Demo
 
-The [demo application](samples/Ramstack.HtmxToolkit.Demo) shows the toolkit in action: requests and responses,
+The [demo application](https://github.com/rameel/ramstack.htmxtoolkit/tree/main/samples/Ramstack.HtmxToolkit.Demo) shows the toolkit in action: requests and responses,
 MVC attributes, Tag Helpers, polling, boosted navigation, and antiforgery. It uses HTMX 4 and needs the .NET 10 SDK.
 Run it from the repository root:
 
@@ -300,13 +300,13 @@ Then open <https://localhost:5001>.
 
 ## Documentation
 
-The [guides](docs/articles/index.md) cover everything from a first tutorial to recipes and troubleshooting.
+The [guides](https://rameel.github.io/ramstack.htmxtoolkit/articles/index.html) cover everything from a first tutorial to recipes and troubleshooting.
 
 ## Contributing
 
-Bug reports and pull requests are welcome. See [Contributing](CONTRIBUTING.md) to learn how to build the project
+Bug reports and pull requests are welcome. See [Contributing](https://github.com/rameel/ramstack.htmxtoolkit/blob/main/CONTRIBUTING.md) to learn how to build the project
 and run the tests.
 
 ## License
 
-HtmxToolkit is available under the [MIT License](LICENSE).
+HtmxToolkit is available under the [MIT License](https://github.com/rameel/ramstack.htmxtoolkit/blob/main/LICENSE).
