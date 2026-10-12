@@ -7,7 +7,7 @@ document._r_htmx ||= ((document, htmx) => {
     let api;
 
     if (htmx.defineExtension) {
-        htmx.defineExtension("ramstack-morph", {
+        htmx.defineExtension("ramstack-swap", {
             init(internal_api) {
                 api = internal_api;
             },
