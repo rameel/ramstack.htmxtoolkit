@@ -19,7 +19,7 @@ public enum HtmxHistoryAction
     Replace,
 
     /// <summary>
-    /// Requests that the browser history is not updated.
+    /// Requests that the browser history not be updated.
     /// </summary>
     /// <remarks>
     /// Supported in HTMX 2.0.8 and later 2.x releases, and in HTMX 4.x.

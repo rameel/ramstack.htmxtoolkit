@@ -53,8 +53,8 @@ public enum HtmxSwap
     ///   Supported natively by HTMX 4.x.
     /// </para>
     /// <para>
-    ///   With HTMX 1.9.x or 2.x, activate the <c>ramstack-swap</c> extension
-    ///   to fall back to attribute synchronization and <see cref="InnerHtml" />.
+    ///   With HTMX 1.9.x or 2.x, activate the <c>ramstack-swap</c> extension,
+    ///   which falls back to attribute synchronization and <see cref="InnerHtml" />.
     /// </para>
     /// </remarks>
     OuterSync,

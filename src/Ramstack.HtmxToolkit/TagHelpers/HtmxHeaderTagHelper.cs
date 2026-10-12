@@ -20,7 +20,7 @@ namespace Ramstack.HtmxToolkit.TagHelpers;
 ///     HTMX 4.x requires either the explicit inheritance modifier or the global
 ///     <see cref="HtmxV4Config.ImplicitInheritance" /> option for inheritance.
 ///   </item>
-///   <item>The <c>append</c> modifier merges a child declaration into inherited headers.</item>
+///   <item>In HTMX 4.x, the <c>append</c> modifier merges a child declaration into inherited headers.</item>
 /// </list>
 /// </remarks>
 [HtmlTargetElement(Attributes = InheritedAttributeName)]
@@ -38,8 +38,14 @@ public sealed class HtmxHeaderTagHelper(IOptions<HtmxToolkitOptions> options) : 
     /// Gets or sets a value indicating whether <c>hx-headers</c> is explicitly inherited.
     /// </summary>
     /// <remarks>
-    /// <para>HTMX 1.x and 2.x merge-inherit headers without a modifier.</para>
-    /// <para>HTMX 4.x emits the <c>inherited</c> modifier when this property is <see langword="true" />.</para>
+    /// <para>
+    ///   HTMX 1.x and 2.x merge-inherit headers without a modifier,
+    ///   so the property does not change the generated attribute name for them.
+    /// </para>
+    /// <para>
+    ///   For HTMX 4.x, the tag helper emits the <c>inherited</c> modifier
+    ///   when this property is <see langword="true" />.
+    /// </para>
     /// </remarks>
     [HtmlAttributeName(InheritedAttributeName)]
     public bool Inherited { get; set; }
@@ -48,7 +54,7 @@ public sealed class HtmxHeaderTagHelper(IOptions<HtmxToolkitOptions> options) : 
     /// Gets or sets a value indicating whether <c>hx-headers</c> is appended to inherited headers.
     /// </summary>
     /// <remarks>
-    /// HTMX 4.x emits the <c>append</c> modifier when this property is <see langword="true" />.
+    /// For HTMX 4.x, the tag helper emits the <c>append</c> modifier when this property is <see langword="true" />.
     /// The property does not change the generated attribute name for HTMX 1.x and 2.x.
     /// </remarks>
     [HtmlAttributeName(AppendAttributeName)]

@@ -6,7 +6,7 @@ namespace Ramstack.HtmxToolkit.Configuration;
 public enum HtmxHistoryMode
 {
     /// <summary>
-    /// Enables HTMX history handling.
+    /// Enables HTMX history support.
     /// </summary>
     /// <remarks>
     /// In HTMX 4.x, history navigation requests the URL from the server and swaps

@@ -170,8 +170,8 @@ public readonly struct HtmxResponseHeaders
     /// <para>
     ///   HTMX 4.x has no <c>HX-Trigger-After-Swap</c> header, so these events are emitted through
     ///   <c>HX-Trigger</c> when the request completes (after the swap and settle steps whenever
-    ///   a swap is performed). The property then returns the same list as <see cref="Trigger" />,
-    ///   which includes the events added with every timing.
+    ///   a swap is performed). The property therefore returns the same list as <see cref="Trigger" />,
+    ///   including the events added with other timings.
     /// </para>
     /// </remarks>
     public IReadOnlyList<KeyValuePair<string, string>>? TriggerAfterSwap => PendingEvents.TryGet(_response)?.GetEvents(HtmxTriggerTiming.AfterSwap);
@@ -190,8 +190,8 @@ public readonly struct HtmxResponseHeaders
     /// <para>
     ///   HTMX 4.x has no <c>HX-Trigger-After-Settle</c> header, so these events are emitted through
     ///   <c>HX-Trigger</c> when the request completes (after the swap and settle steps whenever
-    ///   a swap is performed). The property then returns the same list as <see cref="Trigger" />,
-    ///   which includes the events added with every timing.
+    ///   a swap is performed). The property therefore returns the same list as <see cref="Trigger" />,
+    ///   including the events added with other timings.
     /// </para>
     /// </remarks>
     public IReadOnlyList<KeyValuePair<string, string>>? TriggerAfterSettle => PendingEvents.TryGet(_response)?.GetEvents(HtmxTriggerTiming.AfterSettle);

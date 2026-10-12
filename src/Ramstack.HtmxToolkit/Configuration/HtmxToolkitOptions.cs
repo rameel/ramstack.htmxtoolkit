@@ -14,7 +14,10 @@ public sealed class HtmxToolkitOptions
     /// Gets the configuration for the selected HTMX major version.
     /// </summary>
     /// <remarks>
-    /// If no version has been explicitly configured, this property defaults to HTMX 2.x.
+    /// If no version has been selected, reading this property selects HTMX 2.x.
+    /// A later call to <see cref="UseHtmxV1" /> or <see cref="UseHtmxV4" /> then throws
+    /// <see cref="InvalidOperationException" />. Reading <see cref="TargetVersion" />
+    /// or calling <see cref="GetHtmxConfig{TConfig}" /> has the same effect.
     /// </remarks>
     public HtmxConfig HtmxConfig
     {
@@ -39,7 +42,7 @@ public sealed class HtmxToolkitOptions
     /// </summary>
     /// <remarks>
     /// For example, with HTMX 4.x, <see cref="HtmxResponse.TriggerEvent(string, HtmxTriggerTiming)" />
-    /// emits events of every <see cref="HtmxTriggerTiming" /> through the <c>HX-Trigger</c> header.
+    /// emits events with any <see cref="HtmxTriggerTiming" /> value through the <c>HX-Trigger</c> header.
     /// </remarks>
     public HtmxTargetVersion TargetVersion => HtmxConfig.TargetVersion;
 

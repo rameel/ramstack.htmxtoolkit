@@ -225,7 +225,7 @@ public sealed class HtmxV2Config() : HtmxConfig(HtmxTargetVersion.V2)
     }
 
     /// <summary>
-    /// Gets or sets the request timeout, in milliseconds.
+    /// Gets or sets the request timeout in milliseconds.
     /// The HTMX default is <c>0</c>.
     /// </summary>
     public int? Timeout

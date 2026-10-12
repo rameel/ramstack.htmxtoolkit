@@ -48,8 +48,14 @@ public sealed class HtmxRequestTagHelper(IOptions<HtmxToolkitOptions> options) :
     /// Gets or sets a value indicating whether the generated attribute is explicitly inherited.
     /// </summary>
     /// <remarks>
-    /// <para>HTMX 1.x and 2.x merge-inherit request configuration without a modifier.</para>
-    /// <para>HTMX 4.x emits the <c>inherited</c> modifier when this property is <see langword="true" />.</para>
+    /// <para>
+    ///   HTMX 1.x and 2.x merge-inherit request configuration without a modifier,
+    ///   so the property does not change the generated attribute name for them.
+    /// </para>
+    /// <para>
+    ///   For HTMX 4.x, the tag helper emits the <c>inherited</c> modifier
+    ///   when this property is <see langword="true" />.
+    /// </para>
     /// </remarks>
     [HtmlAttributeName(RequestInheritedAttributeName)]
     public bool Inherited { get; set; }
@@ -58,7 +64,7 @@ public sealed class HtmxRequestTagHelper(IOptions<HtmxToolkitOptions> options) :
     /// Gets or sets a value indicating whether the generated attribute is appended to inherited configuration.
     /// </summary>
     /// <remarks>
-    /// HTMX 4.x emits the <c>append</c> modifier when this property is <see langword="true" />.
+    /// For HTMX 4.x, the tag helper emits the <c>append</c> modifier when this property is <see langword="true" />.
     /// The property does not change the generated attribute name for HTMX 1.x and 2.x.
     /// </remarks>
     [HtmlAttributeName(RequestAppendAttributeName)]

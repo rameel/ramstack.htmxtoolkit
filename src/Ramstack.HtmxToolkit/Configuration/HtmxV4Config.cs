@@ -59,7 +59,7 @@ public sealed class HtmxV4Config() : HtmxConfig(HtmxTargetVersion.V4)
     /// </summary>
     /// <remarks>
     /// Processed <c>&lt;hx-partial&gt;</c> elements suppress an empty main swap regardless
-    /// of this setting. The <c>swapEmpty</c> modifier on <c>hx-swap</c> overrides either default.
+    /// of this setting. The <c>swapEmpty</c> modifier on <c>hx-swap</c> takes precedence in both cases.
     /// Nonempty main content is still swapped, and the <see cref="HtmxSwap.Delete" /> swap style always runs.
     /// </remarks>
     [JsonPropertyName("allowEmptySwapAfterOOB")]
@@ -167,8 +167,8 @@ public sealed class HtmxV4Config() : HtmxConfig(HtmxTargetVersion.V4)
 
     /// <summary>
     /// Gets or sets a value indicating whether the focused element should be scrolled into view.
-    /// The HTMX default is <see langword="false" /> and can be overridden
-    /// using the <c>focus-scroll</c> swap modifier.
+    /// The HTMX default is <see langword="false" />.
+    /// The <c>focus-scroll</c> swap modifier overrides this setting.
     /// </summary>
     public bool? DefaultFocusScroll
     {

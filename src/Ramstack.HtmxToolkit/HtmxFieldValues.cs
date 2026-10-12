@@ -69,9 +69,9 @@ public readonly struct HtmxFieldValues : IReadOnlyList<string>
     /// <summary>
     /// Initializes a new instance of the <see cref="HtmxFieldValues" /> structure with the specified values.
     /// </summary>
-    /// <remarks>The specified array is stored directly and is not copied.</remarks>
     /// <param name="values">The values to store, or <see langword="null" />
     /// to represent no values.</param>
+    /// <remarks>The specified array is stored directly and is not copied.</remarks>
     public HtmxFieldValues(string[]? values) =>
         _values = values;
 
@@ -148,14 +148,14 @@ public readonly struct HtmxFieldValues : IReadOnlyList<string>
     /// <summary>
     /// Copies the specified read-only span to a new array.
     /// </summary>
-    /// <remarks>
-    /// This non-inlined wrapper keeps the implementation of <see cref="ReadOnlySpan{T}.ToArray" />
-    /// out of <see cref="Create" /> to limit native code growth at its call sites.
-    /// </remarks>
     /// <param name="s">The values to copy.</param>
     /// <returns>
     /// A new array containing the specified values.
     /// </returns>
+    /// <remarks>
+    /// This non-inlined wrapper keeps the implementation of <see cref="ReadOnlySpan{T}.ToArray" />
+    /// out of <see cref="Create" /> to limit native code growth at its call sites.
+    /// </remarks>
     [MethodImpl(MethodImplOptions.NoInlining)]
     private static string[] CreateArray(ReadOnlySpan<string> s) =>
         s.ToArray();

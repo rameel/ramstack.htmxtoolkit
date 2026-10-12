@@ -146,14 +146,14 @@ internal sealed class PendingEvents
     /// Serializes the specified events into a response header
     /// when the collection is not <see langword="null" />.
     /// </summary>
+    /// <param name="name">The response header name.</param>
+    /// <param name="events">The events to serialize.</param>
+    /// <param name="buffer">The buffer that receives the serialized header value.</param>
     /// <remarks>
     /// A JSON object cannot hold repeated names. If an event name repeats, all events
     /// are written in order under the <see cref="ProxyEventName" /> key, and the Toolkit script replays them.
     /// Writing only the repeats there would change the order in which the events are triggered.
     /// </remarks>
-    /// <param name="name">The response header name.</param>
-    /// <param name="events">The events to serialize.</param>
-    /// <param name="buffer">The buffer that receives the serialized header value.</param>
     private void SetHeader(string name, EventList? events, ArrayBufferWriter<byte> buffer)
     {
         if (events is null)

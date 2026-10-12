@@ -31,8 +31,8 @@ public sealed class HtmxV1Config() : HtmxConfig(HtmxTargetVersion.V1)
     }
 
     /// <summary>
-    /// Gets or sets a value indicating whether a full-page refresh should be issued
-    /// on history misses rather than using an AJAX request.
+    /// Gets or sets a value indicating whether a history miss causes a full-page refresh
+    /// instead of an AJAX request.
     /// The HTMX default is <see langword="false" />.
     /// </summary>
     public bool? RefreshOnHistoryMiss
@@ -214,7 +214,7 @@ public sealed class HtmxV1Config() : HtmxConfig(HtmxTargetVersion.V1)
     }
 
     /// <summary>
-    /// Gets or sets the request timeout, in milliseconds.
+    /// Gets or sets the request timeout in milliseconds.
     /// The HTMX default is <c>0</c>.
     /// </summary>
     public int? Timeout

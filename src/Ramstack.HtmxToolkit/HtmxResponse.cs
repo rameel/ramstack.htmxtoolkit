@@ -104,9 +104,8 @@ public readonly struct HtmxResponse
     /// Sets the <c>HX-Replace-Url</c> header to replace the current URL.
     /// </summary>
     /// <param name="url">
-    /// A URL to replace the current URL in the location bar. This may be relative or absolute,
-    /// as supported by <see href="https://developer.mozilla.org/en-US/docs/Web/API/History/replaceState">history.replaceState()</see>,
-    /// but must have the same origin as the current URL.
+    /// A relative or same-origin absolute URL to replace the current URL in the location bar,
+    /// as supported by <see href="https://developer.mozilla.org/en-US/docs/Web/API/History/replaceState">history.replaceState()</see>.
     /// </param>
     /// <returns>
     /// The current <see cref="HtmxResponse" /> instance.
@@ -156,7 +155,7 @@ public readonly struct HtmxResponse
     /// <summary>
     /// Sets the <c>HX-Redirect</c> header to perform a client-side redirect with a full-page reload.
     /// </summary>
-    /// <param name="value">The header value to set.</param>
+    /// <param name="value">The URL to redirect to.</param>
     /// <returns>
     /// The current <see cref="HtmxResponse" /> instance.
     /// </returns>
@@ -185,7 +184,7 @@ public readonly struct HtmxResponse
     /// <summary>
     /// Sets the <c>HX-Reswap</c> header to specify how the response will be swapped.
     /// </summary>
-    /// <param name="value">The header value to set.</param>
+    /// <param name="value">The swap style, optionally followed by swap modifiers.</param>
     /// <returns>
     /// The current <see cref="HtmxResponse" /> instance.
     /// </returns>
@@ -193,7 +192,7 @@ public readonly struct HtmxResponse
         SetHeader(this, HtmxResponseHeaderNames.Reswap, value);
 
     /// <summary>
-    /// Sets the <c>HX-Retarget</c> header to update the target of the content update
+    /// Sets the <c>HX-Retarget</c> header to change the target of the content update
     /// to a different element on the page.
     /// </summary>
     /// <param name="value">The CSS selector to set.</param>
@@ -223,8 +222,8 @@ public readonly struct HtmxResponse
     /// </returns>
     /// <remarks>
     /// <para>
-    ///   HTMX 4.x has only the <c>HX-Trigger</c> header, so every <see cref="HtmxTriggerTiming" /> value
-    ///   is emitted through it. These events fire when the request completes, which is after the swap
+    ///   HTMX 4.x has only the <c>HX-Trigger</c> header, so events with any <see cref="HtmxTriggerTiming" /> value
+    ///   are emitted through it. These events fire when the request completes, which is after the swap
     ///   and settle steps whenever a swap is performed.
     ///   See <see href="https://github.com/bigskysoftware/htmx/pull/3900">PR #3900</see>.
     /// </para>
@@ -232,7 +231,8 @@ public readonly struct HtmxResponse
     ///   Events of one header are triggered in the order they are added. If an event name is added
     ///   more than once for the same header, all events of that header are replayed by the Toolkit script,
     ///   which must be loaded for any of them to be triggered. In HTMX 4.x, this also applies
-    ///   to a name added with different timings. The name <c>rs:event</c> is reserved for this replay.
+    ///   to a name added with different timings. The event name <c>rs:event</c> is reserved
+    ///   for this replay and cannot be used.
     /// </para>
     /// </remarks>
     public HtmxResponse TriggerEvent(string eventName, HtmxTriggerTiming timing = HtmxTriggerTiming.Receive) =>
@@ -250,8 +250,8 @@ public readonly struct HtmxResponse
     /// </returns>
     /// <remarks>
     /// <para>
-    ///   HTMX 4.x has only the <c>HX-Trigger</c> header, so every <see cref="HtmxTriggerTiming" /> value
-    ///   is emitted through it. These events fire when the request completes, which is after the swap
+    ///   HTMX 4.x has only the <c>HX-Trigger</c> header, so events with any <see cref="HtmxTriggerTiming" /> value
+    ///   are emitted through it. These events fire when the request completes, which is after the swap
     ///   and settle steps whenever a swap is performed.
     ///   See <see href="https://github.com/bigskysoftware/htmx/pull/3900">PR #3900</see>.
     /// </para>
@@ -259,7 +259,8 @@ public readonly struct HtmxResponse
     ///   Events of one header are triggered in the order they are added. If an event name is added
     ///   more than once for the same header, all events of that header are replayed by the Toolkit script,
     ///   which must be loaded for any of them to be triggered. In HTMX 4.x, this also applies
-    ///   to a name added with different timings. The name <c>rs:event</c> is reserved for this replay.
+    ///   to a name added with different timings. The event name <c>rs:event</c> is reserved
+    ///   for this replay and cannot be used.
     /// </para>
     /// </remarks>
     [RequiresDynamicCode("Event details are serialized using reflection. Use the TriggerEvent overload that accepts JsonTypeInfo<T> for Native AOT applications.")]
@@ -286,8 +287,8 @@ public readonly struct HtmxResponse
     /// </returns>
     /// <remarks>
     /// <para>
-    ///   HTMX 4.x has only the <c>HX-Trigger</c> header, so every <see cref="HtmxTriggerTiming" /> value
-    ///   is emitted through it. These events fire when the request completes, which is after the swap
+    ///   HTMX 4.x has only the <c>HX-Trigger</c> header, so events with any <see cref="HtmxTriggerTiming" /> value
+    ///   are emitted through it. These events fire when the request completes, which is after the swap
     ///   and settle steps whenever a swap is performed.
     ///   See <see href="https://github.com/bigskysoftware/htmx/pull/3900">PR #3900</see>.
     /// </para>
@@ -295,7 +296,8 @@ public readonly struct HtmxResponse
     ///   Events of one header are triggered in the order they are added. If an event name is added
     ///   more than once for the same header, all events of that header are replayed by the Toolkit script,
     ///   which must be loaded for any of them to be triggered. In HTMX 4.x, this also applies
-    ///   to a name added with different timings. The name <c>rs:event</c> is reserved for this replay.
+    ///   to a name added with different timings. The event name <c>rs:event</c> is reserved
+    ///   for this replay and cannot be used.
     /// </para>
     /// </remarks>
     public HtmxResponse TriggerEvent<T>(string eventName, T detail, JsonTypeInfo<T> jsonTypeInfo, HtmxTriggerTiming timing = HtmxTriggerTiming.Receive) =>
