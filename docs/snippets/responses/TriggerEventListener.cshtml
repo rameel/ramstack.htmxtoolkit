@@ -1,0 +1,8 @@
+@addTagHelper *, Ramstack.HtmxToolkit
+
+@* Place the listener outside the form, so the save response does not replace it. *@
+<aside hx-page="/Profile"
+       hx-page-handler="Summary"
+       hx-trigger="profile-saved from:body">
+    ...
+</aside>

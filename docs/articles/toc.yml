@@ -4,10 +4,24 @@
   items:
     - name: Overview
       href: overview.md
-    - name: Getting started
-      href: getting-started.md
     - name: Choose an HTMX version
       href: choosing-version.md
+    - name: Run the examples
+      href: samples.md
+- name: Tutorials
+  items:
+    - name: Getting started
+      href: getting-started.md
+    - name: Forms, validation, and events
+      href: forms-and-validation.md
+    - name: Loading states and request errors
+      href: loading-and-errors.md
+- name: Other application styles
+  items:
+    - name: Use HtmxToolkit with MVC
+      href: mvc.md
+    - name: Use HtmxToolkit with Minimal APIs
+      href: minimal-apis.md
 - name: Fundamentals
   items:
     - name: Full pages and fragments
@@ -34,6 +48,8 @@
   items:
     - name: Antiforgery and Toolkit script
       href: antiforgery.md
+    - name: Static assets and deployment
+      href: static-assets.md
 - name: Recipes
   items:
     - name: Common recipes

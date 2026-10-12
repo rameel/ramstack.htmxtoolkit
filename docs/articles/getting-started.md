@@ -1,20 +1,29 @@
 # Getting started
 
-This tutorial adds HtmxToolkit to an ASP.NET Core Razor Pages application and loads a product fragment
-without navigating away from the page. The same registration and layout setup applies to MVC applications.
+Build a Razor Pages application that loads product details without leaving the page. You will create the
+page, its handler, and a partial view, then inspect the request in the browser.
 
-## 1. Install the package
+This tutorial uses the .NET 10 SDK and HTMX 2.x. The library itself supports .NET 6 or later.
+You only need basic Razor Pages knowledge; no JavaScript code is required.
+If HTMX is new to you, read [How HTMX updates a page](overview.md#how-htmx-updates-a-page) first.
+For other application styles, see [MVC](mvc.md) or [Minimal APIs](minimal-apis.md).
+
+## 1. Create the application
+
+Run these commands in the directory where you keep your projects:
 
 ```console
+dotnet new webapp -n HtmxStarter -f net10.0
+cd HtmxStarter
 dotnet add package Ramstack.HtmxToolkit
 ```
 
-Add HTMX 1.9.x, 2.x, or 4.x to the application separately. HtmxToolkit does not bundle HTMX.
-This example assumes HTMX 2.x, which is the toolkit default.
+If you already have a Razor Pages application, install the package there and use your own namespace
+in the examples below.
 
-## 2. Register HtmxToolkit
+## 2. Register the toolkit
 
-Register Razor Pages and the toolkit in `Program.cs`, and enable static files:
+Replace `Program.cs` with:
 
 ```csharp
 using Ramstack.HtmxToolkit.Hosting;
@@ -32,70 +41,92 @@ app.MapRazorPages();
 app.Run();
 ```
 
-No configuration delegate is required for HTMX 2.x. To use another major version,
-see [Choose an HTMX version](choosing-version.md).
+`AddHtmxToolkit()` selects HTMX 2.x by default. It registers toolkit options; it does not download HTMX.
+`UseStaticFiles()` serves the Toolkit script included in the package.
+See [Static assets and deployment](static-assets.md) for `MapStaticAssets()` and production caching.
 
-The setup above works on ASP.NET Core 6 or later. On ASP.NET Core 9 or later, use the following instead of
-`UseStaticFiles()` and `MapRazorPages()` to enable build-time compression and fingerprinted asset URLs:
+## 3. Enable the Tag Helpers
 
-```csharp
-app.MapStaticAssets();
-app.MapRazorPages().WithStaticAssets();
-```
+Replace `Pages/_ViewImports.cshtml` with:
 
-> [!NOTE]
-> In a hybrid Razor Pages and MVC application, call `.WithStaticAssets()` on every endpoint set that renders
-> views, for example `app.MapControllers().WithStaticAssets()` as well.
-
-## 3. Enable the Razor helpers
-
-Add the namespace and Tag Helpers to `Pages/_ViewImports.cshtml`:
-
-```html
+```razor
+@using HtmxStarter
+@using HtmxStarter.Models
 @using Ramstack.HtmxToolkit
+@namespace HtmxStarter.Pages
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @addTagHelper *, Ramstack.HtmxToolkit
 ```
 
-The `@using` directive makes toolkit types available.
-The first `@addTagHelper` directive enables the standard ASP.NET Core Tag Helpers used by the layout snippet
-(`~` path resolution and `asp-append-version`). The second enables attributes such as `hx-page` and `hx-route-*`,
-as well as the `<htmx-config />` element.
+The standard ASP.NET Core helpers resolve `~/` paths and generate versioned script URLs.
+The toolkit helpers turn attributes such as `hx-page` and `hx-route-id` into HTMX request URLs.
+You will add the `HtmxStarter.Models` namespace in step 5.
 
-## 4. Configure the layout
+## 4. Load the browser scripts
 
-Render the configuration metadata in `<head>`. Load HTMX first and the Toolkit script second:
+Replace `Pages/Shared/_Layout.cshtml` with:
 
-```html
+```razor
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>HtmxStarter</title>
     <htmx-config />
 </head>
 <body>
-    @RenderBody()
+    <main>@RenderBody()</main>
 
-    <script src="~/js/htmx.min.js"></script>
-    <script src="~/_content/Ramstack.HtmxToolkit/htmx-toolkit.min.js" asp-append-version="true"></script>
+    <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.11/dist/htmx.min.js"
+            integrity="sha384-2OatzQy1H+Zd/IIrjr1TcuDGqLXeHhbooAyJY1KdQMKnr4LZ22k31GBLdYKHmVjg"
+            crossorigin="anonymous"></script>
+    <script src="~/_content/Ramstack.HtmxToolkit/htmx-toolkit.min.js"
+            asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
 ```
 
-The Toolkit script is a static web asset supplied by the NuGet package. ASP.NET Core resolves the `~` path, and
-`asp-append-version="true"` makes the URL content-based: on ASP.NET Core 9 or later the framework selects a
-fingerprinted URL when available, otherwise it appends a `?v=...` version. Both forms account for the application's
-path base. Cache headers are managed by the application's static asset or static file configuration.
+The first script is HTMX, loaded from a CDN. The second is the Toolkit script, served by your application.
+Keep that order. The template's `Pages/_ViewStart.cshtml` already selects this layout.
+For everything the Toolkit script does, see [What the Toolkit script does](antiforgery.md#what-the-toolkit-script-does).
 
-> [!IMPORTANT]
-> `<htmx-config />` and the Toolkit script work together to add ASP.NET Core antiforgery data to unsafe HTMX requests. Omitting either one disables that automatic behavior.
+`<htmx-config />` renders configuration and antiforgery metadata in the document head.
+The Toolkit script uses that metadata when a form later sends a POST request.
+For local hosting of HTMX, download the same file into `wwwroot/js/htmx.min.js` and change its script URL to
+`~/js/htmx.min.js`. See the [HTMX installation guide](https://htmx.org/docs/#installing).
 
-## 5. Add an HTMX interaction
+## 5. Add a model and partial view
+
+Create `Models/Product.cs`:
+
+```csharp
+namespace HtmxStarter.Models;
+
+public sealed record Product(int Id, string Name, decimal Price);
+```
+
+Create `Pages/_ProductDetails.cshtml`:
+
+```razor
+@model Product
+
+<article>
+    <h2>@Model.Name</h2>
+    <p>Product #@Model.Id · Price: @Model.Price</p>
+    <p>In stock.</p>
+</article>
+```
+
+A partial contains only the HTML needed for an update. It has no `@page` directive and does not render
+the layout. Razor encodes model values when it writes them into HTML.
+
+## 6. Add the page and handler
 
 Create `Pages/Products.cshtml`:
 
-```html
+```razor
 @page
 @model ProductsModel
 
@@ -113,35 +144,64 @@ Create `Pages/Products.cshtml`:
 </div>
 ```
 
-Because an `hx-page` is present and no method was specified, `HtmxUrlTagHelper` generates an `hx-get` URL
-for the Razor Page handler.
-
-Add the handler to `Pages/Products.cshtml.cs`:
+Create `Pages/Products.cshtml.cs`:
 
 ```csharp
+using HtmxStarter.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
+namespace HtmxStarter.Pages;
+
 public sealed class ProductsModel : PageModel
 {
-    public IActionResult OnGetDetails(int id) =>
-        Content($"<article><h2>Product #{id}</h2><p>In stock.</p></article>", "text/html");
+    public IActionResult OnGetDetails(int id)
+    {
+        if (id != 42)
+            return NotFound();
+
+        var product = new Product(42, "Notebook", 12.50m);
+        return Partial("_ProductDetails", product);
+    }
 }
 ```
 
-Run the application and select **View product**. In browser developer tools, the request contains HTMX headers
-and the returned `<article>` is inserted into `#product-details`.
+The data is created in the handler to keep this example self-contained. In an application, load it from
+your data service before returning the partial.
 
-For a real application, prefer a partial view over assembling HTML in a string:
+## 7. Run it
 
-```csharp
-public IActionResult OnGetDetails(int id) =>
-    Partial("_ProductDetails", catalog.Get(id));
+```console
+dotnet run --no-launch-profile -- --urls http://localhost:5080 --environment Development
 ```
+
+Open <http://localhost:5080/Products> and select **View product**. The product details should replace
+“Select a product.” without a full page load.
+
+Inspect the rendered button. Its routing attributes have become a URL similar to:
+
+```html
+<button hx-get="/Products?id=42&amp;handler=Details" hx-target="#product-details">
+    View product
+</button>
+```
+
+Query parameter order may differ. The important parts are the page path, `id=42`, and `handler=Details`.
+
+In the browser Network panel, the request should have `HX-Request: true`, return HTTP 200,
+and contain only the `<article>` in its response. HTMX's default swap replaces the target's contents,
+so the `#product-details` container remains available for another click.
+The request should also have `HX-Request-Type: partial`. HTMX 2.x doesn't send this header itself;
+the Toolkit script adds it, so seeing it confirms that the script is loaded.
+
+If nothing happens, start with [Clicking does not send a request](troubleshooting.md#clicking-does-not-send-a-request).
 
 ## Next steps
 
-- [Full pages and fragments](pages-and-fragments.md) makes one URL work with and without HTMX.
-- [Read HTMX requests](requests.md) explains request detection and request headers.
-- [Control HTMX responses](responses.md) lets the server change the target, swap, URL, or client behavior.
-- [Antiforgery and Toolkit script](antiforgery.md) explains protected POST requests.
+Continue with [Forms, validation, and events](forms-and-validation.md). It adds a complete POST flow
+and refreshes a second component after a successful save. Then add
+[loading states and request errors](loading-and-errors.md) to handle slow or failed requests.
+
+- [Full pages and fragments](pages-and-fragments.md) explains when to return each kind of response.
+- [Tag Helpers](tag-helpers.md) covers URL generation, headers, values, and request options.
+- [Run the examples](samples.md) points to the larger demo and its source files.

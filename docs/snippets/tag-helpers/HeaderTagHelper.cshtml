@@ -1,9 +1,7 @@
 @addTagHelper *, Ramstack.HtmxToolkit
 
-<button hx-get
-        hx-page="/Examples/Headers"
-        hx-page-handler="Show"
-        hx-header-X-Report-Format="summary"
-        hx-target="#header-result">
-    Request summary report
-</button>
+<section hx-header-X-Tenant="@Model.TenantId">
+    <button hx-get="/reports" hx-target="#report">Load report</button>
+</section>
+
+@* Renders hx-headers='{"X-Tenant":"..."}' with the JSON built and escaped for you. *@

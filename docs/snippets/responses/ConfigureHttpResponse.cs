@@ -1,8 +1,13 @@
 public IActionResult OnGetProduct(string sku)
 {
-    if (sku == "BOOK-42")
-        return Content("BOOK-42: Hypermedia Systems — in stock.");
+    var product = catalog.Find(sku);
+    if (product is null)
+    {
+        // Runs only for HTMX requests: show the message in the notice area
+        // instead of the product panel that the button targets.
+        Response.Htmx(htmx => htmx.Retarget("#product-notice"));
+        return Partial("_ProductNotFound", sku);
+    }
 
-    Response.Htmx(htmx => htmx.Retarget("#product-notice"));
-    return Content("No product found for that SKU.");
+    return Partial("_ProductDetails", product);
 }

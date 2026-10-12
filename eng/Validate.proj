@@ -84,6 +84,12 @@
     <Message Importance="high" Text="==&gt; Restore (documentation)" />
     <Exec WorkingDirectory="$(RepoRoot)" Command="dotnet restore &quot;$(LibraryProject)&quot; --tl:off" />
     <Exec WorkingDirectory="$(RepoRoot)" Command="dotnet tool restore" />
+    <!-- Preserve authored api/index.md; remove metadata for types that no longer exist. -->
+    <ItemGroup>
+      <_DocfxGeneratedMetadata Include="$(RepoRoot)docs/api/**/*.yml" />
+    </ItemGroup>
+    <Delete Files="@(_DocfxGeneratedMetadata)" />
+    <RemoveDir Directories="$(RepoRoot)docs/_site" />
     <Message Importance="high" Text="==&gt; Build documentation" />
     <Exec WorkingDirectory="$(RepoRoot)" Command="dotnet docfx docs/docfx.json --warningsAsErrors" />
   </Target>

@@ -5,7 +5,7 @@ They complement ordinary HTMX attributes such as `hx-target`, `hx-trigger`, and 
 
 Register the namespace and Tag Helpers in `_ViewImports.cshtml`:
 
-```html
+```razor
 @using Ramstack.HtmxToolkit
 @addTagHelper *, Ramstack.HtmxToolkit
 ```
@@ -14,7 +14,7 @@ Register the namespace and Tag Helpers in `_ViewImports.cshtml`:
 
 ### Razor Pages
 
-```html
+```razor
 <button hx-page="/Orders/Details"
         hx-page-handler="Status"
         hx-route-id="@Model.OrderId"
@@ -26,7 +26,7 @@ Register the namespace and Tag Helpers in `_ViewImports.cshtml`:
 This generates `hx-get` because no HTMX method attribute was supplied.
 Add an empty `hx-post`, `hx-put`, `hx-patch`, or `hx-delete` to select another method:
 
-```html
+```razor
 <button hx-post
         hx-page="/Orders/Edit"
         hx-page-handler="Archive"
@@ -37,7 +37,7 @@ Add an empty `hx-post`, `hx-put`, `hx-patch`, or `hx-delete` to select another m
 
 ### MVC controllers
 
-```html
+```razor
 <button hx-post
         hx-area="Admin"
         hx-controller="Users"
@@ -50,30 +50,68 @@ Add an empty `hx-post`, `hx-put`, `hx-patch`, or `hx-delete` to select another m
 
 ### Named routes and route dictionaries
 
-```html
-<a hx-route="product-details"
-   hx-route-id="@product.Id"
-   hx-fragment="reviews"
-   hx-target="#product-panel">
-    Product details
-</a>
+Name an endpoint, then use that name in `hx-route`. For example, replace the `[HttpGet]` attribute on
+the `Details` action in the [MVC tutorial](mvc.md) with:
+
+```csharp
+[HttpGet("/products/{id:int}", Name = "product-details")]
+public IActionResult Details(int id)
+{
+    if (id != 42)
+        return NotFound();
+
+    return PartialView("_ProductDetails", _products.Current);
+}
 ```
 
-Use `hx-all-route-data` for a dictionary and `hx-route-*` for individual values.
+The tutorial's `MapDefaultControllerRoute()` also maps this attribute-routed action.
+In `Views/Products/Index.cshtml`, use the route name instead of controller and action attributes:
 
-> [!NOTE]
-> `hx-fragment` is an input of `HtmxUrlTagHelper`, analogous to ASP.NET Core's `asp-fragment`.
-> It adds `#reviews` to the generated URL; it is not an HTMX client attribute.
+```razor
+<button hx-route="product-details"
+        hx-route-id="42"
+        hx-target="#product-panel">
+    Product details
+</button>
 
-`hx-route`, controller/action, and page/handler identify mutually exclusive routing modes.
-Supplying more than one mode throws an `InvalidOperationException`.
+<div id="product-panel"></div>
+```
+
+The generated URL is `/products/42`. Use `hx-all-route-data` when route values are already in a dictionary:
+
+```razor
+@{
+    var routeValues = new Dictionary<string, string>
+    {
+        ["id"] = "42",
+        ["tab"] = "reviews"
+    };
+}
+
+<button hx-route="product-details"
+        hx-all-route-data="routeValues"
+        hx-target="#product-panel">
+    Product details
+</button>
+```
+
+Here `id` fills the route parameter and `tab` becomes a query parameter: `/products/42?tab=reviews`.
+The action can accept a `string? tab` parameter if it needs that value.
+Use `hx-route-*` for individual values or `hx-all-route-data` for the dictionary.
+
+`hx-fragment` works like ASP.NET Core's `asp-fragment`: `hx-fragment="reviews"` appends `#reviews`
+to the generated URL. It is a Tag Helper input, not an HTMX attribute. The browser does not send the fragment
+to the server, so use `hx-target`, not the fragment, to choose the element to update.
+
+Choose one routing mode: `hx-route`, controller/action, or page/handler.
+Combining modes throws an `InvalidOperationException`.
 Supplying more than one HTMX method is also invalid.
 
 ## Send additional values
 
 Use `hx-val-*` when fixed values should be included as request parameters:
 
-```html
+```razor
 <button hx-page="/Reports"
         hx-page-handler="Preview"
         hx-val-category="science"
@@ -85,7 +123,7 @@ Use `hx-val-*` when fixed values should be included as request parameters:
 
 The Tag Helper emits an encoded `hx-vals` JSON object. A dictionary can be supplied through `hx-all-vals`:
 
-```html
+```razor
 <button hx-get="/reports/preview"
         hx-all-vals="@Model.PreviewValues">
     Preview
@@ -123,7 +161,7 @@ The button emits `hx-vals:append='{"format":"summary"}'`.
 
 ## Send custom headers
 
-```html
+```razor
 <section hx-header-X-Tenant="@Model.TenantId">
     <button hx-get="/reports" hx-target="#report">Load report</button>
 </section>
@@ -150,11 +188,11 @@ Authenticate and authorize on the server.
 
 Use `hx-request-*` attributes rather than hand-writing version-specific JSON:
 
-```html
+```razor
 <button hx-page="/Reports"
         hx-page-handler="Preview"
         hx-request-timeout="2000"
-        hx-request-credentials="HtmxRequestCredentials.SameOrigin"
+        hx-request-credentials="@HtmxRequestCredentials.SameOrigin"
         hx-target="#preview">
     Generate preview
 </button>
@@ -184,6 +222,21 @@ The output depends on the configured HTMX target:
 Unsupported properties are omitted from the generated JSON. In particular, `HtmxRequestCredentials.Omit`
 cannot be represented by HTMX 1.x or 2.x and is omitted for those targets.
 
+Use `HtmxRequestCache` and `HtmxRequestRedirect` for the HTMX 4.x Fetch options:
+
+```razor
+<button hx-get="/Reports/Preview"
+        hx-request-cache="@HtmxRequestCache.NoCache"
+        hx-request-redirect="@HtmxRequestRedirect.Error">
+    Generate preview
+</button>
+```
+
+This generates `hx-config='{"cache":"no-cache","redirect":"error"}'`.
+Leaving either property unset omits that option from the JSON.
+`HtmxRequestCache.OnlyIfCached` requires the same-origin Fetch mode, which is the HTMX default;
+the request fails if `HtmxV4Config.Mode` specifies another mode.
+
 ## Apply attribute modifiers
 
 HTMX 4.x requires attribute inheritance to be explicit by default.
@@ -212,8 +265,9 @@ Use `inherited` on a parent declaration to make it available to descendants, and
 declaration to merge rather than replace the inherited object. When both inputs are `true` on the same
 element, HtmxToolkit emits one combined attribute such as `hx-config:inherited:append`.
 
-For HTMX 1.x and 2.x, these boolean inputs do not change the generated names
-because `hx-request`, `hx-vals`, and `hx-headers` are already merge-inherited automatically.
+For HTMX 1.x and 2.x, these boolean inputs do not change the generated names.
+`hx-request`, `hx-vals`, and `hx-headers` already inherit from parents: child values override matching
+parent values and keep the rest.
 
 Alternatively, set `HtmxV4Config.ImplicitInheritance` to `true` to enable inheritance globally;
 the `*-inherited` inputs are then unnecessary. Child declarations can still use the corresponding
@@ -223,7 +277,7 @@ the `*-inherited` inputs are then unnecessary. Child declarations can still use 
 
 `<htmx-config />` renders the version-specific application configuration and antiforgery metadata:
 
-```html
+```razor
 <head>
     <htmx-config />
 </head>

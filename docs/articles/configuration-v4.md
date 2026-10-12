@@ -57,7 +57,7 @@ config.History = HtmxHistoryMode.Reload;   // Perform a full page reload on hist
 
 Choose one value; the three assignments above illustrate alternatives.
 
-Unlike HTMX 1.x and 2.x, HTMX 4.x does not keep local DOM snapshots in `sessionStorage` by default.
+Unlike HTMX 1.x and 2.x, HTMX 4.x does not keep local DOM snapshots in `localStorage` by default.
 `Enabled` requests the history URL from the server and swaps the response.
 The optional HTMX 4 `hx-history-cache` extension restores local snapshot behavior;
 HtmxToolkit does not enable that extension automatically.
@@ -83,19 +83,8 @@ declares the same attribute. HtmxToolkit provides Razor-friendly boolean inputs 
 
 The parent inputs become `hx-config:inherited` and `hx-vals:inherited`. The button emits
 `hx-vals:append`, which merges its values into the inherited object instead of replacing it.
-The same inputs are available for all three generated JSON attributes:
-
-| Razor Tag Helper input | Generated HTMX 4 attribute |
-|---|---|
-| `hx-request-inherited="true"` | `hx-config:inherited` |
-| `hx-request-append="true"` | `hx-config:append` |
-| `hx-vals-inherited="true"` | `hx-vals:inherited` |
-| `hx-vals-append="true"` | `hx-vals:append` |
-| `hx-headers-inherited="true"` | `hx-headers:inherited` |
-| `hx-headers-append="true"` | `hx-headers:append` |
-
-Setting both inputs for one attribute emits a combined modifier, for example
-`hx-headers:inherited:append`.
+The same inputs are available for `hx-headers`; see [Apply attribute modifiers](tag-helpers.md#apply-attribute-modifiers)
+for the full list.
 
 Alternatively, enable the HTMX 1.x/2.x inheritance behavior globally:
 

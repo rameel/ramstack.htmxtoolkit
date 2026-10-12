@@ -6,8 +6,9 @@ _appTitle: Ramstack.HtmxToolkit
 
 Strongly typed HTMX integration for ASP.NET Core MVC, Razor Pages, and Minimal APIs.
 
-Ramstack.HtmxToolkit provides strongly typed request and response headers, MVC action filters, Razor Tag Helpers,
-version-specific HTMX configuration, and automatic antiforgery support.
+Read HTMX request headers through C# properties, return response instructions with a fluent API, and generate
+request URLs through ASP.NET Core routing. The toolkit also provides MVC action attributes, version-specific
+HTMX configuration, and automatic antiforgery token delivery through the Toolkit script.
 
 ## Get started
 
@@ -17,17 +18,15 @@ Install the NuGet package:
 dotnet add package Ramstack.HtmxToolkit
 ```
 
-Then read the [getting started guide](articles/getting-started.md),
-or browse the generated [API reference](api/index.md).
+Choose your starting point:
 
-## Explore the guides
-
-- [Understand the integration](articles/overview.md)
-- [Choose HTMX 1.x, 2.x, or 4.x](articles/choosing-version.md)
-- [Return full pages and fragments](articles/pages-and-fragments.md)
-- [Configure requests and responses](articles/requests.md)
-- [Protect POST requests](articles/antiforgery.md)
-- [Solve common problems](articles/troubleshooting.md)
+| What you need | Start here |
+|---|---|
+| Understand how HTMX and the toolkit fit together | [Overview](articles/overview.md) |
+| Build your first interaction | [Getting started](articles/getting-started.md), [MVC](articles/mvc.md), or [Minimal APIs](articles/minimal-apis.md) |
+| Follow the course or find a task guide | [Guides](articles/index.md) |
+| Look up a type or method | [API reference](api/index.md) |
+| Diagnose an integration problem | [Troubleshooting](articles/troubleshooting.md) |
 
 ## Supported environments
 

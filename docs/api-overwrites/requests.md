@@ -1,5 +1,5 @@
 ---
-uid: Ramstack.HtmxToolkit.HttpRequestExtensions.IsHtmxRequest(Microsoft.AspNetCore.Http.HttpRequest)
+uid: Ramstack.HtmxToolkit.HttpRequestExtensions.IsHtmxPartialRequest(Microsoft.AspNetCore.Http.HttpRequest)
 example:
   - |-
     [!code-csharp[](../snippets/requests/ReturnPartialForHtmx.cs)]
@@ -27,8 +27,22 @@ example:
 ---
 
 ---
-uid: Ramstack.HtmxToolkit.HtmxRequestAttribute.Kind
+uid: Ramstack.HtmxToolkit.HtmxRequestAttribute.BoostedFilter
 example:
   - |-
     [!code-csharp[](../snippets/requests/BoostedRequestAttributeExample.cs)]
+---
+
+---
+uid: Ramstack.HtmxToolkit.HtmxRequestAttribute.RequestType
+example:
+  - |-
+    [!code-csharp[](../snippets/requests/RequestTypeAttributeExample.cs)]
+---
+
+---
+uid: Ramstack.HtmxToolkit.HtmxRequestHeaderNames
+example:
+  - |-
+    [!code-csharp[](../snippets/requests/VaryByHtmxHeaders.cs)]
 ---

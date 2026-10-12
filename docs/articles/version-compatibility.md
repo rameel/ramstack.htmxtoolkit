@@ -1,7 +1,7 @@
 # Version compatibility
 
 HtmxToolkit supports HTMX 1.9.x, 2.x, and 4.x. Select the version loaded by the browser so Tag Helpers
-and the companion script generate the matching contract.
+and response events use the behavior expected by that version.
 
 ## Request headers
 
@@ -13,11 +13,12 @@ and the companion script generate the matching contract.
 | History cache miss | `HX-History-Restore-Request` | `HX-History-Restore-Request` | `HistoryRestoreRequest` |
 | Target element | Element ID | `tag#id` | `Target` |
 | Triggering element | `HX-Trigger` and `HX-Trigger-Name` | `HX-Source` in `tag#id` form | `Trigger`, `TriggerName`, `Source` |
-| Prompt result | `HX-Prompt` | Not supported | `Prompt` |
-| Expected response | Not reported | `HX-Request-Type`: `partial` or `full` | `RequestType` |
+| Prompt result | `HX-Prompt` | `HX-Prompt` from the `hx-prompt` extension, URI-encoded | `Prompt` |
+| Expected response | `HX-Request-Type`, added by the Toolkit script | `HX-Request-Type`: `partial` or `full` | `RequestType` |
 
 In HTMX 4.x, a target value such as `div#results` includes the tag name as well as the ID.
-Code shared across versions should tolerate null for version-specific properties.
+Code shared across versions should tolerate null for version-specific string properties.
+`RequestType` is `HtmxRequestType.Unspecified` for HTMX 1.x and 2.x requests from a page without the Toolkit script.
 
 ```csharp
 if (Request.IsHtmxRequest(out var htmx))
@@ -26,6 +27,11 @@ if (Request.IsHtmxRequest(out var htmx))
     // Use source only when the endpoint actually needs it.
 }
 ```
+
+For HTMX 1.x and 2.x, the Toolkit script computes `HX-Request-Type` the same way HTMX 4.x does;
+see [Check full or partial requests](requests.md#check-full-or-partial-requests).
+The result can still differ between versions for the same markup, because the versions resolve attributes differently:
+HTMX 4.x, for example, does not inherit `hx-select` from a parent element unless it is marked as inherited.
 
 ## Per-request options
 
@@ -41,21 +47,11 @@ if (Request.IsHtmxRequest(out var htmx))
 
 ## Attribute modifiers
 
-HTMX 1.x and 2.x merge-inherit request configuration, values, and headers automatically.
-For HTMX 4.x, HtmxToolkit maps Razor-friendly inputs to the explicit inheritance and append modifiers:
-
-| Razor input | HTMX 1.x / 2.x output | HTMX 4.x output |
-|---|---|---|
-| `hx-request-inherited="true"` | `hx-request` | `hx-config:inherited` |
-| `hx-request-append="true"` | `hx-request` | `hx-config:append` |
-| `hx-vals-inherited="true"` | `hx-vals` | `hx-vals:inherited` |
-| `hx-vals-append="true"` | `hx-vals` | `hx-vals:append` |
-| `hx-headers-inherited="true"` | `hx-headers` | `hx-headers:inherited` |
-| `hx-headers-append="true"` | `hx-headers` | `hx-headers:append` |
-
-In V4, `append` merges a child declaration into the inherited object rather than replacing it.
-Setting both inputs for the same attribute produces one combined name such as
-`hx-vals:inherited:append`. In V1 and V2, both inputs leave the ordinary merge-inherited attribute name unchanged.
+HTMX 1.x and 2.x inherit request configuration, values, and headers automatically.
+Child values override matching parent values and keep the rest.
+HTMX 4.x requires explicit `inherited` and `append` modifiers. The Tag Helpers accept Razor-friendly inputs
+such as `hx-vals-inherited="true"` and generate the modifiers only for HTMX 4.x, so the same markup works
+with every version. See [Apply attribute modifiers](tag-helpers.md#apply-attribute-modifiers).
 
 `HtmxV4Config.ImplicitInheritance = true` is the global alternative to per-element `*-inherited` inputs.
 It does not replace `*-append` when a child declaration must merge with inherited values.
@@ -91,13 +87,13 @@ See [Poll a background operation](recipes.md#poll-a-background-operation) for a 
 ## Morph swaps
 
 `HtmxSwap.InnerMorph`, `OuterMorph`, and `OuterSync` use native swap styles in HTMX 4.x.
-Do not enable the `ramstack-morph` extension with that version.
+Do not enable the `ramstack-swap` extension with that version.
 
 With HTMX 1.9.x or 2.x, enable the extension supplied by the Toolkit script. Load the optional Idiomorph library
 before the first morph swap to preserve morphing behavior:
 
-```html
-<body hx-ext="ramstack-morph">
+```razor
+<body hx-ext="ramstack-swap">
     <div id="profile">Current profile</div>
 
     <button hx-get="/profile/morph"
@@ -106,9 +102,14 @@ before the first morph swap to preserve morphing behavior:
         Refresh profile
     </button>
 
-    <script src="https://unpkg.com/htmx.org@2"></script>
-    <script src="https://unpkg.com/idiomorph@0.7.4"></script>
-    <script src="~/_content/Ramstack.HtmxToolkit/htmx-toolkit.min.js" asp-append-version="true"></script>
+    <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.11/dist/htmx.min.js"
+            integrity="sha384-2OatzQy1H+Zd/IIrjr1TcuDGqLXeHhbooAyJY1KdQMKnr4LZ22k31GBLdYKHmVjg"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/idiomorph@0.7.4/dist/idiomorph.min.js"
+            integrity="sha384-YWh9vmu1Q6BptPp1emqfsNatFASVLolFKP/5f4LWR6eGMLEhBDh1zcwU2OzfVCe9"
+            crossorigin="anonymous"></script>
+    <script src="~/_content/Ramstack.HtmxToolkit/htmx-toolkit.min.js"
+            asp-append-version="true"></script>
 </body>
 ```
 
@@ -121,7 +122,7 @@ If Idiomorph is unavailable, the adapter logs a warning and falls back from `inn
 `outerMorph` to `outerHTML`. With HTMX 1.9.x and 2.x, `outerSync` falls back to synchronizing the target's attributes
 and then replacing its children using `innerHTML`.
 
-`HtmxSwap.TextContent` is also handled by the `ramstack-morph` extension and does not require Idiomorph.
+`HtmxSwap.TextContent` is also handled by the `ramstack-swap` extension and does not require Idiomorph.
 It is supported natively by HTMX 2.x and 4.x; only HTMX 1.9.x needs the extension.
 
 ## Migration checklist

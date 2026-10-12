@@ -1,5 +1,7 @@
 if (Request.IsHtmxRequest(out var htmx))
 {
-    var metadata = $"Source: {htmx.Source}; target: {htmx.Target}; type: {htmx.RequestType}.";
-    return Content(HtmlEncoder.Default.Encode(metadata));
+    logger.LogDebug(
+        "HTMX request for {Target} from {Source}",
+        htmx.Target,
+        htmx.Source ?? htmx.Trigger);
 }

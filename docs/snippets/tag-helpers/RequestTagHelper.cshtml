@@ -1,9 +1,10 @@
 @addTagHelper *, Ramstack.HtmxToolkit
 
-<button hx-get
-        hx-page="/Examples/RequestOptions"
-        hx-page-handler="Preview"
+<button hx-get="/reports/preview"
         hx-request-timeout="2000"
-        hx-target="#preview-result">
-    Generate report preview
+        hx-target="#preview">
+    Generate preview
 </button>
+
+@* HTMX 1.x and 2.x: hx-request='{"timeout":2000}'
+   HTMX 4.x:        hx-config='{"timeout":2000}' *@

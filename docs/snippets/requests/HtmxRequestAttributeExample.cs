@@ -1,10 +1,6 @@
-[HttpGet]
+// A widget polls this URL; it is not a page. The action is selected only
+// for HTMX requests, so a direct browser visit gets 404 instead of a bare fragment.
+[HttpGet("/orders/{id:int}/status")]
 [HtmxRequest]
-public IActionResult Status(string sku)
-{
-    var content = sku == "BOOK-42"
-        ? "BOOK-42: Hypermedia Systems — 3 copies in stock."
-        : "No inventory record was found for that SKU.";
-
-    return Content($"<div id='inventory-status'>{content}</div>", "text/html");
-}
+public IActionResult Status(int id) =>
+    PartialView("_OrderStatus", orders.GetStatus(id));

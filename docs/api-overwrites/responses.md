@@ -53,3 +53,70 @@ example:
   - |-
     [!code-csharp[](../snippets/responses/HtmxResponseAttributeExample.cs)]
 ---
+
+---
+uid: Ramstack.HtmxToolkit.HttpResponseExtensions.Htmx``1(Microsoft.AspNetCore.Http.HttpResponse,System.Action{Ramstack.HtmxToolkit.HtmxResponse,``0},``0)
+example:
+  - |-
+    [!code-csharp[](../snippets/responses/HtmxWithState.cs)]
+---
+
+---
+uid: Ramstack.HtmxToolkit.HttpResponseExtensions.GetHtmxHeaders(Microsoft.AspNetCore.Http.HttpResponse)
+example:
+  - |-
+    [!code-csharp[](../snippets/responses/ValidationTargetFilter.cs)]
+---
+
+---
+uid: Ramstack.HtmxToolkit.HtmxLocationOptions.Values
+example:
+  - |-
+    [!code-csharp[](../snippets/responses/LocationWithValues.cs)]
+---
+
+---
+uid: Ramstack.HtmxToolkit.HtmxFieldValues
+example:
+  - |-
+    [!code-csharp[](../snippets/responses/LocationWithValues.cs)]
+---
+
+---
+uid: Ramstack.HtmxToolkit.HtmxResponse.ReplaceUrl(System.String)
+example:
+  - |-
+    [!code-csharp[](../snippets/responses/ReplaceUrlSearch.cs)]
+---
+
+---
+uid: Ramstack.HtmxToolkit.HtmxResponse.PreventHistoryUpdate
+example:
+  - |-
+    [!code-csharp[](../snippets/responses/PreventHistoryUpdate.cs)]
+---
+
+---
+uid: Ramstack.HtmxToolkit.HtmxResponse.TriggerEvent(System.String,Ramstack.HtmxToolkit.HtmxTriggerTiming)
+example:
+  - |-
+    [!code-csharp[](../snippets/responses/TriggerEventAfterSave.cs)]
+
+    [!code-razor[](../snippets/responses/TriggerEventListener.cshtml)]
+---
+
+---
+uid: Ramstack.HtmxToolkit.HtmxSwap
+example:
+  - |-
+    [!code-csharp[](../snippets/responses/MorphSwap.cs)]
+
+    [!code-razor[](../snippets/responses/MorphSwapSetup.cshtml)]
+---
+
+---
+uid: Ramstack.HtmxToolkit.HtmxResponseHeaderNames
+example:
+  - |-
+    [!code-csharp[](../snippets/responses/ExposeResponseHeaders.cs)]
+---

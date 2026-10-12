@@ -1,14 +1,24 @@
 <div class="docs-hero">
   <p class="docs-eyebrow">ASP.NET Core + HTMX</p>
   <h1>HtmxToolkit guides</h1>
-  <p>Build server-rendered interactions with typed requests, fluent responses, Razor Tag Helpers, version-aware configuration, and automatic antiforgery.</p>
+  <p>Load HTML fragments, submit forms, and update your pages with HTMX and ASP.NET Core.</p>
   <div class="docs-hero__actions">
     <a class="docs-button" href="getting-started.md">Get started</a>
     <a class="docs-button docs-button--secondary" href="../api/index.md">API reference</a>
   </div>
 </div>
 
-These guides focus on complete application tasks; the API reference documents individual types and members.
+Choose a path below. For individual types and members, use the [API reference](../api/index.md).
+
+New to HTMX? Read the short [Overview](overview.md) first. Then build one Razor Pages application through
+three tutorials, with each step building on the previous one:
+
+1. [Getting started](getting-started.md): load product details into the page.
+2. [Forms, validation, and events](forms-and-validation.md): save a profile and refresh its summary.
+3. [Loading states and request errors](loading-and-errors.md): show progress and recover from failed requests.
+
+For another application style, use the complete [MVC](mvc.md) or [Minimal API](minimal-apis.md) example.
+For an existing integration, browse the task guides below or [run the demo](samples.md).
 
 ## Start here
 
@@ -33,6 +43,8 @@ These guides focus on complete application tasks; the API reference documents in
 ## Build an integration
 
 <div class="guide-grid guide-grid--two">
+  <a class="guide-card" href="forms-and-validation.md"><strong>Forms, validation, and events</strong><span>Build a complete form that saves, shows errors, and refreshes another component.</span></a>
+  <a class="guide-card" href="loading-and-errors.md"><strong>Loading states and request errors</strong><span>Show a loading message, disable repeated clicks, and recover from failed requests.</span></a>
   <a class="guide-card" href="pages-and-fragments.md"><strong>Full pages and fragments</strong><span>Support normal navigation and HTMX from the same application.</span></a>
   <a class="guide-card" href="requests.md"><strong>Read HTMX requests</strong><span>Detect requests, inspect typed headers, and select MVC actions.</span></a>
   <a class="guide-card" href="responses.md"><strong>Control HTMX responses</strong><span>Choose targets, swaps, navigation, history, and client events.</span></a>
@@ -44,7 +56,8 @@ These guides focus on complete application tasks; the API reference documents in
 <div class="guide-grid guide-grid--two">
   <a class="guide-card" href="configuration.md"><strong>Application configuration</strong><span>Render strongly typed global settings for the selected version.</span></a>
   <a class="guide-card" href="version-compatibility.md"><strong>Version compatibility</strong><span>Compare requests, configuration, events, and swaps across releases.</span></a>
-  <a class="guide-card" href="antiforgery.md"><strong>Antiforgery and assets</strong><span>Protect non-GET requests and deploy the companion script.</span></a>
+  <a class="guide-card" href="antiforgery.md"><strong>Antiforgery and Toolkit script</strong><span>Send tokens, enable server validation, and see what the Toolkit script does.</span></a>
+  <a class="guide-card" href="static-assets.md"><strong>Static assets and deployment</strong><span>Load the Toolkit script, configure caching, and publish the application.</span></a>
   <a class="guide-card" href="recipes.md"><strong>Common recipes</strong><span>Implement validation, polling, redirects, and cross-component updates.</span></a>
   <a class="guide-card" href="troubleshooting.md"><strong>Troubleshooting</strong><span>Diagnose failures from generated markup and browser network data.</span></a>
 </div>
