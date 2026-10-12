@@ -3,6 +3,7 @@
 [![NuGet](https://img.shields.io/nuget/v/Ramstack.HtmxToolkit.svg)](https://www.nuget.org/packages/Ramstack.HtmxToolkit/)
 [![Build](https://github.com/rameel/ramstack.htmxtoolkit/actions/workflows/test.yml/badge.svg)](https://github.com/rameel/ramstack.htmxtoolkit/actions/workflows/test.yml)
 [![License: MIT](https://img.shields.io/github/license/rameel/ramstack.htmxtoolkit)](https://github.com/rameel/ramstack.htmxtoolkit/blob/main/LICENSE)
+[![Docs](https://img.shields.io/badge/docs-GitHub%20Pages-blue)](https://rameel.github.io/ramstack.htmxtoolkit/)
 
 HtmxToolkit helps you build [HTMX](https://htmx.org/) applications with ASP.NET Core.
 
@@ -301,6 +302,7 @@ Then open <https://localhost:5001>.
 ## Documentation
 
 The [guides](https://rameel.github.io/ramstack.htmxtoolkit/articles/index.html) cover everything from a first tutorial to recipes and troubleshooting.
+The [API reference](https://rameel.github.io/ramstack.htmxtoolkit/api/) describes every public type and member.
 
 ## Contributing
 
