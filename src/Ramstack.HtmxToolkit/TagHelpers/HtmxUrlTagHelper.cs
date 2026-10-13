@@ -17,6 +17,19 @@ namespace Ramstack.HtmxToolkit.TagHelpers;
 /// Generates URLs for HTMX request attributes on matching elements.
 /// </summary>
 /// <param name="factory">The factory used to create URL helpers.</param>
+/// <remarks>
+/// <para>
+///   The URL is written to the existing <c>hx-get</c>, <c>hx-post</c>, <c>hx-put</c>,
+///   <c>hx-patch</c>, or <c>hx-delete</c> attribute. If none of them is present,
+///   the tag helper adds <c>hx-get</c>.
+/// </para>
+/// <para>
+///   An <see cref="InvalidOperationException" /> is thrown when more than one of these
+///   attributes is present, or when attributes from more than one of the following groups
+///   are specified: <c>hx-route</c>; <c>hx-controller</c> and <c>hx-action</c>;
+///   <c>hx-page</c> and <c>hx-page-handler</c>.
+/// </para>
+/// </remarks>
 [HtmlTargetElement(Attributes = ActionAttributeName)]
 [HtmlTargetElement(Attributes = ControllerAttributeName)]
 [HtmlTargetElement(Attributes = AreaAttributeName)]
@@ -48,6 +61,9 @@ public sealed class HtmxUrlTagHelper(IUrlHelperFactory factory) : TagHelper
     private IDictionary<string, string>? _routeValues;
 
     /// <inheritdoc />
+    /// <remarks>
+    /// Runs before tag helpers with the default order, so that they see the generated URL attribute.
+    /// </remarks>
     public override int Order => -1000;
 
     /// <summary>
@@ -246,7 +262,7 @@ public sealed class HtmxUrlTagHelper(IUrlHelperFactory factory) : TagHelper
     [DoesNotReturn]
     private static void Error_AmbiguousMethods()
     {
-        const string Message = "Ambiguous htmx method. Only one of the following methods is allowed: hx-get, hx-post, hx-delete, hx-put, hx-patch";
+        const string Message = "Ambiguous HTMX method. Only one of the following methods is allowed: hx-get, hx-post, hx-delete, hx-put, hx-patch";
         throw new InvalidOperationException(Message);
     }
 }

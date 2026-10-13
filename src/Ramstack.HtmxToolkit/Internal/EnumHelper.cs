@@ -5,7 +5,7 @@ using Ramstack.HtmxToolkit.Configuration;
 namespace Ramstack.HtmxToolkit.Internal;
 
 /// <summary>
-/// Provides extension methods for converting and parsing HTMX-related enum values.
+/// Provides methods for converting and parsing HTMX-related enum values.
 /// </summary>
 internal static class EnumHelper
 {

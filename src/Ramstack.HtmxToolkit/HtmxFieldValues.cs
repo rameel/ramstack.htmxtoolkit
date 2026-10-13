@@ -7,7 +7,7 @@ using Ramstack.HtmxToolkit.Serialization;
 namespace Ramstack.HtmxToolkit;
 
 /// <summary>
-/// Represents one or more values for a form field submitted with an HTMX request.
+/// Represents zero or more values for a form field submitted with an HTMX request.
 /// </summary>
 [JsonConverter(typeof(HtmxFieldValuesJsonConverter))]
 [CollectionBuilder(typeof(HtmxFieldValues), nameof(Create))]
@@ -163,7 +163,7 @@ public readonly struct HtmxFieldValues : IReadOnlyList<string>
     #region Inner type: Enumerator
 
     /// <summary>
-    /// Enumerates the string values represented by an <see cref="HtmxFieldValues" />.
+    /// Represents an enumerator for the string values in an <see cref="HtmxFieldValues" />.
     /// </summary>
     public struct Enumerator : IEnumerator<string>
     {

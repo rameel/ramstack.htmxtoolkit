@@ -25,7 +25,11 @@ public enum HtmxFetchMode
 
     /// <summary>
     /// Allows restricted cross-origin requests that produce opaque responses.
-    /// Opaque responses cannot normally be swapped by HTMX.
     /// </summary>
+    /// <remarks>
+    /// An opaque response has status 0, and its headers and body are not accessible.
+    /// HTMX cannot read <c>HX-*</c> response headers, does not treat the response as an error,
+    /// and swaps the empty body into the target.
+    /// </remarks>
     NoCors
 }

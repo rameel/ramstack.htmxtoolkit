@@ -11,7 +11,8 @@ using Ramstack.HtmxToolkit.Serialization;
 namespace Ramstack.HtmxToolkit.TagHelpers;
 
 /// <summary>
-/// Applies an <c>hx-vals</c> attribute assembled from strongly typed tag helper attributes.
+/// Applies an <c>hx-vals</c> attribute assembled from <c>hx-val-*</c> attributes
+/// and the <c>hx-all-vals</c> dictionary.
 /// </summary>
 /// <remarks>
 /// <list type="bullet">
@@ -42,7 +43,10 @@ public sealed class HtmxValsTagHelper(IOptions<HtmxToolkitOptions> options) : Ta
     ///   HTMX 1.x and 2.x merge-inherit values without a modifier,
     ///   so the property does not change the generated attribute name for them.
     /// </para>
-    /// <para>For HTMX 4.x, the tag helper emits the <c>inherited</c> modifier when this property is <see langword="true" />.</para>
+    /// <para>
+    ///   For HTMX 4.x, the tag helper emits the <c>inherited</c> modifier
+    ///   when this property is <see langword="true" />.
+    /// </para>
     /// </remarks>
     [HtmlAttributeName(InheritedAttributeName)]
     public bool Inherited { get; set; }
@@ -51,15 +55,22 @@ public sealed class HtmxValsTagHelper(IOptions<HtmxToolkitOptions> options) : Ta
     /// Gets or sets a value indicating whether <c>hx-vals</c> is appended to inherited values.
     /// </summary>
     /// <remarks>
-    /// For HTMX 4.x, the tag helper emits the <c>append</c> modifier when this property is <see langword="true" />.
-    /// The property does not change the generated attribute name for HTMX 1.x and 2.x.
+    /// <para>The property does not change the generated attribute name for HTMX 1.x and 2.x.</para>
+    /// <para>
+    ///   For HTMX 4.x, the tag helper emits the <c>append</c> modifier
+    ///   when this property is <see langword="true" />.
+    /// </para>
     /// </remarks>
     [HtmlAttributeName(AppendAttributeName)]
     public bool Append { get; set; }
 
     /// <summary>
-    /// Gets or sets the <c>hx-vals</c> attribute values.
+    /// Gets or sets the <c>hx-vals</c> attribute values, which can also be set
+    /// with <c>hx-val-*</c> attributes.
     /// </summary>
+    /// <remarks>
+    /// The default dictionary compares value names case-sensitively.
+    /// </remarks>
     [HtmlAttributeName(ValuesDictionaryName, DictionaryAttributePrefix = ValuesPrefix)]
     public IDictionary<string, string> Values
     {

@@ -31,6 +31,7 @@ public static class HttpResponseExtensions
     /// <summary>
     /// Configures the HTMX response headers when the current request is an HTMX request.
     /// </summary>
+    /// <typeparam name="TState">The type of the state passed to <paramref name="configure" />.</typeparam>
     /// <param name="response">The HTTP response to configure.</param>
     /// <param name="configure">The delegate that configures the HTMX response headers
     /// using <paramref name="state" />.</param>

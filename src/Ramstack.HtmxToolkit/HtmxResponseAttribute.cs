@@ -10,6 +10,11 @@ namespace Ramstack.HtmxToolkit;
 /// <summary>
 /// Specifies HTMX response headers to apply when an action result is executed for an HTMX request.
 /// </summary>
+/// <remarks>
+/// A property that is not set, or is set to <see langword="false" />, <see langword="null" />,
+/// or an empty string, adds no header. The specified headers replace any values that the action
+/// has already set for them.
+/// </remarks>
 [AttributeUsage(AttributeTargets.All, Inherited = false, AllowMultiple = true)]
 public sealed class HtmxResponseAttribute : Attribute, IResultFilter
 {
@@ -28,6 +33,11 @@ public sealed class HtmxResponseAttribute : Attribute, IResultFilter
     /// <summary>
     /// Gets or sets the swap style to specify in the <c>HX-Reswap</c> header.
     /// </summary>
+    /// <remarks>
+    /// Returns <see cref="HtmxSwap.InnerHtml" /> if no swap style is specified or the style
+    /// is not recognized. <see cref="ReswapExpression" /> sets the same header,
+    /// so specify only one of them.
+    /// </remarks>
     public HtmxSwap Reswap
     {
         get
@@ -41,6 +51,9 @@ public sealed class HtmxResponseAttribute : Attribute, IResultFilter
     /// <summary>
     /// Gets or sets the complete <c>HX-Reswap</c> header value, including any swap modifiers.
     /// </summary>
+    /// <remarks>
+    /// <see cref="Reswap" /> sets the same header, so specify only one of them.
+    /// </remarks>
     [MaybeNull]
     public string ReswapExpression
     {
@@ -102,7 +115,7 @@ public sealed class HtmxResponseAttribute : Attribute, IResultFilter
     }
 
     /// <summary>
-    /// Adds a nonempty response header value to the pending headers.
+    /// Adds a non-empty response header value to the pending headers.
     /// </summary>
     /// <param name="key">The name of the header.</param>
     /// <param name="value">The header value.</param>

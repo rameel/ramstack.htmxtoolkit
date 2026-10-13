@@ -25,7 +25,8 @@ public static class HtmxRequestHeaderNames
     /// </summary>
     /// <remarks>
     /// HTMX 1.x and 2.x send this header after a history cache miss.
-    /// HTMX 4.x refetches history content by default; local caching requires an extension.
+    /// HTMX 4.x has no local history cache unless an extension provides one,
+    /// so it sends this header with every history restoration request.
     /// </remarks>
     public const string HistoryRestoreRequest = "HX-History-Restore-Request";
 
@@ -35,7 +36,7 @@ public static class HtmxRequestHeaderNames
     /// <remarks>
     /// Supported natively in HTMX 1.x and 2.x. In HTMX 4.x, the
     /// <see href="https://four.htmx.org/extensions/hx-prompt">hx-prompt extension</see>
-    /// restores this header.
+    /// restores this header and URI-encodes its value.
     /// </remarks>
     public const string Prompt = "HX-Prompt";
 
@@ -52,7 +53,7 @@ public static class HtmxRequestHeaderNames
     /// <remarks>
     /// The value is <c>"partial"</c> for targeted swaps and <c>"full"</c> for body-level
     /// or <c>hx-select</c> requests. HTMX 4.x sends the header itself; for HTMX 1.x and 2.x,
-    /// the Toolkit script adds it.
+    /// the Toolkit script (<c>htmx-toolkit.js</c>) adds it.
     /// </remarks>
     public const string RequestType = "HX-Request-Type";
 
@@ -80,7 +81,7 @@ public static class HtmxRequestHeaderNames
 
     /// <summary>
     /// The <c>HX-Trigger-Name</c> header contains the <c>name</c> attribute of the element
-    /// that issued the request, if present.
+    /// that triggered the request, if present.
     /// </summary>
     /// <remarks>
     /// Supported only in HTMX 1.x and 2.x. HTMX 4.x identifies the source element with <c>HX-Source</c> instead.
@@ -88,7 +89,7 @@ public static class HtmxRequestHeaderNames
     public const string TriggerName = "HX-Trigger-Name";
 
     /// <summary>
-    /// The <c>HX-Trigger</c> header contains the ID of the element that issued the request, if present.
+    /// The <c>HX-Trigger</c> header contains the ID of the element that triggered the request, if present.
     /// </summary>
     /// <remarks>
     /// Supported only in HTMX 1.x and 2.x. HTMX 4.x identifies the source element with <c>HX-Source</c> instead.

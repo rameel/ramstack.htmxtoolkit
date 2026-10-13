@@ -107,7 +107,7 @@ render a token, as shown in the [forms tutorial](forms-and-validation.md).
 ## Token refresh after boosted navigation
 
 After a boosted navigation, the Toolkit script looks for antiforgery metadata in the response. If it contains
-a nonempty request token, the script updates the saved token and associated names. A fragment without token
+a non-empty request token, the script updates the saved token and associated names. A fragment without token
 metadata leaves the existing values in place.
 
 Keep `<htmx-config />` in full document layouts. After signing in, signing out, or changing identity,

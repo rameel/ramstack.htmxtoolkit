@@ -3,27 +3,27 @@ using Ramstack.HtmxToolkit.Internal;
 namespace Ramstack.HtmxToolkit;
 
 /// <summary>
-/// Represents the options for an <c>HX-Location</c> request.
+/// Represents the options for the <c>HX-Location</c> response header.
 /// </summary>
 public sealed class HtmxLocationOptions
 {
     /// <summary>
     /// Gets or sets the CSS selector for the element used as the source of the new request.
     /// </summary>
-    /// <remarks>Supported in HTMX 1.9.x, HTMX 2.x, and HTMX 4.x.</remarks>
+    /// <remarks>Supported in HTMX 1.x, HTMX 2.x, and HTMX 4.x.</remarks>
     public string? Source { get; set; }
 
     /// <summary>
-    /// Gets or sets the selector for the target element into which the response will be swapped.
+    /// Gets or sets the CSS selector for the target element into which the response will be swapped.
     /// </summary>
-    /// <remarks>Supported in HTMX 1.9.x, HTMX 2.x, and HTMX 4.x.</remarks>
+    /// <remarks>Supported in HTMX 1.x, HTMX 2.x, and HTMX 4.x.</remarks>
     public string? Target { get; set; }
 
     /// <summary>
     /// Gets or sets how the response will be swapped relative to the target element.
     /// </summary>
     /// <remarks>
-    /// <para>Supported in HTMX 1.9.x, HTMX 2.x, and HTMX 4.x.</para>
+    /// <para>Supported in HTMX 1.x, HTMX 2.x, and HTMX 4.x.</para>
     /// <para>
     ///   Reads the style from <see cref="SwapExpression" />, or returns <see langword="null" />
     ///   if the style is not recognized. Assigning a style replaces the complete expression,
@@ -39,16 +39,16 @@ public sealed class HtmxLocationOptions
     /// <summary>
     /// Gets or sets the complete swap expression, including any swap modifiers.
     /// </summary>
-    /// <remarks>Supported in HTMX 1.9.x, HTMX 2.x, and HTMX 4.x.</remarks>
+    /// <remarks>Supported in HTMX 1.x, HTMX 2.x, and HTMX 4.x.</remarks>
     public string? SwapExpression { get; set; }
 
     /// <summary>
     /// Gets or sets the form field values to submit with the request.
     /// </summary>
     /// <remarks>
-    /// <para>Supported in HTMX 1.9.x, HTMX 2.x, and HTMX 4.x.</para>
+    /// <para>Supported in HTMX 1.x, HTMX 2.x, and HTMX 4.x.</para>
     /// <para>
-    ///   HTMX 1.9.x and 2.x submit array values as repeated parameters.
+    ///   HTMX 1.x and 2.x submit array values as repeated parameters.
     ///   HTMX 4.0.0 converts an array to a single comma-separated field value.
     /// </para>
     /// </remarks>
@@ -59,7 +59,7 @@ public sealed class HtmxLocationOptions
     /// </summary>
     /// <remarks>
     /// <para>
-    ///   Supported in HTMX 1.9.x, HTMX 2.x, and HTMX 4.x.
+    ///   Supported in HTMX 1.x, HTMX 2.x, and HTMX 4.x.
     /// </para>
     /// <para>
     ///   Header values must be strings.
@@ -69,9 +69,9 @@ public sealed class HtmxLocationOptions
     public IDictionary<string, string>? Headers { get; set; }
 
     /// <summary>
-    /// Gets or sets a selector used to filter the content to swap from the response.
+    /// Gets or sets a CSS selector used to filter the content to swap from the response.
     /// </summary>
-    /// <remarks>Supported in HTMX 1.9.x, HTMX 2.x, and HTMX 4.x.</remarks>
+    /// <remarks>Supported in HTMX 1.x, HTMX 2.x, and HTMX 4.x.</remarks>
     public string? Select { get; set; }
 
     /// <summary>

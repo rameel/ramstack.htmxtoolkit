@@ -170,7 +170,7 @@ document._r_htmx ||= ((document, htmx) => {
         }
     });
 
-    // A JSON object cannot hold repeated names, so when an event name repeats, the server
+    // JSON.parse keeps only the last of repeated names, so when an event name repeats, the server
     // sends all events of the header under "rs:event". Each event is prepared the way HTMX
     // prepares an HX-Trigger entry before passing it to htmx.trigger.
     listen("rs:event", e => {

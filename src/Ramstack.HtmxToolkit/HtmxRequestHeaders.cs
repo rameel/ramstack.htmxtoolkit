@@ -35,6 +35,7 @@ public readonly struct HtmxRequestHeaders
     /// </summary>
     /// <remarks>
     /// The header name is <see cref="HtmxRequestHeaderNames.CurrentUrl" />.
+    /// If the header is not present, the property returns <see langword="null" />.
     /// </remarks>
     public string? CurrentUrl => GetString(_headers, HtmxRequestHeaderNames.CurrentUrl);
 
@@ -45,7 +46,8 @@ public readonly struct HtmxRequestHeaders
     /// <para>The header name is <see cref="HtmxRequestHeaderNames.HistoryRestoreRequest" />.</para>
     /// <para>
     ///   HTMX 1.x and 2.x send this header after a history cache miss.
-    ///   HTMX 4.x refetches history content by default; local caching requires an extension.
+    ///   HTMX 4.x has no local history cache unless an extension provides one,
+    ///   so it sends this header with every history restoration request.
     /// </para>
     /// </remarks>
     public bool HistoryRestoreRequest => GetBoolean(_headers, HtmxRequestHeaderNames.HistoryRestoreRequest);
@@ -54,11 +56,14 @@ public readonly struct HtmxRequestHeaders
     /// Gets the user's response to an <c>hx-prompt</c> on the client.
     /// </summary>
     /// <remarks>
-    /// <para>The header name is <see cref="HtmxRequestHeaderNames.Prompt" />.</para>
+    /// <para>
+    ///   The header name is <see cref="HtmxRequestHeaderNames.Prompt" />.
+    ///   If the header is not present, the property returns <see langword="null" />.
+    /// </para>
     /// <para>
     ///   Supported natively in HTMX 1.x and 2.x. In HTMX 4.x, the
     ///   <see href="https://four.htmx.org/extensions/hx-prompt">hx-prompt extension</see>
-    ///   restores this header.
+    ///   restores this header and URI-encodes its value.
     /// </para>
     /// </remarks>
     public string? Prompt => GetString(_headers, HtmxRequestHeaderNames.Prompt);
@@ -72,16 +77,18 @@ public readonly struct HtmxRequestHeaders
     public bool Request => _headers.ContainsKey(HtmxRequestHeaderNames.Request);
 
     /// <summary>
-    /// Gets the type of the expected response, either a partial or a full page.
+    /// Gets the type of the expected response.
     /// </summary>
     /// <remarks>
     /// <para>
     ///   The header name is <see cref="HtmxRequestHeaderNames.RequestType" />.
+    ///   If the header is not present or its value is not recognized,
+    ///   the property returns <see cref="HtmxRequestType.Unspecified" />.
     /// </para>
     /// <para>
     ///   The value is <c>"partial"</c> for targeted swaps and <c>"full"</c> for body-level
     ///   or <c>hx-select</c> requests. HTMX 4.x sends the header itself; for HTMX 1.x and 2.x,
-    ///   the Toolkit script adds it.
+    ///   the Toolkit script (<c>htmx-toolkit.js</c>) adds it.
     /// </para>
     /// <para>
     ///   A history restoration request without the header is reported as
@@ -123,7 +130,10 @@ public readonly struct HtmxRequestHeaders
     /// Gets the identifier of the element that triggered the request.
     /// </summary>
     /// <remarks>
-    /// <para>The header name is <see cref="HtmxRequestHeaderNames.Source" />.</para>
+    /// <para>
+    ///   The header name is <see cref="HtmxRequestHeaderNames.Source" />.
+    ///   If the header is not present, the property returns <see langword="null" />.
+    /// </para>
     /// <para>
     ///   Supported only in HTMX 4.x. The value contains the lowercase tag name and,
     ///   when the element has an ID, <c>#</c> followed by its URI-encoded ID.
@@ -133,11 +143,17 @@ public readonly struct HtmxRequestHeaders
     public string? Source => GetString(_headers, HtmxRequestHeaderNames.Source);
 
     /// <summary>
-    /// Gets the identifier of the target element, if present.
+    /// Gets the identifier of the target element.
     /// </summary>
     /// <remarks>
-    /// <para>The header name is <see cref="HtmxRequestHeaderNames.Target" />.</para>
-    /// <para>In HTMX 1.x and 2.x, the value is the ID of the target element.</para>
+    /// <para>
+    ///   The header name is <see cref="HtmxRequestHeaderNames.Target" />.
+    ///   If the header is not present, the property returns <see langword="null" />.
+    /// </para>
+    /// <para>
+    ///   In HTMX 1.x and 2.x, the value is the ID of the target element;
+    ///   the header is omitted when the target element has no ID.
+    /// </para>
     /// <para>
     ///   In HTMX 4.x, the value contains the lowercase tag name and,
     ///   when the element has an ID, <c>#</c> followed by its URI-encoded ID.
@@ -147,25 +163,32 @@ public readonly struct HtmxRequestHeaders
     public string? Target => GetString(_headers, HtmxRequestHeaderNames.Target);
 
     /// <summary>
-    /// Gets the <c>name</c> attribute of the element that issued the request, if present.
+    /// Gets the <c>name</c> attribute of the element that triggered the request.
     /// </summary>
     /// <remarks>
-    /// <para>The header name is <see cref="HtmxRequestHeaderNames.TriggerName" />.</para>
     /// <para>
-    ///   Supported only in HTMX 1.x and 2.x; HTMX 4.x identifies the source element
+    ///   The header name is <see cref="HtmxRequestHeaderNames.TriggerName" />.
+    ///   If the header is not present, the property returns <see langword="null" />.
+    /// </para>
+    /// <para>
+    ///   Supported only in HTMX 1.x and 2.x, which omit the header when the element
+    ///   has no <c>name</c> attribute; HTMX 4.x identifies the source element
     ///   with <c>HX-Source</c> instead.
     /// </para>
     /// </remarks>
     public string? TriggerName => GetString(_headers, HtmxRequestHeaderNames.TriggerName);
 
     /// <summary>
-    /// Gets the ID of the element that issued the request, if present.
+    /// Gets the ID of the element that triggered the request.
     /// </summary>
     /// <remarks>
-    /// <para>The header name is <see cref="HtmxRequestHeaderNames.Trigger" />.</para>
     /// <para>
-    ///   Supported only in HTMX 1.x and 2.x; HTMX 4.x identifies the source element
-    ///   with <c>HX-Source</c> instead.
+    ///   The header name is <see cref="HtmxRequestHeaderNames.Trigger" />.
+    ///   If the header is not present, the property returns <see langword="null" />.
+    /// </para>
+    /// <para>
+    ///   Supported only in HTMX 1.x and 2.x, which omit the header when the element
+    ///   has no ID; HTMX 4.x identifies the source element with <c>HX-Source</c> instead.
     /// </para>
     /// </remarks>
     public string? Trigger => GetString(_headers, HtmxRequestHeaderNames.Trigger);

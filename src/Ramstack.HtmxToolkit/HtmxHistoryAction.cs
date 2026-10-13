@@ -1,7 +1,7 @@
 namespace Ramstack.HtmxToolkit;
 
 /// <summary>
-/// Specifies how an <c>HX-Location</c> request updates the browser history.
+/// Specifies how an <c>HX-Location</c> redirect updates the browser history.
 /// </summary>
 /// <remarks>Response headers from the loaded page can override the requested history action.</remarks>
 public enum HtmxHistoryAction
@@ -9,7 +9,7 @@ public enum HtmxHistoryAction
     /// <summary>
     /// Adds a new entry to the browser history.
     /// </summary>
-    /// <remarks>Supported in HTMX 1.9.x, HTMX 2.x, and HTMX 4.x.</remarks>
+    /// <remarks>Supported in HTMX 1.x, HTMX 2.x, and HTMX 4.x.</remarks>
     Push,
 
     /// <summary>

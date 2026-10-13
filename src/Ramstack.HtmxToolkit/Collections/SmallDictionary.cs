@@ -274,7 +274,7 @@ internal sealed class SmallDictionary<TKey, TValue> : IDictionary<TKey, TValue>,
     #endregion
 
     /// <summary>
-    /// Ensures that the dictionary can hold the specified number of entries without resizing.
+    /// Grows the storage so that it can hold at least the specified number of entries.
     /// </summary>
     /// <param name="capacity">The minimum number of entries
     /// that the dictionary must be able to hold.</param>
@@ -740,7 +740,7 @@ internal sealed class SmallDictionary<TKey, TValue> : IDictionary<TKey, TValue>,
         #region Inner type: Enumerator
 
         /// <summary>
-        /// Enumerates the values in a <see cref="SmallDictionary{TKey,TValue}" />.
+        /// Represents an enumerator for the values in a <see cref="SmallDictionary{TKey,TValue}" />.
         /// </summary>
         public struct Enumerator : IEnumerator<TValue>
         {

@@ -1,7 +1,7 @@
 namespace Ramstack.HtmxToolkit;
 
 /// <summary>
-/// Specifies the response header used to trigger client-side events.
+/// Specifies when client-side events are triggered, by selecting the response header that carries them.
 /// </summary>
 public enum HtmxTriggerTiming
 {

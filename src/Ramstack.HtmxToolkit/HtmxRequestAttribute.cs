@@ -18,11 +18,12 @@ public sealed class HtmxRequestAttribute : Attribute, IActionConstraint
     /// <para>
     ///   The default, <see cref="HtmxRequestType.Unspecified" />, does not restrict the request type.
     ///   Other values require a matching <see cref="HtmxRequestHeaders.RequestType" />.
+    ///   When <see cref="BoostedFilter" /> is also set, both conditions must be satisfied.
     /// </para>
     /// <para>
-    ///   HTMX 1.x and 2.x send the <c>HX-Request-Type</c> header only when the page includes
-    ///   the Toolkit script.
-    ///   When <see cref="BoostedFilter" /> is also set, both conditions must be satisfied.
+    ///   HTMX 4.x sends the <c>HX-Request-Type</c> header itself; for HTMX 1.x and 2.x,
+    ///   the Toolkit script (<c>htmx-toolkit.js</c>) adds it. A history restoration request
+    ///   without the header matches <see cref="HtmxRequestType.Full" />.
     /// </para>
     /// </remarks>
     public HtmxRequestType RequestType { get; set; }

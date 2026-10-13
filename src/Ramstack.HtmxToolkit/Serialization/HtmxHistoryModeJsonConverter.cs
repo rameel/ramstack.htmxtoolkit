@@ -7,9 +7,12 @@ using Ramstack.HtmxToolkit.Configuration;
 namespace Ramstack.HtmxToolkit.Serialization;
 
 /// <summary>
-/// Converts <see cref="HtmxHistoryMode" /> values to the JSON representation expected
-/// by the <c>history</c> configuration option.
+/// Represents a <see cref="JsonConverter{T}" /> for nullable <see cref="HtmxHistoryMode" /> values.
 /// </summary>
+/// <remarks>
+/// Writes the <c>history</c> value expected by HTMX: <see langword="true" />,
+/// <see langword="false" />, or <c>"reload"</c>.
+/// </remarks>
 internal sealed class HtmxHistoryModeJsonConverter : JsonConverter<HtmxHistoryMode?>
 {
     /// <summary>

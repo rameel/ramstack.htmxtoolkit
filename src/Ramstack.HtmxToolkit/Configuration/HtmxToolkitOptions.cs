@@ -53,9 +53,6 @@ public sealed class HtmxToolkitOptions
     /// <returns>
     /// The current options instance.
     /// </returns>
-    /// <exception cref="InvalidOperationException">
-    /// A different HTMX major version has already been selected.
-    /// </exception>
     [MemberNotNull(nameof(_config))]
     public HtmxToolkitOptions UseHtmxV1(Action<HtmxV1Config>? configure = null)
     {
@@ -71,9 +68,6 @@ public sealed class HtmxToolkitOptions
     /// <returns>
     /// The current options instance.
     /// </returns>
-    /// <exception cref="InvalidOperationException">
-    /// A different HTMX major version has already been selected.
-    /// </exception>
     [MemberNotNull(nameof(_config))]
     public HtmxToolkitOptions UseHtmxV2(Action<HtmxV2Config>? configure = null)
     {
@@ -89,9 +83,6 @@ public sealed class HtmxToolkitOptions
     /// <returns>
     /// The current options instance.
     /// </returns>
-    /// <exception cref="InvalidOperationException">
-    /// A different HTMX major version has already been selected.
-    /// </exception>
     [MemberNotNull(nameof(_config))]
     public HtmxToolkitOptions UseHtmxV4(Action<HtmxV4Config>? configure = null)
     {
@@ -107,9 +98,11 @@ public sealed class HtmxToolkitOptions
     /// <returns>
     /// The requested configuration instance.
     /// </returns>
-    /// <exception cref="InvalidOperationException">
-    /// <typeparamref name="TConfig" /> does not match the selected HTMX major version.
-    /// </exception>
+    /// <remarks>
+    /// If no version has been selected, HTMX 2.x is selected, as when reading <see cref="HtmxConfig" />.
+    /// Throws <see cref="InvalidOperationException" /> if the configuration of the selected version
+    /// is not a <typeparamref name="TConfig" />.
+    /// </remarks>
     public TConfig GetHtmxConfig<TConfig>() where TConfig : HtmxConfig
     {
         if (HtmxConfig is TConfig config)

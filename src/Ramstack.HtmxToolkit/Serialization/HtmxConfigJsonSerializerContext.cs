@@ -5,7 +5,7 @@ using Ramstack.HtmxToolkit.Configuration;
 namespace Ramstack.HtmxToolkit.Serialization;
 
 /// <summary>
-/// Represents source-generated JSON serialization metadata for HTMX configuration data.
+/// Provides source-generated JSON serialization metadata for HTMX configuration data.
 /// </summary>
 [JsonSourceGenerationOptions(
     WriteIndented = false,

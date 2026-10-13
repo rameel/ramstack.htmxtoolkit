@@ -4,8 +4,12 @@ using System.Text.Json.Serialization;
 namespace Ramstack.HtmxToolkit.Serialization;
 
 /// <summary>
-/// Converts the boolean <c>triggerSpecsCache</c> abstraction to its HTMX JSON representation.
+/// Represents a <see cref="JsonConverter{T}" /> for the <c>TriggerSpecsCacheEnabled</c> configuration option.
 /// </summary>
+/// <remarks>
+/// Writes the <c>triggerSpecsCache</c> value expected by HTMX:
+/// an empty object when enabled, otherwise <see langword="null" />.
+/// </remarks>
 internal sealed class HtmxTriggerSpecsCacheJsonConverter : JsonConverter<bool?>
 {
     /// <inheritdoc />

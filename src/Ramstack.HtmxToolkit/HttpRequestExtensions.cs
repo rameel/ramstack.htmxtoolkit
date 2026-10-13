@@ -8,7 +8,8 @@ namespace Ramstack.HtmxToolkit;
 public static class HttpRequestExtensions
 {
     /// <summary>
-    /// Determines whether the specified HTTP request is an HTMX request.
+    /// Determines whether the specified HTTP request is an HTMX request
+    /// by checking for the <c>HX-Request</c> header.
     /// </summary>
     /// <param name="request">The HTTP request.</param>
     /// <returns>
@@ -19,11 +20,14 @@ public static class HttpRequestExtensions
         request.GetHtmxHeaders().Request;
 
     /// <summary>
-    /// Determines whether the specified HTTP request is an HTMX request.
+    /// Determines whether the specified HTTP request is an HTMX request
+    /// by checking for the <c>HX-Request</c> header.
     /// </summary>
     /// <param name="request">The HTTP request.</param>
-    /// <param name="headers">When this method returns, contains the <see cref="HtmxRequestHeaders" />
-    /// that provides access to well-known HTMX headers.</param>
+    /// <param name="headers">
+    /// When this method returns, contains a strongly typed view of the HTMX request headers.
+    /// The value is set even when the method returns <see langword="false" />.
+    /// </param>
     /// <returns>
     /// <see langword="true" /> if the specified HTTP request is an HTMX request;
     /// otherwise, <see langword="false" />.
