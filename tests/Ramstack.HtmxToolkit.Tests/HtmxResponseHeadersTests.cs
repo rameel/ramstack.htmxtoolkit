@@ -91,7 +91,7 @@ public class HtmxResponseHeadersTests
         var context = TestHelper.CreateHttpContext();
         var headers = context.Response.GetHtmxHeaders();
 
-        headers.Location = null!;
+        headers.Location = null;
 
         Assert.That(context.Response.Headers.ContainsKey(HtmxResponseHeaderNames.Location), Is.False);
     }
