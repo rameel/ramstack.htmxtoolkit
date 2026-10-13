@@ -53,10 +53,11 @@ document._r_htmx ||= ((document, htmx) => {
                             target.setAttribute(attr.name, attr.value);
                         }
 
-                        let nodes = source.childNodes;
-                        target.replaceChildren(...nodes);
+                        target.replaceChildren(...source.childNodes);
 
-                        return nodes;
+                        // Like HTMX 4.x, report the target itself: HTMX processes it with
+                        // its new children and re-initializes it if its attributes changed.
+                        return [target];
                     }
 
                 }
