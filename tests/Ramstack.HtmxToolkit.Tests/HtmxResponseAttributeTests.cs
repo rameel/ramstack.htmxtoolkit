@@ -41,6 +41,19 @@ public class HtmxResponseAttributeTests
     }
 
     [Test]
+    public void OnResultExecuting_SetsNoHeaders_ForHistoryRestoreRequest()
+    {
+        var ctx = TestHelper.CreateHttpContext(
+            (HtmxRequestHeaderNames.Request, "true"),
+            (HtmxRequestHeaderNames.HistoryRestoreRequest, "true"));
+        var res = new HtmxResponseAttribute { Retarget = "#content" };
+
+        res.OnResultExecuting(CreateContext(ctx));
+
+        Assert.That(ctx.Response.Headers.ContainsKey(HtmxResponseHeaderNames.Retarget), Is.False);
+    }
+
+    [Test]
     public void Properties_RoundTrips()
     {
         var res = new HtmxResponseAttribute

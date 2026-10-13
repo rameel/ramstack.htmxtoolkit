@@ -7,7 +7,7 @@ and response events use the behavior expected by that version.
 
 | Information | HTMX 1.9.x / 2.x | HTMX 4.x | Toolkit property |
 |---|---|---|---|
-| HTMX request marker | `HX-Request` | `HX-Request` | `Request` |
+| HTMX request marker | `HX-Request`, by default also on history restoration | `HX-Request`, except on history restoration | `Request` |
 | Boosted navigation | `HX-Boosted` | `HX-Boosted` | `Boosted` |
 | Current browser URL | `HX-Current-URL` | `HX-Current-URL` | `CurrentUrl` |
 | History cache miss | `HX-History-Restore-Request` | `HX-History-Restore-Request` | `HistoryRestoreRequest` |
@@ -16,6 +16,8 @@ and response events use the behavior expected by that version.
 | Prompt result | `HX-Prompt` | `HX-Prompt` from the `hx-prompt` extension, URI-encoded | `Prompt` |
 | Expected response | `HX-Request-Type`, added by the Toolkit script | `HX-Request-Type`: `partial` or `full` | `RequestType` |
 
+`IsHtmxRequest()` returns `false` for history restoration in every version,
+even when HTMX 1.9.x or 2.x sends `HX-Request` with it; see [Handle history restoration](requests.md#handle-history-restoration).
 In HTMX 4.x, a target value such as `div#results` includes the tag name as well as the ID.
 Code shared across versions should tolerate null for version-specific string properties.
 `RequestType` is `HtmxRequestType.Unspecified` for HTMX 1.9.x and 2.x requests from a page without the Toolkit script.

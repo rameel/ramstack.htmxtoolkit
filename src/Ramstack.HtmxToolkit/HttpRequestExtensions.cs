@@ -8,20 +8,27 @@ namespace Ramstack.HtmxToolkit;
 public static class HttpRequestExtensions
 {
     /// <summary>
-    /// Determines whether the specified HTTP request is an HTMX request
-    /// by checking for the <c>HX-Request</c> header.
+    /// Determines whether the specified HTTP request is an HTMX request.
     /// </summary>
     /// <param name="request">The HTTP request.</param>
     /// <returns>
-    /// <see langword="true" /> if the specified HTTP request is an HTMX request;
-    /// otherwise, <see langword="false" />.
+    /// <see langword="true" /> if the request has the <c>HX-Request</c> header
+    /// and is not a history restoration request; otherwise, <see langword="false" />.
     /// </returns>
+    /// <remarks>
+    /// <para>
+    ///   HTMX treats history restoration as a full page load rather than an HTMX request.
+    ///   HTMX 4.x sends it without <c>HX-Request</c>, but HTMX 1.9.x and 2.x send that header by default,
+    ///   so the method also checks <see cref="HtmxRequestHeaders.HistoryRestoreRequest" />.
+    ///   See <see href="https://github.com/bigskysoftware/htmx/issues/4139#issuecomment-6135080415">issue #4139</see>.
+    /// </para>
+    /// <para><see cref="HtmxRequestHeaders.Request" /> reports the <c>HX-Request</c> header alone.</para>
+    /// </remarks>
     public static bool IsHtmxRequest(this HttpRequest request) =>
-        request.GetHtmxHeaders().Request;
+        request.IsHtmxRequest(out _);
 
     /// <summary>
-    /// Determines whether the specified HTTP request is an HTMX request
-    /// by checking for the <c>HX-Request</c> header.
+    /// Determines whether the specified HTTP request is an HTMX request.
     /// </summary>
     /// <param name="request">The HTTP request.</param>
     /// <param name="headers">
@@ -29,13 +36,16 @@ public static class HttpRequestExtensions
     /// The value is set even when the method returns <see langword="false" />.
     /// </param>
     /// <returns>
-    /// <see langword="true" /> if the specified HTTP request is an HTMX request;
-    /// otherwise, <see langword="false" />.
+    /// <see langword="true" /> if the request has the <c>HX-Request</c> header
+    /// and is not a history restoration request; otherwise, <see langword="false" />.
     /// </returns>
+    /// <remarks>
+    /// See <see cref="IsHtmxRequest(HttpRequest)" />.
+    /// </remarks>
     public static bool IsHtmxRequest(this HttpRequest request, out HtmxRequestHeaders headers)
     {
         headers = new HtmxRequestHeaders(request);
-        return headers.Request;
+        return headers is { Request: true, HistoryRestoreRequest: false };
     }
 
     /// <summary>

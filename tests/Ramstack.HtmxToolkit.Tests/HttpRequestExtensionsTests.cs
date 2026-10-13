@@ -28,6 +28,19 @@ public class HttpRequestExtensionsTests
         Assert.That(headers.Target, Is.EqualTo("foo"));
     }
 
+    [TestCase("true", false)]
+    [TestCase("false", true)]
+    public void IsHtmxRequest_ExcludesHistoryRestoreRequest(string historyRestoreRequest, bool expected)
+    {
+        var context = TestHelper.CreateHttpContext(
+            (HtmxRequestHeaderNames.Request, "true"),
+            (HtmxRequestHeaderNames.HistoryRestoreRequest, historyRestoreRequest));
+
+        Assert.That(context.Request.IsHtmxRequest(), Is.EqualTo(expected));
+        Assert.That(context.Request.IsHtmxRequest(out var headers), Is.EqualTo(expected));
+        Assert.That(headers.Request, Is.True);
+    }
+
     [Test]
     public void IsHtmxBoosted_ReturnsExpectedValue()
     {

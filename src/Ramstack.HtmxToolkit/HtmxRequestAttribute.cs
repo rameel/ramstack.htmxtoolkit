@@ -5,6 +5,12 @@ namespace Ramstack.HtmxToolkit;
 /// <summary>
 /// Restricts an action to HTMX requests.
 /// </summary>
+/// <remarks>
+/// The attribute accepts the requests for which
+/// <see cref="HttpRequestExtensions.IsHtmxRequest(Microsoft.AspNetCore.Http.HttpRequest)" /> returns
+/// <see langword="true" />. History restoration requests are not among them, because HTMX treats them
+/// as full page loads, so MVC selects an action without the attribute for the same route.
+/// </remarks>
 [AttributeUsage(AttributeTargets.Method)]
 public sealed class HtmxRequestAttribute : Attribute, IActionConstraint
 {
@@ -22,8 +28,7 @@ public sealed class HtmxRequestAttribute : Attribute, IActionConstraint
     /// </para>
     /// <para>
     ///   HTMX 4.x sends the <c>HX-Request-Type</c> header itself; for HTMX 1.9.x and 2.x,
-    ///   the Toolkit script (<c>htmx-toolkit.js</c>) adds it. A history restoration request
-    ///   without the header matches <see cref="HtmxRequestType.Full" />.
+    ///   the Toolkit script (<c>htmx-toolkit.js</c>) adds it.
     /// </para>
     /// </remarks>
     public HtmxRequestType RequestType { get; set; }

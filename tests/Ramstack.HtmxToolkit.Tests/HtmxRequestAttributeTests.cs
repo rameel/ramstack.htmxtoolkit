@@ -76,15 +76,29 @@ public class HtmxRequestAttributeTests
         Assert.That(req.Accept(CreateContext(ctx)), Is.EqualTo(expected));
     }
 
-    [TestCase(HtmxRequestType.Full, true)]
-    [TestCase(HtmxRequestType.Partial, false)]
-    public void Accept_TreatsHistoryRestoreRequestAsFull(HtmxRequestType requestType, bool expected)
+    [TestCase(HtmxRequestType.Unspecified, true, null)]
+    [TestCase(HtmxRequestType.Full, true, null)]
+    [TestCase(HtmxRequestType.Partial, true, null)]
+    [TestCase(HtmxRequestType.Unspecified, false, null)]
+    [TestCase(HtmxRequestType.Full, false, null)]
+    [TestCase(HtmxRequestType.Partial, false, null)]
+    [TestCase(HtmxRequestType.Unspecified, false, "full")]
+    [TestCase(HtmxRequestType.Full, false, "full")]
+    [TestCase(HtmxRequestType.Partial, false, "full")]
+    public void Accept_ReturnsFalse_ForHistoryRestoreRequest(HtmxRequestType requestType, bool hxRequest, string? requestTypeHeader)
     {
+        // HTMX 1.9.x and 2.x send HX-Request by default, HTMX 2.x with historyRestoreAsHxRequest: false
+        // sends neither HX-Request nor HX-Request-Type, and HTMX 4.x sends only HX-Request-Type: full.
         var req = new HtmxRequestAttribute { RequestType = requestType };
-        var ctx = TestHelper.CreateHtmxRequestContext();
-        ctx.Request.Headers[HtmxRequestHeaderNames.HistoryRestoreRequest] = "true";
+        var ctx = TestHelper.CreateHttpContext((HtmxRequestHeaderNames.HistoryRestoreRequest, "true"));
 
-        Assert.That(req.Accept(CreateContext(ctx)), Is.EqualTo(expected));
+        if (hxRequest)
+            ctx.Request.Headers[HtmxRequestHeaderNames.Request] = "true";
+
+        if (requestTypeHeader is not null)
+            ctx.Request.Headers[HtmxRequestHeaderNames.RequestType] = requestTypeHeader;
+
+        Assert.That(req.Accept(CreateContext(ctx)), Is.False);
     }
 
     [TestCase(HtmxRequestType.Full, HtmxBoostedFilter.Boosted, "full", true, true)]
