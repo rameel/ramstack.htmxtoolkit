@@ -17,7 +17,7 @@ public static class HttpRequestExtensions
     /// otherwise, <see langword="false" />.
     /// </returns>
     public static bool IsHtmxRequest(this HttpRequest request) =>
-        request.GetHtmxHeaders().Request;
+        request.IsHtmxRequest(out _);
 
     /// <summary>
     /// Determines whether the specified HTTP request is an HTMX request
@@ -35,7 +35,7 @@ public static class HttpRequestExtensions
     public static bool IsHtmxRequest(this HttpRequest request, out HtmxRequestHeaders headers)
     {
         headers = new HtmxRequestHeaders(request);
-        return headers.Request;
+        return headers is { Request: true, HistoryRestoreRequest: false };
     }
 
     /// <summary>

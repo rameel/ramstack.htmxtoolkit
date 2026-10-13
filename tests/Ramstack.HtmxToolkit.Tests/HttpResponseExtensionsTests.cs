@@ -55,6 +55,20 @@ public class HttpResponseExtensionsTests
     }
 
     [Test]
+    public void Htmx_DoesNotRunConfigure_ForHistoryRestoreRequest()
+    {
+        var invoked = false;
+        var context = TestHelper.CreateHttpContext(
+            (HtmxRequestHeaderNames.Request, "true"),
+            (HtmxRequestHeaderNames.HistoryRestoreRequest, "true"));
+
+        context.Response.Htmx(_ => invoked = true);
+        context.Response.Htmx((_, _) => invoked = true, 0);
+
+        Assert.That(invoked, Is.False);
+    }
+
+    [Test]
     public void GetHtmxHeaders_ReturnsHeadersForResponse()
     {
         var context = TestHelper.CreateHtmxRequestContext();
