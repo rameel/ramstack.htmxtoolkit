@@ -45,7 +45,7 @@ public readonly struct HtmxRequestHeaders
     /// <remarks>
     /// <para>The header name is <see cref="HtmxRequestHeaderNames.HistoryRestoreRequest" />.</para>
     /// <para>
-    ///   HTMX 1.x and 2.x send this header after a history cache miss.
+    ///   HTMX 1.9.x and 2.x send this header after a history cache miss.
     ///   HTMX 4.x has no local history cache unless an extension provides one,
     ///   so it sends this header with every history restoration request.
     /// </para>
@@ -61,7 +61,7 @@ public readonly struct HtmxRequestHeaders
     ///   If the header is not present, the property returns <see langword="null" />.
     /// </para>
     /// <para>
-    ///   Supported natively in HTMX 1.x and 2.x. In HTMX 4.x, the
+    ///   Supported natively in HTMX 1.9.x and 2.x. In HTMX 4.x, the
     ///   <see href="https://four.htmx.org/extensions/hx-prompt">hx-prompt extension</see>
     ///   restores this header and URI-encodes its value.
     /// </para>
@@ -87,7 +87,7 @@ public readonly struct HtmxRequestHeaders
     /// </para>
     /// <para>
     ///   The value is <c>"partial"</c> for targeted swaps and <c>"full"</c> for body-level
-    ///   or <c>hx-select</c> requests. HTMX 4.x sends the header itself; for HTMX 1.x and 2.x,
+    ///   or <c>hx-select</c> requests. HTMX 4.x sends the header itself; for HTMX 1.9.x and 2.x,
     ///   the Toolkit script (<c>htmx-toolkit.js</c>) adds it.
     /// </para>
     /// <para>
@@ -115,7 +115,7 @@ public readonly struct HtmxRequestHeaders
                     return HtmxRequestType.Unspecified;
                 }
 
-                // HTMX 1.x and 2.x send history restoration requests without HX-Request-Type.
+                // HTMX 1.9.x and 2.x send history restoration requests without HX-Request-Type.
                 if (GetBoolean(dictionary, HtmxRequestHeaderNames.HistoryRestoreRequest))
                     return HtmxRequestType.Full;
 
@@ -151,7 +151,7 @@ public readonly struct HtmxRequestHeaders
     ///   If the header is not present, the property returns <see langword="null" />.
     /// </para>
     /// <para>
-    ///   In HTMX 1.x and 2.x, the value is the ID of the target element;
+    ///   In HTMX 1.9.x and 2.x, the value is the ID of the target element;
     ///   the header is omitted when the target element has no ID.
     /// </para>
     /// <para>
@@ -171,7 +171,7 @@ public readonly struct HtmxRequestHeaders
     ///   If the header is not present, the property returns <see langword="null" />.
     /// </para>
     /// <para>
-    ///   Supported only in HTMX 1.x and 2.x, which omit the header when the element
+    ///   Supported only in HTMX 1.9.x and 2.x, which omit the header when the element
     ///   has no <c>name</c> attribute; HTMX 4.x identifies the source element
     ///   with <c>HX-Source</c> instead.
     /// </para>
@@ -187,7 +187,7 @@ public readonly struct HtmxRequestHeaders
     ///   If the header is not present, the property returns <see langword="null" />.
     /// </para>
     /// <para>
-    ///   Supported only in HTMX 1.x and 2.x, which omit the header when the element
+    ///   Supported only in HTMX 1.9.x and 2.x, which omit the header when the element
     ///   has no ID; HTMX 4.x identifies the source element with <c>HX-Source</c> instead.
     /// </para>
     /// </remarks>

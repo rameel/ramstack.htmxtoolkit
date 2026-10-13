@@ -99,7 +99,7 @@ See [Antiforgery and Toolkit script](antiforgery.md) before disabling this behav
 
 ## Version-specific settings
 
-- [HTMX 1.x configuration](configuration-v1.md)
+- [HTMX 1.9.x configuration](configuration-v1.md)
 - [HTMX 2.x configuration](configuration-v2.md)
 - [HTMX 4.x configuration](configuration-v4.md)
 - [Version compatibility](version-compatibility.md)

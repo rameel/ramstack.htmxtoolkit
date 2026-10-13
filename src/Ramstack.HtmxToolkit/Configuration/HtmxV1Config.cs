@@ -6,7 +6,7 @@ using Ramstack.HtmxToolkit.Serialization;
 namespace Ramstack.HtmxToolkit.Configuration;
 
 /// <summary>
-/// Represents the configuration for HTMX 1.x.
+/// Represents the configuration for HTMX 1.9.x.
 /// </summary>
 public sealed class HtmxV1Config() : HtmxConfig(HtmxTargetVersion.V1)
 {

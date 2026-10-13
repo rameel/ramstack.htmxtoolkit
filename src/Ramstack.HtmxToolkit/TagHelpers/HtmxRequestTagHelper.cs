@@ -10,10 +10,10 @@ using Ramstack.HtmxToolkit.Serialization;
 namespace Ramstack.HtmxToolkit.TagHelpers;
 
 /// <summary>
-/// Renders request options as <c>hx-request</c> (HTMX 1.x and 2.x) or <c>hx-config</c> (HTMX 4.x).
+/// Renders request options as <c>hx-request</c> (HTMX 1.9.x and 2.x) or <c>hx-config</c> (HTMX 4.x).
 /// </summary>
 /// <remarks>
-/// <para>HTMX 1.x and 2.x merge-inherit <c>hx-request</c> from parent elements.</para>
+/// <para>HTMX 1.9.x and 2.x merge-inherit <c>hx-request</c> from parent elements.</para>
 /// <para>
 ///   HTMX 4.x supports the <c>inherited</c> and <c>append</c> modifiers on <c>hx-config</c>
 ///   and can enable inheritance globally with <see cref="HtmxV4Config.ImplicitInheritance" />.
@@ -53,7 +53,7 @@ public sealed class HtmxRequestTagHelper(IOptions<HtmxToolkitOptions> options) :
     /// </summary>
     /// <remarks>
     /// <para>
-    ///   HTMX 1.x and 2.x merge-inherit request configuration without a modifier,
+    ///   HTMX 1.9.x and 2.x merge-inherit request configuration without a modifier,
     ///   so the property does not change the generated attribute name for them.
     /// </para>
     /// <para>
@@ -68,7 +68,7 @@ public sealed class HtmxRequestTagHelper(IOptions<HtmxToolkitOptions> options) :
     /// Gets or sets a value indicating whether the generated attribute is appended to inherited configuration.
     /// </summary>
     /// <remarks>
-    /// <para>The property does not change the generated attribute name for HTMX 1.x and 2.x.</para>
+    /// <para>The property does not change the generated attribute name for HTMX 1.9.x and 2.x.</para>
     /// <para>
     ///   For HTMX 4.x, the tag helper emits the <c>append</c> modifier
     ///   when this property is <see langword="true" />.
@@ -80,7 +80,7 @@ public sealed class HtmxRequestTagHelper(IOptions<HtmxToolkitOptions> options) :
     /// <summary>
     /// Gets or sets the timeout for the request in milliseconds.
     /// </summary>
-    /// <remarks>Supported in HTMX 1.x, 2.x, and 4.x.</remarks>
+    /// <remarks>Supported in HTMX 1.9.x, 2.x, and 4.x.</remarks>
     [HtmlAttributeName(RequestTimeoutAttributeName)]
     public int? Timeout
     {
@@ -93,7 +93,7 @@ public sealed class HtmxRequestTagHelper(IOptions<HtmxToolkitOptions> options) :
     /// </summary>
     /// <remarks>
     /// <para>
-    ///   In HTMX 1.x and 2.x, this property maps to the boolean
+    ///   In HTMX 1.9.x and 2.x, this property maps to the boolean
     ///   <c>credentials</c> option of <c>hx-request</c>.
     ///   <see cref="HtmxRequestCredentials.Include" /> yields <see langword="true" />.
     ///   <see cref="HtmxRequestCredentials.SameOrigin" /> yields <see langword="false" />.
@@ -117,7 +117,7 @@ public sealed class HtmxRequestTagHelper(IOptions<HtmxToolkitOptions> options) :
     /// including custom headers supplied through <c>hx-headers</c>.
     /// </summary>
     /// <remarks>
-    /// <para>Supported only in HTMX 1.x and 2.x.</para>
+    /// <para>Supported only in HTMX 1.9.x and 2.x.</para>
     /// <para>Headers added by the browser are unaffected.</para>
     /// <para>The Toolkit script also omits the <c>HX-Request-Type</c> header.</para>
     /// </remarks>
@@ -257,7 +257,7 @@ public sealed class HtmxRequestTagHelper(IOptions<HtmxToolkitOptions> options) :
     #region Inner type: HtmxRequestDataPrior
 
     /// <summary>
-    /// Projects request configuration into the <c>hx-request</c> contract used by HTMX 1.x and 2.x.
+    /// Projects request configuration into the <c>hx-request</c> contract used by HTMX 1.9.x and 2.x.
     /// </summary>
     /// <param name="data">The request options to project.</param>
     internal readonly struct HtmxRequestDataPrior(HtmxRequestData data)
@@ -266,13 +266,13 @@ public sealed class HtmxRequestTagHelper(IOptions<HtmxToolkitOptions> options) :
         public int? Timeout => data.Timeout;
 
         /// <summary>
-        /// Gets the boolean credentials value supported by HTMX 1.x and 2.x.
+        /// Gets the boolean credentials value supported by HTMX 1.9.x and 2.x.
         /// </summary>
         public bool? Credentials => data.Credentials switch
         {
             HtmxRequestCredentials.SameOrigin => false,
             HtmxRequestCredentials.Include => true,
-            // TODO: Consider throwing an exception when an HTMX 4-only credentials mode is configured for HTMX 1.x or 2.x.
+            // TODO: Consider throwing an exception when an HTMX 4-only credentials mode is configured for HTMX 1.9.x or 2.x.
             // HtmxRequestCredentials.Omit => throw new InvalidOperationException(),
             _ => null
         };

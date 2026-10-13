@@ -59,7 +59,7 @@ public static class HttpRequestExtensions
     /// otherwise, <see langword="false" />.
     /// </returns>
     /// <remarks>
-    /// HTMX 4.x sends the header itself; for HTMX 1.x and 2.x, the Toolkit script
+    /// HTMX 4.x sends the header itself; for HTMX 1.9.x and 2.x, the Toolkit script
     /// adds it. See <see cref="HtmxRequestHeaders.RequestType" />.
     /// </remarks>
     public static bool IsHtmxFullRequest(this HttpRequest request)
@@ -83,7 +83,7 @@ public static class HttpRequestExtensions
     /// otherwise, <see langword="false" />.
     /// </returns>
     /// <remarks>
-    /// HTMX 4.x sends the header itself; for HTMX 1.x and 2.x, the Toolkit script
+    /// HTMX 4.x sends the header itself; for HTMX 1.9.x and 2.x, the Toolkit script
     /// adds it. Without the header, the method returns <see langword="false" />.
     /// </remarks>
     public static bool IsHtmxPartialRequest(this HttpRequest request) =>

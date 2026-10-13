@@ -33,7 +33,7 @@ Also verify the project references `Ramstack.HtmxToolkit` and uses only one rout
 
 Inspect the response body for `<!DOCTYPE html>`, `<head>`, or site navigation, then check the request:
 
-- With HTMX 1.x or 2.x, look for the `HX-Request-Type: partial` header. If it is missing, the page does not load
+- With HTMX 1.9.x or 2.x, look for the `HX-Request-Type: partial` header. If it is missing, the page does not load
   the [Toolkit script](antiforgery.md#what-the-toolkit-script-does), so `IsHtmxPartialRequest()` returns `false`
   and the endpoint returns the full page. Load the script after HTMX on every page that uses HTMX.
 - If the header is present, make the endpoint return `PartialView(...)` or `Partial(...)` for the HTMX path.
@@ -57,7 +57,7 @@ See [Redirect after authentication](recipes.md#redirect-after-authentication) fo
 
 ## A request fails, but the page shows no error
 
-Check the Network panel for an HTTP error, a timeout, or a failed connection. HTMX 1.x and 2.x leave most
+Check the Network panel for an HTTP error, a timeout, or a failed connection. HTMX 1.9.x and 2.x leave most
 4xx and 5xx responses unswapped by default. An error may therefore appear in the console while the page stays unchanged.
 A connection failure has no response HTML to insert at all.
 
@@ -96,7 +96,7 @@ A full navigation through `HX-Redirect` reloads the document and its metadata; s
 
 ## Validation HTML is returned but no errors appear
 
-Inspect the response status as well as its body. HTMX 1.x and 2.x do not swap most 4xx or 5xx responses by default.
+Inspect the response status as well as its body. HTMX 1.9.x and 2.x do not swap most 4xx or 5xx responses by default.
 `Retarget` and `Reswap` set the target and swap style; they do not by themselves enable swapping a 422 response.
 
 The [forms tutorial](forms-and-validation.md) returns validation HTML with status 200. To use 422 with HTMX 2.x,
@@ -192,7 +192,7 @@ and use an ordinary ASP.NET Core redirect only for the non-HTMX path.
 
 ## The wrong per-request attribute is generated
 
-HTMX 1.x and 2.x receive `hx-request`; HTMX 4.x receives `hx-config`. Check `UseHtmxV1`, `UseHtmxV2`,
+HTMX 1.9.x and 2.x receive `hx-request`; HTMX 4.x receives `hx-config`. Check `UseHtmxV1`, `UseHtmxV2`,
 or `UseHtmxV4` in service registration and verify that the browser loads the same major version.
 
 If no version is selected, HtmxToolkit uses V2.
@@ -201,13 +201,13 @@ If no version is selected, HtmxToolkit uses V2.
 
 Some properties are version-specific:
 
-- `Trigger` and `TriggerName` are for HTMX 1.x and 2.x.
+- `Trigger` and `TriggerName` are for HTMX 1.9.x and 2.x.
 - `Source` is for HTMX 4.x.
 - `Prompt` needs the `hx-prompt` extension in HTMX 4.x.
 - `Target` uses an ID in V1/V2 and `tag#id` in V4.
 
 `RequestType` returns `HtmxRequestType.Unspecified` when its header is absent, except for history restoration
-requests, which it reports as `Full`. HTMX 1.x and 2.x send this header only when the page loads the Toolkit script:
+requests, which it reports as `Full`. HTMX 1.9.x and 2.x send this header only when the page loads the Toolkit script:
 if `RequestType` is always `Unspecified` and `IsHtmxPartialRequest()` is always `false`, check that the script is loaded.
 
 See [Version compatibility](version-compatibility.md).
@@ -220,7 +220,7 @@ that has only that constrained route. Provide a normal action for the route or r
 Also check `BoostedFilter`: `HtmxBoostedFilter.Boosted` accepts only boosted HTMX requests,
 `HtmxBoostedFilter.NonBoosted` only non-boosted HTMX requests, and `HtmxBoostedFilter.Any` (the default)
 does not restrict boosted navigation. A `RequestType` of `Full` or `Partial` additionally requires a matching
-`HX-Request-Type` header, which HTMX 1.x and 2.x send only when the page loads the Toolkit script.
+`HX-Request-Type` header, which HTMX 1.9.x and 2.x send only when the page loads the Toolkit script.
 Leave it `Unspecified` to accept requests without that header.
 
 ## URL generation throws an exception
@@ -236,7 +236,7 @@ If no method is present, the URL Tag Helper generates `hx-get`.
 
 ## Event timing differs after moving to HTMX 4
 
-HTMX 1.x and 2.x have separate trigger response headers for receive, after swap, and after settle.
+HTMX 1.9.x and 2.x have separate trigger response headers for receive, after swap, and after settle.
 HTMX 4.x receives all Toolkit events through `HX-Trigger` when the request completes, after the swap and settle steps.
 During migration, review:
 

@@ -39,7 +39,7 @@ A boosted link that replaces the `<body>`, an `hx-select` request, and a history
 get the complete document. The method reads the `HX-Request-Type` header;
 see [Check full or partial requests](requests.md#check-full-or-partial-requests) for how it is computed.
 
-With HTMX 1.x and 2.x, the header comes from the Toolkit script, so load the script on every page that uses HTMX.
+With HTMX 1.9.x and 2.x, the header comes from the Toolkit script, so load the script on every page that uses HTMX.
 Without it, the endpoints above return the full page to every request.
 
 ## Use a dedicated fragment endpoint
@@ -65,7 +65,7 @@ This style works well for validation, polling, autocomplete, dialogs, and inline
 ## Avoid rendering a layout into a target
 
 If a response unexpectedly inserts navigation, `<head>`, or the whole page into a component,
-the endpoint returned `View()` or `Page()` instead of a partial. With the shared endpoint above and HTMX 1.x or 2.x,
+the endpoint returned `View()` or `Page()` instead of a partial. With the shared endpoint above and HTMX 1.9.x or 2.x,
 the usual reason is a page without the Toolkit script: the request has no `HX-Request-Type` header, so
 `IsHtmxPartialRequest()` returns `false`. Inspect the request headers and the response body in browser developer tools
 before changing `hx-target` or `hx-swap`.

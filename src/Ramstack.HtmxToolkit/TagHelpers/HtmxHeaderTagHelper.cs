@@ -16,7 +16,7 @@ namespace Ramstack.HtmxToolkit.TagHelpers;
 /// </summary>
 /// <remarks>
 /// <list type="bullet">
-///   <item>HTMX 1.x and 2.x merge-inherit <c>hx-headers</c> from parent elements.</item>
+///   <item>HTMX 1.9.x and 2.x merge-inherit <c>hx-headers</c> from parent elements.</item>
 ///   <item>
 ///     HTMX 4.x requires either the explicit inheritance modifier or the global
 ///     <see cref="HtmxV4Config.ImplicitInheritance" /> option for inheritance.
@@ -40,7 +40,7 @@ public sealed class HtmxHeaderTagHelper(IOptions<HtmxToolkitOptions> options) : 
     /// </summary>
     /// <remarks>
     /// <para>
-    ///   HTMX 1.x and 2.x merge-inherit headers without a modifier,
+    ///   HTMX 1.9.x and 2.x merge-inherit headers without a modifier,
     ///   so the property does not change the generated attribute name for them.
     /// </para>
     /// <para>
@@ -55,7 +55,7 @@ public sealed class HtmxHeaderTagHelper(IOptions<HtmxToolkitOptions> options) : 
     /// Gets or sets a value indicating whether <c>hx-headers</c> is appended to inherited headers.
     /// </summary>
     /// <remarks>
-    /// <para>The property does not change the generated attribute name for HTMX 1.x and 2.x.</para>
+    /// <para>The property does not change the generated attribute name for HTMX 1.9.x and 2.x.</para>
     /// <para>
     ///   For HTMX 4.x, the tag helper emits the <c>append</c> modifier
     ///   when this property is <see langword="true" />.

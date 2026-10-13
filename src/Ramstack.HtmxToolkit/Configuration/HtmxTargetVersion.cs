@@ -6,7 +6,7 @@ namespace Ramstack.HtmxToolkit.Configuration;
 public enum HtmxTargetVersion
 {
     /// <summary>
-    /// HTMX 1.x.
+    /// HTMX 1.9.x.
     /// </summary>
     V1,
 

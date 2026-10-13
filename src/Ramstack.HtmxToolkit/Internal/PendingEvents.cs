@@ -238,7 +238,7 @@ internal sealed class PendingEvents
     /// <param name="detailJson">The event detail as JSON.</param>
     private static void WriteDetail(Utf8JsonWriter writer, string detailJson)
     {
-        // HTMX 1.x and 2.x pass a null detail to listeners as { value: null },
+        // HTMX 1.9.x and 2.x pass a null detail to listeners as { value: null },
         // while HTMX 4.x fails on it. Write the wrapped form for all versions.
         if (detailJson == "null")
         {

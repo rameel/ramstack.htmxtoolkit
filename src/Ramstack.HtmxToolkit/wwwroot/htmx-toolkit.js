@@ -2,7 +2,7 @@ document._r_htmx ||= ((document, htmx) => {
     const warn = message => console.warn(`ramstack.htmxtoolkit: ${message}`);
     const htmx_major = parseInt(htmx.version);
 
-    // The internal API of HTMX 1.x and 2.x. HTMX passes it to init when the extension is defined,
+    // The internal API of HTMX 1.9.x and 2.x. HTMX passes it to init when the extension is defined,
     // whether or not any element enables the extension with hx-ext.
     let api;
 
@@ -153,7 +153,7 @@ document._r_htmx ||= ((document, htmx) => {
         return result;
     };
 
-    // HTMX 4.x sends HX-Request-Type; HTMX 1.x and 2.x do not, so it is computed here
+    // HTMX 4.x sends HX-Request-Type; HTMX 1.9.x and 2.x do not, so it is computed here
     // the same way: "full" when the response replaces the body or is filtered with a selector.
     // htmx:configRequest does not see the select of htmx.ajax and HX-Location requests;
     // htmx:beforeRequest does, and its request is open but not yet sent.
@@ -176,7 +176,7 @@ document._r_htmx ||= ((document, htmx) => {
     listen("rs:event", e => {
         let elt = e.target;
 
-        // HTMX 1.x and 2.x wrap the array in { value }.
+        // HTMX 1.9.x and 2.x wrap the array in { value }.
         // HTMX 4.x passes it as is.
         for (let { key, value: detail } of e.detail.value || e.detail) {
             let target = elt;
@@ -194,7 +194,7 @@ document._r_htmx ||= ((document, htmx) => {
             }
             else if (Object.prototype.toString.call(detail) === "[object Object]") {
                 // HTMX 2.x applies "target" to this and all following events.
-                // HTMX 1.x ignores it.
+                // HTMX 1.9.x ignores it.
                 if (htmx_major === 2 && detail.target !== undefined) {
                     elt = target = detail.target;
                 }

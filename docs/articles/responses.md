@@ -204,7 +204,7 @@ The `hx-trigger` listener can still refresh a component while JavaScript handles
 
 ### Timing and repeated events
 
-HTMX 1.x and 2.x distinguish receive, after-swap, and after-settle response headers.
+HTMX 1.9.x and 2.x distinguish receive, after-swap, and after-settle response headers.
 HTMX 4.x delivers these Toolkit events through `HX-Trigger` when the request completes,
 after the swap and settle steps when a swap occurs.
 See [Version compatibility](version-compatibility.md#response-events).

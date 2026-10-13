@@ -23,7 +23,7 @@ public enum HtmxSwap
     ///   Supported natively by HTMX 4.x.
     /// </para>
     /// <para>
-    ///   With HTMX 1.x or 2.x, activate the <c>ramstack-swap</c> extension and load Idiomorph.
+    ///   With HTMX 1.9.x or 2.x, activate the <c>ramstack-swap</c> extension and load Idiomorph.
     ///   Without Idiomorph, the extension logs a warning and falls back to <see cref="InnerHtml" />.
     /// </para>
     /// </remarks>
@@ -37,7 +37,7 @@ public enum HtmxSwap
     ///   Supported natively by HTMX 4.x.
     /// </para>
     /// <para>
-    ///   With HTMX 1.x or 2.x, activate the <c>ramstack-swap</c> extension and load Idiomorph.
+    ///   With HTMX 1.9.x or 2.x, activate the <c>ramstack-swap</c> extension and load Idiomorph.
     ///   Without Idiomorph, the extension logs a warning and falls back to <see cref="OuterHtml" />.
     /// </para>
     /// </remarks>
@@ -52,7 +52,7 @@ public enum HtmxSwap
     ///   Supported natively by HTMX 4.x.
     /// </para>
     /// <para>
-    ///   With HTMX 1.x or 2.x, activate the <c>ramstack-swap</c> extension,
+    ///   With HTMX 1.9.x or 2.x, activate the <c>ramstack-swap</c> extension,
     ///   which performs the same steps.
     /// </para>
     /// </remarks>
@@ -66,7 +66,7 @@ public enum HtmxSwap
     ///   Supported natively by HTMX 2.x and 4.x.
     /// </para>
     /// <para>
-    ///   With HTMX 1.x, activate the <c>ramstack-swap</c> extension.
+    ///   With HTMX 1.9.x, activate the <c>ramstack-swap</c> extension.
     ///   Idiomorph is not required for this style.
     /// </para>
     /// </remarks>

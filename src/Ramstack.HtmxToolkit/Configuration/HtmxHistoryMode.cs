@@ -4,7 +4,7 @@ namespace Ramstack.HtmxToolkit.Configuration;
 /// Specifies how HTMX history restoration is handled.
 /// </summary>
 /// <remarks>
-/// Used by <see cref="HtmxV4Config.History" />. HTMX 1.x and 2.x use
+/// Used by <see cref="HtmxV4Config.History" />. HTMX 1.9.x and 2.x use
 /// <see cref="HtmxV1Config.HistoryEnabled" /> and <see cref="HtmxV2Config.HistoryEnabled" /> instead.
 /// </remarks>
 public enum HtmxHistoryMode

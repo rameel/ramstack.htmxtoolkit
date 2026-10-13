@@ -47,9 +47,9 @@ public sealed class HtmxToolkitOptions
     public HtmxTargetVersion TargetVersion => HtmxConfig.TargetVersion;
 
     /// <summary>
-    /// Selects and configures HTMX 1.x.
+    /// Selects and configures HTMX 1.9.x.
     /// </summary>
-    /// <param name="configure">The optional delegate used to configure HTMX 1.x.</param>
+    /// <param name="configure">The optional delegate used to configure HTMX 1.9.x.</param>
     /// <returns>
     /// The current options instance.
     /// </returns>

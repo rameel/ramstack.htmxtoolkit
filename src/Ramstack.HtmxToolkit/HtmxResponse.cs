@@ -83,14 +83,14 @@ public readonly struct HtmxResponse
     /// <remarks>
     /// <para>
     ///   Also removes the <c>HX-Replace-Url</c> header and the legacy <c>HX-Push</c> header.
-    ///   HTMX 1.x and 2.x check <c>HX-Push</c> before the other history headers.
+    ///   HTMX 1.9.x and 2.x check <c>HX-Push</c> before the other history headers.
     ///   When <see cref="PushUrl" />, <see cref="ReplaceUrl" />, and <see cref="PreventHistoryUpdate" />
     ///   are combined, the last call takes effect.
     /// </para>
     /// <para>
     ///   HTMX treats <c>"false"</c> as a control value; use <see cref="PreventHistoryUpdate" /> instead.
     ///   HTMX 4.x also treats <c>"true"</c> as a control value and replaces it with the response URL,
-    ///   whereas HTMX 1.x and 2.x push it as the relative URL <c>true</c>.
+    ///   whereas HTMX 1.9.x and 2.x push it as the relative URL <c>true</c>.
     /// </para>
     /// </remarks>
     public HtmxResponse PushUrl(string url)
@@ -113,14 +113,14 @@ public readonly struct HtmxResponse
     /// <remarks>
     /// <para>
     ///   Also removes the <c>HX-Push-Url</c> header and the legacy <c>HX-Push</c> header.
-    ///   HTMX 1.x and 2.x check <c>HX-Push</c> before the other history headers.
+    ///   HTMX 1.9.x and 2.x check <c>HX-Push</c> before the other history headers.
     ///   When <see cref="PushUrl" />, <see cref="ReplaceUrl" />, and <see cref="PreventHistoryUpdate" />
     ///   are combined, the last call takes effect.
     /// </para>
     /// <para>
     ///   HTMX treats <c>"false"</c> as a control value; use <see cref="PreventHistoryUpdate" /> instead.
     ///   HTMX 4.x also treats <c>"true"</c> as a control value and replaces it with the response URL,
-    ///   whereas HTMX 1.x and 2.x use it as the relative URL <c>true</c>.
+    ///   whereas HTMX 1.9.x and 2.x use it as the relative URL <c>true</c>.
     /// </para>
     /// </remarks>
     public HtmxResponse ReplaceUrl(string url)
@@ -140,7 +140,7 @@ public readonly struct HtmxResponse
     /// <remarks>
     /// <para>
     ///   Also removes the <c>HX-Replace-Url</c> header and the legacy <c>HX-Push</c> header.
-    ///   HTMX 1.x and 2.x check <c>HX-Push</c> before the other history headers.
+    ///   HTMX 1.9.x and 2.x check <c>HX-Push</c> before the other history headers.
     ///   When <see cref="PushUrl" />, <see cref="ReplaceUrl" />, and <see cref="PreventHistoryUpdate" />
     ///   are combined, the last call takes effect.
     /// </para>
@@ -334,7 +334,7 @@ public readonly struct HtmxResponse
     private static HtmxResponse SetHistoryHeader(HtmxResponse response, string key, string value, string conflictingKey)
     {
         // Remove the legacy "HX-Push" header:
-        // - HTMX 1.x and 2.x check it before "HX-Push-Url" and "HX-Replace-Url";
+        // - HTMX 1.9.x and 2.x check it before "HX-Push-Url" and "HX-Replace-Url";
         // - HTMX 4.x ignores it.
         response._response.Headers.Remove("HX-Push");
 

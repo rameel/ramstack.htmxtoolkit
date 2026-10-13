@@ -9,7 +9,7 @@ public enum HtmxHistoryAction
     /// <summary>
     /// Adds a new entry to the browser history.
     /// </summary>
-    /// <remarks>Supported in HTMX 1.x, HTMX 2.x, and HTMX 4.x.</remarks>
+    /// <remarks>Supported in HTMX 1.9.x, HTMX 2.x, and HTMX 4.x.</remarks>
     Push,
 
     /// <summary>

@@ -9,7 +9,7 @@ public enum HtmxTriggerTiming
     /// Maps to the <c>HX-Trigger</c> header.
     /// </summary>
     /// <remarks>
-    /// <para>HTMX 1.x and 2.x trigger these events when the response is received, before the swap.</para>
+    /// <para>HTMX 1.9.x and 2.x trigger these events when the response is received, before the swap.</para>
     /// <para>
     ///   HTMX 4.x triggers them when the request completes, which is after the swap and settle steps
     ///   whenever a swap is performed. To act before the swap in HTMX 4.x, handle <c>htmx:before:swap</c>
@@ -24,7 +24,7 @@ public enum HtmxTriggerTiming
     /// </summary>
     /// <remarks>
     /// <para>
-    ///   HTMX 1.x and 2.x trigger these events only when the response is swapped,
+    ///   HTMX 1.9.x and 2.x trigger these events only when the response is swapped,
     ///   so they do not fire for a status code such as 204.
     /// </para>
     /// <para>
@@ -42,7 +42,7 @@ public enum HtmxTriggerTiming
     /// </summary>
     /// <remarks>
     /// <para>
-    ///   HTMX 1.x and 2.x trigger these events only when the response is swapped,
+    ///   HTMX 1.9.x and 2.x trigger these events only when the response is swapped,
     ///   so they do not fire for a status code such as 204.
     /// </para>
     /// <para>

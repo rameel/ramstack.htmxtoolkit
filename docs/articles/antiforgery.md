@@ -12,7 +12,7 @@ see [Static assets and deployment](static-assets.md) for the URL and caching.
 | Feature | HTMX versions | Without the script |
 |---|---|---|
 | Adds the antiforgery token to non-GET HTMX requests and refreshes it after boosted navigation | All | Non-GET requests without a token field fail server-side antiforgery validation, usually with HTTP 400 |
-| Sends `HX-Request-Type`; see [Check full or partial requests](requests.md#check-full-or-partial-requests) | 1.x and 2.x; HTMX 4.x sends it itself | `IsHtmxPartialRequest()` and `IsHtmxFullRequest()` return `false`, and `[HtmxRequest]` with a `RequestType` does not match |
+| Sends `HX-Request-Type`; see [Check full or partial requests](requests.md#check-full-or-partial-requests) | 1.9.x and 2.x; HTMX 4.x sends it itself | `IsHtmxPartialRequest()` and `IsHtmxFullRequest()` return `false`, and `[HtmxRequest]` with a `RequestType` does not match |
 | Replays events whose name repeats in one response header; see [Timing and repeated events](responses.md#timing-and-repeated-events) | All | None of the events in that header fire |
 | Adds the `ramstack-swap` extension with `innerMorph`, `outerMorph`, and a simplified `outerSync`, plus `textContent` for HTMX 1.9.x; see [Morph swaps](version-compatibility.md#morph-swaps) | 1.9.x and 2.x; HTMX 4.x supports these swap styles natively | These swap styles are not available |
 

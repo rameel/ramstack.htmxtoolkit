@@ -97,7 +97,7 @@ registration, and layout needed to run it.
 | Generate URLs or JSON attributes in Razor | Register the toolkit Tag Helpers in `_ViewImports.cshtml` |
 | Attach antiforgery tokens automatically | Render configuration metadata, load the Toolkit script, and enable server validation |
 | Use compatibility morph swaps or replay duplicate event names | Load the Toolkit script; follow the relevant feature's setup |
-| Tell full-page and fragment requests apart with HTMX 1.x or 2.x | Load the Toolkit script |
+| Tell full-page and fragment requests apart with HTMX 1.9.x or 2.x | Load the Toolkit script |
 
 For HTMX 4.x, register the target version even if you only use response events, so the toolkit chooses the
 correct trigger headers. In a pure Minimal API application, HTML rendering and token metadata are supplied

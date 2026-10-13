@@ -21,7 +21,7 @@ public sealed class HtmxRequestAttribute : Attribute, IActionConstraint
     ///   When <see cref="BoostedFilter" /> is also set, both conditions must be satisfied.
     /// </para>
     /// <para>
-    ///   HTMX 4.x sends the <c>HX-Request-Type</c> header itself; for HTMX 1.x and 2.x,
+    ///   HTMX 4.x sends the <c>HX-Request-Type</c> header itself; for HTMX 1.9.x and 2.x,
     ///   the Toolkit script (<c>htmx-toolkit.js</c>) adds it. A history restoration request
     ///   without the header matches <see cref="HtmxRequestType.Full" />.
     /// </para>

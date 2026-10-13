@@ -36,7 +36,7 @@ trying to select a different version causes startup validation to fail.
 
 ## What the selection changes
 
-| Behavior | HTMX 1.x | HTMX 2.x | HTMX 4.x |
+| Behavior | HTMX 1.9.x | HTMX 2.x | HTMX 4.x |
 |---|---|---|---|
 | Default when omitted | No | Yes | No |
 | Global config type | `HtmxV1Config` | `HtmxV2Config` | `HtmxV4Config` |
@@ -73,5 +73,5 @@ For a new application with no version-specific requirements, start with HTMX 2.x
 tutorials without changes. It is HtmxToolkit's default target. Choose V4 when you want its native morphing
 or Fetch API options, and check that the extensions you plan to use support it.
 
-Continue with [Application configuration](configuration.md), then use the dedicated [HTMX 1.x](configuration-v1.md),
+Continue with [Application configuration](configuration.md), then use the dedicated [HTMX 1.9.x](configuration-v1.md),
 [HTMX 2.x](configuration-v2.md), or [HTMX 4.x](configuration-v4.md) reference guide.
