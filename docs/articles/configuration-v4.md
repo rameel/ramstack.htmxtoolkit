@@ -41,7 +41,13 @@ builder.Services.AddHtmxToolkit(options =>
 |---|---|
 | `SameOrigin` | Allow only same-origin requests |
 | `Cors` | Allow cross-origin requests through CORS |
-| `NoCors` | Allow restricted opaque cross-origin responses, which normally cannot be swapped |
+| `NoCors` | Allow restricted cross-origin requests that produce opaque responses |
+
+In `NoCors` mode, the browser allows only `GET`, `HEAD`, and `POST`; other methods raise `htmx:error`.
+It also removes request headers that are not CORS-safelisted, even for same-origin requests: the server receives
+no `HX-*` headers or `hx-headers` values, and no antiforgery token sent in a header. `IsHtmxRequest()` returns `false`,
+and `[HtmxRequest]` does not match. A cross-origin response is opaque, so HTMX cannot read its headers
+and swaps an empty body into the target.
 
 Changing this setting does not configure CORS on the ASP.NET Core server.
 
