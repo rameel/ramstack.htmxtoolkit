@@ -6,6 +6,17 @@ document._r_htmx ||= ((document, htmx) => {
     // whether or not any element enables the extension with hx-ext.
     let api;
 
+    // Spreading child nodes into replaceChildren/replaceWith hits the engine's argument limit
+    // (65536 in Safari), so the nodes are moved into a fragment instead.
+    const extract_children = node => {
+        let fragment = new DocumentFragment();
+        while (node.firstChild) {
+            fragment.append(node.firstChild);
+        }
+
+        return fragment;
+    };
+
     if (htmx.defineExtension) {
         htmx.defineExtension("ramstack-swap", {
             init(internal_api) {
@@ -33,9 +44,11 @@ document._r_htmx ||= ((document, htmx) => {
                     warn(`Idiomorph is unavailable; falling back from ${swap_style} to ${morph_style}`);
 
                     let nodes = [...fragment.childNodes];
+                    let replacement = extract_children(fragment);
+
                     morph_style === "innerHTML"
-                        ? target.replaceChildren(...nodes)
-                        : target.replaceWith(...nodes);
+                        ? target.replaceChildren(replacement)
+                        : target.replaceWith(replacement);
 
                     return nodes;
                 }
@@ -53,7 +66,7 @@ document._r_htmx ||= ((document, htmx) => {
                             target.setAttribute(attr.name, attr.value);
                         }
 
-                        target.replaceChildren(...source.childNodes);
+                        target.replaceChildren(extract_children(source));
 
                         // Like HTMX 4.x, report the target itself: HTMX processes it with
                         // its new children and re-initializes it if its attributes changed.
