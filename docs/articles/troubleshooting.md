@@ -178,8 +178,9 @@ See [Static assets and deployment](static-assets.md) for the complete setup and 
 
 ## Response has no HX headers
 
-`Response.Htmx(...)` intentionally invokes its callback only when the incoming request contains the HTMX request marker.
-Confirm the request is actually sent by HTMX.
+`Response.Htmx(...)` intentionally invokes its callback only when `Request.IsHtmxRequest()` is `true`:
+the incoming request contains the HTMX request marker and does not restore history.
+Confirm the request is actually sent by HTMX and is not a history restoration request.
 
 For infrastructure that must write a header unconditionally, use `Response.GetHtmxHeaders()`
 and make the condition explicit.

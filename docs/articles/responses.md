@@ -17,7 +17,7 @@ return PartialView("_Content", model);
 This example assumes a fragment endpoint. `Response.Htmx(...)` changes headers, not the result body or status code;
 choose `PartialView`, `View`, or another result to match the request.
 
-The callback runs only for an HTMX request. An action that also handles normal navigation can use separate results:
+The callback runs only when `Request.IsHtmxRequest()` is `true`, so not for history restoration. An action that also handles normal navigation can use separate results:
 
 ```csharp
 var url = Url.Action("Index", "Dashboard")!;

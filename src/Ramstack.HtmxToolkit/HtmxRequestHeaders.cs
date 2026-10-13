@@ -69,10 +69,15 @@ public readonly struct HtmxRequestHeaders
     public string? Prompt => GetString(_headers, HtmxRequestHeaderNames.Prompt);
 
     /// <summary>
-    /// Gets a value indicating whether the current request is an HTMX request.
+    /// Gets a value indicating whether the request has the <c>HX-Request</c> header.
     /// </summary>
     /// <remarks>
-    /// The header name is <see cref="HtmxRequestHeaderNames.Request" />.
+    /// <para>The header name is <see cref="HtmxRequestHeaderNames.Request" />.</para>
+    /// <para>
+    ///   HTMX 1.9.x and 2.x send this header with history restoration requests by default,
+    ///   although HTMX treats them as full page loads.
+    ///   <see cref="HttpRequestExtensions.IsHtmxRequest(HttpRequest)" /> excludes such requests.
+    /// </para>
     /// </remarks>
     public bool Request => _headers.ContainsKey(HtmxRequestHeaderNames.Request);
 

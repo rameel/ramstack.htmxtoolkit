@@ -21,7 +21,8 @@ public IActionResult Details(int id)
 Everything else gets the page: direct visits, boosted navigation that replaces the `<body>`, `hx-select` requests,
 and history restoration. See [Check full or partial requests](#check-full-or-partial-requests).
 
-`IsHtmxRequest()` tells whether HTMX sent the request at all.
+`IsHtmxRequest()` tells whether HTMX sent the request as an HTMX request: the `HX-Request` header is present,
+and the request does not restore history. See [Handle history restoration](#handle-history-restoration).
 The overload with `out HtmxRequestHeaders` combines detection and strongly typed header access:
 
 ```csharp
@@ -55,7 +56,8 @@ var htmx = Request.GetHtmxHeaders();
 | `RequestType` | `HtmxRequestType.Partial` or `HtmxRequestType.Full`; added by the Toolkit script in HTMX 1.9.x and 2.x |
 
 Missing or version-inapplicable string headers return `null`.
-`Request` is `true` whenever the `HX-Request` header is present, whatever its value.
+`Request` is `true` whenever the `HX-Request` header is present, whatever its value;
+unlike `IsHtmxRequest()`, it does not exclude history restoration.
 `Boosted` and `HistoryRestoreRequest` are `true` only when their header is exactly `true`.
 In HTMX 4.x, the `hx-prompt` extension sends the prompt answer URI-encoded;
 decode it with `Uri.UnescapeDataString` before use.
@@ -70,6 +72,19 @@ When `HistoryRestoreRequest` is true, return the full document rather than a tar
 `RequestType` already accounts for it: HTMX 4.x sends `HX-Request-Type: full` with such a request,
 and HTMX 1.9.x and 2.x send no `HX-Request-Type`, which `RequestType` reports as `HtmxRequestType.Full`.
 So `IsHtmxPartialRequest()` returns `false`, and the example in [Detect a request](#detect-a-request) returns the page.
+
+HTMX treats history restoration as a full page load, not as an HTMX request, so `IsHtmxRequest()` returns `false`
+for it in every version. HTMX 4.x sends this request without `HX-Request`, and so does HTMX 2.x
+when `HistoryRestoreAsHxRequest` is `false`. HTMX 1.9.x, and HTMX 2.x by default, send the header,
+so `IsHtmxRequest()` also checks `HistoryRestoreRequest`. As a result:
+
+- code that returns a fragment to every HTMX request still returns the page;
+- `[HtmxRequest]` does not select an action for the request;
+- `Response.Htmx(...)` and `[HtmxResponse]` add no headers. HTMX 1.9.x and 2.x do not process response headers
+  when they restore history.
+
+`HistoryRestoreRequest`, `RequestType`, and `IsHtmxFullRequest()` still identify the request.
+To check for the `HX-Request` header alone, read `Request` from `GetHtmxHeaders()`.
 
 HTMX 1.9.x and 2.x send this request after a miss in their local snapshot cache.
 HTMX 4.x requests history entries from the server by default;
@@ -135,7 +150,8 @@ HTMX requests for a fragment go to `ProfileFragment`. Everything else, including
 boosted navigation that replaces the `<body>`, and history restoration, goes to `Profile`.
 
 `RequestType = HtmxRequestType.Unspecified`, the default, does not restrict the request type.
-`Full` and `Partial` require a matching `RequestType`. History restoration requests match `Full`.
+`Full` and `Partial` require a matching `RequestType`. History restoration requests are not HTMX requests,
+so the attribute rejects them whatever `RequestType` is, and they reach the unconstrained action.
 Other requests without the `HX-Request-Type` header, such as HTMX 1.9.x and 2.x requests from a page
 without the Toolkit script, match neither.
 
