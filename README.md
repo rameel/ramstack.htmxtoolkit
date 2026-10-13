@@ -65,7 +65,7 @@ By default, the toolkit targets HTMX 2.x. If you use HTMX 1.9.x or 4.x, select i
 ```
 
 `<htmx-config />` renders your HTMX settings and the antiforgery token. The Toolkit script comes
-with the package. It adds the token to HTMX requests and, with HTMX 1.x and 2.x, tells the server
+with the package. It adds the token to HTMX requests and, with HTMX 1.9.x and 2.x, tells the server
 whether a request expects a fragment or a full page (see [Handling requests](#handling-requests)).
 The script is served like any other static file, so make sure the application calls `UseStaticFiles()`
 or `MapStaticAssets()`.
@@ -119,7 +119,7 @@ or a request with `hx-select`, comes from HTMX too, but expects a full page.
 the response into an element inside the page, and `full` when the response replaces the whole `<body>`
 or goes through `hx-select`. A history restore always counts as a full page.
 
-HTMX 4 sends this header itself. HTMX 1.x and 2.x don't, so the Toolkit script adds it the same way.
+HTMX 4 sends this header itself. HTMX 1.9.x and 2.x don't, so the Toolkit script adds it the same way.
 That's why the example above works with every supported version, as long as the script is on the page.
 If you cache such responses, add a `Vary` header so that the page and the fragment are cached separately.
 See [Full pages and fragments](https://rameel.github.io/ramstack.htmxtoolkit/articles/pages-and-fragments.html).
@@ -207,7 +207,7 @@ Other Tag Helpers build HTMX attributes that otherwise need hand-written JSON:
 |----------------|-----------------------------------------------------------------------------------------|
 | `hx-val-*`     | `hx-vals`, extra values sent with the request                                           |
 | `hx-header-*`  | `hx-headers`, extra request headers                                                     |
-| `hx-request-*` | `hx-request` (HTMX 1.x, 2.x) or `hx-config` (HTMX 4), request options such as a timeout |
+| `hx-request-*` | `hx-request` (HTMX 1.9.x, 2.x) or `hx-config` (HTMX 4), request options such as a timeout |
 
 The toolkit builds and escapes the JSON for you.
 See [Tag Helpers](https://rameel.github.io/ramstack.htmxtoolkit/articles/tag-helpers.html) for the full list of attributes.
