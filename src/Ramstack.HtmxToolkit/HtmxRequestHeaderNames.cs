@@ -24,8 +24,9 @@ public static class HtmxRequestHeaderNames
     /// fetches content for history restoration.
     /// </summary>
     /// <remarks>
-    /// HTMX 1.x and 2.x send this header after a history cache miss.
-    /// HTMX 4.x refetches history content by default; local caching requires an extension.
+    /// HTMX 1.9.x and 2.x send this header after a history cache miss.
+    /// HTMX 4.x has no local history cache unless an extension provides one,
+    /// so it sends this header with every history restoration request.
     /// </remarks>
     public const string HistoryRestoreRequest = "HX-History-Restore-Request";
 
@@ -33,9 +34,9 @@ public static class HtmxRequestHeaderNames
     /// The <c>HX-Prompt</c> header contains the user's response to an <c>hx-prompt</c>.
     /// </summary>
     /// <remarks>
-    /// Supported natively in HTMX 1.x and 2.x. In HTMX 4.x, the
+    /// Supported natively in HTMX 1.9.x and 2.x. In HTMX 4.x, the
     /// <see href="https://four.htmx.org/extensions/hx-prompt">hx-prompt extension</see>
-    /// restores this header.
+    /// restores this header and URI-encodes its value.
     /// </remarks>
     public const string Prompt = "HX-Prompt";
 
@@ -51,8 +52,8 @@ public static class HtmxRequestHeaderNames
     /// </summary>
     /// <remarks>
     /// The value is <c>"partial"</c> for targeted swaps and <c>"full"</c> for body-level
-    /// or <c>hx-select</c> requests. HTMX 4.x sends the header itself; for HTMX 1.x and 2.x,
-    /// the companion script <c>htmx-toolkit.js</c> adds it.
+    /// or <c>hx-select</c> requests. HTMX 4.x sends the header itself; for HTMX 1.9.x and 2.x,
+    /// the Toolkit script (<c>htmx-toolkit.js</c>) adds it.
     /// </remarks>
     public const string RequestType = "HX-Request-Type";
 
@@ -70,7 +71,7 @@ public static class HtmxRequestHeaderNames
     /// The <c>HX-Target</c> header identifies the target element, if present.
     /// </summary>
     /// <remarks>
-    /// <para>In HTMX 1.x and 2.x, the value is the ID of the target element.</para>
+    /// <para>In HTMX 1.9.x and 2.x, the value is the ID of the target element.</para>
     /// <para>
     ///   In HTMX 4.x, the value contains the lowercase tag name and, when the element has an ID,
     ///   <c>#</c> followed by its URI-encoded ID. Examples include <c>div#results</c> and <c>body</c>.
@@ -80,18 +81,18 @@ public static class HtmxRequestHeaderNames
 
     /// <summary>
     /// The <c>HX-Trigger-Name</c> header contains the <c>name</c> attribute of the element
-    /// that issued the request, if present.
+    /// that triggered the request, if present.
     /// </summary>
     /// <remarks>
-    /// Supported only in HTMX 1.x and 2.x. HTMX 4.x identifies the source element with <c>HX-Source</c> instead.
+    /// Supported only in HTMX 1.9.x and 2.x. HTMX 4.x identifies the source element with <c>HX-Source</c> instead.
     /// </remarks>
     public const string TriggerName = "HX-Trigger-Name";
 
     /// <summary>
-    /// The <c>HX-Trigger</c> header contains the ID of the element that issued the request, if present.
+    /// The <c>HX-Trigger</c> header contains the ID of the element that triggered the request, if present.
     /// </summary>
     /// <remarks>
-    /// Supported only in HTMX 1.x and 2.x. HTMX 4.x identifies the source element with <c>HX-Source</c> instead.
+    /// Supported only in HTMX 1.9.x and 2.x. HTMX 4.x identifies the source element with <c>HX-Source</c> instead.
     /// </remarks>
     public const string Trigger = "HX-Trigger";
 }

@@ -11,8 +11,7 @@ namespace Ramstack.HtmxToolkit.Serialization;
 internal static class JsonOptions
 {
     /// <summary>
-    /// Preserves characters from all Unicode ranges while escaping JavaScript-
-    /// and HTML-sensitive characters.
+    /// The shared encoder instance exposed by <see cref="Encoder" />.
     /// </summary>
     private static readonly JavaScriptEncoder s_encoder =
         JavaScriptEncoder.Create(new TextEncoderSettings(UnicodeRanges.All));

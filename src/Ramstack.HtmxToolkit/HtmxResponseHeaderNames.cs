@@ -59,12 +59,12 @@ public static class HtmxResponseHeaderNames
     /// <summary>
     /// The <c>HX-Trigger-After-Settle</c> header triggers client-side events after the settle step.
     /// </summary>
-    /// <remarks>Supported only in HTMX 1.x and 2.x.</remarks>
+    /// <remarks>Supported only in HTMX 1.9.x and 2.x.</remarks>
     public const string TriggerAfterSettle = "HX-Trigger-After-Settle";
 
     /// <summary>
     /// The <c>HX-Trigger-After-Swap</c> header triggers client-side events after the swap step.
     /// </summary>
-    /// <remarks>Supported only in HTMX 1.x and 2.x.</remarks>
+    /// <remarks>Supported only in HTMX 1.9.x and 2.x.</remarks>
     public const string TriggerAfterSwap = "HX-Trigger-After-Swap";
 }

@@ -36,7 +36,7 @@ For an existing integration, browse the task guides below or [run the demo](samp
   <a class="guide-card" href="choosing-version.md">
     <span class="guide-card__label">Decision</span>
     <strong>Choose an HTMX version</strong>
-    <span>Target the correct markup for HTMX 1.x, 2.x, or 4.x.</span>
+    <span>Target the correct markup for HTMX 1.9.x, 2.x, or 4.x.</span>
   </a>
 </div>
 

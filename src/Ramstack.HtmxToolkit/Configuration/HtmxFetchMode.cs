@@ -4,9 +4,9 @@ namespace Ramstack.HtmxToolkit.Configuration;
 /// Specifies the request mode used by HTMX.
 /// </summary>
 /// <remarks>
-/// <para>In HTMX 4.x this is passed as the <c>mode</c> option of the Fetch API.</para>
+/// <para>In HTMX 4.x, this is passed as the <c>mode</c> option of the Fetch API.</para>
 /// <para>
-///   HTMX 1.x and 2.x use <c>XMLHttpRequest</c> instead of <c>fetch</c>.
+///   HTMX 1.9.x and 2.x use <c>XMLHttpRequest</c> instead of <c>fetch</c>.
 ///   Use <see cref="HtmxV1Config.SelfRequestsOnly" /> or <see cref="HtmxV2Config.SelfRequestsOnly" />
 ///   to restrict requests to the current origin.
 /// </para>
@@ -25,7 +25,11 @@ public enum HtmxFetchMode
 
     /// <summary>
     /// Allows restricted cross-origin requests that produce opaque responses.
-    /// Opaque responses cannot normally be swapped by HTMX.
     /// </summary>
+    /// <remarks>
+    /// An opaque response has status 0, and its headers and body are not accessible.
+    /// HTMX cannot read <c>HX-*</c> response headers, does not treat the response as an error,
+    /// and swaps the empty body into the target.
+    /// </remarks>
     NoCors
 }

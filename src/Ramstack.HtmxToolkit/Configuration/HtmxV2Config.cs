@@ -83,9 +83,13 @@ public sealed class HtmxV2Config() : HtmxConfig(HtmxTargetVersion.V2)
     }
 
     /// <summary>
-    /// Gets or sets the indicator class.
+    /// Gets or sets the class that marks request indicators.
     /// The HTMX default is <c>htmx-indicator</c>.
     /// </summary>
+    /// <remarks>
+    /// The indicator styles show these elements only while they or one of their ancestors
+    /// have the class specified by <see cref="RequestClass" />.
+    /// </remarks>
     public string? IndicatorClass
     {
         get;
@@ -93,7 +97,8 @@ public sealed class HtmxV2Config() : HtmxConfig(HtmxTargetVersion.V2)
     }
 
     /// <summary>
-    /// Gets or sets the request class.
+    /// Gets or sets the class added to the elements specified by <c>hx-indicator</c>,
+    /// or to the requesting element itself, while a request is in flight.
     /// The HTMX default is <c>htmx-request</c>.
     /// </summary>
     public string? RequestClass
@@ -103,7 +108,8 @@ public sealed class HtmxV2Config() : HtmxConfig(HtmxTargetVersion.V2)
     }
 
     /// <summary>
-    /// Gets or sets the added class.
+    /// Gets or sets the class added to new content before it is swapped in
+    /// and removed after the content settles.
     /// The HTMX default is <c>htmx-added</c>.
     /// </summary>
     public string? AddedClass
@@ -113,7 +119,8 @@ public sealed class HtmxV2Config() : HtmxConfig(HtmxTargetVersion.V2)
     }
 
     /// <summary>
-    /// Gets or sets the swapping class.
+    /// Gets or sets the class added to the target before content is swapped
+    /// and removed after the swap.
     /// The HTMX default is <c>htmx-swapping</c>.
     /// </summary>
     public string? SwappingClass
@@ -123,7 +130,8 @@ public sealed class HtmxV2Config() : HtmxConfig(HtmxTargetVersion.V2)
     }
 
     /// <summary>
-    /// Gets or sets the settling class.
+    /// Gets or sets the class added to the target after content is swapped
+    /// and removed after the content settles.
     /// The HTMX default is <c>htmx-settling</c>.
     /// </summary>
     public string? SettlingClass
@@ -225,7 +233,7 @@ public sealed class HtmxV2Config() : HtmxConfig(HtmxTargetVersion.V2)
     }
 
     /// <summary>
-    /// Gets or sets the request timeout, in milliseconds.
+    /// Gets or sets the request timeout in milliseconds.
     /// The HTMX default is <c>0</c>.
     /// </summary>
     public int? Timeout
@@ -259,6 +267,7 @@ public sealed class HtmxV2Config() : HtmxConfig(HtmxTargetVersion.V2)
     /// Gets or sets a value indicating whether the focused element should be scrolled into view.
     /// The HTMX default is <see langword="false" />.
     /// </summary>
+    /// <remarks>The <c>focus-scroll</c> swap modifier overrides this setting.</remarks>
     public bool? DefaultFocusScroll
     {
         get;
@@ -276,7 +285,9 @@ public sealed class HtmxV2Config() : HtmxConfig(HtmxTargetVersion.V2)
     }
 
     /// <summary>
-    /// Gets or sets a value indicating whether the View Transition API should be used for swaps.
+    /// Gets or sets a value indicating whether the
+    /// <see href="https://developer.mozilla.org/en-US/docs/Web/API/View_Transitions_API">View Transition API</see>
+    /// should be used for swaps.
     /// The HTMX default is <see langword="false" />.
     /// </summary>
     public bool? GlobalViewTransitions
@@ -318,7 +329,7 @@ public sealed class HtmxV2Config() : HtmxConfig(HtmxTargetVersion.V2)
 
     /// <summary>
     /// Gets or sets a value indicating whether parsed trigger specifications use
-    /// a never-clearing cache. The cache is disabled by default.
+    /// a never-clearing cache. The HTMX default is <see langword="false" />.
     /// </summary>
     [JsonConverter(typeof(HtmxTriggerSpecsCacheJsonConverter))]
     [JsonPropertyName("triggerSpecsCache")]
@@ -330,6 +341,8 @@ public sealed class HtmxV2Config() : HtmxConfig(HtmxTargetVersion.V2)
 
     /// <summary>
     /// Gets or sets the rules that determine how HTTP response status codes are handled.
+    /// The HTMX default is <c>[{ code: "204", swap: false }, { code: "[23]..", swap: true },
+    /// { code: "[45]..", swap: false, error: true }]</c>.
     /// </summary>
     public IList<ResponseHandlingConfig>? ResponseHandling
     {

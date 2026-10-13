@@ -36,7 +36,7 @@
   items:
     - name: Application configuration
       href: configuration.md
-    - name: HTMX 1.x
+    - name: HTMX 1.9.x
       href: configuration-v1.md
     - name: HTMX 2.x
       href: configuration-v2.md

@@ -23,7 +23,8 @@ internal sealed class PendingEvents
     private const string ProxyEventName = "rs:event";
 
     /// <summary>
-    /// The maximum number of events for which repeated names are found using a linear scan.
+    /// The maximum number of events for which repeated names are found by comparing
+    /// each name with the preceding ones instead of using a set.
     /// </summary>
     private const int LinearScanThreshold = 8;
 
@@ -44,7 +45,7 @@ internal sealed class PendingEvents
     /// <summary>
     /// Adds the specified event to the end of the pending events for <paramref name="timing" />.
     /// </summary>
-    /// <param name="timing">The time at which to trigger the events.</param>
+    /// <param name="timing">The time at which to trigger the event.</param>
     /// <param name="eventName">The event name.</param>
     /// <param name="detailJson">The event detail as JSON.</param>
     public void AddEvent(HtmxTriggerTiming timing, string eventName, string detailJson)
@@ -146,14 +147,15 @@ internal sealed class PendingEvents
     /// Serializes the specified events into a response header
     /// when the collection is not <see langword="null" />.
     /// </summary>
-    /// <remarks>
-    /// A JSON object cannot hold repeated names. If an event name repeats, all events
-    /// are written in order under the <see cref="ProxyEventName" /> key, and the Toolkit script replays them.
-    /// Writing only the repeats there would change the order in which the events are triggered.
-    /// </remarks>
     /// <param name="name">The response header name.</param>
     /// <param name="events">The events to serialize.</param>
     /// <param name="buffer">The buffer that receives the serialized header value.</param>
+    /// <remarks>
+    /// HTMX parses the header with <c>JSON.parse</c>, which keeps only the last of repeated names.
+    /// If an event name repeats, all events are written in order under the <see cref="ProxyEventName" /> key,
+    /// and the Toolkit script replays them.
+    /// Writing only the repeats there would change the order in which the events are triggered.
+    /// </remarks>
     private void SetHeader(string name, EventList? events, ArrayBufferWriter<byte> buffer)
     {
         if (events is null)
@@ -236,7 +238,7 @@ internal sealed class PendingEvents
     /// <param name="detailJson">The event detail as JSON.</param>
     private static void WriteDetail(Utf8JsonWriter writer, string detailJson)
     {
-        // HTMX 1.x and 2.x pass a null detail to listeners as { value: null },
+        // HTMX 1.9.x and 2.x pass a null detail to listeners as { value: null },
         // while HTMX 4.x fails on it. Write the wrapped form for all versions.
         if (detailJson == "null")
         {
@@ -251,7 +253,8 @@ internal sealed class PendingEvents
     }
 
     /// <summary>
-    /// Normalizes unsupported HTMX 4.x trigger timings to the primary trigger header.
+    /// Maps timings that HTMX 4.x does not support to <see cref="HtmxTriggerTiming.Receive" />,
+    /// whose events go to <c>HX-Trigger</c>.
     /// </summary>
     /// <param name="timing">The requested event timing.</param>
     /// <returns>
@@ -263,7 +266,8 @@ internal sealed class PendingEvents
             : timing;
 
     /// <summary>
-    /// Returns the configured HTMX target version, defaulting to HTMX 2.x when toolkit services are unavailable.
+    /// Returns the configured HTMX target version, or HTMX 2.x if
+    /// <see cref="IOptions{TOptions}" /> of <see cref="HtmxToolkitOptions" /> is not registered.
     /// </summary>
     /// <param name="response">The response whose request services are inspected.</param>
     /// <returns>

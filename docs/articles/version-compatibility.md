@@ -5,7 +5,7 @@ and response events use the behavior expected by that version.
 
 ## Request headers
 
-| Information | HTMX 1.x / 2.x | HTMX 4.x | Toolkit property |
+| Information | HTMX 1.9.x / 2.x | HTMX 4.x | Toolkit property |
 |---|---|---|---|
 | HTMX request marker | `HX-Request` | `HX-Request` | `Request` |
 | Boosted navigation | `HX-Boosted` | `HX-Boosted` | `Boosted` |
@@ -18,7 +18,7 @@ and response events use the behavior expected by that version.
 
 In HTMX 4.x, a target value such as `div#results` includes the tag name as well as the ID.
 Code shared across versions should tolerate null for version-specific string properties.
-`RequestType` is `HtmxRequestType.Unspecified` for HTMX 1.x and 2.x requests from a page without the Toolkit script.
+`RequestType` is `HtmxRequestType.Unspecified` for HTMX 1.9.x and 2.x requests from a page without the Toolkit script.
 
 ```csharp
 if (Request.IsHtmxRequest(out var htmx))
@@ -28,7 +28,7 @@ if (Request.IsHtmxRequest(out var htmx))
 }
 ```
 
-For HTMX 1.x and 2.x, the Toolkit script computes `HX-Request-Type` the same way HTMX 4.x does;
+For HTMX 1.9.x and 2.x, the Toolkit script computes `HX-Request-Type` the same way HTMX 4.x does;
 see [Check full or partial requests](requests.md#check-full-or-partial-requests).
 The result can still differ between versions for the same markup, because the versions resolve attributes differently:
 HTMX 4.x, for example, does not inherit `hx-select` from a parent element unless it is marked as inherited.
@@ -37,7 +37,7 @@ HTMX 4.x, for example, does not inherit `hx-select` from a parent element unless
 
 `HtmxRequestTagHelper` uses one Razor-facing API and emits the appropriate client attribute:
 
-| Option | HTMX 1.x / 2.x | HTMX 4.x |
+| Option | HTMX 1.9.x / 2.x | HTMX 4.x |
 |---|---|---|
 | Output attribute | `hx-request` | `hx-config` |
 | `hx-request-timeout` | Supported | Supported |
@@ -47,7 +47,7 @@ HTMX 4.x, for example, does not inherit `hx-select` from a parent element unless
 
 ## Attribute modifiers
 
-HTMX 1.x and 2.x inherit request configuration, values, and headers automatically.
+HTMX 1.9.x and 2.x inherit request configuration, values, and headers automatically.
 Child values override matching parent values and keep the rest.
 HTMX 4.x requires explicit `inherited` and `append` modifiers. The Tag Helpers accept Razor-friendly inputs
 such as `hx-vals-inherited="true"` and generate the modifiers only for HTMX 4.x, so the same markup works
@@ -58,7 +58,7 @@ It does not replace `*-append` when a child declaration must merge with inherite
 
 ## Global configuration concepts
 
-| Concept | HTMX 1.x | HTMX 2.x | HTMX 4.x |
+| Concept | HTMX 1.9.x | HTMX 2.x | HTMX 4.x |
 |---|---|---|---|
 | History | Local snapshots controlled by `HistoryEnabled`, cache size, and refresh on miss | Local snapshots, plus restore-request behavior | `History` mode; server request by default, optional local-cache extension |
 | Default swap | `DefaultSwapStyle` | `DefaultSwapStyle` | `DefaultSwap` |
@@ -73,10 +73,10 @@ Review the target version's guide rather than copying a configuration delegate u
 
 ## Response events
 
-HTMX 1.x and 2.x distinguish `HX-Trigger`, `HX-Trigger-After-Swap`, and `HX-Trigger-After-Settle`.
+HTMX 1.9.x and 2.x distinguish `HX-Trigger`, `HX-Trigger-After-Swap`, and `HX-Trigger-After-Settle`.
 HTMX 4.x has only `HX-Trigger`, so the Toolkit emits events of every `HtmxTriggerTiming` through it.
 
-| Timing | HTMX 1.x and 2.x | HTMX 4.x |
+| Timing | HTMX 1.9.x and 2.x | HTMX 4.x |
 |---|---|---|
 | `Receive` | When the response is received, before the swap | When the request completes |
 | `AfterSwap` | After the swap step, only if the response is swapped | When the request completes |

@@ -59,8 +59,8 @@ public sealed class HtmxV4Config() : HtmxConfig(HtmxTargetVersion.V4)
     /// </summary>
     /// <remarks>
     /// Processed <c>&lt;hx-partial&gt;</c> elements suppress an empty main swap regardless
-    /// of this setting. The <c>swapEmpty</c> modifier on <c>hx-swap</c> overrides either default.
-    /// Nonempty main content is still swapped, and the <see cref="HtmxSwap.Delete" /> swap style always runs.
+    /// of this setting. The <c>swapEmpty</c> modifier on <c>hx-swap</c> takes precedence in both cases.
+    /// Non-empty main content is still swapped, and the <see cref="HtmxSwap.Delete" /> swap style always runs.
     /// </remarks>
     [JsonPropertyName("allowEmptySwapAfterOOB")]
     public bool? AllowEmptySwapAfterOob
@@ -91,9 +91,13 @@ public sealed class HtmxV4Config() : HtmxConfig(HtmxTargetVersion.V4)
     }
 
     /// <summary>
-    /// Gets or sets the indicator class.
+    /// Gets or sets the class that marks request indicators.
     /// The HTMX default is <c>htmx-indicator</c>.
     /// </summary>
+    /// <remarks>
+    /// The indicator styles show these elements only while they or one of their ancestors
+    /// have the class specified by <see cref="RequestClass" />.
+    /// </remarks>
     public string? IndicatorClass
     {
         get;
@@ -101,7 +105,8 @@ public sealed class HtmxV4Config() : HtmxConfig(HtmxTargetVersion.V4)
     }
 
     /// <summary>
-    /// Gets or sets the request class.
+    /// Gets or sets the class added to the elements specified by <c>hx-indicator</c>,
+    /// or to the requesting element itself, while a request is in flight.
     /// The HTMX default is <c>htmx-request</c>.
     /// </summary>
     public string? RequestClass
@@ -167,9 +172,9 @@ public sealed class HtmxV4Config() : HtmxConfig(HtmxTargetVersion.V4)
 
     /// <summary>
     /// Gets or sets a value indicating whether the focused element should be scrolled into view.
-    /// The HTMX default is <see langword="false" /> and can be overridden
-    /// using the <c>focus-scroll</c> swap modifier.
+    /// The HTMX default is <see langword="false" />.
     /// </summary>
+    /// <remarks>The <c>focus-scroll</c> swap modifier overrides this setting.</remarks>
     public bool? DefaultFocusScroll
     {
         get;

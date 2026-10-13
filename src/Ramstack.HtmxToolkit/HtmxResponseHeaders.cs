@@ -25,6 +25,7 @@ public readonly struct HtmxResponseHeaders
     /// Gets or sets the value of the <c>HX-Location</c> header, which performs
     /// a client-side redirect without a full-page reload.
     /// </summary>
+    /// <remarks>Assigning <see langword="null" /> or an empty string removes the header.</remarks>
     [MaybeNull]
     public string Location
     {
@@ -37,8 +38,11 @@ public readonly struct HtmxResponseHeaders
     /// onto the browser's history stack.
     /// </summary>
     /// <remarks>
-    /// Unlike <see cref="HtmxResponse.PushUrl" />, setting this property
-    /// does not remove the <c>HX-Replace-Url</c> header.
+    /// <para>Assigning <see langword="null" /> or an empty string removes the header.</para>
+    /// <para>
+    ///   Unlike <see cref="HtmxResponse.PushUrl" />, setting this property
+    ///   does not remove the <c>HX-Replace-Url</c> header.
+    /// </para>
     /// </remarks>
     [MaybeNull]
     public string PushUrl
@@ -52,8 +56,11 @@ public readonly struct HtmxResponseHeaders
     /// without pushing a new entry to the browser's history stack.
     /// </summary>
     /// <remarks>
-    /// Unlike <see cref="HtmxResponse.ReplaceUrl" />, setting this property
-    /// does not remove the <c>HX-Push-Url</c> header.
+    /// <para>Assigning <see langword="null" /> or an empty string removes the header.</para>
+    /// <para>
+    ///   Unlike <see cref="HtmxResponse.ReplaceUrl" />, setting this property
+    ///   does not remove the <c>HX-Push-Url</c> header.
+    /// </para>
     /// </remarks>
     [MaybeNull]
     public string ReplaceUrl
@@ -66,6 +73,7 @@ public readonly struct HtmxResponseHeaders
     /// Gets or sets the value of the <c>HX-Redirect</c> header, which performs
     /// a client-side redirect with a full-page reload.
     /// </summary>
+    /// <remarks>Assigning <see langword="null" /> or an empty string removes the header.</remarks>
     [MaybeNull]
     public string Redirect
     {
@@ -95,6 +103,7 @@ public readonly struct HtmxResponseHeaders
     /// <summary>
     /// Gets or sets the complete <c>HX-Reswap</c> header value, including any swap modifiers.
     /// </summary>
+    /// <remarks>Assigning <see langword="null" /> or an empty string removes the header.</remarks>
     [MaybeNull]
     public string ReswapExpression
     {
@@ -106,6 +115,7 @@ public readonly struct HtmxResponseHeaders
     /// Gets or sets the CSS selector specified by the <c>HX-Retarget</c> header
     /// to change the target of the content update.
     /// </summary>
+    /// <remarks>Assigning <see langword="null" /> or an empty string removes the header.</remarks>
     [MaybeNull]
     public string Retarget
     {
@@ -117,6 +127,7 @@ public readonly struct HtmxResponseHeaders
     /// Gets or sets the CSS selector specified by the <c>HX-Reselect</c> header
     /// to determine which part of the response is swapped in.
     /// </summary>
+    /// <remarks>Assigning <see langword="null" /> or an empty string removes the header.</remarks>
     [MaybeNull]
     public string Reselect
     {
@@ -157,9 +168,10 @@ public readonly struct HtmxResponseHeaders
     ///   the property returns <see langword="null" />.
     /// </para>
     /// <para>
-    ///   HTMX 4.x has no <c>HX-Trigger-After-Swap</c> header, so these events are accumulated
-    ///   in <see cref="Trigger" /> and emitted through <c>HX-Trigger</c> when the request completes
-    ///   (after the swap and settle steps whenever a swap is performed).
+    ///   HTMX 4.x has no <c>HX-Trigger-After-Swap</c> header, so these events are emitted through
+    ///   <c>HX-Trigger</c> when the request completes (after the swap and settle steps whenever
+    ///   a swap is performed). The property therefore returns the same list as <see cref="Trigger" />,
+    ///   including the events added with other timings.
     /// </para>
     /// </remarks>
     public IReadOnlyList<KeyValuePair<string, string>>? TriggerAfterSwap => PendingEvents.TryGet(_response)?.GetEvents(HtmxTriggerTiming.AfterSwap);
@@ -176,9 +188,10 @@ public readonly struct HtmxResponseHeaders
     ///   the property returns <see langword="null" />.
     /// </para>
     /// <para>
-    ///   HTMX 4.x has no <c>HX-Trigger-After-Settle</c> header, so these events are accumulated
-    ///   in <see cref="Trigger" /> and emitted through <c>HX-Trigger</c> when the request completes
-    ///   (after the swap and settle steps whenever a swap is performed).
+    ///   HTMX 4.x has no <c>HX-Trigger-After-Settle</c> header, so these events are emitted through
+    ///   <c>HX-Trigger</c> when the request completes (after the swap and settle steps whenever
+    ///   a swap is performed). The property therefore returns the same list as <see cref="Trigger" />,
+    ///   including the events added with other timings.
     /// </para>
     /// </remarks>
     public IReadOnlyList<KeyValuePair<string, string>>? TriggerAfterSettle => PendingEvents.TryGet(_response)?.GetEvents(HtmxTriggerTiming.AfterSettle);
@@ -198,7 +211,8 @@ public readonly struct HtmxResponseHeaders
     }
 
     /// <summary>
-    /// Sets the specified header when <paramref name="value" /> is not <see langword="null" />.
+    /// Sets the specified header, or removes it when <paramref name="value" />
+    /// is <see langword="null" /> or empty.
     /// </summary>
     /// <param name="headers">The header collection to update.</param>
     /// <param name="key">The name of the header.</param>

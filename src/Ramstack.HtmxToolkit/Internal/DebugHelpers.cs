@@ -8,7 +8,7 @@ namespace Ramstack.HtmxToolkit.Internal;
 internal static class DebugHelpers
 {
     /// <summary>
-    /// Returns all headers whose names start with <c>"HX-"</c>,
+    /// Returns all headers whose names start with <c>HX-</c>,
     /// using a case-insensitive comparison.
     /// </summary>
     /// <param name="headers">The header dictionary to inspect.</param>

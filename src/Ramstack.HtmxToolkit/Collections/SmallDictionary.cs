@@ -11,9 +11,11 @@ namespace Ramstack.HtmxToolkit.Collections;
 /// <typeparam name="TKey">The type of keys in the dictionary.</typeparam>
 /// <typeparam name="TValue">The type of values in the dictionary.</typeparam>
 /// <remarks>
-/// This type is intended for scenarios in which a dictionary typically contains only a few entries.
-/// It uses array-based storage to reduce memory usage and the overhead of creating,
-/// populating, and searching the dictionary.
+/// <para>
+///   This type is intended for scenarios in which a dictionary typically contains only a few entries.
+///   It uses array-based storage to reduce memory usage and the overhead of creating,
+///   populating, and searching the dictionary.
+/// </para>
 /// <para>
 ///   For up to <see cref="LinearSearchThreshold" /> entries, keys are located using
 ///   a linear search. Above this threshold, the entries are sorted by key and
@@ -191,7 +193,7 @@ internal sealed class SmallDictionary<TKey, TValue> : IDictionary<TKey, TValue>,
     /// Returns an enumerator that iterates through the <see cref="SmallDictionary{TKey,TValue}"/>.
     /// </summary>
     /// <returns>
-    /// A <see cref="Enumerator"/> structure for the <see cref="SmallDictionary{TKey,TValue}"/>.
+    /// An <see cref="Enumerator"/> structure for the <see cref="SmallDictionary{TKey,TValue}"/>.
     /// </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Enumerator GetEnumerator() =>
@@ -272,7 +274,7 @@ internal sealed class SmallDictionary<TKey, TValue> : IDictionary<TKey, TValue>,
     #endregion
 
     /// <summary>
-    /// Ensures that the dictionary can hold the specified number of entries without resizing.
+    /// Grows the storage so that it can hold at least the specified number of entries.
     /// </summary>
     /// <param name="capacity">The minimum number of entries
     /// that the dictionary must be able to hold.</param>
@@ -543,7 +545,7 @@ internal sealed class SmallDictionary<TKey, TValue> : IDictionary<TKey, TValue>,
         /// Returns an enumerator that iterates through the <see cref="KeyCollection"/>.
         /// </summary>
         /// <returns>
-        /// A <see cref="Enumerator"/> for the <see cref="KeyCollection"/>.
+        /// An <see cref="Enumerator"/> for the <see cref="KeyCollection"/>.
         /// </returns>
         public Enumerator GetEnumerator() =>
             new(dictionary);
@@ -686,7 +688,7 @@ internal sealed class SmallDictionary<TKey, TValue> : IDictionary<TKey, TValue>,
         /// Returns an enumerator that iterates through the <see cref="ValueCollection"/>.
         /// </summary>
         /// <returns>
-        /// A <see cref="Enumerator"/> for the <see cref="ValueCollection"/>.
+        /// An <see cref="Enumerator"/> for the <see cref="ValueCollection"/>.
         /// </returns>
         public Enumerator GetEnumerator() =>
             new(dictionary);
@@ -738,7 +740,7 @@ internal sealed class SmallDictionary<TKey, TValue> : IDictionary<TKey, TValue>,
         #region Inner type: Enumerator
 
         /// <summary>
-        /// Enumerates the values in a <see cref="SmallDictionary{TKey,TValue}" />.
+        /// Represents an enumerator for the values in a <see cref="SmallDictionary{TKey,TValue}" />.
         /// </summary>
         public struct Enumerator : IEnumerator<TValue>
         {

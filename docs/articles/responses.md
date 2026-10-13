@@ -204,7 +204,7 @@ The `hx-trigger` listener can still refresh a component while JavaScript handles
 
 ### Timing and repeated events
 
-HTMX 1.x and 2.x distinguish receive, after-swap, and after-settle response headers.
+HTMX 1.9.x and 2.x distinguish receive, after-swap, and after-settle response headers.
 HTMX 4.x delivers these Toolkit events through `HX-Trigger` when the request completes,
 after the swap and settle steps when a swap occurs.
 See [Version compatibility](version-compatibility.md#response-events).
@@ -277,6 +277,7 @@ htmx.Reswap = HtmxSwap.OuterHtml;
 Unlike `Response.Htmx(...)`, direct header access is not conditional: the caller decides whether the headers should be written.
 The properties can also be read, for example by a filter that sets a default `Retarget` only when the action
 has not chosen one.
+Assigning `null` or an empty string to a string property, such as `Retarget`, removes its header.
 
 `HtmxResponseHeaderNames` exposes header-name constants for lower-level integrations.
 

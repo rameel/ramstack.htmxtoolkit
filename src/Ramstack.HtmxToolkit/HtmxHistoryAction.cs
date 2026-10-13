@@ -1,7 +1,7 @@
 namespace Ramstack.HtmxToolkit;
 
 /// <summary>
-/// Specifies how an <c>HX-Location</c> request updates the browser history.
+/// Specifies how an <c>HX-Location</c> redirect updates the browser history.
 /// </summary>
 /// <remarks>Response headers from the loaded page can override the requested history action.</remarks>
 public enum HtmxHistoryAction
@@ -19,7 +19,7 @@ public enum HtmxHistoryAction
     Replace,
 
     /// <summary>
-    /// Requests that the browser history is not updated.
+    /// Requests that the browser history not be updated.
     /// </summary>
     /// <remarks>
     /// Supported in HTMX 2.0.8 and later 2.x releases, and in HTMX 4.x.

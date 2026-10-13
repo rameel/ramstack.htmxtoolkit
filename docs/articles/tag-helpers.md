@@ -130,7 +130,7 @@ The Tag Helper emits an encoded `hx-vals` JSON object. A dictionary can be suppl
 </button>
 ```
 
-HTMX 1.x and 2.x inherit the generated `hx-vals` from parent elements automatically.
+HTMX 1.9.x and 2.x inherit the generated `hx-vals` from parent elements automatically.
 For HTMX 4.x, add `hx-vals-inherited="true"` to the Razor element to generate the explicit inheritance modifier:
 
 ```razor
@@ -142,7 +142,7 @@ For HTMX 4.x, add `hx-vals-inherited="true"` to the Razor element to generate th
 
 This produces `hx-vals:inherited='{"tenant":"..."}'`.
 
-HTMX 1.x and 2.x merge inherited values: a child value overrides a value with the same name
+HTMX 1.9.x and 2.x merge inherited values: a child value overrides a value with the same name
 while other inherited values remain. In HTMX 4.x, a plain child `hx-vals` replaces the inherited
 object entirely. Add `hx-vals-append="true"` to merge the child object instead:
 
@@ -168,7 +168,7 @@ The button emits `hx-vals:append='{"format":"summary"}'`.
 ```
 
 `hx-header-*` and `hx-all-headers` generate `hx-headers` JSON. Header names are compared without case.
-HTMX 1.x and 2.x inherit the generated attribute automatically.
+HTMX 1.9.x and 2.x inherit the generated attribute automatically.
 For HTMX 4.x, use the Toolkit input `hx-headers-inherited="true"` on a parent element:
 
 ```razor
@@ -201,7 +201,7 @@ Use `hx-request-*` attributes rather than hand-writing version-specific JSON:
 The output depends on the configured HTMX target:
 
 ```html
-<!-- HTMX 1.x and 2.x -->
+<!-- HTMX 1.9.x and 2.x -->
 <button hx-request='{"timeout":2000,"credentials":false}' ...>
 
 <!-- HTMX 4.x -->
@@ -220,7 +220,7 @@ The output depends on the configured HTMX target:
 | `hx-request-validate` | No | Yes |
 
 Unsupported properties are omitted from the generated JSON. In particular, `HtmxRequestCredentials.Omit`
-cannot be represented by HTMX 1.x or 2.x and is omitted for those targets.
+cannot be represented by HTMX 1.9.x or 2.x and is omitted for those targets.
 
 Use `HtmxRequestCache` and `HtmxRequestRedirect` for the HTMX 4.x Fetch options:
 
@@ -265,7 +265,7 @@ Use `inherited` on a parent declaration to make it available to descendants, and
 declaration to merge rather than replace the inherited object. When both inputs are `true` on the same
 element, HtmxToolkit emits one combined attribute such as `hx-config:inherited:append`.
 
-For HTMX 1.x and 2.x, these boolean inputs do not change the generated names.
+For HTMX 1.9.x and 2.x, these boolean inputs do not change the generated names.
 `hx-request`, `hx-vals`, and `hx-headers` already inherit from parents: child values override matching
 parent values and keep the rest.
 

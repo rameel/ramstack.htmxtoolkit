@@ -3,7 +3,7 @@ using Ramstack.HtmxToolkit.Internal;
 namespace Ramstack.HtmxToolkit;
 
 /// <summary>
-/// Represents the options for an <c>HX-Location</c> request.
+/// Represents the options for the <c>HX-Location</c> response header.
 /// </summary>
 public sealed class HtmxLocationOptions
 {
@@ -14,7 +14,7 @@ public sealed class HtmxLocationOptions
     public string? Source { get; set; }
 
     /// <summary>
-    /// Gets or sets the selector for the target element into which the response will be swapped.
+    /// Gets or sets the CSS selector for the target element into which the response will be swapped.
     /// </summary>
     /// <remarks>Supported in HTMX 1.9.x, HTMX 2.x, and HTMX 4.x.</remarks>
     public string? Target { get; set; }
@@ -69,7 +69,7 @@ public sealed class HtmxLocationOptions
     public IDictionary<string, string>? Headers { get; set; }
 
     /// <summary>
-    /// Gets or sets a selector used to filter the content to swap from the response.
+    /// Gets or sets a CSS selector used to filter the content to swap from the response.
     /// </summary>
     /// <remarks>Supported in HTMX 1.9.x, HTMX 2.x, and HTMX 4.x.</remarks>
     public string? Select { get; set; }

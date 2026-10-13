@@ -4,7 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace Ramstack.HtmxToolkit.Configuration;
 
 /// <summary>
-/// Represents configuration options for services provided by HTMX Toolkit.
+/// Represents configuration options for services provided by HtmxToolkit.
 /// </summary>
 public sealed class HtmxToolkitOptions
 {
@@ -14,7 +14,10 @@ public sealed class HtmxToolkitOptions
     /// Gets the configuration for the selected HTMX major version.
     /// </summary>
     /// <remarks>
-    /// If no version has been explicitly configured, this property defaults to HTMX 2.x.
+    /// If no version has been selected, reading this property selects HTMX 2.x.
+    /// A later call to <see cref="UseHtmxV1" /> or <see cref="UseHtmxV4" /> then throws
+    /// <see cref="InvalidOperationException" />. Reading <see cref="TargetVersion" />
+    /// or calling <see cref="GetHtmxConfig{TConfig}" /> has the same effect.
     /// </remarks>
     public HtmxConfig HtmxConfig
     {
@@ -35,20 +38,21 @@ public sealed class HtmxToolkitOptions
     public bool IncludeAntiforgeryToken { get; set; } = true;
 
     /// <summary>
-    /// Gets the HTMX major version used for version-sensitive generated markup.
+    /// Gets the HTMX major version used for version-sensitive generated markup and response headers.
     /// </summary>
+    /// <remarks>
+    /// For example, with HTMX 4.x, <see cref="HtmxResponse.TriggerEvent(string, HtmxTriggerTiming)" />
+    /// emits events with any <see cref="HtmxTriggerTiming" /> value through the <c>HX-Trigger</c> header.
+    /// </remarks>
     public HtmxTargetVersion TargetVersion => HtmxConfig.TargetVersion;
 
     /// <summary>
-    /// Selects and configures HTMX 1.x.
+    /// Selects and configures HTMX 1.9.x.
     /// </summary>
-    /// <param name="configure">The optional delegate used to configure HTMX 1.x.</param>
+    /// <param name="configure">The optional delegate used to configure HTMX 1.9.x.</param>
     /// <returns>
     /// The current options instance.
     /// </returns>
-    /// <exception cref="InvalidOperationException">
-    /// A different HTMX major version has already been selected.
-    /// </exception>
     [MemberNotNull(nameof(_config))]
     public HtmxToolkitOptions UseHtmxV1(Action<HtmxV1Config>? configure = null)
     {
@@ -64,9 +68,6 @@ public sealed class HtmxToolkitOptions
     /// <returns>
     /// The current options instance.
     /// </returns>
-    /// <exception cref="InvalidOperationException">
-    /// A different HTMX major version has already been selected.
-    /// </exception>
     [MemberNotNull(nameof(_config))]
     public HtmxToolkitOptions UseHtmxV2(Action<HtmxV2Config>? configure = null)
     {
@@ -82,9 +83,6 @@ public sealed class HtmxToolkitOptions
     /// <returns>
     /// The current options instance.
     /// </returns>
-    /// <exception cref="InvalidOperationException">
-    /// A different HTMX major version has already been selected.
-    /// </exception>
     [MemberNotNull(nameof(_config))]
     public HtmxToolkitOptions UseHtmxV4(Action<HtmxV4Config>? configure = null)
     {
@@ -100,9 +98,11 @@ public sealed class HtmxToolkitOptions
     /// <returns>
     /// The requested configuration instance.
     /// </returns>
-    /// <exception cref="InvalidOperationException">
-    /// <typeparamref name="TConfig" /> does not match the selected HTMX major version.
-    /// </exception>
+    /// <remarks>
+    /// If no version has been selected, HTMX 2.x is selected, as when reading <see cref="HtmxConfig" />.
+    /// Throws <see cref="InvalidOperationException" /> if the configuration of the selected version
+    /// is not a <typeparamref name="TConfig" />.
+    /// </remarks>
     public TConfig GetHtmxConfig<TConfig>() where TConfig : HtmxConfig
     {
         if (HtmxConfig is TConfig config)

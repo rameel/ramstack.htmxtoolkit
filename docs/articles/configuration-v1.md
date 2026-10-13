@@ -1,6 +1,6 @@
-# HTMX 1.x configuration
+# HTMX 1.9.x configuration
 
-Select HTMX 1.x when the application loads an HTMX 1.9.x release:
+Call `UseHtmxV1` when the application loads HTMX 1.9.x:
 
 ```csharp
 using Ramstack.HtmxToolkit;
