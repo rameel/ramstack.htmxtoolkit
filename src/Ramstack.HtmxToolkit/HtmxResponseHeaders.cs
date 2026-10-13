@@ -1,5 +1,4 @@
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore.Http;
 
 using Ramstack.HtmxToolkit.Internal;
@@ -25,9 +24,11 @@ public readonly struct HtmxResponseHeaders
     /// Gets or sets the value of the <c>HX-Location</c> header, which performs
     /// a client-side redirect without a full-page reload.
     /// </summary>
-    /// <remarks>Assigning <see langword="null" /> or an empty string removes the header.</remarks>
-    [MaybeNull]
-    public string Location
+    /// <remarks>
+    /// If the header is not present, the property returns <see langword="null" />.
+    /// Assigning <see langword="null" /> or an empty string removes the header.
+    /// </remarks>
+    public string? Location
     {
         get => GetHeader(_response.Headers, HtmxResponseHeaderNames.Location);
         set => SetHeader(_response.Headers, HtmxResponseHeaderNames.Location, value);
@@ -38,14 +39,16 @@ public readonly struct HtmxResponseHeaders
     /// onto the browser's history stack.
     /// </summary>
     /// <remarks>
-    /// <para>Assigning <see langword="null" /> or an empty string removes the header.</para>
     /// <para>
-    ///   Unlike <see cref="HtmxResponse.PushUrl" />, setting this property
-    ///   does not remove the <c>HX-Replace-Url</c> header.
+    ///   If the header is not present, the property returns <see langword="null" />.
+    ///   Assigning <see langword="null" /> or an empty string removes the header.
+    /// </para>
+    /// <para>
+    ///   Unlike <see cref="HtmxResponse.PushUrl" />, setting this property does not remove
+    ///   the <c>HX-Replace-Url</c> header or the legacy <c>HX-Push</c> header.
     /// </para>
     /// </remarks>
-    [MaybeNull]
-    public string PushUrl
+    public string? PushUrl
     {
         get => GetHeader(_response.Headers, HtmxResponseHeaderNames.PushUrl);
         set => SetHeader(_response.Headers, HtmxResponseHeaderNames.PushUrl, value);
@@ -56,14 +59,16 @@ public readonly struct HtmxResponseHeaders
     /// without pushing a new entry to the browser's history stack.
     /// </summary>
     /// <remarks>
-    /// <para>Assigning <see langword="null" /> or an empty string removes the header.</para>
     /// <para>
-    ///   Unlike <see cref="HtmxResponse.ReplaceUrl" />, setting this property
-    ///   does not remove the <c>HX-Push-Url</c> header.
+    ///   If the header is not present, the property returns <see langword="null" />.
+    ///   Assigning <see langword="null" /> or an empty string removes the header.
+    /// </para>
+    /// <para>
+    ///   Unlike <see cref="HtmxResponse.ReplaceUrl" />, setting this property does not remove
+    ///   the <c>HX-Push-Url</c> header or the legacy <c>HX-Push</c> header.
     /// </para>
     /// </remarks>
-    [MaybeNull]
-    public string ReplaceUrl
+    public string? ReplaceUrl
     {
         get => GetHeader(_response.Headers, HtmxResponseHeaderNames.ReplaceUrl);
         set => SetHeader(_response.Headers, HtmxResponseHeaderNames.ReplaceUrl, value);
@@ -73,9 +78,11 @@ public readonly struct HtmxResponseHeaders
     /// Gets or sets the value of the <c>HX-Redirect</c> header, which performs
     /// a client-side redirect with a full-page reload.
     /// </summary>
-    /// <remarks>Assigning <see langword="null" /> or an empty string removes the header.</remarks>
-    [MaybeNull]
-    public string Redirect
+    /// <remarks>
+    /// If the header is not present, the property returns <see langword="null" />.
+    /// Assigning <see langword="null" /> or an empty string removes the header.
+    /// </remarks>
+    public string? Redirect
     {
         get => GetHeader(_response.Headers, HtmxResponseHeaderNames.Redirect);
         set => SetHeader(_response.Headers, HtmxResponseHeaderNames.Redirect, value);
@@ -84,6 +91,7 @@ public readonly struct HtmxResponseHeaders
     /// <summary>
     /// Gets or sets a value indicating whether the <c>HX-Refresh</c> header requests a full-page refresh.
     /// </summary>
+    /// <remarks>Assigning <see langword="false" /> removes the header.</remarks>
     public bool Refresh
     {
         get => GetHeader(_response.Headers, HtmxResponseHeaderNames.Refresh) == "true";
@@ -93,19 +101,25 @@ public readonly struct HtmxResponseHeaders
     /// <summary>
     /// Gets or sets the swap style specified by the <c>HX-Reswap</c> header.
     /// </summary>
-    [DisallowNull]
+    /// <remarks>
+    /// Reads the style from <see cref="ReswapExpression" />, or returns <see langword="null" />
+    /// if the header is not present or the style is not recognized. Assigning a style replaces
+    /// the complete header value, including any modifiers. Assigning <see langword="null" /> removes the header.
+    /// </remarks>
     public HtmxSwap? Reswap
     {
         get => EnumHelper.ParseHtmxSwap(GetHeader(_response.Headers, HtmxResponseHeaderNames.Reswap));
-        set => SetHeader(_response.Headers, HtmxResponseHeaderNames.Reswap, value.GetValueOrDefault().GetSwapValue());
+        set => SetHeader(_response.Headers, HtmxResponseHeaderNames.Reswap, value?.GetSwapValue());
     }
 
     /// <summary>
     /// Gets or sets the complete <c>HX-Reswap</c> header value, including any swap modifiers.
     /// </summary>
-    /// <remarks>Assigning <see langword="null" /> or an empty string removes the header.</remarks>
-    [MaybeNull]
-    public string ReswapExpression
+    /// <remarks>
+    /// If the header is not present, the property returns <see langword="null" />.
+    /// Assigning <see langword="null" /> or an empty string removes the header.
+    /// </remarks>
+    public string? ReswapExpression
     {
         get => GetHeader(_response.Headers, HtmxResponseHeaderNames.Reswap);
         set => SetHeader(_response.Headers, HtmxResponseHeaderNames.Reswap, value);
@@ -115,9 +129,11 @@ public readonly struct HtmxResponseHeaders
     /// Gets or sets the CSS selector specified by the <c>HX-Retarget</c> header
     /// to change the target of the content update.
     /// </summary>
-    /// <remarks>Assigning <see langword="null" /> or an empty string removes the header.</remarks>
-    [MaybeNull]
-    public string Retarget
+    /// <remarks>
+    /// If the header is not present, the property returns <see langword="null" />.
+    /// Assigning <see langword="null" /> or an empty string removes the header.
+    /// </remarks>
+    public string? Retarget
     {
         get => GetHeader(_response.Headers, HtmxResponseHeaderNames.Retarget);
         set => SetHeader(_response.Headers, HtmxResponseHeaderNames.Retarget, value);
@@ -127,9 +143,11 @@ public readonly struct HtmxResponseHeaders
     /// Gets or sets the CSS selector specified by the <c>HX-Reselect</c> header
     /// to determine which part of the response is swapped in.
     /// </summary>
-    /// <remarks>Assigning <see langword="null" /> or an empty string removes the header.</remarks>
-    [MaybeNull]
-    public string Reselect
+    /// <remarks>
+    /// If the header is not present, the property returns <see langword="null" />.
+    /// Assigning <see langword="null" /> or an empty string removes the header.
+    /// </remarks>
+    public string? Reselect
     {
         get => GetHeader(_response.Headers, HtmxResponseHeaderNames.Reselect);
         set => SetHeader(_response.Headers, HtmxResponseHeaderNames.Reselect, value);
@@ -147,7 +165,7 @@ public readonly struct HtmxResponseHeaders
     ///   the property returns <see langword="null" />.
     /// </para>
     /// <para>
-    ///   HTMX 1.x and 2.x trigger these events when the response is received,
+    ///   HTMX 1.9.x and 2.x trigger these events when the response is received,
     ///   whereas HTMX 4.x triggers them when the request completes
     ///   (after the swap and settle steps whenever a swap is performed).
     ///   In HTMX 4.x, the list also includes the events added with other timings,
