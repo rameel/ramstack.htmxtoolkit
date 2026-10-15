@@ -123,8 +123,6 @@ public class HtmxResponseHeadersTests
             Assert.That(headers.TriggerAfterSettle, Is.SameAs(headers.Trigger));
         });
 
-        PendingEvents.GetOrCreate(context.Response).Flush();
-
         Assert.Multiple(() =>
         {
             Assert.That(context.Response.Headers.ContainsKey(HtmxResponseHeaderNames.Trigger), Is.True);

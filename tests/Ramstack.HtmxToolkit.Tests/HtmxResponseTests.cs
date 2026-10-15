@@ -1,5 +1,7 @@
 using System.Text.Json.Serialization;
 
+using Microsoft.AspNetCore.Http;
+
 using Ramstack.HtmxToolkit.Configuration;
 
 namespace Ramstack.HtmxToolkit.Tests;
@@ -421,8 +423,6 @@ public class HtmxResponseTests
         var context = TestHelper.CreateHtmxRequestContext();
         context.Response.Htmx(r => r.TriggerEvent("message", new { Id = 42, Text = "hi" }));
 
-        PendingEvents.GetOrCreate(context.Response).Flush();
-
         var header = context.Response.Headers[HtmxResponseHeaderNames.Trigger].ToString();
         var json = JsonHelper.ParseJson(header);
 
@@ -445,7 +445,6 @@ public class HtmxResponseTests
         detail.Text = "after";
 
         var events = context.Response.GetHtmxHeaders().Trigger!;
-        PendingEvents.GetOrCreate(context.Response).Flush();
 
         Assert.Multiple(() =>
         {
@@ -462,8 +461,6 @@ public class HtmxResponseTests
         var context = TestHelper.CreateHtmxRequestContext();
         context.Response.Htmx(r => r.TriggerEvent("e", null!));
 
-        PendingEvents.GetOrCreate(context.Response).Flush();
-
         Assert.That(
             context.Response.Headers[HtmxResponseHeaderNames.Trigger].ToString(),
             Is.EqualTo("{\"e\":{\"value\":null}}"));
@@ -475,11 +472,47 @@ public class HtmxResponseTests
         var context = TestHelper.CreateHtmxRequestContext();
         context.Response.Htmx(r => r.TriggerEvent("e", ""));
 
-        PendingEvents.GetOrCreate(context.Response).Flush();
-
         Assert.That(
             context.Response.Headers[HtmxResponseHeaderNames.Trigger].ToString(),
             Is.EqualTo("{\"e\":\"\"}"));
+    }
+
+    [Test]
+    public void TriggerEvent_AfterResponseStarted_ThrowsInvalidOperationException()
+    {
+        var context = TestHelper.CreateHtmxRequestContext();
+
+        context.Response.Htmx(r => r.TriggerEvent("before"));
+        TestHelper.StartResponse(context);
+
+        Assert.Throws<InvalidOperationException>(() =>
+            context.Response.Htmx(r => r.TriggerEvent("after")));
+
+        Assert.That(
+            context.Response.Headers[HtmxResponseHeaderNames.Trigger].ToString(),
+            Is.EqualTo("{\"before\":{}}"));
+    }
+
+    [Test]
+    public void TriggerEvent_AfterResponseCleared_DropsPreviousEvents()
+    {
+        // An exception handler clears the response before rendering the error page,
+        // so the events of the failed request must not reach the client.
+        var context = TestHelper.CreateHtmxRequestContext();
+        context.Response.Htmx(r => r.TriggerEvent("saved"));
+        context.Response.Clear();
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(context.Response.Headers.ContainsKey(HtmxResponseHeaderNames.Trigger), Is.False);
+            Assert.That(context.Response.GetHtmxHeaders().Trigger, Is.Null);
+        });
+
+        context.Response.Htmx(r => r.TriggerEvent("failed"));
+
+        Assert.That(
+            context.Response.Headers[HtmxResponseHeaderNames.Trigger].ToString(),
+            Is.EqualTo("{\"failed\":{}}"));
     }
 
     [Test]

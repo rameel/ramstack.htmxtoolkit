@@ -12,8 +12,8 @@ using Ramstack.HtmxToolkit.Serialization;
 namespace Ramstack.HtmxToolkit.Internal;
 
 /// <summary>
-/// Accumulates HTMX events by <see cref="HtmxTriggerTiming" /> for a single request,
-/// deferring header serialization until the response is about to start.
+/// Accumulates HTMX events by <see cref="HtmxTriggerTiming" /> for a single request
+/// and sets the corresponding response headers as the events are added.
 /// </summary>
 internal sealed class PendingEvents
 {
@@ -43,11 +43,17 @@ internal sealed class PendingEvents
         (_response, _version) = (response, GetTargetVersion(response));
 
     /// <summary>
-    /// Adds the specified event to the end of the pending events for <paramref name="timing" />.
+    /// Adds the specified event to the end of the events for <paramref name="timing" />
+    /// and rewrites the corresponding response header.
     /// </summary>
     /// <param name="timing">The time at which to trigger the event.</param>
     /// <param name="eventName">The event name.</param>
     /// <param name="detailJson">The event detail as JSON.</param>
+    /// <remarks>
+    /// The header is the source of truth: if it has been removed, for example by
+    /// <see cref="ResponseExtensions.Clear(HttpResponse)" /> in an exception handler,
+    /// the events written into it are discarded as well.
+    /// </remarks>
     public void AddEvent(HtmxTriggerTiming timing, string eventName, string detailJson)
     {
         Argument.ThrowIfNullOrWhiteSpace(eventName);
@@ -58,25 +64,35 @@ internal sealed class PendingEvents
                 $"The event name '{ProxyEventName}' is reserved.",
                 nameof(eventName));
 
+        if (_response.HasStarted)
+            throw new InvalidOperationException(
+                $"Cannot trigger the event '{eventName}' because the response has already started.");
+
         timing = NormalizeTiming(timing);
 
-        var events = timing switch
-        {
-            HtmxTriggerTiming.Receive => _receive ??= new EventList(),
-            HtmxTriggerTiming.AfterSwap => _afterSwap ??= new EventList(),
-            _ => _afterSettle ??= new EventList()
-        };
+        var name = GetHeaderName(timing);
+        ref var events = ref GetEventList(timing);
 
+        // The header is missing if it has not been set yet or has been removed, for example
+        // by Response.Clear() in an exception handler. Start a new list so that the removed
+        // events are not written back into the header.
+        if (!_response.Headers.ContainsKey(name))
+            events = null;
+
+        events ??= new EventList();
         events.Add(eventName, detailJson);
+
+        SetHeader(name, events);
     }
 
     /// <summary>
-    /// Returns the pending events for the specified <paramref name="timing" />
+    /// Returns the events for the specified <paramref name="timing" />
     /// in the order they were added.
     /// </summary>
     /// <param name="timing">The time at which to trigger the events.</param>
     /// <returns>
-    /// The pending events, or <see langword="null" /> if none were registered.
+    /// The events, or <see langword="null" /> if none were registered
+    /// or their header has been removed.
     /// </returns>
     /// <remarks>
     /// Returns a read-only live view of the internal accumulator.
@@ -85,25 +101,9 @@ internal sealed class PendingEvents
     {
         timing = NormalizeTiming(timing);
 
-        return timing switch
-        {
-            HtmxTriggerTiming.Receive => _receive,
-            HtmxTriggerTiming.AfterSwap => _afterSwap,
-            _ => _afterSettle
-        };
-    }
-
-    /// <summary>
-    /// Serializes the accumulated events, if any, into the corresponding
-    /// <c>HX-Trigger</c> response headers.
-    /// </summary>
-    public void Flush()
-    {
-        var buffer = new ArrayBufferWriter<byte>();
-
-        SetHeader(HtmxResponseHeaderNames.Trigger, _receive, buffer);
-        SetHeader(HtmxResponseHeaderNames.TriggerAfterSwap, _afterSwap, buffer);
-        SetHeader(HtmxResponseHeaderNames.TriggerAfterSettle, _afterSettle, buffer);
+        return _response.Headers.ContainsKey(GetHeaderName(timing))
+            ? GetEventList(timing)
+            : null;
     }
 
     /// <summary>
@@ -133,35 +133,23 @@ internal sealed class PendingEvents
         pending = new PendingEvents(response);
         context.Items[typeof(PendingEvents)] = pending;
 
-        response.OnStarting(static o =>
-        {
-            var state = (PendingEvents)o;
-            state.Flush();
-            return Task.CompletedTask;
-        }, pending);
-
         return pending;
     }
 
     /// <summary>
-    /// Serializes the specified events into a response header
-    /// when the collection is not <see langword="null" />.
+    /// Serializes the specified events into a response header.
     /// </summary>
     /// <param name="name">The response header name.</param>
     /// <param name="events">The events to serialize.</param>
-    /// <param name="buffer">The buffer that receives the serialized header value.</param>
     /// <remarks>
     /// HTMX parses the header with <c>JSON.parse</c>, which keeps only the last of repeated names.
     /// If an event name repeats, all events are written in order under the <see cref="ProxyEventName" /> key,
     /// and the Toolkit script replays them.
     /// Writing only the repeats there would change the order in which the events are triggered.
     /// </remarks>
-    private void SetHeader(string name, EventList? events, ArrayBufferWriter<byte> buffer)
+    private void SetHeader(string name, EventList events)
     {
-        if (events is null)
-            return;
-
-        buffer.Clear();
+        var buffer = new ArrayBufferWriter<byte>();
 
         using (var writer = new Utf8JsonWriter(buffer, new JsonWriterOptions { Encoder = JsonOptions.Encoder, SkipValidation = true }))
         {
@@ -200,6 +188,41 @@ internal sealed class PendingEvents
     }
 
     /// <summary>
+    /// Returns a reference to the field that stores the events for the specified timing.
+    /// </summary>
+    /// <param name="timing">The normalized event timing.</param>
+    /// <returns>
+    /// A reference to the field that stores the events.
+    /// </returns>
+    private ref EventList? GetEventList(HtmxTriggerTiming timing)
+    {
+        if (timing == HtmxTriggerTiming.Receive)
+            return ref _receive;
+
+        if (timing == HtmxTriggerTiming.AfterSwap)
+            return ref _afterSwap;
+
+        return ref _afterSettle;
+    }
+
+    /// <summary>
+    /// Returns the name of the response header that carries the events for the specified timing.
+    /// </summary>
+    /// <param name="timing">The normalized event timing.</param>
+    /// <returns>
+    /// The response header name.
+    /// </returns>
+    private static string GetHeaderName(HtmxTriggerTiming timing)
+    {
+        return timing switch
+        {
+            HtmxTriggerTiming.Receive => HtmxResponseHeaderNames.Trigger,
+            HtmxTriggerTiming.AfterSwap => HtmxResponseHeaderNames.TriggerAfterSwap,
+            _ => HtmxResponseHeaderNames.TriggerAfterSettle
+        };
+    }
+
+    /// <summary>
     /// Determines whether any event name occurs more than once.
     /// </summary>
     /// <param name="events">The events to inspect.</param>
@@ -209,8 +232,7 @@ internal sealed class PendingEvents
     private static bool HasRepeatedNames(EventList events)
     {
         // A response usually carries only a few events, and for them a quadratic scan
-        // is cheaper than allocating a set. Events can be added in a loop, though,
-        // so a set protects against a large number of them.
+        // is cheaper than allocating a set.
         var storage = events.Storage;
 
         if (storage.Count <= LinearScanThreshold)
@@ -248,7 +270,7 @@ internal sealed class PendingEvents
         }
         else
         {
-            writer.WriteRawValue(detailJson);
+            writer.WriteRawValue(detailJson, skipInputValidation: true);
         }
     }
 
