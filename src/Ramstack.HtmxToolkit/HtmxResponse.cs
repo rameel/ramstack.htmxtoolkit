@@ -234,6 +234,13 @@ public readonly struct HtmxResponse
     ///   is triggered. In HTMX 4.x, this also applies to a name added with different timings.
     ///   The event name <c>rs:event</c> is reserved for this purpose and cannot be used.
     /// </para>
+    /// <para>
+    ///   Each call sets the header in <see cref="HttpResponse.Headers" />, replacing its value with
+    ///   the events added for it. If the header has been removed, for example by
+    ///   <see cref="ResponseExtensions.Clear(HttpResponse)" />, the events added before that are discarded.
+    ///   Like any other response header, an event cannot be added after the response has started;
+    ///   the method then throws <see cref="InvalidOperationException" />.
+    /// </para>
     /// </remarks>
     public HtmxResponse TriggerEvent(string eventName, HtmxTriggerTiming timing = HtmxTriggerTiming.Receive) =>
         AddToPendingEvent(this, eventName, "{}", timing);
@@ -261,6 +268,13 @@ public readonly struct HtmxResponse
     ///   the Toolkit script (<c>htmx-toolkit.js</c>) can replay; without the script, none of them
     ///   is triggered. In HTMX 4.x, this also applies to a name added with different timings.
     ///   The event name <c>rs:event</c> is reserved for this purpose and cannot be used.
+    /// </para>
+    /// <para>
+    ///   Each call sets the header in <see cref="HttpResponse.Headers" />, replacing its value with
+    ///   the events added for it. If the header has been removed, for example by
+    ///   <see cref="ResponseExtensions.Clear(HttpResponse)" />, the events added before that are discarded.
+    ///   Like any other response header, an event cannot be added after the response has started;
+    ///   the method then throws <see cref="InvalidOperationException" />.
     /// </para>
     /// </remarks>
     [RequiresDynamicCode("Event details are serialized using reflection. Use the TriggerEvent overload that accepts JsonTypeInfo<T> for Native AOT applications.")]
@@ -300,6 +314,13 @@ public readonly struct HtmxResponse
     ///   the Toolkit script (<c>htmx-toolkit.js</c>) can replay; without the script, none of them
     ///   is triggered. In HTMX 4.x, this also applies to a name added with different timings.
     ///   The event name <c>rs:event</c> is reserved for this purpose and cannot be used.
+    /// </para>
+    /// <para>
+    ///   Each call sets the header in <see cref="HttpResponse.Headers" />, replacing its value with
+    ///   the events added for it. If the header has been removed, for example by
+    ///   <see cref="ResponseExtensions.Clear(HttpResponse)" />, the events added before that are discarded.
+    ///   Like any other response header, an event cannot be added after the response has started;
+    ///   the method then throws <see cref="InvalidOperationException" />.
     /// </para>
     /// </remarks>
     public HtmxResponse TriggerEvent<T>(string eventName, T detail, JsonTypeInfo<T> jsonTypeInfo, HtmxTriggerTiming timing = HtmxTriggerTiming.Receive) =>
