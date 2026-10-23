@@ -185,6 +185,13 @@ Confirm the request is actually sent by HTMX and is not a history restoration re
 For infrastructure that must write a header unconditionally, use `Response.GetHtmxHeaders()`
 and make the condition explicit.
 
+## Setting an HX header throws InvalidOperationException
+
+Response headers, including the events added by `TriggerEvent()`, can be set only before the response starts.
+The response starts when the first part of the body is sent, for example when a view calls `FlushAsync()`.
+By the time `OnResultExecuted` of a filter runs, the result has usually written the body. Set the headers
+before that point, for example in `OnResultExecuting`.
+
 ## HX-Redirect does not navigate the browser
 
 Check the response status. HTMX cannot process `HX-Redirect` or other `HX-*` headers from an intermediate 3xx response
@@ -251,8 +258,8 @@ See [Response events](version-compatibility.md#response-events).
 ## A response event does not refresh another component
 
 First check the actual response in the Network panel for `HX-Trigger`, `HX-Trigger-After-Swap`, or
-`HX-Trigger-After-Settle`. Events added by `TriggerEvent()` are written when the response starts; inspecting
-the headers immediately after the method call in server code can be too early.
+`HX-Trigger-After-Settle`. `TriggerEvent()` sets the header in `Response.Headers` right away, so server code
+can also inspect it after the call.
 
 If the header is present:
 

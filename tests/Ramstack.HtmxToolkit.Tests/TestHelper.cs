@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -70,6 +71,21 @@ internal static class TestHelper
     }
 
     /// <summary>
+    /// Marks the response of the specified <see cref="HttpContext"/> as started,
+    /// keeping its current headers.
+    /// </summary>
+    /// <param name="context">The HTTP context whose response is marked as started.</param>
+    public static void StartResponse(HttpContext context)
+    {
+        var feature = new StartedResponseFeature
+        {
+            Headers = context.Response.Headers
+        };
+
+        context.Features.Set<IHttpResponseFeature>(feature);
+    }
+
+    /// <summary>
     /// Creates an HTTP context whose request services contain the toolkit
     /// configuration for the specified HTMX major version.
     /// </summary>
@@ -116,4 +132,13 @@ internal static class TestHelper
     /// </summary>
     public static TagHelperOutput CreateTagHelperOutput(string tagName = "div", TagHelperAttributeList? attributes = null) =>
         new(tagName, attributes ?? [], (_, _) => Task.FromResult<TagHelperContent>(new DefaultTagHelperContent()));
+
+    /// <summary>
+    /// Represents a response feature whose response has already started.
+    /// </summary>
+    private sealed class StartedResponseFeature : HttpResponseFeature
+    {
+        /// <inheritdoc />
+        public override bool HasStarted => true;
+    }
 }

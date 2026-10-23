@@ -160,9 +160,9 @@ public readonly struct HtmxResponseHeaders
     /// <para>
     ///   Each entry pairs an event name with its detail serialized as JSON. Events are listed
     ///   in the order they were added, including repeated names. The list is a read-only live view
-    ///   of the events accumulated for the current response, which are written into the header
-    ///   immediately before the response starts. If no events have been added,
-    ///   the property returns <see langword="null" />.
+    ///   of the events added for the current response. The header is updated each time an event
+    ///   is added. If no events have been added, or the header has been removed, for example by
+    ///   <see cref="ResponseExtensions.Clear(HttpResponse)" />, the property returns <see langword="null" />.
     /// </para>
     /// <para>
     ///   HTMX 1.9.x and 2.x trigger these events when the response is received,
@@ -181,9 +181,9 @@ public readonly struct HtmxResponseHeaders
     /// <para>
     ///   Each entry pairs an event name with its detail serialized as JSON. Events are listed
     ///   in the order they were added, including repeated names. The list is a read-only live view
-    ///   of the events accumulated for the current response, which are written into the header
-    ///   immediately before the response starts. If no events have been added,
-    ///   the property returns <see langword="null" />.
+    ///   of the events added for the current response. The header is updated each time an event
+    ///   is added. If no events have been added, or the header has been removed, for example by
+    ///   <see cref="ResponseExtensions.Clear(HttpResponse)" />, the property returns <see langword="null" />.
     /// </para>
     /// <para>
     ///   HTMX 4.x has no <c>HX-Trigger-After-Swap</c> header, so these events are emitted through
@@ -201,9 +201,9 @@ public readonly struct HtmxResponseHeaders
     /// <para>
     ///   Each entry pairs an event name with its detail serialized as JSON. Events are listed
     ///   in the order they were added, including repeated names. The list is a read-only live view
-    ///   of the events accumulated for the current response, which are written into the header
-    ///   immediately before the response starts. If no events have been added,
-    ///   the property returns <see langword="null" />.
+    ///   of the events added for the current response. The header is updated each time an event
+    ///   is added. If no events have been added, or the header has been removed, for example by
+    ///   <see cref="ResponseExtensions.Clear(HttpResponse)" />, the property returns <see langword="null" />.
     /// </para>
     /// <para>
     ///   HTMX 4.x has no <c>HX-Trigger-After-Settle</c> header, so these events are emitted through
