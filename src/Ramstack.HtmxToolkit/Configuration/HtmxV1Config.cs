@@ -328,6 +328,6 @@ public sealed class HtmxV1Config() : HtmxConfig(HtmxTargetVersion.V1)
     }
 
     /// <inheritdoc />
-    protected override string Serialize() =>
+    private protected override string Serialize() =>
         JsonSerializer.Serialize(this, HtmxConfigJsonSerializerContext.Default.HtmxV1Config);
 }
