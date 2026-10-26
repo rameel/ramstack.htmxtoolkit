@@ -269,6 +269,12 @@ public IActionResult Inventory(string sku) =>
 The attribute supports `Refresh`, `Reswap`, `ReswapExpression`, `Retarget`, and `Reselect`.
 Use the fluent API when values depend on runtime state or when triggering events and navigation.
 
+Apply the attribute to an action, a controller, or a Razor Pages page model.
+Razor Pages ignore filter attributes on handler methods, so put it on the page model class.
+When a controller and its action specify the same header, the action's value takes effect.
+A derived class inherits the attribute from its base class; an attribute declared on the derived class
+replaces the inherited one entirely.
+
 ## Access headers directly
 
 Use `Response.GetHtmxHeaders()` when middleware or shared infrastructure needs property access instead of fluent chaining:

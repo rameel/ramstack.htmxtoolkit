@@ -11,11 +11,23 @@ namespace Ramstack.HtmxToolkit;
 /// Specifies HTMX response headers to apply when an action result is executed for an HTMX request.
 /// </summary>
 /// <remarks>
-/// A property that is not set, or is set to <see langword="false" />, <see langword="null" />,
-/// or an empty string, adds no header. The specified headers replace any values that the action
-/// has already set for them.
+/// <para>
+///   A property that is not set, or is set to <see langword="false" />, <see langword="null" />,
+///   or an empty string, adds no header. The specified headers replace any values that the action
+///   has already set for them.
+/// </para>
+/// <para>
+///   The attribute can be applied to an action, a controller, or a Razor Pages page model.
+///   Razor Pages ignore filter attributes on handler methods, so apply it to the page model class.
+///   When both a controller and its action specify the same header, the action's value takes effect.
+/// </para>
+/// <para>
+///   A derived controller or page model inherits the attribute from its base class.
+///   If the derived class declares its own attribute, that attribute replaces the inherited one,
+///   including the headers that only the inherited attribute specifies.
+/// </para>
 /// </remarks>
-[AttributeUsage(AttributeTargets.All, Inherited = false, AllowMultiple = true)]
+[AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, Inherited = true, AllowMultiple = false)]
 public sealed class HtmxResponseAttribute : Attribute, IResultFilter
 {
     private readonly List<(string Key, string Value)> _headers = [];
