@@ -208,16 +208,16 @@ The output depends on the configured HTMX target:
 <button hx-config='{"timeout":2000,"credentials":"same-origin"}' ...>
 ```
 
-| Razor attribute | V1/V2 | V4 |
-|---|---|---|
-| `hx-request-timeout` | Yes | Yes |
+| Razor attribute          | V1/V2           | V4                     |
+|--------------------------|-----------------|------------------------|
+| `hx-request-timeout`     | Yes             | Yes                    |
 | `hx-request-credentials` | Boolean mapping | Fetch credentials mode |
-| `hx-request-no-headers` | Yes | No |
-| `hx-request-cache` | No | Yes |
-| `hx-request-redirect` | No | Yes |
-| `hx-request-referrer` | No | Yes |
-| `hx-request-integrity` | No | Yes |
-| `hx-request-validate` | No | Yes |
+| `hx-request-no-headers`  | Yes             | No                     |
+| `hx-request-cache`       | No              | Yes                    |
+| `hx-request-redirect`    | No              | Yes                    |
+| `hx-request-referrer`    | No              | Yes                    |
+| `hx-request-integrity`   | No              | Yes                    |
+| `hx-request-validate`    | No              | Yes                    |
 
 Unsupported properties are omitted from the generated JSON. In particular, `HtmxRequestCredentials.Omit`
 cannot be represented by HTMX 1.9.x or 2.x and is omitted for those targets.
@@ -243,14 +243,14 @@ HTMX 4.x requires attribute inheritance to be explicit by default.
 Razor cannot use the colon-form HTMX modifier as a bound Tag Helper input,
 so HtmxToolkit provides hyphenated boolean inputs and generates the correct client attribute:
 
-| Razor Tag Helper input | Generated HTMX 4 attribute |
-|---|---|
-| `hx-request-inherited="true"` | `hx-config:inherited` |
-| `hx-request-append="true"` | `hx-config:append` |
-| `hx-vals-inherited="true"` | `hx-vals:inherited` |
-| `hx-vals-append="true"` | `hx-vals:append` |
-| `hx-headers-inherited="true"` | `hx-headers:inherited` |
-| `hx-headers-append="true"` | `hx-headers:append` |
+| Razor Tag Helper input        | Generated HTMX 4 attribute |
+|-------------------------------|----------------------------|
+| `hx-request-inherited="true"` | `hx-config:inherited`      |
+| `hx-request-append="true"`    | `hx-config:append`         |
+| `hx-vals-inherited="true"`    | `hx-vals:inherited`        |
+| `hx-vals-append="true"`       | `hx-vals:append`           |
+| `hx-headers-inherited="true"` | `hx-headers:inherited`     |
+| `hx-headers-append="true"`    | `hx-headers:append`        |
 
 For example, inherit per-request timeout configuration from a parent:
 

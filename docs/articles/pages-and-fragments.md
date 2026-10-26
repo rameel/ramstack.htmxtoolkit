@@ -155,8 +155,11 @@ On ASP.NET Core 7 or later, a policy for public, cacheable HTML could include:
 ```csharp
 builder.Services.AddOutputCache(options =>
 {
-    options.AddPolicy("HtmxHtml", policy => policy.SetVaryByHeader(
-        "HX-Request", "HX-History-Restore-Request", "HX-Request-Type"));
+    options.AddPolicy("HtmxHtml", policy =>
+        policy.SetVaryByHeader(
+            "HX-Request",
+            "HX-History-Restore-Request",
+            "HX-Request-Type"));
 });
 ```
 

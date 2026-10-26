@@ -11,12 +11,12 @@ The server renders the new HTML; you do not need to build that HTML from JSON in
 
 Four attributes describe most interactions:
 
-| Attribute | What it controls | Example |
-|---|---|---|
+| Attribute             | What it controls           | Example                                    |
+|-----------------------|----------------------------|--------------------------------------------|
 | `hx-get` or `hx-post` | The request method and URL | `hx-get="/Products?handler=Details&id=42"` |
-| `hx-trigger` | When to send the request | `hx-trigger="click"` |
-| `hx-target` | The element to update | `hx-target="#product-details"` |
-| `hx-swap` | How to insert the response | `hx-swap="innerHTML"` |
+| `hx-trigger`          | When to send the request   | `hx-trigger="click"`                       |
+| `hx-target`           | The element to update      | `hx-target="#product-details"`             |
+| `hx-swap`             | How to insert the response | `hx-swap="innerHTML"`                      |
 
 A button uses `click` by default, and a form uses `submit`. The default swap is `innerHTML`, which replaces
 the target's contents and keeps the target itself. `outerHTML` replaces the target element too, so the response
@@ -27,15 +27,15 @@ and response headers that tell HTMX what to do next.
 
 ## What the toolkit provides
 
-| Area | Toolkit feature |
-|---|---|
-| Incoming requests | `IsHtmxPartialRequest`, `IsHtmxFullRequest`, `IsHtmxRequest`, `IsHtmxBoosted`, and strongly typed request headers |
-| Outgoing responses | Fluent `Response.Htmx(...)` API and strongly typed response headers |
-| MVC | `[HtmxRequest]` action selection by request type and boosted navigation, and `[HtmxResponse]` response configuration |
-| Razor | Tag Helpers for routes, values, headers, and per-request options |
-| Configuration | Version-specific HTMX configuration rendered by `<htmx-config />` |
-| Security | Automatic ASP.NET Core antiforgery headers for unsafe HTMX requests |
-| Browser script | The [Toolkit script](antiforgery.md#what-the-toolkit-script-does), served as a static web asset and loaded from the layout |
+| Area               | Toolkit feature                                                                                                            |
+|--------------------|----------------------------------------------------------------------------------------------------------------------------|
+| Incoming requests  | `IsHtmxPartialRequest`, `IsHtmxFullRequest`, `IsHtmxRequest`, `IsHtmxBoosted`, and strongly typed request headers          |
+| Outgoing responses | Fluent `Response.Htmx(...)` API and strongly typed response headers                                                        |
+| MVC                | `[HtmxRequest]` action selection by request type and boosted navigation, and `[HtmxResponse]` response configuration       |
+| Razor              | Tag Helpers for routes, values, headers, and per-request options                                                           |
+| Configuration      | Version-specific HTMX configuration rendered by `<htmx-config />`                                                          |
+| Security           | Automatic ASP.NET Core antiforgery headers for unsafe HTMX requests                                                        |
+| Browser script     | The [Toolkit script](antiforgery.md#what-the-toolkit-script-does), served as a static web asset and loaded from the layout |
 
 HtmxToolkit does not include the HTMX library and does not replace HTMX attributes such as `hx-target`, `hx-trigger`,
 or `hx-swap`. Add a supported HTMX release to the application separately.
@@ -90,14 +90,14 @@ registration, and layout needed to run it.
 
 ## Which pieces do I need?
 
-| Application feature | Setup |
-|---|---|
-| Read request headers or set ordinary response headers | Reference the package and import `Ramstack.HtmxToolkit` in C# |
-| Choose a target version or configure HTMX | Call `AddHtmxToolkit()`; render `<htmx-config />` in Razor for browser configuration |
-| Generate URLs or JSON attributes in Razor | Register the toolkit Tag Helpers in `_ViewImports.cshtml` |
-| Attach antiforgery tokens automatically | Render configuration metadata, load the Toolkit script, and enable server validation |
-| Use compatibility morph swaps or replay duplicate event names | Load the Toolkit script; follow the relevant feature's setup |
-| Tell full-page and fragment requests apart with HTMX 1.9.x or 2.x | Load the Toolkit script |
+| Application feature                                               | Setup                                                                                |
+|-------------------------------------------------------------------|--------------------------------------------------------------------------------------|
+| Read request headers or set ordinary response headers             | Reference the package and import `Ramstack.HtmxToolkit` in C#                        |
+| Choose a target version or configure HTMX                         | Call `AddHtmxToolkit()`; render `<htmx-config />` in Razor for browser configuration |
+| Generate URLs or JSON attributes in Razor                         | Register the toolkit Tag Helpers in `_ViewImports.cshtml`                            |
+| Attach antiforgery tokens automatically                           | Render configuration metadata, load the Toolkit script, and enable server validation |
+| Use compatibility morph swaps or replay duplicate event names     | Load the Toolkit script; follow the relevant feature's setup                         |
+| Tell full-page and fragment requests apart with HTMX 1.9.x or 2.x | Load the Toolkit script                                                              |
 
 For HTMX 4.x, register the target version even if you only use response events, so the toolkit chooses the
 correct trigger headers. In a pure Minimal API application, HTML rendering and token metadata are supplied

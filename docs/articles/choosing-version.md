@@ -36,14 +36,14 @@ trying to select a different version causes startup validation to fail.
 
 ## What the selection changes
 
-| Behavior | HTMX 1.9.x | HTMX 2.x | HTMX 4.x |
-|---|---|---|---|
-| Default when omitted | No | Yes | No |
-| Global config type | `HtmxV1Config` | `HtmxV2Config` | `HtmxV4Config` |
-| Per-request attribute | `hx-request` | `hx-request` | `hx-config` |
-| Triggering element header | `HX-Trigger` | `HX-Trigger` | `HX-Source` |
-| Expected response kind | `HX-Request-Type` from the Toolkit script | `HX-Request-Type` from the Toolkit script | `HX-Request-Type` |
-| Morph swap support | Toolkit compatibility extension | Toolkit compatibility extension | Native |
+| Behavior                  | HTMX 1.9.x                                | HTMX 2.x                                  | HTMX 4.x          |
+|---------------------------|-------------------------------------------|-------------------------------------------|-------------------|
+| Default when omitted      | No                                        | Yes                                       | No                |
+| Global config type        | `HtmxV1Config`                            | `HtmxV2Config`                            | `HtmxV4Config`    |
+| Per-request attribute     | `hx-request`                              | `hx-request`                              | `hx-config`       |
+| Triggering element header | `HX-Trigger`                              | `HX-Trigger`                              | `HX-Source`       |
+| Expected response kind    | `HX-Request-Type` from the Toolkit script | `HX-Request-Type` from the Toolkit script | `HX-Request-Type` |
+| Morph swap support        | Toolkit compatibility extension           | Toolkit compatibility extension           | Native            |
 
 See [Version compatibility](version-compatibility.md) for the differences that affect application code.
 

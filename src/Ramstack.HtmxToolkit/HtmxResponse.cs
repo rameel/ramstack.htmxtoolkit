@@ -295,7 +295,8 @@ public readonly struct HtmxResponse
     /// <param name="eventName">The event name to trigger.</param>
     /// <param name="detail">The event detail.</param>
     /// <param name="jsonTypeInfo">
-    /// The JSON metadata for the event detail. Use source-generated metadata for trimming and Native AOT.
+    /// The JSON metadata for the event detail. Source-generated metadata avoids runtime reflection
+    /// and is compatible with trimming and Native AOT.
     /// </param>
     /// <param name="timing">The event timing. Defaults to <see cref="HtmxTriggerTiming.Receive" />.</param>
     /// <returns>

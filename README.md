@@ -174,7 +174,8 @@ public IActionResult LoadMore() => PartialView("_MoreResults");
 ```
 
 See [Control HTMX responses](https://rameel.github.io/ramstack.htmxtoolkit/articles/responses.html) for all options,
-including Native AOT support and overloads that avoid closures in hot paths.
+including reflection-free serialization of event details, which also supports Native AOT,
+and overloads that avoid closures in hot paths.
 
 ## Tag Helpers
 

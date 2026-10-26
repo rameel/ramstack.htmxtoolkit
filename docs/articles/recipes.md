@@ -110,7 +110,7 @@ document.addEventListener("profile-saved", event => {
 The detail property becomes `displayName` in JSON. Listening on `document` survives replacement of the form.
 The HTMX listener above only needs the event name;
 it reloads the saved data from the server. Keep it outside the content replaced by the save response.
-See [Responses](responses.md#trigger-client-events) for event timings and Native AOT serialization.
+See [Responses](responses.md#trigger-client-events) for event timings and source-generated serialization.
 
 ## Poll a background operation
 
