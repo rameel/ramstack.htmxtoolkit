@@ -28,7 +28,7 @@ public abstract class HtmxConfig
     /// </summary>
     /// <param name="version">The target HTMX major version
     /// to which this configuration applies.</param>
-    internal HtmxConfig(HtmxTargetVersion version) =>
+    private protected HtmxConfig(HtmxTargetVersion version) =>
         TargetVersion = version;
 
     /// <summary>
@@ -47,7 +47,7 @@ public abstract class HtmxConfig
     /// <returns>
     /// A JSON string representing this configuration.
     /// </returns>
-    protected abstract string Serialize();
+    private protected abstract string Serialize();
 
     /// <summary>
     /// Assigns <paramref name="value" /> to <paramref name="field" /> and invalidates
@@ -56,7 +56,7 @@ public abstract class HtmxConfig
     /// <typeparam name="T">The type of the field.</typeparam>
     /// <param name="field">The backing field to update.</param>
     /// <param name="value">The value to assign.</param>
-    protected void SetField<T>(ref T field, T value)
+    private protected void SetField<T>(ref T field, T value)
     {
         field = value;
         _json = null;
