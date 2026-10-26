@@ -19,8 +19,8 @@
     </div>
     <button class="button-secondary"
             hx-post
-            hx-page="/Examples/Polling"
-            hx-page-handler="Start"
+            asp-page="/Examples/Polling"
+            asp-page-handler="Start"
             hx-target="#job-progress"
             hx-swap="outerMorph">
       Run again
@@ -30,9 +30,10 @@
 else
 {
   <div id="job-progress" class="job-progress"
-       hx-get hx-page="/Examples/Polling"
-       hx-page-handler="Progress"
-       hx-route-progress="@Model.Percent"
+       hx-get
+       asp-page="/Examples/Polling"
+       asp-page-handler="Progress"
+       asp-route-progress="@Model.Percent"
        hx-trigger="every 400ms"
        hx-swap="outerMorph">
     <div class="job-progress__meta">

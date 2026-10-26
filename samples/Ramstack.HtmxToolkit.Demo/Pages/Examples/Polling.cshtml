@@ -20,8 +20,8 @@
     <div id="job-progress" class="job-progress job-progress--idle">
       <p>Start the simulated job to see server-controlled polling in action.</p>
       <button hx-post
-              hx-page="/Examples/Polling"
-              hx-page-handler="Start"
+              asp-page="/Examples/Polling"
+              asp-page-handler="Start"
               hx-target="#job-progress"
               hx-swap="outerMorph">
         Start job

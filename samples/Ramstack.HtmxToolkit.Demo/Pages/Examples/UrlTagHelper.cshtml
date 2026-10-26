@@ -13,14 +13,15 @@
 
   <section class="demo-card">
     <div class="demo-card__header">
-      <h2><code>hx-page</code> + <code>hx-page-handler</code></h2>
+      <h2><code>asp-page</code> + <code>asp-page-handler</code></h2>
       <p>The toolkit generates <code>hx-get</code>, so the URL stays in sync with ASP.NET Core routing.</p>
     </div>
 
     <div class="demo-actions">
       <button
-        hx-page="/Examples/UrlTagHelper"
-        hx-page-handler="Status"
+        hx-get
+        asp-page="/Examples/UrlTagHelper"
+        asp-page-handler="Status"
         hx-target="#result">
         Check service status
       </button>

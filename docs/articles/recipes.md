@@ -11,8 +11,7 @@ Start with the `ProfileInput`, `ProfileStore`, and bound `Input` property from t
 use this markup in `Pages/Profile.cshtml` instead of `_ProfileForm`:
 
 ```razor
-<form method="post" asp-page-handler="Save"
-      hx-post hx-page="/Profile" hx-page-handler="Save"
+<form method="post" hx-post asp-page="/Profile" asp-page-handler="Save"
       hx-target="#save-result" novalidate>
     <div id="validation-errors" role="alert">
         <div asp-validation-summary="All"></div>
@@ -84,8 +83,9 @@ The [forms tutorial](forms-and-validation.md) includes a complete example: a sav
 and an independent summary requests its latest HTML. Listen on `body` when the source is another component:
 
 ```razor
-<aside hx-page="/Profile"
-       hx-page-handler="Summary"
+<aside hx-get
+       asp-page="/Profile"
+       asp-page-handler="Summary"
        hx-trigger="profile-saved from:body">
 </aside>
 ```
@@ -139,9 +139,10 @@ Create `Pages/Jobs/_Progress.cshtml` (and import the model's namespace in `_View
 else
 {
     <div id="job-progress"
-         hx-page="/Jobs/Status"
-         hx-page-handler="Progress"
-         hx-route-progress="@Model.Percent"
+         hx-get
+         asp-page="/Jobs/Status"
+         asp-page-handler="Progress"
+         asp-route-progress="@Model.Percent"
          hx-trigger="load delay:1s"
          hx-target="this"
          hx-swap="outerHTML">
@@ -256,7 +257,7 @@ Create `Pages/Orders.cshtml`:
 <h1>Orders</h1>
 <ul id="orders"></ul>
 <div id="load-more">
-    <button hx-page="/Orders" hx-page-handler="More" hx-route-after="0"
+    <button hx-get asp-page="/Orders" asp-page-handler="More" asp-route-after="0"
             hx-target="#orders" hx-swap="beforeend">
         Load more
     </button>
@@ -300,7 +301,7 @@ Create `Pages/_OrderBatch.cshtml`:
 <div id="load-more" hx-swap-oob="outerHTML">
     @if (Model.NextCursor is { } cursor)
     {
-        <button hx-page="/Orders" hx-page-handler="More" hx-route-after="@cursor"
+        <button hx-get asp-page="/Orders" asp-page-handler="More" asp-route-after="@cursor"
                 hx-target="#orders" hx-swap="beforeend">
             Load more
         </button>
@@ -326,8 +327,9 @@ Use an input event with a delay so the server receives a request after the user 
 <input id="catalog-search"
        name="query"
        type="search"
-       hx-page="/Catalog"
-       hx-page-handler="Search"
+       hx-get
+       asp-page="/Catalog"
+       asp-page-handler="Search"
        hx-trigger="input changed delay:300ms, search"
        hx-target="#search-results"
        hx-request-timeout="5000" />
@@ -363,9 +365,10 @@ Create `Pages/_ProductRow.cshtml` for a display row:
     <td>@Model.Name</td>
     <td>@Model.Price</td>
     <td>
-        <button hx-page="/Products"
-                hx-page-handler="Edit"
-                hx-route-id="@Model.Id"
+        <button hx-get
+                asp-page="/Products"
+                asp-page-handler="Edit"
+                asp-route-id="@Model.Id"
                 hx-target="closest tr"
                 hx-swap="outerHTML">
             Edit
@@ -413,8 +416,8 @@ Create `Pages/_ProductEdit.cshtml`. It posts back to another handler with the sa
 <tr id="product-@Model.Id">
     <td colspan="3">
         <form hx-post
-              hx-page="/Products"
-              hx-page-handler="Save"
+              asp-page="/Products"
+              asp-page-handler="Save"
               hx-target="closest tr"
               hx-swap="outerHTML">
             <div asp-validation-summary="All" role="alert"></div>

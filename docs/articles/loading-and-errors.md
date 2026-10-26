@@ -14,11 +14,9 @@ In `Pages/_ProfileForm.cshtml`, replace the opening `<form>` tag with:
 ```razor
 <form id="profile-editor"
       method="post"
+      hx-post
       asp-page="/Profile"
       asp-page-handler="Save"
-      hx-post
-      hx-page="/Profile"
-      hx-page-handler="Save"
       hx-target="this"
       hx-swap="outerHTML"
       hx-indicator="#profile-busy"

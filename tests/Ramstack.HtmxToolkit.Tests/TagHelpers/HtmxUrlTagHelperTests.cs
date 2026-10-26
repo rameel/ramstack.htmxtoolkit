@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Abstractions;
@@ -5,6 +6,9 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.Options;
+
+using Ramstack.HtmxToolkit.Configuration;
 
 namespace Ramstack.HtmxToolkit.Tests.TagHelpers;
 
@@ -107,6 +111,11 @@ public class HtmxUrlTagHelperTests
     [TestCase("hx-delete", "hx-put")]
     [TestCase("hx-delete", "hx-patch")]
     [TestCase("hx-put", "hx-patch")]
+    [TestCase("hx-get", "hx-action")]
+    [TestCase("hx-post", "hx-action")]
+    [TestCase("hx-delete", "hx-action")]
+    [TestCase("hx-put", "hx-action")]
+    [TestCase("hx-patch", "hx-action")]
     public void ProcessAsync_MultipleMethods_Throws(string method1, string method2)
     {
         var attributes = new TagHelperAttributeList
@@ -116,7 +125,63 @@ public class HtmxUrlTagHelperTests
         };
 
         Assert.ThrowsAsync<InvalidOperationException>(
+            async () => await RunAsync(attributes: attributes, version: HtmxTargetVersion.V4));
+    }
+
+    [Test]
+    public void ProcessAsync_EmptyMethodValue_Throws()
+    {
+        var attributes = new TagHelperAttributeList
+        {
+            new TagHelperAttribute("hx-post", new HtmlString(""))
+        };
+
+        Assert.ThrowsAsync<InvalidOperationException>(
             async () => await RunAsync(attributes: attributes));
+    }
+
+    [Test]
+    public void ProcessAsync_MethodWithUrl_Throws()
+    {
+        var attributes = new TagHelperAttributeList
+        {
+            new TagHelperAttribute("hx-post", new HtmlString("/explicit"))
+        };
+
+        var exception = Assert.ThrowsAsync<InvalidOperationException>(
+            async () => await RunAsync(attributes: attributes));
+
+        Assert.That(exception!.Message, Does.Contain("hx-post"));
+    }
+
+    [Test]
+    public async Task ProcessAsync_HxAction_WritesUrl_ForHtmx4()
+    {
+        var attributes = new TagHelperAttributeList
+        {
+            new TagHelperAttribute("hx-action"),
+            new TagHelperAttribute("hx-method", new HtmlString("post"))
+        };
+
+        var (_, output) = await RunAsync(attributes: attributes, version: HtmxTargetVersion.V4);
+
+        Assert.That(output.Attributes["hx-action"]!.Value, Is.EqualTo(TestUrlHelper.ActionUrl));
+        Assert.That(output.Attributes["hx-get"], Is.Null);
+    }
+
+    [TestCase(HtmxTargetVersion.V1)]
+    [TestCase(HtmxTargetVersion.V2)]
+    public void ProcessAsync_HxAction_Throws_BeforeHtmx4(HtmxTargetVersion version)
+    {
+        var attributes = new TagHelperAttributeList
+        {
+            new TagHelperAttribute("hx-action")
+        };
+
+        var exception = Assert.ThrowsAsync<InvalidOperationException>(
+            async () => await RunAsync(attributes: attributes, version: version));
+
+        Assert.That(exception!.Message, Does.Contain("HTMX 4.x"));
     }
 
     [TestCase("Route", "Action")]
@@ -149,22 +214,44 @@ public class HtmxUrlTagHelperTests
         }
     }
 
-    private static async Task<(TestUrlHelper UrlHelper, TagHelperOutput Output)> RunAsync(Action<HtmxUrlTagHelper>? configure = null, TagHelperAttributeList? attributes = null)
+    private static async Task<(TestUrlHelper UrlHelper, TagHelperOutput Output)> RunAsync(Action<HtmxUrlTagHelper>? configure = null, TagHelperAttributeList? attributes = null, HtmxTargetVersion version = HtmxTargetVersion.V2)
     {
         var urlHelper = new TestUrlHelper();
         var factory = new TestUrlHelperFactory(urlHelper);
 
-        var tagHelper = new HtmxUrlTagHelper(factory)
+        var tagHelper = new HtmxUrlTagHelper(factory, Options.Create(CreateOptions(version)))
         {
             ViewContext = new ViewContext()
         };
 
         configure?.Invoke(tagHelper);
 
-        var output = TestHelper.CreateTagHelperOutput("div", attributes);
+        var output = TestHelper.CreateTagHelperOutput("div", attributes ?? [new TagHelperAttribute("hx-get")]);
         await tagHelper.ProcessAsync(TestHelper.CreateTagHelperContext(), output);
 
         return (urlHelper, output);
+    }
+
+    private static HtmxToolkitOptions CreateOptions(HtmxTargetVersion version)
+    {
+        var options = new HtmxToolkitOptions();
+
+        switch (version)
+        {
+            case HtmxTargetVersion.V1:
+                options.UseHtmxV1();
+                break;
+            case HtmxTargetVersion.V2:
+                options.UseHtmxV2();
+                break;
+            case HtmxTargetVersion.V4:
+                options.UseHtmxV4();
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(version));
+        }
+
+        return options;
     }
 
 

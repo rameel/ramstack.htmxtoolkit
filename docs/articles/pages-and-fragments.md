@@ -52,9 +52,10 @@ public IActionResult OnGetInventory(int productId) =>
 ```
 
 ```razor
-<button hx-page="/Products/Details"
-        hx-page-handler="Inventory"
-        hx-route-productid="@Model.Product.Id"
+<button hx-get
+        asp-page="/Products/Details"
+        asp-page-handler="Inventory"
+        asp-route-productid="@Model.Product.Id"
         hx-target="#inventory">
     Check inventory
 </button>

@@ -9,7 +9,7 @@ If the Network panel shows no request, check the browser setup before debugging 
 
 1. Confirm that the HTMX script returns JavaScript with HTTP 200. A NuGet reference does not install HTMX.
 2. Look for console errors, including `htmx is not defined` when the Toolkit script loads too early.
-3. Inspect the rendered element. It should have a real `hx-get` or `hx-post` URL, not only `hx-page` or `hx-action`.
+3. Inspect the rendered element. It should have a real `hx-get`, `hx-post`, or HTMX 4.x `hx-action` URL, not an attribute without a value next to `asp-page` or `asp-action`.
 4. Check whether HTML form validation is blocking submission. An invalid required input can prevent a request.
 5. Check that the element's trigger matches the interaction, especially if you changed `hx-trigger`.
 
@@ -17,7 +17,7 @@ Use the explicit script setup in [Getting started](getting-started.md#4-load-the
 
 ## Tag Helper attributes appear unchanged
 
-**Symptom:** The rendered HTML still contains `hx-page`, `hx-action`, `hx-route-*`, or `hx-request-timeout`.
+**Symptom:** The rendered HTML still contains `asp-page`, `asp-action`, `asp-route-*`, or `hx-request-timeout`.
 
 **Check:** Ensure `_ViewImports.cshtml` applies to the view and contains:
 
@@ -26,6 +26,8 @@ Use the explicit script setup in [Getting started](getting-started.md#4-load-the
 ```
 
 Also verify the project references `Ramstack.HtmxToolkit` and uses only one routing mode per element.
+The URL Tag Helper processes `asp-*` attributes only on an element that also has an `hx-get`, `hx-post`,
+`hx-put`, `hx-patch`, `hx-delete`, or, for HTMX 4.x, `hx-action` attribute without a value.
 
 ## A full page is inserted into a target
 
@@ -235,12 +237,13 @@ Leave it `Unspecified` to accept requests without that header.
 
 Choose exactly one routing mode:
 
-- named route: `hx-route`;
-- MVC: `hx-controller` and/or `hx-action`;
-- Razor Pages: `hx-page` and/or `hx-page-handler`.
+- named route: `asp-route`;
+- MVC: `asp-controller` and/or `asp-action`;
+- Razor Pages: `asp-page` and/or `asp-page-handler`.
 
-Choose at most one method from `hx-get`, `hx-post`, `hx-put`, `hx-patch`, and `hx-delete`.
-If no method is present, the URL Tag Helper generates `hx-get`.
+Use exactly one HTMX request attribute without a value: `hx-get`, `hx-post`, `hx-put`, `hx-patch`, `hx-delete`,
+or, for HTMX 4.x, `hx-action`. Even an empty value, such as `hx-get=""`, is an error. Remove the value,
+or remove the `asp-*` attributes if the URL is written by hand.
 
 ## Event timing differs after moving to HTMX 4
 

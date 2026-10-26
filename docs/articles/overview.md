@@ -50,9 +50,10 @@ or `hx-swap`. Add a supported HTMX release to the application separately.
 For example, write this in a Razor view:
 
 ```razor
-<button hx-page="/Products"
-        hx-page-handler="Details"
-        hx-route-id="42"
+<button hx-get
+        asp-page="/Products"
+        asp-page-handler="Details"
+        asp-route-id="42"
         hx-target="#product-details">
     View product
 </button>
@@ -63,15 +64,17 @@ For example, write this in a Razor view:
 Razor processes the toolkit attributes on the server. The browser receives markup similar to:
 
 ```html
-<button hx-get="/Products?id=42&amp;handler=Details" hx-target="#product-details">
+<button hx-get="/Products?id=42&amp;handler=Details" hx-target="#product-details"
+        formaction="/Products?id=42&amp;handler=Details">
     View product
 </button>
 
 <div id="product-details"></div>
 ```
 
-The query parameter order may differ. `hx-page`, `hx-page-handler`, and `hx-route-*` are server-side inputs;
-HTMX in the browser uses the generated `hx-get`. `hx-target` passes through unchanged.
+The query parameter order may differ. `asp-page`, `asp-page-handler`, and `asp-route-*` are server-side inputs;
+HTMX in the browser uses the generated `hx-get`. The standard Form Action Tag Helper renders `formaction`
+from the same attributes. `hx-target` passes through unchanged.
 
 The page handler returns a partial view:
 
