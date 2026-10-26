@@ -217,10 +217,15 @@ Keep the script loaded when using repeated event names: without it, none of the 
 in that header are triggered. In HTMX 4.x all timings share `HX-Trigger`, so this also applies to a name
 added with different timings. Do not use the name `rs:event`.
 
-### Serialize details with Native AOT
+### Serialize details with source-generated metadata
 
-The object overload uses reflection to serialize details. For trimming and Native AOT,
-pass source-generated JSON metadata instead. Define the payload and JSON context in their own C# file:
+The object overload discovers the shape of each detail type through reflection the first time it serializes that type.
+Pass source-generated JSON metadata to do this work at build time instead: the first event of each type is serialized
+without the reflection delay, the payload can be written by generated code, and the app needs less memory.
+Because no reflection is involved, this overload also supports trimming and Native AOT.
+
+Each payload needs a named type listed in the JSON context, so anonymous objects cannot be used.
+Define the payload and the context in their own C# file:
 
 ```csharp
 using System.Text.Json.Serialization;
