@@ -122,11 +122,11 @@ The controller does not need extra response headers for this browser feedback.
 
 The JavaScript above uses HTMX 2.x lifecycle events. HTMX 4 changes their names and event data:
 
-| Purpose | HTMX 2.x | HTMX 4.x |
-|---|---|---|
-| Clear the previous error before sending | `htmx:beforeRequest` | `htmx:before:request` |
-| Report an HTTP error | `htmx:responseError` | `htmx:response:error` |
-| Report a connection failure or timeout | `htmx:sendError`, `htmx:timeout` | `htmx:error` |
+| Purpose                                 | HTMX 2.x                         | HTMX 4.x              |
+|-----------------------------------------|----------------------------------|-----------------------|
+| Clear the previous error before sending | `htmx:beforeRequest`             | `htmx:before:request` |
+| Report an HTTP error                    | `htmx:responseError`             | `htmx:response:error` |
+| Report a connection failure or timeout  | `htmx:sendError`, `htmx:timeout` | `htmx:error`          |
 
 When porting the listeners, read the request context from `event.detail.ctx`; response status is available
 as `ctx.response.status` when a response exists. `htmx:error` also covers exceptions during a swap, so inspect

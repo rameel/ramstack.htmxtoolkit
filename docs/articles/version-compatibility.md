@@ -5,16 +5,16 @@ and response events use the behavior expected by that version.
 
 ## Request headers
 
-| Information | HTMX 1.9.x / 2.x | HTMX 4.x | Toolkit property |
-|---|---|---|---|
-| HTMX request marker | `HX-Request`, by default also on history restoration | `HX-Request`, except on history restoration | `Request` |
-| Boosted navigation | `HX-Boosted` | `HX-Boosted` | `Boosted` |
-| Current browser URL | `HX-Current-URL` | `HX-Current-URL` | `CurrentUrl` |
-| History cache miss | `HX-History-Restore-Request` | `HX-History-Restore-Request` | `HistoryRestoreRequest` |
-| Target element | Element ID | `tag#id` | `Target` |
-| Triggering element | `HX-Trigger` and `HX-Trigger-Name` | `HX-Source` in `tag#id` form | `Trigger`, `TriggerName`, `Source` |
-| Prompt result | `HX-Prompt` | `HX-Prompt` from the `hx-prompt` extension, URI-encoded | `Prompt` |
-| Expected response | `HX-Request-Type`, added by the Toolkit script | `HX-Request-Type`: `partial` or `full` | `RequestType` |
+| Information         | HTMX 1.9.x / 2.x                                     | HTMX 4.x                                                | Toolkit property                   |
+|---------------------|------------------------------------------------------|---------------------------------------------------------|------------------------------------|
+| HTMX request marker | `HX-Request`, by default also on history restoration | `HX-Request`, except on history restoration             | `Request`                          |
+| Boosted navigation  | `HX-Boosted`                                         | `HX-Boosted`                                            | `Boosted`                          |
+| Current browser URL | `HX-Current-URL`                                     | `HX-Current-URL`                                        | `CurrentUrl`                       |
+| History cache miss  | `HX-History-Restore-Request`                         | `HX-History-Restore-Request`                            | `HistoryRestoreRequest`            |
+| Target element      | Element ID                                           | `tag#id`                                                | `Target`                           |
+| Triggering element  | `HX-Trigger` and `HX-Trigger-Name`                   | `HX-Source` in `tag#id` form                            | `Trigger`, `TriggerName`, `Source` |
+| Prompt result       | `HX-Prompt`                                          | `HX-Prompt` from the `hx-prompt` extension, URI-encoded | `Prompt`                           |
+| Expected response   | `HX-Request-Type`, added by the Toolkit script       | `HX-Request-Type`: `partial` or `full`                  | `RequestType`                      |
 
 `IsHtmxRequest()` returns `false` for history restoration in every version,
 even when HTMX 1.9.x or 2.x sends `HX-Request` with it; see [Handle history restoration](requests.md#handle-history-restoration).
@@ -39,13 +39,13 @@ HTMX 4.x, for example, does not inherit `hx-select` from a parent element unless
 
 `HtmxRequestTagHelper` uses one Razor-facing API and emits the appropriate client attribute:
 
-| Option | HTMX 1.9.x / 2.x | HTMX 4.x |
-|---|---|---|
-| Output attribute | `hx-request` | `hx-config` |
-| `hx-request-timeout` | Supported | Supported |
-| `hx-request-credentials` | `true` or `false`; `Omit` is omitted | `same-origin`, `include`, or `omit` |
-| `hx-request-no-headers` | Supported | Removed |
-| Cache, redirect, referrer, integrity, validation | Not emitted | Supported |
+| Option                                           | HTMX 1.9.x / 2.x                     | HTMX 4.x                            |
+|--------------------------------------------------|--------------------------------------|-------------------------------------|
+| Output attribute                                 | `hx-request`                         | `hx-config`                         |
+| `hx-request-timeout`                             | Supported                            | Supported                           |
+| `hx-request-credentials`                         | `true` or `false`; `Omit` is omitted | `same-origin`, `include`, or `omit` |
+| `hx-request-no-headers`                          | Supported                            | Removed                             |
+| Cache, redirect, referrer, integrity, validation | Not emitted                          | Supported                           |
 
 ## Attribute modifiers
 
@@ -60,15 +60,15 @@ It does not replace `*-append` when a child declaration must merge with inherite
 
 ## Global configuration concepts
 
-| Concept | HTMX 1.9.x | HTMX 2.x | HTMX 4.x |
-|---|---|---|---|
-| History | Local snapshots controlled by `HistoryEnabled`, cache size, and refresh on miss | Local snapshots, plus restore-request behavior | `History` mode; server request by default, optional local-cache extension |
-| Default swap | `DefaultSwapStyle` | `DefaultSwapStyle` | `DefaultSwap` |
-| Same-origin policy | `SelfRequestsOnly` | `SelfRequestsOnly` | `Mode` |
-| View transitions | `GlobalViewTransitions` | `GlobalViewTransitions` | `Transitions` |
-| Response statuses | HTMX defaults | `ResponseHandling` | `NoSwap` |
-| Attribute inheritance | Standard behavior | `DisableInheritance` | `ImplicitInheritance` |
-| Morphing | Toolkit extension | Toolkit extension | Native |
+| Concept               | HTMX 1.9.x                                                                      | HTMX 2.x                                       | HTMX 4.x                                                                  |
+|-----------------------|---------------------------------------------------------------------------------|------------------------------------------------|---------------------------------------------------------------------------|
+| History               | Local snapshots controlled by `HistoryEnabled`, cache size, and refresh on miss | Local snapshots, plus restore-request behavior | `History` mode; server request by default, optional local-cache extension |
+| Default swap          | `DefaultSwapStyle`                                                              | `DefaultSwapStyle`                             | `DefaultSwap`                                                             |
+| Same-origin policy    | `SelfRequestsOnly`                                                              | `SelfRequestsOnly`                             | `Mode`                                                                    |
+| View transitions      | `GlobalViewTransitions`                                                         | `GlobalViewTransitions`                        | `Transitions`                                                             |
+| Response statuses     | HTMX defaults                                                                   | `ResponseHandling`                             | `NoSwap`                                                                  |
+| Attribute inheritance | Standard behavior                                                               | `DisableInheritance`                           | `ImplicitInheritance`                                                     |
+| Morphing              | Toolkit extension                                                               | Toolkit extension                              | Native                                                                    |
 
 The similarly named settings are not always exact one-to-one replacements.
 Review the target version's guide rather than copying a configuration delegate unchanged.
@@ -78,10 +78,10 @@ Review the target version's guide rather than copying a configuration delegate u
 HTMX 1.9.x and 2.x distinguish `HX-Trigger`, `HX-Trigger-After-Swap`, and `HX-Trigger-After-Settle`.
 HTMX 4.x has only `HX-Trigger`, so the Toolkit emits events of every `HtmxTriggerTiming` through it.
 
-| Timing | HTMX 1.9.x and 2.x | HTMX 4.x |
-|---|---|---|
-| `Receive` | When the response is received, before the swap | When the request completes |
-| `AfterSwap` | After the swap step, only if the response is swapped | When the request completes |
+| Timing        | HTMX 1.9.x and 2.x                                     | HTMX 4.x                   |
+|---------------|--------------------------------------------------------|----------------------------|
+| `Receive`     | When the response is received, before the swap         | When the request completes |
+| `AfterSwap`   | After the swap step, only if the response is swapped   | When the request completes |
 | `AfterSettle` | After the settle step, only if the response is swapped | When the request completes |
 
 HTMX 4.x completes the request after the swap and settle steps, so `AfterSwap` and `AfterSettle` events

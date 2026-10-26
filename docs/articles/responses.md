@@ -53,18 +53,18 @@ app.MapPost("/account/sign-in", (HttpResponse response, LinkGenerator links) =>
 
 ## Choose a response instruction
 
-| Goal | API | Header |
-|---|---|---|
-| Request another URL through HTMX | `Location` | `HX-Location` |
-| Navigate with a full page load | `Redirect` | `HX-Redirect` |
-| Reload the current page | `Refresh` | `HX-Refresh` |
-| Add a browser history entry | `PushUrl` | `HX-Push-Url` |
-| Replace the current history entry | `ReplaceUrl` | `HX-Replace-Url` |
+| Goal                                | API                    | Header               |
+|-------------------------------------|------------------------|----------------------|
+| Request another URL through HTMX    | `Location`             | `HX-Location`        |
+| Navigate with a full page load      | `Redirect`             | `HX-Redirect`        |
+| Reload the current page             | `Refresh`              | `HX-Refresh`         |
+| Add a browser history entry         | `PushUrl`              | `HX-Push-Url`        |
+| Replace the current history entry   | `ReplaceUrl`           | `HX-Replace-Url`     |
 | Leave the browser history unchanged | `PreventHistoryUpdate` | `HX-Push-Url: false` |
-| Change the swap target | `Retarget` | `HX-Retarget` |
-| Change the swap strategy | `Reswap` | `HX-Reswap` |
-| Select part of the response | `Reselect` | `HX-Reselect` |
-| Dispatch client events | `TriggerEvent` | `HX-Trigger*` |
+| Change the swap target              | `Retarget`             | `HX-Retarget`        |
+| Change the swap strategy            | `Reswap`               | `HX-Reswap`          |
+| Select part of the response         | `Reselect`             | `HX-Reselect`        |
+| Dispatch client events              | `TriggerEvent`         | `HX-Trigger*`        |
 
 > [!TIP]
 > `Location`, `Redirect`, `PushUrl`, and `ReplaceUrl` take a URL string. Generate it with `Url.Action`, `Url.Page`,

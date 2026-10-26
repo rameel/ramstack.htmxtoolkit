@@ -20,13 +20,13 @@ dotnet add package Ramstack.HtmxToolkit
 
 Choose your starting point:
 
-| What you need | Start here |
-|---|---|
-| Understand how HTMX and the toolkit fit together | [Overview](articles/overview.md) |
-| Build your first interaction | [Getting started](articles/getting-started.md), [MVC](articles/mvc.md), or [Minimal APIs](articles/minimal-apis.md) |
-| Follow the course or find a task guide | [Guides](articles/index.md) |
-| Look up a type or method | [API reference](api/index.md) |
-| Diagnose an integration problem | [Troubleshooting](articles/troubleshooting.md) |
+| What you need                                    | Start here                                                                                                          |
+|--------------------------------------------------|---------------------------------------------------------------------------------------------------------------------|
+| Understand how HTMX and the toolkit fit together | [Overview](articles/overview.md)                                                                                    |
+| Build your first interaction                     | [Getting started](articles/getting-started.md), [MVC](articles/mvc.md), or [Minimal APIs](articles/minimal-apis.md) |
+| Follow the course or find a task guide           | [Guides](articles/index.md)                                                                                         |
+| Look up a type or method                         | [API reference](api/index.md)                                                                                       |
+| Diagnose an integration problem                  | [Troubleshooting](articles/troubleshooting.md)                                                                      |
 
 ## Supported environments
 

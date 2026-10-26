@@ -2,8 +2,9 @@
 // so they must be part of the output cache key.
 builder.Services.AddOutputCache(options =>
 {
-    options.AddPolicy("HtmxHtml", policy => policy.SetVaryByHeader(
-        HtmxRequestHeaderNames.Request,
-        HtmxRequestHeaderNames.HistoryRestoreRequest,
-        HtmxRequestHeaderNames.RequestType));
+    options.AddPolicy("HtmxHtml", policy =>
+        policy.SetVaryByHeader(
+            HtmxRequestHeaderNames.Request,
+            HtmxRequestHeaderNames.HistoryRestoreRequest,
+            HtmxRequestHeaderNames.RequestType));
 });

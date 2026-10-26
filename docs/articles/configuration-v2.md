@@ -21,17 +21,17 @@ builder.Services.AddHtmxToolkit(options =>
 
 ## Settings by purpose
 
-| Purpose | Properties |
-|---|---|
-| History | `HistoryEnabled`, `HistoryCacheSize`, `RefreshOnHistoryMiss`, `HistoryRestoreAsHxRequest` |
-| Swaps | `DefaultSwapStyle`, `DefaultSwapDelay`, `DefaultSettleDelay`, `AttributesToSettle`, `AllowNestedOobSwaps` |
-| Indicators and lifecycle CSS | `IncludeIndicatorStyles`, `IndicatorClass`, `RequestClass`, `AddedClass`, `SwappingClass`, `SettlingClass` |
-| Script and content security | `AllowEval`, `AllowScriptTags`, `InlineScriptNonce`, `InlineStyleNonce`, `DisableSelector` |
-| Requests | `WithCredentials`, `DisableInheritance`, `Timeout`, `SelfRequestsOnly`, `MethodsThatUseUrlParams`, `GetCacheBusterParam` |
-| Navigation and focus | `ScrollBehavior`, `DefaultFocusScroll`, `ScrollIntoViewOnBoost`, `IgnoreTitle` |
-| Transitions and forms | `GlobalViewTransitions`, `TriggerSpecsCacheEnabled`, `ReportValidityOfForms` |
-| Responses | `ResponseHandling` |
-| WebSocket | `WsBinaryType` |
+| Purpose                      | Properties                                                                                                               |
+|------------------------------|--------------------------------------------------------------------------------------------------------------------------|
+| History                      | `HistoryEnabled`, `HistoryCacheSize`, `RefreshOnHistoryMiss`, `HistoryRestoreAsHxRequest`                                |
+| Swaps                        | `DefaultSwapStyle`, `DefaultSwapDelay`, `DefaultSettleDelay`, `AttributesToSettle`, `AllowNestedOobSwaps`                |
+| Indicators and lifecycle CSS | `IncludeIndicatorStyles`, `IndicatorClass`, `RequestClass`, `AddedClass`, `SwappingClass`, `SettlingClass`               |
+| Script and content security  | `AllowEval`, `AllowScriptTags`, `InlineScriptNonce`, `InlineStyleNonce`, `DisableSelector`                               |
+| Requests                     | `WithCredentials`, `DisableInheritance`, `Timeout`, `SelfRequestsOnly`, `MethodsThatUseUrlParams`, `GetCacheBusterParam` |
+| Navigation and focus         | `ScrollBehavior`, `DefaultFocusScroll`, `ScrollIntoViewOnBoost`, `IgnoreTitle`                                           |
+| Transitions and forms        | `GlobalViewTransitions`, `TriggerSpecsCacheEnabled`, `ReportValidityOfForms`                                             |
+| Responses                    | `ResponseHandling`                                                                                                       |
+| WebSocket                    | `WsBinaryType`                                                                                                           |
 
 `wsReconnectDelay` is not exposed: in JSON, the WebSocket extension accepts only its default value `"full-jitter"`.
 To customize the reconnection delay, assign a function to `htmx.config.wsReconnectDelay` in JavaScript.

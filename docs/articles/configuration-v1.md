@@ -23,16 +23,16 @@ Only non-null settings are written to `<meta name="htmx-config">`.
 
 ## Settings by purpose
 
-| Purpose | Properties |
-|---|---|
-| History | `HistoryEnabled`, `HistoryCacheSize`, `RefreshOnHistoryMiss` |
-| Swaps | `DefaultSwapStyle`, `DefaultSwapDelay`, `DefaultSettleDelay`, `AttributesToSettle` |
+| Purpose                      | Properties                                                                                                 |
+|------------------------------|------------------------------------------------------------------------------------------------------------|
+| History                      | `HistoryEnabled`, `HistoryCacheSize`, `RefreshOnHistoryMiss`                                               |
+| Swaps                        | `DefaultSwapStyle`, `DefaultSwapDelay`, `DefaultSettleDelay`, `AttributesToSettle`                         |
 | Indicators and lifecycle CSS | `IncludeIndicatorStyles`, `IndicatorClass`, `RequestClass`, `AddedClass`, `SwappingClass`, `SettlingClass` |
-| Script and content security | `AllowEval`, `AllowScriptTags`, `InlineScriptNonce`, `DisableSelector` |
-| Requests | `WithCredentials`, `Timeout`, `SelfRequestsOnly`, `MethodsThatUseUrlParams`, `GetCacheBusterParam` |
-| Navigation and focus | `ScrollBehavior`, `DefaultFocusScroll`, `ScrollIntoViewOnBoost`, `IgnoreTitle` |
-| Transitions and parsing | `GlobalViewTransitions`, `UseTemplateFragments`, `TriggerSpecsCacheEnabled` |
-| WebSocket | `WsBinaryType` |
+| Script and content security  | `AllowEval`, `AllowScriptTags`, `InlineScriptNonce`, `DisableSelector`                                     |
+| Requests                     | `WithCredentials`, `Timeout`, `SelfRequestsOnly`, `MethodsThatUseUrlParams`, `GetCacheBusterParam`         |
+| Navigation and focus         | `ScrollBehavior`, `DefaultFocusScroll`, `ScrollIntoViewOnBoost`, `IgnoreTitle`                             |
+| Transitions and parsing      | `GlobalViewTransitions`, `UseTemplateFragments`, `TriggerSpecsCacheEnabled`                                |
+| WebSocket                    | `WsBinaryType`                                                                                             |
 
 `wsReconnectDelay` is not exposed: in JSON, HTMX accepts only its default value `"full-jitter"`.
 To customize the WebSocket reconnection delay, assign a function to `htmx.config.wsReconnectDelay` in JavaScript.

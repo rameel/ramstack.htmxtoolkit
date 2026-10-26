@@ -43,17 +43,17 @@ var htmx = Request.GetHtmxHeaders();
 
 ## Request header properties
 
-| Property | Meaning |
-|---|---|
-| `Request` | Whether the `HX-Request` header is present |
-| `Boosted` | Whether a regular navigation was enhanced by `hx-boost` |
-| `CurrentUrl` | Current browser URL when the request was sent |
-| `HistoryRestoreRequest` | Whether HTMX marked the request for history restoration |
-| `Target` | Target element; its format differs in HTMX 4 |
-| `Prompt` | Result of `hx-prompt`; in HTMX 4.x, sent only by the `hx-prompt` extension |
-| `Trigger`, `TriggerName` | Triggering element ID and name in HTMX 1.9.x and 2.x |
-| `Source` | Triggering `tag#id` in HTMX 4.x |
-| `RequestType` | `HtmxRequestType.Partial` or `HtmxRequestType.Full`; added by the Toolkit script in HTMX 1.9.x and 2.x |
+| Property                 | Meaning                                                                                                |
+|--------------------------|--------------------------------------------------------------------------------------------------------|
+| `Request`                | Whether the `HX-Request` header is present                                                             |
+| `Boosted`                | Whether a regular navigation was enhanced by `hx-boost`                                                |
+| `CurrentUrl`             | Current browser URL when the request was sent                                                          |
+| `HistoryRestoreRequest`  | Whether HTMX marked the request for history restoration                                                |
+| `Target`                 | Target element; its format differs in HTMX 4                                                           |
+| `Prompt`                 | Result of `hx-prompt`; in HTMX 4.x, sent only by the `hx-prompt` extension                             |
+| `Trigger`, `TriggerName` | Triggering element ID and name in HTMX 1.9.x and 2.x                                                   |
+| `Source`                 | Triggering `tag#id` in HTMX 4.x                                                                        |
+| `RequestType`            | `HtmxRequestType.Partial` or `HtmxRequestType.Full`; added by the Toolkit script in HTMX 1.9.x and 2.x |
 
 Missing or version-inapplicable string headers return `null`.
 `Request` is `true` whenever the `HX-Request` header is present, whatever its value;
@@ -159,8 +159,8 @@ Without `RequestType`, the attribute accepts any HTMX request. That suits an end
 such as a status widget:
 
 ```csharp
-[HttpGet("/inventory/{sku}")]
 [HtmxRequest]
+[HttpGet("/inventory/{sku}")]
 public IActionResult InventoryFragment(string sku) =>
     PartialView("_Inventory", inventory.Find(sku));
 ```

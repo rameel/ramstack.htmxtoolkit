@@ -22,26 +22,26 @@ builder.Services.AddHtmxToolkit(options =>
 
 ## Settings by purpose
 
-| Purpose | Properties |
-|---|---|
-| Diagnostics and attribute prefix | `LogAll`, `Prefix` |
-| History | `History` |
-| Swaps and morphing | `DefaultSwap`, `AllowEmptySwapAfterOob`, `DefaultSettleDelay`, `MorphIgnore`, `MorphSkip`, `MorphSkipChildren`, `MorphScanLimit` |
-| Indicators and lifecycle CSS | `IncludeIndicatorCss`, `IndicatorClass`, `RequestClass` |
-| Script and extensions | `InlineScriptNonce`, `Extensions`, `ImplicitInheritance` |
-| Requests | `DefaultTimeout`, `Mode` |
-| Focus and transitions | `DefaultFocusScroll`, `Transitions` |
-| Responses | `NoSwap` |
+| Purpose                          | Properties                                                                                                                       |
+|----------------------------------|----------------------------------------------------------------------------------------------------------------------------------|
+| Diagnostics and attribute prefix | `LogAll`, `Prefix`                                                                                                               |
+| History                          | `History`                                                                                                                        |
+| Swaps and morphing               | `DefaultSwap`, `AllowEmptySwapAfterOob`, `DefaultSettleDelay`, `MorphIgnore`, `MorphSkip`, `MorphSkipChildren`, `MorphScanLimit` |
+| Indicators and lifecycle CSS     | `IncludeIndicatorCss`, `IndicatorClass`, `RequestClass`                                                                          |
+| Script and extensions            | `InlineScriptNonce`, `Extensions`, `ImplicitInheritance`                                                                         |
+| Requests                         | `DefaultTimeout`, `Mode`                                                                                                         |
+| Focus and transitions            | `DefaultFocusScroll`, `Transitions`                                                                                              |
+| Responses                        | `NoSwap`                                                                                                                         |
 
 ## Request mode
 
 `Mode` maps to the Fetch API request mode:
 
-| Value | Meaning |
-|---|---|
-| `SameOrigin` | Allow only same-origin requests |
-| `Cors` | Allow cross-origin requests through CORS |
-| `NoCors` | Allow restricted cross-origin requests that produce opaque responses |
+| Value        | Meaning                                                              |
+|--------------|----------------------------------------------------------------------|
+| `SameOrigin` | Allow only same-origin requests                                      |
+| `Cors`       | Allow cross-origin requests through CORS                             |
+| `NoCors`     | Allow restricted cross-origin requests that produce opaque responses |
 
 In `NoCors` mode, the browser allows only `GET`, `HEAD`, and `POST`; other methods raise `htmx:error`.
 It also removes request headers that are not CORS-safelisted, even for same-origin requests: the server receives
