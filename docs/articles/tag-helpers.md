@@ -15,22 +15,24 @@ Register the namespace and Tag Helpers in `_ViewImports.cshtml`:
 ### Razor Pages
 
 ```razor
-<button hx-page="/Orders/Details"
-        hx-page-handler="Status"
-        hx-route-id="@Model.OrderId"
+<button hx-get
+        asp-page="/Orders/Details"
+        asp-page-handler="Status"
+        asp-route-id="@Model.OrderId"
         hx-target="#order-status">
     Refresh status
 </button>
 ```
 
-This generates `hx-get` because no HTMX method attribute was supplied.
-Add an empty `hx-post`, `hx-put`, `hx-patch`, or `hx-delete` to select another method:
+The Tag Helper reads the standard ASP.NET Core `asp-*` routing attributes and writes the generated URL
+to the HTMX request attribute. Write that attribute without a value; it selects the method:
+`hx-get`, `hx-post`, `hx-put`, `hx-patch`, or `hx-delete`.
 
 ```razor
 <button hx-post
-        hx-page="/Orders/Edit"
-        hx-page-handler="Archive"
-        hx-route-id="@Model.OrderId">
+        asp-page="/Orders/Edit"
+        asp-page-handler="Archive"
+        asp-route-id="@Model.OrderId">
     Archive
 </button>
 ```
@@ -39,10 +41,10 @@ Add an empty `hx-post`, `hx-put`, `hx-patch`, or `hx-delete` to select another m
 
 ```razor
 <button hx-post
-        hx-area="Admin"
-        hx-controller="Users"
-        hx-action="Disable"
-        hx-route-id="@user.Id"
+        asp-area="Admin"
+        asp-controller="Users"
+        asp-action="Disable"
+        asp-route-id="@user.Id"
         hx-target="#user-@user.Id">
     Disable
 </button>
@@ -50,7 +52,7 @@ Add an empty `hx-post`, `hx-put`, `hx-patch`, or `hx-delete` to select another m
 
 ### Named routes and route dictionaries
 
-Name an endpoint, then use that name in `hx-route`. For example, replace the `[HttpGet]` attribute on
+Name an endpoint, then use that name in `asp-route`. For example, replace the `[HttpGet]` attribute on
 the `Details` action in the [MVC tutorial](mvc.md) with:
 
 ```csharp
@@ -68,8 +70,9 @@ The tutorial's `MapDefaultControllerRoute()` also maps this attribute-routed act
 In `Views/Products/Index.cshtml`, use the route name instead of controller and action attributes:
 
 ```razor
-<button hx-route="product-details"
-        hx-route-id="42"
+<button hx-get
+        asp-route="product-details"
+        asp-route-id="42"
         hx-target="#product-panel">
     Product details
 </button>
@@ -77,7 +80,7 @@ In `Views/Products/Index.cshtml`, use the route name instead of controller and a
 <div id="product-panel"></div>
 ```
 
-The generated URL is `/products/42`. Use `hx-all-route-data` when route values are already in a dictionary:
+The generated URL is `/products/42`. Use `asp-all-route-data` when route values are already in a dictionary:
 
 ```razor
 @{
@@ -88,8 +91,9 @@ The generated URL is `/products/42`. Use `hx-all-route-data` when route values a
     };
 }
 
-<button hx-route="product-details"
-        hx-all-route-data="routeValues"
+<button hx-get
+        asp-route="product-details"
+        asp-all-route-data="routeValues"
         hx-target="#product-panel">
     Product details
 </button>
@@ -97,23 +101,62 @@ The generated URL is `/products/42`. Use `hx-all-route-data` when route values a
 
 Here `id` fills the route parameter and `tab` becomes a query parameter: `/products/42?tab=reviews`.
 The action can accept a `string? tab` parameter if it needs that value.
-Use `hx-route-*` for individual values or `hx-all-route-data` for the dictionary.
+Use `asp-route-*` for individual values or `asp-all-route-data` for the dictionary.
 
-`hx-fragment` works like ASP.NET Core's `asp-fragment`: `hx-fragment="reviews"` appends `#reviews`
-to the generated URL. It is a Tag Helper input, not an HTMX attribute. The browser does not send the fragment
+`asp-fragment="reviews"` appends `#reviews` to the generated URL. The browser does not send the fragment
 to the server, so use `hx-target`, not the fragment, to choose the element to update.
 
-Choose one routing mode: `hx-route`, controller/action, or page/handler.
-Combining modes throws an `InvalidOperationException`.
-Supplying more than one HTMX method is also invalid.
+Choose one routing mode: `asp-route`, controller/action, or page/handler.
+Combining modes throws an `InvalidOperationException`. So does supplying more than one HTMX request
+attribute, or an HTMX request attribute with a value, even an empty one such as `hx-get=""`.
+The Tag Helper recognizes the `hx-` prefix only, not `data-hx-`.
+
+### Links, forms, and buttons
+
+The standard ASP.NET Core Tag Helpers process the same `asp-*` attributes on `<a>`, `<form>`, `<button>`,
+and submit or image `<input>` elements. They render `href`, `action`, or `formaction` with the same URL,
+so links and forms keep working without HTMX:
+
+```razor
+<a hx-get asp-page="/Orders/Details" asp-route-id="@Model.OrderId" hx-target="#order">Details</a>
+```
+
+Keep these side effects in mind:
+
+- Add `method="get"` to a `<form hx-get>`. Otherwise the Form Tag Helper renders `method="post"` and
+  a hidden antiforgery input, and HTMX sends the token in the query string.
+- A link always gets a working `href`, which a browser can follow with an ordinary GET request,
+  for example when the link is opened in a new tab or prefetched. Use a `<button>` rather than `<a>`
+  for `hx-post`, `hx-put`, `hx-patch`, and `hx-delete`.
+- On other elements, the Tag Helper processes `asp-*` attributes only together with an HTMX request
+  attribute. Without one, they are rendered unchanged.
+
+### HTMX 4.x `hx-action`
+
+HTMX 4.x can take the URL from `hx-action` and the method from `hx-method`.
+Write `hx-action` without a value to have the Tag Helper fill it:
+
+```razor
+<button hx-action
+        hx-method="post"
+        asp-page="/Orders/Edit"
+        asp-page-handler="Archive"
+        asp-route-id="@Model.OrderId">
+    Archive
+</button>
+```
+
+An `hx-action` that already has a URL and no `asp-*` attributes is left as is. With HTMX 1.9.x or 2.x,
+which do not support `hx-action`, an `hx-action` without a value and with `asp-*` attributes throws an `InvalidOperationException`.
 
 ## Send additional values
 
 Use `hx-val-*` when fixed values should be included as request parameters:
 
 ```razor
-<button hx-page="/Reports"
-        hx-page-handler="Preview"
+<button hx-get
+        asp-page="/Reports"
+        asp-page-handler="Preview"
         hx-val-category="science"
         hx-val-format="summary"
         hx-target="#preview">
@@ -189,8 +232,9 @@ Authenticate and authorize on the server.
 Use `hx-request-*` attributes rather than hand-writing version-specific JSON:
 
 ```razor
-<button hx-page="/Reports"
-        hx-page-handler="Preview"
+<button hx-get
+        asp-page="/Reports"
+        asp-page-handler="Preview"
         hx-request-timeout="2000"
         hx-request-credentials="@HtmxRequestCredentials.SameOrigin"
         hx-target="#preview">

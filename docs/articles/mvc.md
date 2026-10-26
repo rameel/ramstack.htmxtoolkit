@@ -159,9 +159,10 @@ Create `Views/Products/Index.cshtml`:
 ```razor
 <h1>Products</h1>
 
-<button hx-controller="Products"
-        hx-action="Details"
-        hx-route-id="42"
+<button hx-get
+        asp-controller="Products"
+        asp-action="Details"
+        asp-route-id="42"
         hx-target="#product-details">
     View product
 </button>
@@ -202,8 +203,7 @@ Create `Views/Products/_ProductForm.cshtml`:
 @model ProductInput
 
 <form id="product-editor"
-      method="post" asp-controller="Products" asp-action="Save"
-      hx-post hx-controller="Products" hx-action="Save"
+      method="post" hx-post asp-controller="Products" asp-action="Save"
       hx-target="this" hx-swap="outerHTML" novalidate>
     <div asp-validation-summary="All" role="alert"></div>
 

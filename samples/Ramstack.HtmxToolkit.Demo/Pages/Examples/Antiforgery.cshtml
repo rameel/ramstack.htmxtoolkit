@@ -14,13 +14,13 @@
   <section class="demo-card">
     <div class="demo-card__header">
       <h2><code>hx-post</code> with antiforgery</h2>
-      <p>Razor Pages validates the POST automatically. <code>&lt;htmx-config /&gt;</code> renders the token and the toolkit script attaches it to the request.</p>
+      <p>Razor Pages validates the POST automatically. The Form Tag Helper renders the token as a hidden field of the form. For HTMX requests without that field, <code>&lt;htmx-config /&gt;</code> renders the token and the toolkit script attaches it to the request.</p>
     </div>
 
     <form class="demo-form"
           hx-post
-          hx-page="/Examples/Antiforgery"
-          hx-page-handler="Save"
+          asp-page="/Examples/Antiforgery"
+          asp-page-handler="Save"
           hx-target="#form-result">
       <label>
         Display name

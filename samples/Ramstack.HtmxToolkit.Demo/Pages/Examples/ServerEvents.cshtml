@@ -19,8 +19,8 @@
 
     <form class="demo-form"
           hx-post
-          hx-page="/Examples/ServerEvents"
-          hx-page-handler="Save"
+          asp-page="/Examples/ServerEvents"
+          asp-page-handler="Save"
           hx-target="#save-result">
       <label>
         Display name
@@ -37,8 +37,8 @@
     <div id="profile-summary"
          class="result"
          hx-get
-         hx-page="/Examples/ServerEvents"
-         hx-page-handler="Summary"
+         asp-page="/Examples/ServerEvents"
+         asp-page-handler="Summary"
          hx-trigger="profileSaved from:body"
          hx-include="#display-name">
       The profile summary has not been refreshed.

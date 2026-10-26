@@ -61,11 +61,9 @@ Create `Pages/_ProfileForm.cshtml`:
 
 <form id="profile-editor"
       method="post"
+      hx-post
       asp-page="/Profile"
       asp-page-handler="Save"
-      hx-post
-      hx-page="/Profile"
-      hx-page-handler="Save"
       hx-target="this"
       hx-swap="outerHTML"
       novalidate>
@@ -89,7 +87,8 @@ The form replaces itself with `outerHTML`. Every returned form keeps the same ID
 so it can be submitted again. `novalidate` lets you see the server's validation response without the browser
 blocking an empty submission first. You can remove it when you add browser validation.
 
-The ordinary `method` and `asp-page-*` attributes provide a non-HTMX form action. The standard Form Tag Helper
+The `asp-page` and `asp-page-handler` attributes produce both the `hx-post` URL and, through the standard
+Form Tag Helper, the ordinary form `action`, so the form also works without HTMX. The Form Tag Helper
 also creates a hidden antiforgery input. The Toolkit script detects that input and does not add a second token.
 For forms without that input, the layout metadata and script supply the token instead.
 
@@ -114,8 +113,9 @@ Create `Pages/Profile.cshtml`:
 @await Html.PartialAsync("_ProfileForm", Model)
 
 <aside id="profile-summary"
-       hx-page="/Profile"
-       hx-page-handler="Summary"
+       hx-get
+       asp-page="/Profile"
+       asp-page-handler="Summary"
        hx-trigger="profile-saved from:body"
        aria-live="polite">
     @await Html.PartialAsync("_ProfileSummary", Model.CurrentDisplayName)

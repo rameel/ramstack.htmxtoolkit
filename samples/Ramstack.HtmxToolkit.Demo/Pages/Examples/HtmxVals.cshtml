@@ -20,8 +20,8 @@
     <div class="demo-actions">
       <button
         hx-get
-        hx-page="/Examples/HtmxVals"
-        hx-page-handler="Show"
+        asp-page="/Examples/HtmxVals"
+        asp-page-handler="Show"
         hx-val-category="science"
         hx-val-format="summary"
         hx-target="#values-result">
@@ -30,8 +30,8 @@
       <button
         class="button button-secondary"
         hx-get
-        hx-page="/Examples/HtmxVals"
-        hx-page-handler="Show"
+        asp-page="/Examples/HtmxVals"
+        asp-page-handler="Show"
         hx-all-vals="@(new Dictionary<string, string> { { "category", "history" }, { "format", "full" } })"
         hx-target="#values-result">
         Preview full history report

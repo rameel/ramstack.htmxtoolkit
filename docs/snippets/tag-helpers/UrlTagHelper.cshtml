@@ -1,9 +1,9 @@
 @addTagHelper *, Ramstack.HtmxToolkit
 
 <button hx-post
-        hx-page="/Orders/Edit"
-        hx-page-handler="Archive"
-        hx-route-id="@Model.OrderId"
+        asp-page="/Orders/Edit"
+        asp-page-handler="Archive"
+        asp-route-id="@Model.OrderId"
         hx-target="#order-status">
     Archive
 </button>

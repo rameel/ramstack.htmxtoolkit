@@ -59,7 +59,7 @@ Replace `Pages/_ViewImports.cshtml` with:
 ```
 
 The standard ASP.NET Core helpers resolve `~/` paths and generate versioned script URLs.
-The toolkit helpers turn attributes such as `hx-page` and `hx-route-id` into HTMX request URLs.
+The toolkit helpers turn standard routing attributes such as `asp-page` and `asp-route-id` into HTMX request URLs.
 You will add the `HtmxStarter.Models` namespace in step 5.
 
 ## 4. Load the browser scripts
@@ -132,9 +132,10 @@ Create `Pages/Products.cshtml`:
 
 <h1>Products</h1>
 
-<button hx-page="/Products"
-        hx-page-handler="Details"
-        hx-route-id="42"
+<button hx-get
+        asp-page="/Products"
+        asp-page-handler="Details"
+        asp-route-id="42"
         hx-target="#product-details">
     View product
 </button>
@@ -181,12 +182,14 @@ Open <http://localhost:5080/Products> and select **View product**. The product d
 Inspect the rendered button. Its routing attributes have become a URL similar to:
 
 ```html
-<button hx-get="/Products?id=42&amp;handler=Details" hx-target="#product-details">
+<button hx-get="/Products?id=42&amp;handler=Details" hx-target="#product-details"
+        formaction="/Products?id=42&amp;handler=Details">
     View product
 </button>
 ```
 
-Query parameter order may differ. The important parts are the page path, `id=42`, and `handler=Details`.
+The standard Form Action Tag Helper renders `formaction` from the same attributes; it matters only
+when the button submits a form. Query parameter order may differ. The important parts are the page path, `id=42`, and `handler=Details`.
 
 In the browser Network panel, the request should have `HX-Request: true`, return HTTP 200,
 and contain only the `<article>` in its response. HTMX's default swap replaces the target's contents,

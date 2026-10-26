@@ -13,24 +13,24 @@
 
   <section class="demo-card">
     <div class="demo-card__header">
-      <h2><code>hx-route-*</code> and <code>hx-all-route-data</code></h2>
+      <h2><code>asp-route-*</code> and <code>asp-all-route-data</code></h2>
       <p>Both buttons generate a handler URL without assembling a query string.</p>
     </div>
 
     <div class="demo-actions">
       <button
         hx-get
-        hx-page="/Examples/RouteData"
-        hx-page-handler="Order"
-        hx-route-id="1042"
+        asp-page="/Examples/RouteData"
+        asp-page-handler="Order"
+        asp-route-id="1042"
         hx-target="#order-result">
         Load order #1042
       </button>
       <button
         hx-get
-        hx-page="/Examples/RouteData"
-        hx-page-handler="Order"
-        hx-all-route-data="@(new Dictionary<string, string> { ["id"] = "1088" })"
+        asp-page="/Examples/RouteData"
+        asp-page-handler="Order"
+        asp-all-route-data="@(new Dictionary<string, string> { ["id"] = "1088" })"
         hx-target="#order-result"
         class="button-secondary">
         Load order #1088

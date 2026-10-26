@@ -75,9 +75,9 @@ See [Static assets](https://rameel.github.io/ramstack.htmxtoolkit/articles/stati
 
 ```html
 <button hx-get
-        hx-controller="Books"
-        hx-action="List"
-        hx-route-category="science"
+        asp-controller="Books"
+        asp-action="List"
+        asp-route-category="science"
         hx-target="#results">
     Show science books
 </button>
@@ -183,15 +183,16 @@ The URL attributes from the example above work with Razor Pages too:
 
 ```html
 <button hx-post
-        hx-page="/Orders"
-        hx-page-handler="Archive"
-        hx-route-id="@Model.Id">
+        asp-page="/Orders"
+        asp-page-handler="Archive"
+        asp-route-id="@Model.Id">
     Archive
 </button>
 ```
 
-The request method comes from `hx-get`, `hx-post`, `hx-put`, `hx-patch`, or `hx-delete`.
-If you leave it out, `hx-get` is used.
+Write one of `hx-get`, `hx-post`, `hx-put`, `hx-patch`, or `hx-delete` without a value to choose
+the request method; the Tag Helper fills in its URL from the `asp-*` attributes.
+Without such an attribute, no URL is generated.
 
 Other Tag Helpers build HTMX attributes that otherwise need hand-written JSON:
 

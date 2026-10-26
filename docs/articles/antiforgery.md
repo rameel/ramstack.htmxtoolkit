@@ -76,8 +76,8 @@ For a Razor Page with a `Save` POST handler:
 
 ```razor
 <form hx-post
-      hx-page="/Account/Profile"
-      hx-page-handler="Save"
+      asp-page="/Account/Profile"
+      asp-page-handler="Save"
       hx-target="#save-result">
     <label>
         Display name
@@ -99,10 +99,12 @@ public IActionResult OnPostSave(string? displayName)
 }
 ```
 
-No token input is required in this HTMX form because the layout metadata and Toolkit script supply it.
+The standard Form Tag Helper renders the form `action` and a hidden token input from the same `asp-*` attributes.
+The Toolkit script detects that input and does not add a second token. For HTMX requests without a token input,
+such as a button outside a form, the layout metadata and Toolkit script supply the token.
 The validation message returns 200 so HTMX 2.x displays it with its default response handling.
-For a form that also works without JavaScript, include a normal POST action and let the standard Form Tag Helper
-render a token, as shown in the [forms tutorial](forms-and-validation.md).
+To make the form also work without JavaScript, return a full page for normal requests, as shown in the
+[forms tutorial](forms-and-validation.md).
 
 ## Token refresh after boosted navigation
 
