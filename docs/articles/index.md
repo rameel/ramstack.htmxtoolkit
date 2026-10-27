@@ -60,6 +60,7 @@ For an existing integration, browse the task guides below or [run the demo](samp
   <a class="guide-card" href="static-assets.md"><strong>Static assets and deployment</strong><span>Load the Toolkit script, configure caching, and publish the application.</span></a>
   <a class="guide-card" href="recipes.md"><strong>Common recipes</strong><span>Implement validation, polling, redirects, and cross-component updates.</span></a>
   <a class="guide-card" href="troubleshooting.md"><strong>Troubleshooting</strong><span>Diagnose failures from generated markup and browser network data.</span></a>
+  <a class="guide-card" href="migrate-to-v2.md"><strong>Migrate from 1.x to 2.0</strong><span>Update registration, configuration, Tag Helpers, and response code for 2.0.</span></a>
 </div>
 
 > [!TIP]

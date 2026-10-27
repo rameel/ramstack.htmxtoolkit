@@ -27,6 +27,7 @@ Choose your starting point:
 | Follow the course or find a task guide           | [Guides](articles/index.md)                                                                                         |
 | Look up a type or method                         | [API reference](api/index.md)                                                                                       |
 | Diagnose an integration problem                  | [Troubleshooting](articles/troubleshooting.md)                                                                      |
+| Upgrade from HtmxToolkit 1.x                     | [Migrate from 1.x to 2.0](articles/migrate-to-v2.md)                                                                |
 
 ## Supported environments
 

@@ -305,6 +305,7 @@ Then open <https://localhost:5001>.
 
 The [guides](https://rameel.github.io/ramstack.htmxtoolkit/articles/index.html) cover everything from a first tutorial to recipes and troubleshooting.
 The [API reference](https://rameel.github.io/ramstack.htmxtoolkit/api/) describes every public type and member.
+Upgrading from 1.x? See [Migrate from 1.x to 2.0](https://rameel.github.io/ramstack.htmxtoolkit/articles/migrate-to-v2.html).
 
 ## Contributing
 

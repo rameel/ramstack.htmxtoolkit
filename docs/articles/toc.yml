@@ -54,6 +54,10 @@
   items:
     - name: Common recipes
       href: recipes.md
+- name: Upgrade
+  items:
+    - name: Migrate from 1.x to 2.0
+      href: migrate-to-v2.md
 - name: Help
   items:
     - name: Troubleshooting
