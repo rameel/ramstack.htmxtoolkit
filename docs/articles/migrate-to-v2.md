@@ -20,7 +20,7 @@ step; see [Version compatibility](version-compatibility.md) for that.
 | [Global configuration](#move-global-configuration-to-code)          | `<htmx-config>` attributes move to `AddHtmxToolkit()`                               | **Silent**        |
 | [Antiforgery](#antiforgery-metadata-is-on-by-default)               | Metadata is included by default and no longer stored in `htmx.config`               | **Silent**        |
 | [Toolkit script](#load-the-toolkit-script-as-a-static-asset)        | Inline script helpers and `MapHtmxAntiforgeryScript` replaced by a static web asset | Build             |
-| [URL Tag Helper](#rename-the-url-tag-helper-attributes)             | `hx-controller`, `hx-action`, `hx-route-*`, and similar become `asp-*`              | **Silent**        |
+| [URL Tag Helper](#rename-the-url-tag-helper-attributes)             | `hx-*` URL attributes become `asp-*`; `hx-host` and `hx-protocol` are removed       | **Silent**        |
 | [Requests](#update-request-handling)                                | `IsHtmxRequest()` is `false` for history restoration; `Boosted` filter renamed      | Build, **silent** |
 | [Action result wrappers](#configure-responses-through-responsehtmx) | `IActionResult.Htmx(...)` removed                                                   | Build             |
 | [Polling](#replace-stoppolling)                                     | `StopPolling` removed                                                               | Build             |
@@ -219,8 +219,8 @@ HTMX 4.x defines a native `hx-action` attribute, which made the old naming confl
 | `hx-route`          | `asp-route`          |
 | `hx-route-*`        | `asp-route-*`        |
 | `hx-all-route-data` | `asp-all-route-data` |
-| `hx-host`           | `asp-host`           |
-| `hx-protocol`       | `asp-protocol`       |
+| `hx-host`           | Removed              |
+| `hx-protocol`       | Removed              |
 | `hx-fragment`       | `asp-fragment`       |
 
 The HTMX request attribute is now required and must be written without a value. In 1.x, `hx-get` was used
@@ -283,6 +283,10 @@ Check the following while migrating:
   See [Links, forms, and buttons](tag-helpers.md#links-forms-and-buttons).
 - **An HTMX request attribute with a value throws** when `asp-*` attributes are present, even an empty one such as `hx-get=""`.
   An `hx-get="/url"` without `asp-*` attributes is not affected.
+- **`hx-host` and `hx-protocol` have no replacement.** They only made the URL absolute, and HTMX 2.x and 4.x
+  block cross-origin requests by default. For a request to another origin, allow it in the HTMX configuration
+  and write the URL directly, for example
+  `hx-get="@Url.Action("Detail", "Speaker", new { id = Model.SpeakerId }, "https", "api.example.com")"`.
 - **The Tag Helper order** changed from `-1000` to `-950`, so it runs after the built-in Tag Helpers.
   This matters only to custom Tag Helpers that depend on that order.
 

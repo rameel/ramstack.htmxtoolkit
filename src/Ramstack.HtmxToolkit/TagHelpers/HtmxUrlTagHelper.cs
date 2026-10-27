@@ -26,7 +26,7 @@ namespace Ramstack.HtmxToolkit.TagHelpers;
 ///   <c>hx-patch</c>, <c>hx-delete</c>, or HTMX 4.x <c>hx-action</c> attribute together with
 ///   at least one of the <c>asp-action</c>, <c>asp-controller</c>, <c>asp-area</c>, <c>asp-page</c>,
 ///   <c>asp-page-handler</c>, <c>asp-route</c>, <c>asp-route-*</c>, <c>asp-all-route-data</c>,
-///   <c>asp-host</c>, <c>asp-protocol</c>, or <c>asp-fragment</c> attributes.
+///   or <c>asp-fragment</c> attributes.
 ///   The generated URL is written to the HTMX attribute, which must not have a value.
 /// </para>
 /// <para>
@@ -50,8 +50,6 @@ namespace Ramstack.HtmxToolkit.TagHelpers;
 [HtmlTargetElement(Attributes = "hx-get," + RouteAttributeName)]
 [HtmlTargetElement(Attributes = "hx-get," + RouteValuesDictionaryName)]
 [HtmlTargetElement(Attributes = "hx-get," + RouteValuesPrefix + "*")]
-[HtmlTargetElement(Attributes = "hx-get," + HostAttributeName)]
-[HtmlTargetElement(Attributes = "hx-get," + ProtocolAttributeName)]
 [HtmlTargetElement(Attributes = "hx-get," + FragmentAttributeName)]
 [HtmlTargetElement(Attributes = "hx-post," + ActionAttributeName)]
 [HtmlTargetElement(Attributes = "hx-post," + ControllerAttributeName)]
@@ -61,8 +59,6 @@ namespace Ramstack.HtmxToolkit.TagHelpers;
 [HtmlTargetElement(Attributes = "hx-post," + RouteAttributeName)]
 [HtmlTargetElement(Attributes = "hx-post," + RouteValuesDictionaryName)]
 [HtmlTargetElement(Attributes = "hx-post," + RouteValuesPrefix + "*")]
-[HtmlTargetElement(Attributes = "hx-post," + HostAttributeName)]
-[HtmlTargetElement(Attributes = "hx-post," + ProtocolAttributeName)]
 [HtmlTargetElement(Attributes = "hx-post," + FragmentAttributeName)]
 [HtmlTargetElement(Attributes = "hx-put," + ActionAttributeName)]
 [HtmlTargetElement(Attributes = "hx-put," + ControllerAttributeName)]
@@ -72,8 +68,6 @@ namespace Ramstack.HtmxToolkit.TagHelpers;
 [HtmlTargetElement(Attributes = "hx-put," + RouteAttributeName)]
 [HtmlTargetElement(Attributes = "hx-put," + RouteValuesDictionaryName)]
 [HtmlTargetElement(Attributes = "hx-put," + RouteValuesPrefix + "*")]
-[HtmlTargetElement(Attributes = "hx-put," + HostAttributeName)]
-[HtmlTargetElement(Attributes = "hx-put," + ProtocolAttributeName)]
 [HtmlTargetElement(Attributes = "hx-put," + FragmentAttributeName)]
 [HtmlTargetElement(Attributes = "hx-patch," + ActionAttributeName)]
 [HtmlTargetElement(Attributes = "hx-patch," + ControllerAttributeName)]
@@ -83,8 +77,6 @@ namespace Ramstack.HtmxToolkit.TagHelpers;
 [HtmlTargetElement(Attributes = "hx-patch," + RouteAttributeName)]
 [HtmlTargetElement(Attributes = "hx-patch," + RouteValuesDictionaryName)]
 [HtmlTargetElement(Attributes = "hx-patch," + RouteValuesPrefix + "*")]
-[HtmlTargetElement(Attributes = "hx-patch," + HostAttributeName)]
-[HtmlTargetElement(Attributes = "hx-patch," + ProtocolAttributeName)]
 [HtmlTargetElement(Attributes = "hx-patch," + FragmentAttributeName)]
 [HtmlTargetElement(Attributes = "hx-delete," + ActionAttributeName)]
 [HtmlTargetElement(Attributes = "hx-delete," + ControllerAttributeName)]
@@ -94,8 +86,6 @@ namespace Ramstack.HtmxToolkit.TagHelpers;
 [HtmlTargetElement(Attributes = "hx-delete," + RouteAttributeName)]
 [HtmlTargetElement(Attributes = "hx-delete," + RouteValuesDictionaryName)]
 [HtmlTargetElement(Attributes = "hx-delete," + RouteValuesPrefix + "*")]
-[HtmlTargetElement(Attributes = "hx-delete," + HostAttributeName)]
-[HtmlTargetElement(Attributes = "hx-delete," + ProtocolAttributeName)]
 [HtmlTargetElement(Attributes = "hx-delete," + FragmentAttributeName)]
 [HtmlTargetElement(Attributes = "hx-action," + ActionAttributeName)]
 [HtmlTargetElement(Attributes = "hx-action," + ControllerAttributeName)]
@@ -105,8 +95,6 @@ namespace Ramstack.HtmxToolkit.TagHelpers;
 [HtmlTargetElement(Attributes = "hx-action," + RouteAttributeName)]
 [HtmlTargetElement(Attributes = "hx-action," + RouteValuesDictionaryName)]
 [HtmlTargetElement(Attributes = "hx-action," + RouteValuesPrefix + "*")]
-[HtmlTargetElement(Attributes = "hx-action," + HostAttributeName)]
-[HtmlTargetElement(Attributes = "hx-action," + ProtocolAttributeName)]
 [HtmlTargetElement(Attributes = "hx-action," + FragmentAttributeName)]
 [RequiresUnreferencedCode("Razor Page URL generation is not compatible with trimming.")]
 public sealed class HtmxUrlTagHelper(IUrlHelperFactory factory, IOptions<HtmxToolkitOptions> options) : TagHelper
@@ -117,8 +105,6 @@ public sealed class HtmxUrlTagHelper(IUrlHelperFactory factory, IOptions<HtmxToo
     private const string PageAttributeName = "asp-page";
     private const string PageHandlerAttributeName = "asp-page-handler";
     private const string FragmentAttributeName = "asp-fragment";
-    private const string HostAttributeName = "asp-host";
-    private const string ProtocolAttributeName = "asp-protocol";
     private const string RouteAttributeName = "asp-route";
     private const string RouteValuesDictionaryName = "asp-all-route-data";
     private const string RouteValuesPrefix = "asp-route-";
@@ -204,18 +190,6 @@ public sealed class HtmxUrlTagHelper(IUrlHelperFactory factory, IOptions<HtmxToo
     public string? PageHandler { get; set; }
 
     /// <summary>
-    /// Gets or sets the protocol for the URL, such as <c>http</c> or <c>https</c>.
-    /// </summary>
-    [HtmlAttributeName(ProtocolAttributeName)]
-    public string? Protocol { get; set; }
-
-    /// <summary>
-    /// Gets or sets the host name.
-    /// </summary>
-    [HtmlAttributeName(HostAttributeName)]
-    public string? Host { get; set; }
-
-    /// <summary>
     /// Gets or sets the URL fragment name.
     /// </summary>
     [HtmlAttributeName(FragmentAttributeName)]
@@ -272,8 +246,8 @@ public sealed class HtmxUrlTagHelper(IUrlHelperFactory factory, IOptions<HtmxToo
                 pageName: Page,
                 pageHandler: PageHandler,
                 values: routeValues,
-                protocol: Protocol,
-                host: Host,
+                protocol: null,
+                host: null,
                 fragment: Fragment);
         }
         else if (routeLink)
@@ -281,8 +255,8 @@ public sealed class HtmxUrlTagHelper(IUrlHelperFactory factory, IOptions<HtmxToo
             url = generator.RouteUrl(
                 routeName: Route,
                 values: routeValues,
-                protocol: Protocol,
-                host: Host,
+                protocol: null,
+                host: null,
                 fragment: Fragment);
         }
         else
@@ -291,8 +265,8 @@ public sealed class HtmxUrlTagHelper(IUrlHelperFactory factory, IOptions<HtmxToo
                 action: Action,
                 controller: Controller,
                 values: routeValues,
-                protocol: Protocol,
-                host: Host,
+                protocol: null,
+                host: null,
                 fragment: Fragment);
         }
 
