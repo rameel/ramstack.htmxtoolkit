@@ -232,7 +232,6 @@ public readonly struct HtmxResponse
     ///   is added more than once for a header, all events in that header are sent in a form that only
     ///   the Toolkit script (<c>htmx-toolkit.js</c>) can replay; without the script, none of them
     ///   is triggered. In HTMX 4.x, this also applies to a name added with different timings.
-    ///   The event name <c>rs:event</c> is reserved for this purpose and cannot be used.
     /// </para>
     /// <para>
     ///   Each call sets the header in <see cref="HttpResponse.Headers" />, replacing its value with
@@ -267,7 +266,6 @@ public readonly struct HtmxResponse
     ///   is added more than once for a header, all events in that header are sent in a form that only
     ///   the Toolkit script (<c>htmx-toolkit.js</c>) can replay; without the script, none of them
     ///   is triggered. In HTMX 4.x, this also applies to a name added with different timings.
-    ///   The event name <c>rs:event</c> is reserved for this purpose and cannot be used.
     /// </para>
     /// <para>
     ///   Each call sets the header in <see cref="HttpResponse.Headers" />, replacing its value with
@@ -314,7 +312,6 @@ public readonly struct HtmxResponse
     ///   is added more than once for a header, all events in that header are sent in a form that only
     ///   the Toolkit script (<c>htmx-toolkit.js</c>) can replay; without the script, none of them
     ///   is triggered. In HTMX 4.x, this also applies to a name added with different timings.
-    ///   The event name <c>rs:event</c> is reserved for this purpose and cannot be used.
     /// </para>
     /// <para>
     ///   Each call sets the header in <see cref="HttpResponse.Headers" />, replacing its value with
