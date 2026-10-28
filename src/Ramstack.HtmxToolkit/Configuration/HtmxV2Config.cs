@@ -184,7 +184,7 @@ public sealed class HtmxV2Config() : HtmxConfig(HtmxTargetVersion.V2)
     /// Gets or sets the attributes to settle during the settling phase.
     /// The HTMX default is <c>["class", "style", "width", "height"]</c>.
     /// </summary>
-    public string[]? AttributesToSettle
+    public IReadOnlyList<string>? AttributesToSettle
     {
         get;
         set => SetField(ref field, value);
@@ -300,8 +300,8 @@ public sealed class HtmxV2Config() : HtmxConfig(HtmxTargetVersion.V2)
     /// Gets or sets the HTTP methods that use URL parameters.
     /// The HTMX default is <c>["get", "delete"]</c>.
     /// </summary>
-    [JsonConverter(typeof(HttpVerbArrayJsonConverter))]
-    public HttpVerb[]? MethodsThatUseUrlParams
+    [JsonConverter(typeof(HttpVerbListJsonConverter))]
+    public IReadOnlyList<HttpVerb>? MethodsThatUseUrlParams
     {
         get;
         set => SetField(ref field, value);
@@ -344,7 +344,7 @@ public sealed class HtmxV2Config() : HtmxConfig(HtmxTargetVersion.V2)
     /// The HTMX default is <c>[{ code: "204", swap: false }, { code: "[23]..", swap: true },
     /// { code: "[45]..", swap: false, error: true }]</c>.
     /// </summary>
-    public IList<ResponseHandlingConfig>? ResponseHandling
+    public IReadOnlyList<ResponseHandlingConfig>? ResponseHandling
     {
         get;
         set => SetField(ref field, value);

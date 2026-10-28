@@ -9,7 +9,8 @@ namespace Ramstack.HtmxToolkit.Configuration;
 /// </summary>
 /// <remarks>
 /// Configuration JSON is cached until a configuration property is assigned.
-/// Changes made in place to arrays, collections, or their items do not invalidate the cache;
+/// Collection properties are read-only lists, so replace a collection by assigning the property.
+/// Changes made in place to an assigned collection or its items do not invalidate the cache;
 /// reassign the containing property after making such changes.
 /// </remarks>
 public abstract class HtmxConfig

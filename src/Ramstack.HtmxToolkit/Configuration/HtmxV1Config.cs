@@ -174,7 +174,7 @@ public sealed class HtmxV1Config() : HtmxConfig(HtmxTargetVersion.V1)
     /// Gets or sets the attributes to settle during the settling phase.
     /// The HTMX default is <c>["class", "style", "width", "height"]</c>.
     /// </summary>
-    public string[]? AttributesToSettle
+    public IReadOnlyList<string>? AttributesToSettle
     {
         get;
         set => SetField(ref field, value);
@@ -288,8 +288,8 @@ public sealed class HtmxV1Config() : HtmxConfig(HtmxTargetVersion.V1)
     /// Gets or sets the HTTP methods that use URL parameters.
     /// The HTMX default is <c>["get"]</c>.
     /// </summary>
-    [JsonConverter(typeof(HttpVerbArrayJsonConverter))]
-    public HttpVerb[]? MethodsThatUseUrlParams
+    [JsonConverter(typeof(HttpVerbListJsonConverter))]
+    public IReadOnlyList<HttpVerb>? MethodsThatUseUrlParams
     {
         get;
         set => SetField(ref field, value);
