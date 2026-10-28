@@ -18,18 +18,6 @@ internal static class JsonOptions
         JavaScriptEncoder.Create(new TextEncoderSettings(UnicodeRanges.All));
 
     /// <summary>
-    /// Configures serializer options to preserve Unicode characters while escaping
-    /// JavaScript- and HTML-sensitive characters.
-    /// </summary>
-    /// <param name="options">The serializer options to configure.</param>
-    /// <remarks>
-    /// Use it only for JSON rendered into HTML attributes. Response headers allow
-    /// only ASCII characters and must use the default encoder.
-    /// </remarks>
-    public static void ConfigureHtmlSafeUnicode(JsonSerializerOptions options) =>
-        options.Encoder = s_encoder;
-
-    /// <summary>
     /// The shared JSON serializer options that use <see cref="JsonNamingPolicy.CamelCase" />
     /// for property names and dictionary keys and omit properties
     /// whose values are <see langword="null" />.
@@ -45,4 +33,16 @@ internal static class JsonOptions
         DictionaryKeyPolicy = JsonNamingPolicy.CamelCase,
         WriteIndented = false
     };
+
+    /// <summary>
+    /// Configures serializer options to preserve Unicode characters while escaping
+    /// JavaScript- and HTML-sensitive characters.
+    /// </summary>
+    /// <param name="options">The serializer options to configure.</param>
+    /// <remarks>
+    /// Use it only for JSON rendered into HTML attributes. Response headers allow
+    /// only ASCII characters and must use the default encoder.
+    /// </remarks>
+    public static void ConfigureHtmlSafeUnicode(JsonSerializerOptions options) =>
+        options.Encoder = s_encoder;
 }
