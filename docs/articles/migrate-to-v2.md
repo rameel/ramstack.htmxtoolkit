@@ -466,6 +466,9 @@ These changes affect fewer applications:
 - `HtmxHeaderTagHelper.Headers` changed from `Dictionary<string, string>` to `IDictionary<string, string>`,
   and header names are compared without case.
 - `HtmxScrollBehavior` gained `Instant`.
+- `Location`, `Redirect`, `Reswap(string)`, `Retarget`, and `Reselect` throw `ArgumentException` for a `null`
+  or empty value, and `Location(string, HtmxLocationOptions)` also throws for `null` options.
+  In 1.x, an empty value produced an empty header.
 - Generated JSON in attributes keeps non-ASCII characters, such as Cyrillic, instead of escaping them as `\uXXXX`.
   Update snapshot tests that compare it as text.
 

@@ -45,8 +45,12 @@ public readonly struct HtmxResponse
     /// <returns>
     /// The current <see cref="HtmxResponse" /> instance.
     /// </returns>
-    public HtmxResponse Location(string value) =>
-        SetHeader(this, HtmxResponseHeaderNames.Location, value);
+    public HtmxResponse Location(string value)
+    {
+        Argument.ThrowIfNullOrEmpty(value);
+
+        return SetHeader(this, HtmxResponseHeaderNames.Location, value);
+    }
 
     /// <summary>
     /// Sets the <c>HX-Location</c> header to perform a client-side redirect
@@ -59,6 +63,9 @@ public readonly struct HtmxResponse
     /// </returns>
     public HtmxResponse Location(string path, HtmxLocationOptions options)
     {
+        Argument.ThrowIfNullOrEmpty(path);
+        Argument.ThrowIfNull(options);
+
         return LocationImpl(this, path, options);
 
         static HtmxResponse LocationImpl(HtmxResponse response, string path, HtmxLocationOptions options)
@@ -159,8 +166,12 @@ public readonly struct HtmxResponse
     /// <returns>
     /// The current <see cref="HtmxResponse" /> instance.
     /// </returns>
-    public HtmxResponse Redirect(string value) =>
-        SetHeader(this, HtmxResponseHeaderNames.Redirect, value);
+    public HtmxResponse Redirect(string value)
+    {
+        Argument.ThrowIfNullOrEmpty(value);
+
+        return SetHeader(this, HtmxResponseHeaderNames.Redirect, value);
+    }
 
     /// <summary>
     /// Sets the <c>HX-Refresh</c> header to request a full-page refresh.
@@ -188,8 +199,12 @@ public readonly struct HtmxResponse
     /// <returns>
     /// The current <see cref="HtmxResponse" /> instance.
     /// </returns>
-    public HtmxResponse Reswap(string value) =>
-        SetHeader(this, HtmxResponseHeaderNames.Reswap, value);
+    public HtmxResponse Reswap(string value)
+    {
+        Argument.ThrowIfNullOrEmpty(value);
+
+        return SetHeader(this, HtmxResponseHeaderNames.Reswap, value);
+    }
 
     /// <summary>
     /// Sets the <c>HX-Retarget</c> header to change the target of the content update
@@ -199,8 +214,12 @@ public readonly struct HtmxResponse
     /// <returns>
     /// The current <see cref="HtmxResponse" /> instance.
     /// </returns>
-    public HtmxResponse Retarget(string value) =>
-        SetHeader(this, HtmxResponseHeaderNames.Retarget, value);
+    public HtmxResponse Retarget(string value)
+    {
+        Argument.ThrowIfNullOrEmpty(value);
+
+        return SetHeader(this, HtmxResponseHeaderNames.Retarget, value);
+    }
 
     /// <summary>
     /// Sets the <c>HX-Reselect</c> header to select the part of the response to swap in.
@@ -209,8 +228,12 @@ public readonly struct HtmxResponse
     /// <returns>
     /// The current <see cref="HtmxResponse" /> instance.
     /// </returns>
-    public HtmxResponse Reselect(string value) =>
-        SetHeader(this, HtmxResponseHeaderNames.Reselect, value);
+    public HtmxResponse Reselect(string value)
+    {
+        Argument.ThrowIfNullOrEmpty(value);
+
+        return SetHeader(this, HtmxResponseHeaderNames.Reselect, value);
+    }
 
     /// <summary>
     /// Adds a client-side event to the response header selected by <paramref name="timing" />.
