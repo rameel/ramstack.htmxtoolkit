@@ -197,7 +197,7 @@ public sealed class HtmxV4Config() : HtmxConfig(HtmxTargetVersion.V4)
     /// Gets or sets the attribute name prefixes to preserve during morphing.
     /// The HTMX default is <c>["data-htmx-powered"]</c>.
     /// </summary>
-    public string[]? MorphIgnore
+    public IReadOnlyList<string>? MorphIgnore
     {
         get;
         set => SetField(ref field, value);
@@ -241,7 +241,7 @@ public sealed class HtmxV4Config() : HtmxConfig(HtmxTargetVersion.V4)
     /// Although HTMX declares this option as a number array, it converts each entry to a string
     /// at runtime and supports wildcard patterns such as <c>"4xx"</c> and <c>"44x"</c>.
     /// </remarks>
-    public string[]? NoSwap
+    public IReadOnlyList<string>? NoSwap
     {
         get;
         set => SetField(ref field, value);
