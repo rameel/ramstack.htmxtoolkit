@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 
 using Ramstack.HtmxToolkit.Configuration;
-using Ramstack.HtmxToolkit.Serialization;
 
 namespace Ramstack.HtmxToolkit.Internal;
 
@@ -151,7 +150,9 @@ internal sealed class PendingEvents
     {
         var buffer = new ArrayBufferWriter<byte>();
 
-        using (var writer = new Utf8JsonWriter(buffer, new JsonWriterOptions { Encoder = JsonOptions.Encoder, SkipValidation = true }))
+        // The default encoder escapes non-ASCII characters in event names,
+        // which response headers do not allow.
+        using (var writer = new Utf8JsonWriter(buffer, new JsonWriterOptions { SkipValidation = true }))
         {
             writer.WriteStartObject();
 
