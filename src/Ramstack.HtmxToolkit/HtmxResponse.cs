@@ -41,15 +41,15 @@ public readonly struct HtmxResponse
     /// Sets the <c>HX-Location</c> header to perform a client-side redirect
     /// without a full-page reload.
     /// </summary>
-    /// <param name="value">The path or serialized JSON options to assign to the header.</param>
+    /// <param name="path">The path to request, or the serialized JSON options to assign to the header.</param>
     /// <returns>
     /// The current <see cref="HtmxResponse" /> instance.
     /// </returns>
-    public HtmxResponse Location(string value)
+    public HtmxResponse Location(string path)
     {
-        Argument.ThrowIfNullOrEmpty(value);
+        Argument.ThrowIfNullOrEmpty(path);
 
-        return SetHeader(this, HtmxResponseHeaderNames.Location, value);
+        return SetHeader(this, HtmxResponseHeaderNames.Location, path);
     }
 
     /// <summary>
@@ -162,15 +162,15 @@ public readonly struct HtmxResponse
     /// <summary>
     /// Sets the <c>HX-Redirect</c> header to perform a client-side redirect with a full-page reload.
     /// </summary>
-    /// <param name="value">The URL to redirect to.</param>
+    /// <param name="url">The URL to redirect to.</param>
     /// <returns>
     /// The current <see cref="HtmxResponse" /> instance.
     /// </returns>
-    public HtmxResponse Redirect(string value)
+    public HtmxResponse Redirect(string url)
     {
-        Argument.ThrowIfNullOrEmpty(value);
+        Argument.ThrowIfNullOrEmpty(url);
 
-        return SetHeader(this, HtmxResponseHeaderNames.Redirect, value);
+        return SetHeader(this, HtmxResponseHeaderNames.Redirect, url);
     }
 
     /// <summary>
@@ -185,54 +185,54 @@ public readonly struct HtmxResponse
     /// <summary>
     /// Sets the <c>HX-Reswap</c> header to specify how the response will be swapped.
     /// </summary>
-    /// <param name="value">The swap style to assign to the header.</param>
+    /// <param name="swap">The swap style to assign to the header.</param>
     /// <returns>
     /// The current <see cref="HtmxResponse" /> instance.
     /// </returns>
-    public HtmxResponse Reswap(HtmxSwap value) =>
-        SetHeader(this, HtmxResponseHeaderNames.Reswap, value.GetSwapValue());
+    public HtmxResponse Reswap(HtmxSwap swap) =>
+        SetHeader(this, HtmxResponseHeaderNames.Reswap, swap.GetSwapValue());
 
     /// <summary>
     /// Sets the <c>HX-Reswap</c> header to specify how the response will be swapped.
     /// </summary>
-    /// <param name="value">The swap style, optionally followed by swap modifiers.</param>
+    /// <param name="swap">The swap style, optionally followed by swap modifiers.</param>
     /// <returns>
     /// The current <see cref="HtmxResponse" /> instance.
     /// </returns>
-    public HtmxResponse Reswap(string value)
+    public HtmxResponse Reswap(string swap)
     {
-        Argument.ThrowIfNullOrEmpty(value);
+        Argument.ThrowIfNullOrEmpty(swap);
 
-        return SetHeader(this, HtmxResponseHeaderNames.Reswap, value);
+        return SetHeader(this, HtmxResponseHeaderNames.Reswap, swap);
     }
 
     /// <summary>
     /// Sets the <c>HX-Retarget</c> header to change the target of the content update
     /// to a different element on the page.
     /// </summary>
-    /// <param name="value">The CSS selector to assign to the header.</param>
+    /// <param name="selector">The CSS selector to assign to the header.</param>
     /// <returns>
     /// The current <see cref="HtmxResponse" /> instance.
     /// </returns>
-    public HtmxResponse Retarget(string value)
+    public HtmxResponse Retarget(string selector)
     {
-        Argument.ThrowIfNullOrEmpty(value);
+        Argument.ThrowIfNullOrEmpty(selector);
 
-        return SetHeader(this, HtmxResponseHeaderNames.Retarget, value);
+        return SetHeader(this, HtmxResponseHeaderNames.Retarget, selector);
     }
 
     /// <summary>
     /// Sets the <c>HX-Reselect</c> header to select the part of the response to swap in.
     /// </summary>
-    /// <param name="value">The CSS selector to assign to the header.</param>
+    /// <param name="selector">The CSS selector to assign to the header.</param>
     /// <returns>
     /// The current <see cref="HtmxResponse" /> instance.
     /// </returns>
-    public HtmxResponse Reselect(string value)
+    public HtmxResponse Reselect(string selector)
     {
-        Argument.ThrowIfNullOrEmpty(value);
+        Argument.ThrowIfNullOrEmpty(selector);
 
-        return SetHeader(this, HtmxResponseHeaderNames.Reselect, value);
+        return SetHeader(this, HtmxResponseHeaderNames.Reselect, selector);
     }
 
     /// <summary>
