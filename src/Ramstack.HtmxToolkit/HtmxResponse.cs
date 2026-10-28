@@ -373,8 +373,11 @@ public readonly struct HtmxResponse
     {
         Argument.ThrowIfNull(jsonTypeInfo);
 
+        // The writer's default encoder escapes non-ASCII characters, which response headers do not allow,
+        // in string values and dictionary keys even if the jsonTypeInfo options use a relaxed encoder.
+        // Property names and enum names are written as escaped by the encoder of those options.
         var buffer = new ArrayBufferWriter<byte>();
-        using (var writer = new Utf8JsonWriter(buffer, new JsonWriterOptions { Encoder = JsonOptions.Encoder, SkipValidation = true }))
+        using (var writer = new Utf8JsonWriter(buffer, new JsonWriterOptions { SkipValidation = true }))
             JsonSerializer.Serialize(writer, detail, jsonTypeInfo);
 
         return Encoding.UTF8.GetString(buffer.WrittenSpan);

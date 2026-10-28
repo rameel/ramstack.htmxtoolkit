@@ -264,6 +264,34 @@ public class PendingEventsTests
     }
 
     [Test]
+    public void AddEvent_EscapesNonAsciiEventName()
+    {
+        // Kestrel rejects non-ASCII characters in response header values.
+        var context = TestHelper.CreateHttpContext();
+        var pending = PendingEvents.GetOrCreate(context.Response);
+
+        pending.AddEvent(HtmxTriggerTiming.Receive, "сохранено", "1");
+
+        Assert.That(
+            context.Response.Headers[HtmxResponseHeaderNames.Trigger].ToString(),
+            Is.EqualTo("{\"\\u0441\\u043E\\u0445\\u0440\\u0430\\u043D\\u0435\\u043D\\u043E\":1}"));
+    }
+
+    [Test]
+    public void AddEvent_EscapesNonAsciiEventName_InReplayedEvents()
+    {
+        var context = TestHelper.CreateHttpContext();
+        var pending = PendingEvents.GetOrCreate(context.Response);
+
+        pending.AddEvent(HtmxTriggerTiming.Receive, "ок", "1");
+        pending.AddEvent(HtmxTriggerTiming.Receive, "ок", "2");
+
+        Assert.That(
+            context.Response.Headers[HtmxResponseHeaderNames.Trigger].ToString(),
+            Is.EqualTo("{\"rs:event\":[{\"key\":\"\\u043E\\u043A\",\"value\":1},{\"key\":\"\\u043E\\u043A\",\"value\":2}]}"));
+    }
+
+    [Test]
     public void AddEvent_WritesEventNamesThatDifferOnlyInCaseSeparately()
     {
         var context = TestHelper.CreateHttpContext();

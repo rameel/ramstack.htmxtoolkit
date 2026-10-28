@@ -1,3 +1,5 @@
+using System.Text.Encodings.Web;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
 using Microsoft.AspNetCore.Http;
@@ -140,6 +142,26 @@ public class HtmxResponseTests
         Assert.That(json["values"].GetProperty("id").GetString(), Is.EqualTo("42"));
         Assert.That(json["values"].GetProperty("tags").GetRawText(), Is.EqualTo("[\"dotnet\",\"web\"]"));
         Assert.That(json["headers"].GetProperty("X-Test").GetString(), Is.EqualTo("abc"));
+    }
+
+    [Test]
+    public void Location_WithNonAsciiOptions_WritesAsciiHeader()
+    {
+        // Kestrel rejects non-ASCII characters in response header values.
+        var context = TestHelper.CreateHtmxRequestContext();
+        context.Response.Htmx(r => r.Location("/bar", new HtmxLocationOptions
+        {
+            Values = new Dictionary<string, HtmxFieldValues>
+            {
+                ["имя"] = "Привет"
+            }
+        }));
+
+        var header = context.Response.Headers[HtmxResponseHeaderNames.Location].ToString();
+        var json = JsonHelper.ParseJson(header);
+
+        Assert.That(header.All(char.IsAscii), Is.True);
+        Assert.That(json["values"].GetProperty("имя").GetString(), Is.EqualTo("Привет"));
     }
 
     [Test]
@@ -453,6 +475,38 @@ public class HtmxResponseTests
                 context.Response.Headers[HtmxResponseHeaderNames.Trigger].ToString(),
                 Is.EqualTo("{\"ModelChanged\":{\"text\":\"before\"}}"));
         });
+    }
+
+    [Test]
+    public void TriggerEvent_WithNonAsciiDetail_EscapesNonAsciiCharacters()
+    {
+        // Kestrel rejects non-ASCII characters in response header values.
+        var context = TestHelper.CreateHtmxRequestContext();
+        context.Response.Htmx(r => r.TriggerEvent("saved", new { Name = "Привет" }));
+
+        Assert.That(
+            context.Response.Headers[HtmxResponseHeaderNames.Trigger].ToString(),
+            Is.EqualTo("{\"saved\":{\"name\":\"\\u041F\\u0440\\u0438\\u0432\\u0435\\u0442\"}}"));
+    }
+
+    [Test]
+    public void TriggerEvent_WithRelaxedEscapingJsonTypeInfo_EscapesNonAsciiCharacters()
+    {
+        // Minimal API JsonOptions use UnsafeRelaxedJsonEscaping,
+        // so metadata taken from them must not let non-ASCII characters into the header.
+        var context = TestHelper.CreateHtmxRequestContext();
+        var options = new JsonSerializerOptions
+        {
+            Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+        };
+
+        var info = new TriggerEventJsonSerializerContext(options).TriggerEventDetail;
+        context.Response.Htmx(r => r.TriggerEvent("saved", new TriggerEventDetail { Text = "Привет" }, info));
+
+        Assert.That(
+            context.Response.Headers[HtmxResponseHeaderNames.Trigger].ToString(),
+            Is.EqualTo("{\"saved\":{\"text\":\"\\u041F\\u0440\\u0438\\u0432\\u0435\\u0442\"}}"));
     }
 
     [Test]
