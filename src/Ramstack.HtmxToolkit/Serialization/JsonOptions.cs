@@ -1,6 +1,5 @@
 using System.Text.Encodings.Web;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.Text.Unicode;
 
 namespace Ramstack.HtmxToolkit.Serialization;
@@ -18,21 +17,15 @@ internal static class JsonOptions
         JavaScriptEncoder.Create(new TextEncoderSettings(UnicodeRanges.All));
 
     /// <summary>
-    /// The shared JSON serializer options that use <see cref="JsonNamingPolicy.CamelCase" />
-    /// for property names and dictionary keys and omit properties
-    /// whose values are <see langword="null" />.
+    /// The shared JSON serializer options with the <see cref="JsonSerializerDefaults.Web" /> defaults,
+    /// which ASP.NET Core uses for JSON responses: property names are camel-cased, while dictionary keys
+    /// and <see langword="null" /> values are written as is.
     /// </summary>
     /// <remarks>
     /// The options use the default encoder, which escapes non-ASCII characters,
     /// so that the resulting JSON can be written into a response header.
     /// </remarks>
-    public static readonly JsonSerializerOptions CamelCase = new()
-    {
-        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-        DictionaryKeyPolicy = JsonNamingPolicy.CamelCase,
-        WriteIndented = false
-    };
+    public static readonly JsonSerializerOptions Web = new(JsonSerializerDefaults.Web);
 
     /// <summary>
     /// Configures serializer options to preserve Unicode characters while escaping

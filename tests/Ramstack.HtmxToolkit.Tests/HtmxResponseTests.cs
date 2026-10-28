@@ -453,6 +453,36 @@ public class HtmxResponseTests
     }
 
     [Test]
+    public void TriggerEvent_WithDictionaryDetail_KeepsKeyCase()
+    {
+        // Dictionary keys are data, such as field names, and must reach the browser unchanged.
+        var context = TestHelper.CreateHtmxRequestContext();
+        context.Response.Htmx(r => r.TriggerEvent("invalid", new
+        {
+            Errors = new Dictionary<string, string[]>
+            {
+                ["Email"] = ["Required"],
+                ["Address.City"] = ["Too long"]
+            }
+        }));
+
+        Assert.That(
+            context.Response.Headers[HtmxResponseHeaderNames.Trigger].ToString(),
+            Is.EqualTo("{\"invalid\":{\"errors\":{\"Email\":[\"Required\"],\"Address.City\":[\"Too long\"]}}}"));
+    }
+
+    [Test]
+    public void TriggerEvent_WithNullProperty_WritesNull()
+    {
+        var context = TestHelper.CreateHtmxRequestContext();
+        context.Response.Htmx(r => r.TriggerEvent("saved", new { Id = 42, Note = (string?)null }));
+
+        Assert.That(
+            context.Response.Headers[HtmxResponseHeaderNames.Trigger].ToString(),
+            Is.EqualTo("{\"saved\":{\"id\":42,\"note\":null}}"));
+    }
+
+    [Test]
     public void TriggerEvent_WithIndentedJsonTypeInfo_SerializesImmediatelyAsCompactJson()
     {
         var context = TestHelper.CreateHtmxRequestContext();

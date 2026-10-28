@@ -187,7 +187,8 @@ Response.Htmx(htmx => htmx.TriggerEvent(
     HtmxTriggerTiming.AfterSwap));
 ```
 
-The object is serialized with camelCase property names, so `Id` becomes `id` in `event.detail`:
+The object is serialized the way ASP.NET Core serializes JSON responses by default: property names are camel-cased,
+while dictionary keys and `null` values are written as is. `Id` becomes `id` in `event.detail`:
 
 ```javascript
 document.addEventListener("product-saved", event => {
@@ -195,7 +196,7 @@ document.addEventListener("product-saved", event => {
 });
 ```
 
-Only the detail uses camelCase. The event name is sent exactly as passed to `TriggerEvent`,
+Only property names in the detail are camel-cased. The event name is sent exactly as passed to `TriggerEvent`,
 and browser event names are case-sensitive.
 
 Put the listener in a JavaScript file loaded once by the layout, after HTMX. Listening on `document`

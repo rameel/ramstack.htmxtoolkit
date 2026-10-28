@@ -272,7 +272,11 @@ public readonly struct HtmxResponse
     /// <paramref name="timing" />.
     /// </summary>
     /// <param name="eventName">The event name to trigger.</param>
-    /// <param name="detail">The event detail.</param>
+    /// <param name="detail">
+    /// The event detail, serialized with the <see cref="JsonSerializerDefaults.Web" /> defaults, as ASP.NET Core
+    /// serializes JSON responses: property names are camel-cased, while dictionary keys and
+    /// <see langword="null" /> values are written as is.
+    /// </param>
     /// <param name="timing">The event timing. Defaults to <see cref="HtmxTriggerTiming.Receive" />.</param>
     /// <returns>
     /// The current <see cref="HtmxResponse" /> instance.
@@ -395,7 +399,7 @@ public readonly struct HtmxResponse
     [RequiresDynamicCode("Event details are serialized using reflection.")]
     [RequiresUnreferencedCode("Event details are serialized using reflection.")]
     private static HtmxResponse TriggerEventCore(HtmxResponse response, string eventName, object detail, HtmxTriggerTiming timing) =>
-        AddToPendingEvent(response, eventName, JsonSerializer.Serialize(detail, JsonOptions.CamelCase), timing);
+        AddToPendingEvent(response, eventName, JsonSerializer.Serialize(detail, JsonOptions.Web), timing);
 
     private static HtmxResponse TriggerEventCore<T>(HtmxResponse response, string eventName, T detail, JsonTypeInfo<T> jsonTypeInfo, HtmxTriggerTiming timing) =>
         AddToPendingEvent(response, eventName, SerializeEventDetail(detail, jsonTypeInfo), timing);
