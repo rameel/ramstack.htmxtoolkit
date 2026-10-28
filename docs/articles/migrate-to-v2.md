@@ -466,7 +466,8 @@ These changes affect fewer applications:
 - `HtmxHeaderTagHelper.Headers` changed from `Dictionary<string, string>` to `IDictionary<string, string>`,
   and header names are compared without case.
 - `HtmxScrollBehavior` gained `Instant`.
-- Generated JSON in attributes and headers is encoded differently. Update snapshot tests that compare it as text.
+- Generated JSON in attributes keeps non-ASCII characters, such as Cyrillic, instead of escaping them as `\uXXXX`.
+  Update snapshot tests that compare it as text.
 
 ## New in 2.0
 

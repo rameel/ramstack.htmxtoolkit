@@ -320,6 +320,14 @@ public readonly struct HtmxResponse
     ///   Like any other response header, an event cannot be added after the response has started;
     ///   the method then throws <see cref="InvalidOperationException" />.
     /// </para>
+    /// <para>
+    ///   Response headers allow only ASCII characters. Other characters in string values and dictionary keys
+    ///   are escaped, but property names and enum names are written as escaped by the
+    ///   <see cref="JsonSerializerOptions.Encoder" /> of the options that <paramref name="jsonTypeInfo" />
+    ///   belongs to. With a relaxed encoder, such as
+    ///   <see cref="System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping" />,
+    ///   these names must contain only ASCII characters.
+    /// </para>
     /// </remarks>
     public HtmxResponse TriggerEvent<T>(string eventName, T detail, JsonTypeInfo<T> jsonTypeInfo, HtmxTriggerTiming timing = HtmxTriggerTiming.Receive) =>
         TriggerEventCore(this, eventName, detail, jsonTypeInfo, timing);

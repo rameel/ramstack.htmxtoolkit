@@ -252,6 +252,13 @@ Response.Htmx(
 
 The JSON naming policy keeps the payload the same, so the JavaScript listener above still reads `event.detail.id`.
 
+Response headers allow only ASCII characters. Other characters in string values and dictionary keys
+are escaped as `\uXXXX`, but property names and enum names are written as the encoder of the metadata
+options escaped them. `AppJsonContext.Default` uses the default encoder, which escapes these names as well.
+If you take the metadata from options with a relaxed encoder, such as Minimal API `JsonOptions`,
+which use `JavaScriptEncoder.UnsafeRelaxedJsonEscaping`, keep these names ASCII-only;
+otherwise, the server rejects the header.
+
 ## Configure declaratively in MVC
 
 `HtmxResponseAttribute` is convenient when response behavior is constant:
