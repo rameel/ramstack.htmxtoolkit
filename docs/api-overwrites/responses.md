@@ -41,6 +41,13 @@ example:
 ---
 
 ---
+uid: Ramstack.HtmxToolkit.HtmxResponse.TriggerEvent(System.String,System.Object,System.Text.Json.JsonSerializerOptions,Ramstack.HtmxToolkit.HtmxTriggerTiming)
+example:
+  - |-
+    [!code-csharp[](../snippets/responses/TriggerClientEventWithOptions.cs)]
+---
+
+---
 uid: Ramstack.HtmxToolkit.HtmxResponse.TriggerEvent``1(System.String,``0,System.Text.Json.Serialization.Metadata.JsonTypeInfo{``0},Ramstack.HtmxToolkit.HtmxTriggerTiming)
 example:
   - |-

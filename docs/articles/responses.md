@@ -187,7 +187,8 @@ Response.Htmx(htmx => htmx.TriggerEvent(
     HtmxTriggerTiming.AfterSwap));
 ```
 
-The object is serialized with camelCase property names, so `Id` becomes `id` in `event.detail`:
+The object is serialized the way ASP.NET Core serializes JSON responses by default: property names are camel-cased,
+while dictionary keys and `null` values are written as is. `Id` becomes `id` in `event.detail`:
 
 ```javascript
 document.addEventListener("product-saved", event => {
@@ -195,7 +196,7 @@ document.addEventListener("product-saved", event => {
 });
 ```
 
-Only the detail uses camelCase. The event name is sent exactly as passed to `TriggerEvent`,
+Only property names in the detail are camel-cased. The event name is sent exactly as passed to `TriggerEvent`,
 and browser event names are case-sensitive.
 
 Put the listener in a JavaScript file loaded once by the layout, after HTMX. Listening on `document`
@@ -258,6 +259,36 @@ options escaped them. `AppJsonContext.Default` uses the default encoder, which e
 If you take the metadata from options with a relaxed encoder, such as Minimal API `JsonOptions`,
 which use `JavaScriptEncoder.UnsafeRelaxedJsonEscaping`, keep these names ASCII-only;
 otherwise, the server rejects the header.
+
+### Serialize details with custom options
+
+The object overload always uses the defaults described above, not the JSON options configured for the application.
+To serialize a detail with other settings, for example with the application's options that write enums as strings,
+pass `JsonSerializerOptions`:
+
+```csharp
+public sealed class ProductsController(IOptions<JsonOptions> jsonOptions) : Controller
+{
+    [HttpPost]
+    public IActionResult Save(Product product)
+    {
+        Response.Htmx(htmx => htmx.TriggerEvent(
+            "product-saved",
+            new { product.Id, product.Status },
+            jsonOptions.Value.JsonSerializerOptions));
+
+        return PartialView("_ProductRow", product);
+    }
+}
+```
+
+`JsonOptions` here is `Microsoft.AspNetCore.Mvc.JsonOptions`. In Minimal APIs, use `SerializerOptions`
+of `Microsoft.AspNetCore.Http.Json.JsonOptions`. Like the object overload, this overload uses reflection;
+for trimming and Native AOT, use [source-generated metadata](#serialize-details-with-source-generated-metadata).
+
+The detail is always written as compact JSON, with non-ASCII characters in string values and dictionary keys
+escaped as described above. Minimal API `JsonOptions` use a relaxed encoder, so with them, keep property names
+and enum names ASCII-only.
 
 ## Configure declaratively in MVC
 

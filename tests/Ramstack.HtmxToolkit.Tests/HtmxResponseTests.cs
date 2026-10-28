@@ -453,6 +453,71 @@ public class HtmxResponseTests
     }
 
     [Test]
+    public void TriggerEvent_WithDictionaryDetail_KeepsKeyCase()
+    {
+        // Dictionary keys are data, such as field names, and must reach the browser unchanged.
+        var context = TestHelper.CreateHtmxRequestContext();
+        context.Response.Htmx(r => r.TriggerEvent("invalid", new
+        {
+            Errors = new Dictionary<string, string[]>
+            {
+                ["Email"] = ["Required"],
+                ["Address.City"] = ["Too long"]
+            }
+        }));
+
+        Assert.That(
+            context.Response.Headers[HtmxResponseHeaderNames.Trigger].ToString(),
+            Is.EqualTo("{\"invalid\":{\"errors\":{\"Email\":[\"Required\"],\"Address.City\":[\"Too long\"]}}}"));
+    }
+
+    [Test]
+    public void TriggerEvent_WithOptions_SerializesWithOptions()
+    {
+        var context = TestHelper.CreateHtmxRequestContext();
+        var options = new JsonSerializerOptions
+        {
+            Converters = { new JsonStringEnumConverter() }
+        };
+
+        context.Response.Htmx(r => r.TriggerEvent("scheduled", new { Day = DayOfWeek.Monday }, options));
+
+        Assert.That(
+            context.Response.Headers[HtmxResponseHeaderNames.Trigger].ToString(),
+            Is.EqualTo("{\"scheduled\":{\"Day\":\"Monday\"}}"));
+    }
+
+    [Test]
+    public void TriggerEvent_WithIndentedRelaxedEscapingOptions_WritesCompactAsciiJson()
+    {
+        // Minimal API JsonOptions use UnsafeRelaxedJsonEscaping, and response headers
+        // cannot contain line breaks or non-ASCII characters.
+        var context = TestHelper.CreateHtmxRequestContext();
+        var options = new JsonSerializerOptions
+        {
+            Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+            WriteIndented = true
+        };
+
+        context.Response.Htmx(r => r.TriggerEvent("saved", new { Name = "Привет" }, options));
+
+        Assert.That(
+            context.Response.Headers[HtmxResponseHeaderNames.Trigger].ToString(),
+            Is.EqualTo("{\"saved\":{\"Name\":\"\\u041F\\u0440\\u0438\\u0432\\u0435\\u0442\"}}"));
+    }
+
+    [Test]
+    public void TriggerEvent_WithNullProperty_WritesNull()
+    {
+        var context = TestHelper.CreateHtmxRequestContext();
+        context.Response.Htmx(r => r.TriggerEvent("saved", new { Id = 42, Note = (string?)null }));
+
+        Assert.That(
+            context.Response.Headers[HtmxResponseHeaderNames.Trigger].ToString(),
+            Is.EqualTo("{\"saved\":{\"id\":42,\"note\":null}}"));
+    }
+
+    [Test]
     public void TriggerEvent_WithIndentedJsonTypeInfo_SerializesImmediatelyAsCompactJson()
     {
         var context = TestHelper.CreateHtmxRequestContext();

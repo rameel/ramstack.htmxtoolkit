@@ -26,7 +26,7 @@ step; see [Version compatibility](version-compatibility.md) for that.
 | [Polling](#replace-stoppolling)                                     | `StopPolling` removed                                                               | Build             |
 | [History](#update-history-calls)                                    | `PreventPushUrl` and `PreventReplaceUrl` become `PreventHistoryUpdate`              | Build             |
 | [HX-Location](#replace-ajaxcontext-with-htmxlocationoptions)        | `AjaxContext` becomes `HtmxLocationOptions`                                         | Build             |
-| [Client events](#update-client-events)                              | Event names are no longer camel-cased; repeated names are kept                      | Build, **silent** |
+| [Client events](#update-client-events)                              | Event names and detail dictionary keys keep their case; repeated names are kept     | Build, **silent** |
 | [Typed response headers](#update-typed-response-headers)            | `HtmxResponseHeaders` is a struct; event properties are read-only                   | Build             |
 | [`[HtmxResponse]`](#update-htmxresponse)                            | Restricted to classes and methods, one per target, inherited                        | Build, **silent** |
 
@@ -420,6 +420,12 @@ See [Location or redirect](responses.md#location-or-redirect).
 > In 2.0 the browser receives `ItemSaved`. A listener for `itemSaved` or `hx-trigger="itemSaved from:body"`
 > silently stops firing. Use the same name on the server and in the client.
 
+**Dictionary keys and `null` values in details are kept.** In 1.x, the detail object was serialized with
+camel-cased dictionary keys and without `null` properties, so a detail with `Errors["Email"]` and `Note = null`
+sent `{"errors":{"email":[...]}}`. In 2.0 it is serialized the way ASP.NET Core serializes JSON responses:
+property names are still camel-cased, but the browser receives `{"errors":{"Email":[...]},"note":null}`.
+Update listeners that read camel-cased dictionary keys.
+
 **Repeated names are kept.** In 1.x, a second event with the same name in the same header was dropped.
 In 2.0, all events are sent in call order. HTMX cannot deliver a repeated name from one header by itself,
 so the [Toolkit script](antiforgery.md#what-the-toolkit-script-does) delivers such events;
@@ -482,3 +488,5 @@ After the migration, consider these additions:
   See [Check full or partial requests](requests.md#check-full-or-partial-requests).
 - Morph swaps for HTMX 1.9.x and 2.x through the `ramstack-swap` extension. See [Morph swaps](version-compatibility.md#morph-swaps).
 - Native AOT support for event details through `JsonTypeInfo<T>`.
+- Custom JSON options for event details through `JsonSerializerOptions`.
+  See [Serialize details with custom options](responses.md#serialize-details-with-custom-options).

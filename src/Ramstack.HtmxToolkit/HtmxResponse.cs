@@ -272,7 +272,11 @@ public readonly struct HtmxResponse
     /// <paramref name="timing" />.
     /// </summary>
     /// <param name="eventName">The event name to trigger.</param>
-    /// <param name="detail">The event detail.</param>
+    /// <param name="detail">
+    /// The event detail, serialized with the <see cref="JsonSerializerDefaults.Web" /> defaults, as ASP.NET Core
+    /// serializes JSON responses: property names are camel-cased, while dictionary keys and
+    /// <see langword="null" /> values are written as is.
+    /// </param>
     /// <param name="timing">The event timing. Defaults to <see cref="HtmxTriggerTiming.Receive" />.</param>
     /// <returns>
     /// The current <see cref="HtmxResponse" /> instance.
@@ -300,13 +304,55 @@ public readonly struct HtmxResponse
     /// </remarks>
     [RequiresDynamicCode("Event details are serialized using reflection. Use the TriggerEvent overload that accepts JsonTypeInfo<T> for Native AOT applications.")]
     [RequiresUnreferencedCode("Event details are serialized using reflection. Use the TriggerEvent overload that accepts JsonTypeInfo<T> for trimmed applications.")]
-    public HtmxResponse TriggerEvent(string eventName, object detail, HtmxTriggerTiming timing = HtmxTriggerTiming.Receive)
-    {
-        return TriggerEventImpl(this, eventName, detail, timing);
+    public HtmxResponse TriggerEvent(string eventName, object detail, HtmxTriggerTiming timing = HtmxTriggerTiming.Receive) =>
+        TriggerEvent(eventName, detail, JsonOptions.Web, timing);
 
-        static HtmxResponse TriggerEventImpl(HtmxResponse response, string eventName, object detail, HtmxTriggerTiming timing) =>
-            TriggerEventCore(response, eventName, detail, timing);
-    }
+    /// <summary>
+    /// Adds a client-side event and its detail, serialized with the specified JSON options,
+    /// to the response header selected by <paramref name="timing" />.
+    /// </summary>
+    /// <param name="eventName">The event name to trigger.</param>
+    /// <param name="detail">The event detail.</param>
+    /// <param name="options">
+    /// The options used to serialize the event detail, for example, the JSON options of the application.
+    /// </param>
+    /// <param name="timing">The event timing. Defaults to <see cref="HtmxTriggerTiming.Receive" />.</param>
+    /// <returns>
+    /// The current <see cref="HtmxResponse" /> instance.
+    /// </returns>
+    /// <remarks>
+    /// <para>
+    ///   HTMX 4.x has only the <c>HX-Trigger</c> header, so events with any <see cref="HtmxTriggerTiming" /> value
+    ///   are emitted through it. These events fire when the request completes, which is after the swap
+    ///   and settle steps whenever a swap is performed.
+    ///   See <see href="https://github.com/bigskysoftware/htmx/pull/3900">PR #3900</see>.
+    /// </para>
+    /// <para>
+    ///   Events in the same header are triggered in the order they were added. If the same event name
+    ///   is added more than once for a header, all events in that header are sent in a form that only
+    ///   the Toolkit script (<c>htmx-toolkit.js</c>) can replay; without the script, none of them
+    ///   is triggered. In HTMX 4.x, this also applies to a name added with different timings.
+    /// </para>
+    /// <para>
+    ///   Each call sets the header in <see cref="HttpResponse.Headers" />, replacing its value with
+    ///   the events added for it. If the header has been removed, for example by
+    ///   <see cref="ResponseExtensions.Clear(HttpResponse)" />, the events added before that are discarded.
+    ///   Like any other response header, an event cannot be added after the response has started;
+    ///   the method then throws <see cref="InvalidOperationException" />.
+    /// </para>
+    /// <para>
+    ///   The detail is always written as compact JSON. Response headers allow only ASCII characters:
+    ///   other characters in string values and dictionary keys are escaped, but property names and enum names
+    ///   are written as escaped by the <see cref="JsonSerializerOptions.Encoder" /> of <paramref name="options" />.
+    ///   With a relaxed encoder, such as
+    ///   <see cref="System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping" />,
+    ///   these names must contain only ASCII characters.
+    /// </para>
+    /// </remarks>
+    [RequiresDynamicCode("Event details are serialized using reflection. Use the TriggerEvent overload that accepts JsonTypeInfo<T> for Native AOT applications.")]
+    [RequiresUnreferencedCode("Event details are serialized using reflection. Use the TriggerEvent overload that accepts JsonTypeInfo<T> for trimmed applications.")]
+    public HtmxResponse TriggerEvent(string eventName, object detail, JsonSerializerOptions options, HtmxTriggerTiming timing = HtmxTriggerTiming.Receive) =>
+        TriggerEventCore(this, eventName, detail, options, timing);
 
     /// <summary>
     /// Adds a client-side event and its detail, serialized with the specified JSON metadata,
@@ -394,24 +440,43 @@ public readonly struct HtmxResponse
 
     [RequiresDynamicCode("Event details are serialized using reflection.")]
     [RequiresUnreferencedCode("Event details are serialized using reflection.")]
-    private static HtmxResponse TriggerEventCore(HtmxResponse response, string eventName, object detail, HtmxTriggerTiming timing) =>
-        AddToPendingEvent(response, eventName, JsonSerializer.Serialize(detail, JsonOptions.CamelCase), timing);
+    private static HtmxResponse TriggerEventCore(HtmxResponse response, string eventName, object detail, JsonSerializerOptions options, HtmxTriggerTiming timing) =>
+        AddToPendingEvent(response, eventName, SerializeEventDetail(detail, options), timing);
 
     private static HtmxResponse TriggerEventCore<T>(HtmxResponse response, string eventName, T detail, JsonTypeInfo<T> jsonTypeInfo, HtmxTriggerTiming timing) =>
         AddToPendingEvent(response, eventName, SerializeEventDetail(detail, jsonTypeInfo), timing);
+
+    [RequiresDynamicCode("Event details are serialized using reflection.")]
+    [RequiresUnreferencedCode("Event details are serialized using reflection.")]
+    private static string SerializeEventDetail(object detail, JsonSerializerOptions options)
+    {
+        Argument.ThrowIfNull(options);
+
+        var buffer = new ArrayBufferWriter<byte>();
+        using (var writer = CreateHeaderWriter(buffer))
+            JsonSerializer.Serialize(writer, detail, options);
+
+        return Encoding.UTF8.GetString(buffer.WrittenSpan);
+    }
 
     private static string SerializeEventDetail<T>(T detail, JsonTypeInfo<T> jsonTypeInfo)
     {
         Argument.ThrowIfNull(jsonTypeInfo);
 
-        // The writer's default encoder escapes non-ASCII characters, which response headers do not allow,
-        // in string values and dictionary keys even if the jsonTypeInfo options use a relaxed encoder.
-        // Property names and enum names are written as escaped by the encoder of those options.
         var buffer = new ArrayBufferWriter<byte>();
-        using (var writer = new Utf8JsonWriter(buffer, new JsonWriterOptions { SkipValidation = true }))
+        using (var writer = CreateHeaderWriter(buffer))
             JsonSerializer.Serialize(writer, detail, jsonTypeInfo);
 
         return Encoding.UTF8.GetString(buffer.WrittenSpan);
+    }
+
+    private static Utf8JsonWriter CreateHeaderWriter(ArrayBufferWriter<byte> buffer)
+    {
+        // The writer's settings take precedence over the serializer options, so the JSON is compact,
+        // and the default encoder escapes non-ASCII characters, which response headers do not allow,
+        // in string values and dictionary keys even if the options use a relaxed encoder.
+        // Property names and enum names are written as escaped by the encoder of those options.
+        return new Utf8JsonWriter(buffer, new JsonWriterOptions { SkipValidation = true });
     }
 
     private static HtmxResponse AddToPendingEvent(HtmxResponse response, string eventName, string detailJson, HtmxTriggerTiming timing)
