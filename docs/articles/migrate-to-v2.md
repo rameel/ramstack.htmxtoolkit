@@ -475,6 +475,8 @@ These changes affect fewer applications:
 - `Location`, `Redirect`, `Reswap(string)`, `Retarget`, and `Reselect` throw `ArgumentException` for a `null`
   or empty value, and `Location(string, HtmxLocationOptions)` also throws for `null` options.
   In 1.x, an empty value produced an empty header.
+- The `value` parameter of these methods was renamed: `Location(path)`, `Redirect(url)`, `Reswap(swap)`,
+  `Retarget(selector)`, and `Reselect(selector)`. Update calls that pass it as a named argument.
 - Generated JSON in attributes keeps non-ASCII characters, such as Cyrillic, instead of escaping them as `\uXXXX`.
   Update snapshot tests that compare it as text.
 
