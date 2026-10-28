@@ -260,6 +260,36 @@ If you take the metadata from options with a relaxed encoder, such as Minimal AP
 which use `JavaScriptEncoder.UnsafeRelaxedJsonEscaping`, keep these names ASCII-only;
 otherwise, the server rejects the header.
 
+### Serialize details with custom options
+
+The object overload always uses the defaults described above, not the JSON options configured for the application.
+To serialize a detail with other settings, for example with the application's options that write enums as strings,
+pass `JsonSerializerOptions`:
+
+```csharp
+public sealed class ProductsController(IOptions<JsonOptions> jsonOptions) : Controller
+{
+    [HttpPost]
+    public IActionResult Save(Product product)
+    {
+        Response.Htmx(htmx => htmx.TriggerEvent(
+            "product-saved",
+            new { product.Id, product.Status },
+            jsonOptions.Value.JsonSerializerOptions));
+
+        return PartialView("_ProductRow", product);
+    }
+}
+```
+
+`JsonOptions` here is `Microsoft.AspNetCore.Mvc.JsonOptions`. In Minimal APIs, use `SerializerOptions`
+of `Microsoft.AspNetCore.Http.Json.JsonOptions`. Like the object overload, this overload uses reflection;
+for trimming and Native AOT, use [source-generated metadata](#serialize-details-with-source-generated-metadata).
+
+The detail is always written as compact JSON, with non-ASCII characters in string values and dictionary keys
+escaped as described above. Minimal API `JsonOptions` use a relaxed encoder, so with them, keep property names
+and enum names ASCII-only.
+
 ## Configure declaratively in MVC
 
 `HtmxResponseAttribute` is convenient when response behavior is constant:

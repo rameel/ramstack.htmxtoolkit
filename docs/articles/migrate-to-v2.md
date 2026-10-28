@@ -488,3 +488,5 @@ After the migration, consider these additions:
   See [Check full or partial requests](requests.md#check-full-or-partial-requests).
 - Morph swaps for HTMX 1.9.x and 2.x through the `ramstack-swap` extension. See [Morph swaps](version-compatibility.md#morph-swaps).
 - Native AOT support for event details through `JsonTypeInfo<T>`.
+- Custom JSON options for event details through `JsonSerializerOptions`.
+  See [Serialize details with custom options](responses.md#serialize-details-with-custom-options).
