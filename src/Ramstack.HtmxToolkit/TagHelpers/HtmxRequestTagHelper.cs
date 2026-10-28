@@ -272,8 +272,7 @@ public sealed class HtmxRequestTagHelper(IOptions<HtmxToolkitOptions> options) :
         {
             HtmxRequestCredentials.SameOrigin => false,
             HtmxRequestCredentials.Include => true,
-            // TODO: Consider throwing an exception when an HTMX 4-only credentials mode is configured for HTMX 1.9.x or 2.x.
-            // HtmxRequestCredentials.Omit => throw new InvalidOperationException(),
+            // XMLHttpRequest always sends credentials to the same origin, so Omit has no equivalent.
             _ => null
         };
 
