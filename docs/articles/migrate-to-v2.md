@@ -28,7 +28,7 @@ step; see [Version compatibility](version-compatibility.md) for that.
 | [HX-Location](#replace-ajaxcontext-with-htmxlocationoptions)        | `AjaxContext` becomes `HtmxLocationOptions`                                         | Build             |
 | [Client events](#update-client-events)                              | Event names and detail dictionary keys keep their case; repeated names are kept     | Build, **silent** |
 | [Typed response headers](#update-typed-response-headers)            | `HtmxResponseHeaders` is a struct; event properties are read-only                   | Build             |
-| [`[HtmxResponse]`](#update-htmxresponse)                            | Restricted to classes and methods, one per target, inherited                        | Build, **silent** |
+| [`[HtmxResponse]`](#update-htmxresponse)                            | Restricted to classes and methods, one per target, inherited; code overrides it     | Build, **silent** |
 
 ## Update the package
 
@@ -459,6 +459,9 @@ Other changes:
 - Merge several `[HtmxResponse]` attributes on one target into one. Duplicates and other targets are now build errors.
 - An attribute on a base controller or page model now applies to derived classes. In 1.x, it was ignored there.
   An attribute on a derived class replaces the inherited one.
+- The attribute sets its headers before the action or page handler runs, so values set in code take precedence.
+  In 1.x, it set them before the result executed and replaced the values that the action had set,
+  for example with `Response.Htmx(htmx => htmx.Retarget(...))`. Review actions that rely on the attribute winning.
 - `StopPolling` was removed; see [Replace StopPolling](#replace-stoppolling).
 
 ## Other changes
