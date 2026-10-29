@@ -312,6 +312,10 @@ When a controller and its action specify the same header, the action's value tak
 A derived class inherits the attribute from its base class; an attribute declared on the derived class
 replaces the inherited one entirely.
 
+The attribute sets its headers before the action or page handler runs, so it works as a default.
+The code can replace a header with `Response.Htmx(...)` or remove it through `Response.GetHtmxHeaders()`,
+for example to retarget validation errors.
+
 ## Access headers directly
 
 Use `Response.GetHtmxHeaders()` when middleware or shared infrastructure needs property access instead of fluent chaining:

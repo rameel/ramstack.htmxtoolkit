@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Abstractions;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Routing;
 
 namespace Ramstack.HtmxToolkit.Tests;
@@ -10,7 +11,7 @@ namespace Ramstack.HtmxToolkit.Tests;
 public class HtmxResponseAttributeTests
 {
     [Test]
-    public void OnResultExecuting_SetsHeaders_ForHtmxRequest()
+    public void OnActionExecuting_SetsHeaders_ForHtmxRequest()
     {
         var ctx = TestHelper.CreateHtmxRequestContext();
         var res = new HtmxResponseAttribute
@@ -21,7 +22,7 @@ public class HtmxResponseAttributeTests
             Reselect = "#list"
         };
 
-        res.OnResultExecuting(CreateContext(ctx));
+        res.OnActionExecuting(CreateActionContext(ctx));
 
         Assert.That(ctx.Response.Headers[HtmxResponseHeaderNames.Refresh], Is.EqualTo("true"));
         Assert.That(ctx.Response.Headers[HtmxResponseHeaderNames.Reswap], Is.EqualTo("outerHTML"));
@@ -30,25 +31,36 @@ public class HtmxResponseAttributeTests
     }
 
     [Test]
-    public void OnResultExecuting_SetsNoHeaders_ForNonHtmxRequest()
+    public void OnPageHandlerExecuting_SetsHeaders_ForHtmxRequest()
+    {
+        var ctx = TestHelper.CreateHtmxRequestContext();
+        var res = new HtmxResponseAttribute { Retarget = "#content" };
+
+        res.OnPageHandlerExecuting(CreatePageHandlerContext(ctx));
+
+        Assert.That(ctx.Response.Headers[HtmxResponseHeaderNames.Retarget], Is.EqualTo("#content"));
+    }
+
+    [Test]
+    public void OnActionExecuting_SetsNoHeaders_ForNonHtmxRequest()
     {
         var ctx = TestHelper.CreateHttpContext();
         var res = new HtmxResponseAttribute { Retarget = "#content" };
 
-        res.OnResultExecuting(CreateContext(ctx));
+        res.OnActionExecuting(CreateActionContext(ctx));
 
         Assert.That(ctx.Response.Headers.ContainsKey(HtmxResponseHeaderNames.Retarget), Is.False);
     }
 
     [Test]
-    public void OnResultExecuting_SetsNoHeaders_ForHistoryRestoreRequest()
+    public void OnActionExecuting_SetsNoHeaders_ForHistoryRestoreRequest()
     {
         var ctx = TestHelper.CreateHttpContext(
             (HtmxRequestHeaderNames.Request, "true"),
             (HtmxRequestHeaderNames.HistoryRestoreRequest, "true"));
         var res = new HtmxResponseAttribute { Retarget = "#content" };
 
-        res.OnResultExecuting(CreateContext(ctx));
+        res.OnActionExecuting(CreateActionContext(ctx));
 
         Assert.That(ctx.Response.Headers.ContainsKey(HtmxResponseHeaderNames.Retarget), Is.False);
     }
@@ -79,12 +91,22 @@ public class HtmxResponseAttributeTests
         Assert.That(res.ReswapExpression, Is.EqualTo("outerHTML ignoreTitle:true"));
     }
 
-    private static ResultExecutingContext CreateContext(HttpContext context)
+    private static ActionExecutingContext CreateActionContext(HttpContext context)
     {
-        return new ResultExecutingContext(
+        return new ActionExecutingContext(
             new ActionContext(context, new RouteData(), new ActionDescriptor()),
             new List<IFilterMetadata>(),
-            new EmptyResult(),
+            new Dictionary<string, object?>(),
+            new object());
+    }
+
+    private static PageHandlerExecutingContext CreatePageHandlerContext(HttpContext context)
+    {
+        return new PageHandlerExecutingContext(
+            new PageContext(new ActionContext(context, new RouteData(), new CompiledPageActionDescriptor())),
+            new List<IFilterMetadata>(),
+            handlerMethod: null,
+            new Dictionary<string, object?>(),
             new object());
     }
 }
