@@ -93,8 +93,21 @@ document._r_htmx ||= ((document, htmx) => {
 
     let antiforgery = read_antiforgery(document);
 
-    const add_antiforgery = (method, headers, parameters) => {
-        if (!/^get$/i.test(method)) {
+    // XHR and fetch resolve a relative URL against the document base URL.
+    // A URL that cannot be parsed is treated as another origin.
+    const is_same_origin = url => {
+        try {
+            return new URL(url, document.baseURI).origin === location.origin;
+        }
+        catch {
+            return false;
+        }
+    };
+
+    // The token is sent only to the origin of the page; another origin, even a subdomain
+    // of the same site, must not receive it.
+    const add_antiforgery = (method, url, headers, parameters) => {
+        if (!/^get$/i.test(method) && is_same_origin(url)) {
             const {
                 headerName,
                 formFieldName,
@@ -136,12 +149,12 @@ document._r_htmx ||= ((document, htmx) => {
 
     listen("htmx:configRequest", e => {
         let detail = e.detail;
-        add_antiforgery(detail.verb, detail.headers, detail.parameters);
+        add_antiforgery(detail.verb, detail.path, detail.headers, detail.parameters);
     });
 
     listen("htmx:config:request", e => {
         let request = e.detail.ctx.request;
-        add_antiforgery(request.method, request.headers, request.body);
+        add_antiforgery(request.method, request.action, request.headers, request.body);
     });
 
     // HTMX reads hx-request from the element and its ancestors; the nearest value wins.
