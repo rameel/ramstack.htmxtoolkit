@@ -18,7 +18,7 @@ step; see [Version compatibility](version-compatibility.md) for that.
 |---------------------------------------------------------------------|-------------------------------------------------------------------------------------|-------------------|
 | [Registration](#register-the-toolkit-and-select-the-htmx-version)   | Call `AddHtmxToolkit()` and select the HTMX version; HTMX 2.x is the default        | **Silent**        |
 | [Global configuration](#move-global-configuration-to-code)          | `<htmx-config>` attributes move to `AddHtmxToolkit()`                               | **Silent**        |
-| [Antiforgery](#antiforgery-metadata-is-on-by-default)               | Metadata is included by default and no longer stored in `htmx.config`               | **Silent**        |
+| [Antiforgery](#antiforgery-metadata-is-on-by-default)               | Metadata on by default, moved out of `htmx.config`; token sent to own origin only   | **Silent**        |
 | [Toolkit script](#load-the-toolkit-script-as-a-static-asset)        | Inline script helpers and `MapHtmxAntiforgeryScript` replaced by a static web asset | Build             |
 | [URL Tag Helper](#rename-the-url-tag-helper-attributes)             | `hx-*` URL attributes become `asp-*`; `hx-host` and `hx-protocol` are removed       | **Silent**        |
 | [Requests](#update-request-handling)                                | `IsHtmxRequest()` is `false` for history restoration; `Boosted` filter renamed      | Build, **silent** |
@@ -155,6 +155,10 @@ The Toolkit script reads these attributes itself. Update only custom JavaScript 
 const { antiforgeryRequestToken, antiforgeryHeaderName } =
     document.querySelector("meta[name='htmx-config']").dataset;
 ```
+
+The Toolkit script now adds the token only to requests to the page's origin. In 1.x, it added the token
+to every non-GET request, including requests to other origins. If another origin of the application validates
+the same tokens, send the token explicitly; see [Requests to other origins](antiforgery.md#requests-to-other-origins).
 
 See [Antiforgery and Toolkit script](antiforgery.md).
 

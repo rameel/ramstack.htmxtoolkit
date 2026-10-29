@@ -11,7 +11,7 @@ see [Static assets and deployment](static-assets.md) for the URL and caching.
 
 | Feature                                                                                                                                                                                      | HTMX versions                                               | Without the script                                                                                                         |
 |----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------|
-| Adds the antiforgery token to non-GET HTMX requests and refreshes it after boosted navigation                                                                                                | All                                                         | Non-GET requests without a token field fail server-side antiforgery validation, usually with HTTP 400                      |
+| Adds the antiforgery token to non-GET HTMX requests to the page's origin and refreshes it after boosted navigation                                                                           | All                                                         | Non-GET requests without a token field fail server-side antiforgery validation, usually with HTTP 400                      |
 | Sends `HX-Request-Type`; see [Check full or partial requests](requests.md#check-full-or-partial-requests)                                                                                    | 1.9.x and 2.x; HTMX 4.x sends it itself                     | `IsHtmxPartialRequest()` and `IsHtmxFullRequest()` return `false`, and `[HtmxRequest]` with a `RequestType` does not match |
 | Replays events whose name repeats in one response header; see [Timing and repeated events](responses.md#timing-and-repeated-events)                                                          | All                                                         | None of the events in that header fire                                                                                     |
 | Adds the `ramstack-swap` extension with `innerMorph`, `outerMorph`, and a simplified `outerSync`, plus `textContent` for HTMX 1.9.x; see [Morph swaps](version-compatibility.md#morph-swaps) | 1.9.x and 2.x; HTMX 4.x supports these swap styles natively | These swap styles are not available                                                                                        |
@@ -21,7 +21,7 @@ see [Static assets and deployment](static-assets.md) for the URL and caching.
 1. `<htmx-config />` asks ASP.NET Core for an antiforgery token.
 2. The Tag Helper writes the request token, header name, and form-field name as data attributes on `<meta name="htmx-config">`.
 3. The Toolkit script reads those attributes during page load.
-4. Before each non-GET HTMX request, the script adds the token unless the form data already contains the configured antiforgery form field.
+4. Before each non-GET HTMX request to the page's origin, the script adds the token unless the form data already contains the configured antiforgery form field.
 5. The application validates the token through Razor Pages, an MVC filter, or its Minimal API validation setup.
 
 The token is sent as the configured antiforgery header when a header name is available.
@@ -115,6 +115,24 @@ metadata leaves the existing values in place.
 Keep `<htmx-config />` in full document layouts. After signing in, signing out, or changing identity,
 obtain a token for the new identity. A full navigation with `HX-Redirect` is a straightforward way to do that;
 see [Redirect after authentication](recipes.md#redirect-after-authentication). Keeping an old token does not refresh it.
+
+## Requests to other origins
+
+The script adds the token only to requests to the page's origin. Requests to another origin, including another
+subdomain of the same site, do not receive it, so the token cannot leak to a third party.
+If another origin of the application validates the same antiforgery tokens, send the token explicitly:
+
+```razor
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
+
+<button hx-post="https://orders.example.com/orders"
+        hx-header-RequestVerificationToken="@Antiforgery.GetAndStoreTokens(Context).RequestToken">
+    Place order
+</button>
+```
+
+Such a request also needs CORS with credentials on the other origin, and the antiforgery cookie must be
+available to it.
 
 ## Static web assets and caching
 
