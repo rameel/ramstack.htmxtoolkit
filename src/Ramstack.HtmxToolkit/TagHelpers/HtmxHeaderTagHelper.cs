@@ -6,6 +6,7 @@ using Microsoft.Extensions.Options;
 
 using Ramstack.HtmxToolkit.Collections;
 using Ramstack.HtmxToolkit.Configuration;
+using Ramstack.HtmxToolkit.Internal;
 using Ramstack.HtmxToolkit.Serialization;
 
 namespace Ramstack.HtmxToolkit.TagHelpers;
@@ -81,6 +82,9 @@ public sealed class HtmxHeaderTagHelper(IOptions<HtmxToolkitOptions> options) : 
     /// <inheritdoc />
     public override Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
     {
+        const string SourceAttributes = $"{HeadersPrefix}*, {HeadersDictionaryName}, {InheritedAttributeName}, or {AppendAttributeName}";
+        output.ThrowIfAttributeDeclared("hx-headers", SourceAttributes);
+
         if (Headers is { Count: > 0 })
         {
             var name = options.Value.TargetVersion switch

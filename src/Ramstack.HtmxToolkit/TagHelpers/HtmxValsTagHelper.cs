@@ -6,6 +6,7 @@ using Microsoft.Extensions.Options;
 
 using Ramstack.HtmxToolkit.Collections;
 using Ramstack.HtmxToolkit.Configuration;
+using Ramstack.HtmxToolkit.Internal;
 using Ramstack.HtmxToolkit.Serialization;
 
 namespace Ramstack.HtmxToolkit.TagHelpers;
@@ -81,6 +82,9 @@ public sealed class HtmxValsTagHelper(IOptions<HtmxToolkitOptions> options) : Ta
     /// <inheritdoc />
     public override Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
     {
+        const string SourceAttributes = $"{ValuesPrefix}*, {ValuesDictionaryName}, {InheritedAttributeName}, or {AppendAttributeName}";
+        output.ThrowIfAttributeDeclared("hx-vals", SourceAttributes);
+
         if (Values is { Count: > 0 } values)
         {
             var name = options.Value.TargetVersion switch

@@ -157,6 +157,53 @@ public class HtmxValsTagHelperTests
         Assert.That(output.Attributes["hx-inherit"], Is.Null);
     }
 
+    [TestCase("hx-vals")]
+    [TestCase("HX-VALS")]
+    [TestCase("hx-vals:inherited")]
+    public void ProcessAsync_DeclaredHxVals_Throws(string name)
+    {
+        var output = TestHelper.CreateTagHelperOutput(attributes:
+        [
+            new TagHelperAttribute(name, new HtmlString("{\"a\":\"1\"}"))
+        ]);
+        var helper = CreateHelper(HtmxTargetVersion.V4);
+        helper.Values["b"] = "2";
+
+        var exception = Assert.ThrowsAsync<InvalidOperationException>(
+            async () => await helper.ProcessAsync(TestHelper.CreateTagHelperContext(), output));
+
+        Assert.That(exception!.Message, Does.StartWith($"The {name} attribute"));
+    }
+
+    [Test]
+    public void ProcessAsync_DeclaredHxVals_WithEmptyDictionary_Throws()
+    {
+        var output = TestHelper.CreateTagHelperOutput(attributes:
+        [
+            new TagHelperAttribute("hx-vals", new HtmlString("js:{time: Date.now()}"))
+        ]);
+        var helper = CreateHelper();
+
+        Assert.ThrowsAsync<InvalidOperationException>(
+            async () => await helper.ProcessAsync(TestHelper.CreateTagHelperContext(), output));
+    }
+
+    [Test]
+    public async Task ProcessAsync_AttributeStartingWithHxVals_IsKept()
+    {
+        var output = TestHelper.CreateTagHelperOutput(attributes:
+        [
+            new TagHelperAttribute("hx-vals-extra", "x")
+        ]);
+        var helper = CreateHelper();
+        helper.Values["b"] = "2";
+
+        await helper.ProcessAsync(TestHelper.CreateTagHelperContext(), output);
+
+        Assert.That(output.Attributes["hx-vals-extra"]!.Value, Is.EqualTo("x"));
+        Assert.That(output.Attributes["hx-vals"]!.Value.ToString(), Is.EqualTo("{\"b\":\"2\"}"));
+    }
+
     private static HtmxValsTagHelper CreateHelper(HtmxTargetVersion version = HtmxTargetVersion.V2)
     {
         var options = new HtmxToolkitOptions();

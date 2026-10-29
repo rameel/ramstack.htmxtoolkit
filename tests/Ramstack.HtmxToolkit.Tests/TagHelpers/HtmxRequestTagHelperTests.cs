@@ -379,6 +379,42 @@ public class HtmxRequestTagHelperTests
         Assert.That(output.Attributes["hx-inherit"], Is.Null);
     }
 
+    [TestCase(HtmxTargetVersion.V1, "hx-request")]
+    [TestCase(HtmxTargetVersion.V2, "hx-request")]
+    [TestCase(HtmxTargetVersion.V4, "hx-config")]
+    [TestCase(HtmxTargetVersion.V4, "hx-config:inherited")]
+    public void ProcessAsync_DeclaredRenderedAttribute_Throws(HtmxTargetVersion version, string name)
+    {
+        var output = TestHelper.CreateTagHelperOutput(attributes:
+        [
+            new TagHelperAttribute(name, new HtmlString("{\"timeout\":100}"))
+        ]);
+        var helper = CreateHelper(version);
+        helper.Timeout = 200;
+
+        var exception = Assert.ThrowsAsync<InvalidOperationException>(
+            async () => await helper.ProcessAsync(TestHelper.CreateTagHelperContext(), output));
+
+        Assert.That(exception!.Message, Does.StartWith($"The {name} attribute"));
+    }
+
+    [TestCase(HtmxTargetVersion.V2, "hx-config", "hx-request")]
+    [TestCase(HtmxTargetVersion.V4, "hx-request", "hx-config")]
+    public async Task ProcessAsync_AttributeOfOtherVersion_IsKept(HtmxTargetVersion version, string name, string rendered)
+    {
+        var output = TestHelper.CreateTagHelperOutput(attributes:
+        [
+            new TagHelperAttribute(name, new HtmlString("{\"timeout\":100}"))
+        ]);
+        var helper = CreateHelper(version);
+        helper.Timeout = 200;
+
+        await helper.ProcessAsync(TestHelper.CreateTagHelperContext(), output);
+
+        Assert.That(output.Attributes[name]!.Value.ToString(), Is.EqualTo("{\"timeout\":100}"));
+        Assert.That(output.Attributes[rendered]!.Value.ToString(), Is.EqualTo("{\"timeout\":200}"));
+    }
+
     private static HtmxRequestTagHelper CreateHelper(HtmxTargetVersion version, bool? implicitInheritance = null)
     {
         var options = new HtmxToolkitOptions();

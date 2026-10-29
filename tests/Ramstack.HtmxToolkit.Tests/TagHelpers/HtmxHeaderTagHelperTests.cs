@@ -162,6 +162,23 @@ public class HtmxHeaderTagHelperTests
         Assert.That(output.Attributes["hx-inherit"], Is.Null);
     }
 
+    [TestCase("hx-headers")]
+    [TestCase("hx-headers:inherited:append")]
+    public void ProcessAsync_DeclaredHxHeaders_Throws(string name)
+    {
+        var output = TestHelper.CreateTagHelperOutput(attributes:
+        [
+            new TagHelperAttribute(name, new HtmlString("{\"X-A\":\"1\"}"))
+        ]);
+        var helper = CreateHelper(HtmxTargetVersion.V4);
+        helper.Headers["X-B"] = "2";
+
+        var exception = Assert.ThrowsAsync<InvalidOperationException>(
+            async () => await helper.ProcessAsync(TestHelper.CreateTagHelperContext(), output));
+
+        Assert.That(exception!.Message, Does.StartWith($"The {name} attribute"));
+    }
+
     private static HtmxHeaderTagHelper CreateHelper(HtmxTargetVersion version = HtmxTargetVersion.V2)
     {
         var options = new HtmxToolkitOptions();

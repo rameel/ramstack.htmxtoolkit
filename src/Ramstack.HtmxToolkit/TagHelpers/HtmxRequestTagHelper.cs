@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Razor.TagHelpers;
 using Microsoft.Extensions.Options;
 
 using Ramstack.HtmxToolkit.Configuration;
+using Ramstack.HtmxToolkit.Internal;
 using Ramstack.HtmxToolkit.Serialization;
 
 namespace Ramstack.HtmxToolkit.TagHelpers;
@@ -198,6 +199,9 @@ public sealed class HtmxRequestTagHelper(IOptions<HtmxToolkitOptions> options) :
     /// <inheritdoc />
     public override Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
     {
+        var attributeName = options.Value.TargetVersion == HtmxTargetVersion.V4 ? "hx-config" : "hx-request";
+        output.ThrowIfAttributeDeclared(attributeName, "hx-request-* attributes");
+
         var json = options.Value.TargetVersion == HtmxTargetVersion.V4
             ? JsonSerializer.Serialize(new HtmxRequestDataV4(_request), HtmxRequestJsonSerializerContext.Default.HtmxRequestDataV4)
             : JsonSerializer.Serialize(new HtmxRequestDataPrior(_request), HtmxRequestJsonSerializerContext.Default.HtmxRequestDataPrior);
