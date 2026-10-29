@@ -24,6 +24,10 @@ namespace Ramstack.HtmxToolkit.TagHelpers;
 ///   </item>
 ///   <item>In HTMX 4.x, the <c>append</c> modifier merges a child declaration into inherited headers.</item>
 /// </list>
+/// <para>
+///   An <see cref="InvalidOperationException" /> is thrown when the element also has an <c>hx-headers</c>
+///   attribute, with or without HTMX 4.x modifiers, rather than replacing it.
+/// </para>
 /// </remarks>
 [HtmlTargetElement(Attributes = InheritedAttributeName)]
 [HtmlTargetElement(Attributes = AppendAttributeName)]

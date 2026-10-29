@@ -23,6 +23,11 @@ namespace Ramstack.HtmxToolkit.TagHelpers;
 ///   Options that the selected HTMX version does not support are not rendered.
 ///   If no supported option is set, the tag helper renders no attribute.
 /// </para>
+/// <para>
+///   An <see cref="InvalidOperationException" /> is thrown when the element also has the attribute
+///   that the tag helper renders for the selected version, with or without HTMX 4.x modifiers,
+///   rather than replacing it.
+/// </para>
 /// </remarks>
 [HtmlTargetElement(Attributes = RequestInheritedAttributeName)]
 [HtmlTargetElement(Attributes = RequestAppendAttributeName)]
