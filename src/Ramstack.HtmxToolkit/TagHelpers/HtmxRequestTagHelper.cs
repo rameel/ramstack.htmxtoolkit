@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Razor.TagHelpers;
 using Microsoft.Extensions.Options;
 
 using Ramstack.HtmxToolkit.Configuration;
+using Ramstack.HtmxToolkit.Internal;
 using Ramstack.HtmxToolkit.Serialization;
 
 namespace Ramstack.HtmxToolkit.TagHelpers;
@@ -21,6 +22,11 @@ namespace Ramstack.HtmxToolkit.TagHelpers;
 /// <para>
 ///   Options that the selected HTMX version does not support are not rendered.
 ///   If no supported option is set, the tag helper renders no attribute.
+/// </para>
+/// <para>
+///   An <see cref="InvalidOperationException" /> is thrown when the element also has the attribute
+///   that the tag helper renders for the selected version, with or without HTMX 4.x modifiers,
+///   rather than replacing it.
 /// </para>
 /// </remarks>
 [HtmlTargetElement(Attributes = RequestInheritedAttributeName)]
@@ -198,6 +204,9 @@ public sealed class HtmxRequestTagHelper(IOptions<HtmxToolkitOptions> options) :
     /// <inheritdoc />
     public override Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
     {
+        var attributeName = options.Value.TargetVersion == HtmxTargetVersion.V4 ? "hx-config" : "hx-request";
+        output.ThrowIfAttributeDeclared(attributeName, "hx-request-* attributes");
+
         var json = options.Value.TargetVersion == HtmxTargetVersion.V4
             ? JsonSerializer.Serialize(new HtmxRequestDataV4(_request), HtmxRequestJsonSerializerContext.Default.HtmxRequestDataV4)
             : JsonSerializer.Serialize(new HtmxRequestDataPrior(_request), HtmxRequestJsonSerializerContext.Default.HtmxRequestDataPrior);

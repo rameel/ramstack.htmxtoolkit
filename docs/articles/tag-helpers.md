@@ -202,6 +202,11 @@ object entirely. Add `hx-vals-append="true"` to merge the child object instead:
 
 The button emits `hx-vals:append='{"format":"summary"}'`.
 
+An element with `hx-val-*`, `hx-all-vals`, `hx-vals-inherited`, or `hx-vals-append` cannot also have
+a hand-written `hx-vals`, with or without modifiers. The Tag Helper throws `InvalidOperationException`
+rather than replace it. To combine `hx-val-*` with values computed in JavaScript, put the hand-written
+`hx-vals` on a parent element and rely on the inheritance rules above.
+
 ## Send custom headers
 
 ```razor
@@ -223,6 +228,9 @@ For HTMX 4.x, use the Toolkit input `hx-headers-inherited="true"` on a parent el
 
 This generates `hx-headers:inherited`.
 Use `hx-headers-append="true"` on a child declaration to merge its headers into the inherited object.
+
+As with `hx-vals`, an element with these inputs cannot also have a hand-written `hx-headers`,
+with or without modifiers; the Tag Helper throws `InvalidOperationException`.
 
 Do not use custom client headers as proof of identity or authorization; clients can modify them.
 Authenticate and authorize on the server.
@@ -265,6 +273,10 @@ The output depends on the configured HTMX target:
 
 Unsupported properties are omitted from the generated JSON. In particular, `HtmxRequestCredentials.Omit`
 cannot be represented by HTMX 1.9.x or 2.x and is omitted for those targets.
+
+An element with `hx-request-*` attributes cannot also have a hand-written `hx-request` for HTMX 1.9.x and 2.x
+or `hx-config` for HTMX 4.x, with or without modifiers. The Tag Helper throws `InvalidOperationException`
+rather than replace it.
 
 Use `HtmxRequestCache` and `HtmxRequestRedirect` for the HTMX 4.x Fetch options:
 

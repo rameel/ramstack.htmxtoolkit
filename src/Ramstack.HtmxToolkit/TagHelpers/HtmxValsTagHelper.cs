@@ -6,6 +6,7 @@ using Microsoft.Extensions.Options;
 
 using Ramstack.HtmxToolkit.Collections;
 using Ramstack.HtmxToolkit.Configuration;
+using Ramstack.HtmxToolkit.Internal;
 using Ramstack.HtmxToolkit.Serialization;
 
 namespace Ramstack.HtmxToolkit.TagHelpers;
@@ -23,6 +24,10 @@ namespace Ramstack.HtmxToolkit.TagHelpers;
 ///   </item>
 ///   <item>In HTMX 4.x, the <c>append</c> modifier merges a child declaration into inherited values.</item>
 /// </list>
+/// <para>
+///   An <see cref="InvalidOperationException" /> is thrown when the element also has an <c>hx-vals</c>
+///   attribute, with or without HTMX 4.x modifiers, rather than replacing it.
+/// </para>
 /// </remarks>
 [HtmlTargetElement(Attributes = InheritedAttributeName)]
 [HtmlTargetElement(Attributes = AppendAttributeName)]
@@ -81,6 +86,9 @@ public sealed class HtmxValsTagHelper(IOptions<HtmxToolkitOptions> options) : Ta
     /// <inheritdoc />
     public override Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
     {
+        const string SourceAttributes = $"{ValuesPrefix}*, {ValuesDictionaryName}, {InheritedAttributeName}, or {AppendAttributeName}";
+        output.ThrowIfAttributeDeclared("hx-vals", SourceAttributes);
+
         if (Values is { Count: > 0 } values)
         {
             var name = options.Value.TargetVersion switch

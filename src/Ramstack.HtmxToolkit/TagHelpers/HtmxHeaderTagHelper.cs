@@ -6,6 +6,7 @@ using Microsoft.Extensions.Options;
 
 using Ramstack.HtmxToolkit.Collections;
 using Ramstack.HtmxToolkit.Configuration;
+using Ramstack.HtmxToolkit.Internal;
 using Ramstack.HtmxToolkit.Serialization;
 
 namespace Ramstack.HtmxToolkit.TagHelpers;
@@ -23,6 +24,10 @@ namespace Ramstack.HtmxToolkit.TagHelpers;
 ///   </item>
 ///   <item>In HTMX 4.x, the <c>append</c> modifier merges a child declaration into inherited headers.</item>
 /// </list>
+/// <para>
+///   An <see cref="InvalidOperationException" /> is thrown when the element also has an <c>hx-headers</c>
+///   attribute, with or without HTMX 4.x modifiers, rather than replacing it.
+/// </para>
 /// </remarks>
 [HtmlTargetElement(Attributes = InheritedAttributeName)]
 [HtmlTargetElement(Attributes = AppendAttributeName)]
@@ -81,6 +86,9 @@ public sealed class HtmxHeaderTagHelper(IOptions<HtmxToolkitOptions> options) : 
     /// <inheritdoc />
     public override Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
     {
+        const string SourceAttributes = $"{HeadersPrefix}*, {HeadersDictionaryName}, {InheritedAttributeName}, or {AppendAttributeName}";
+        output.ThrowIfAttributeDeclared("hx-headers", SourceAttributes);
+
         if (Headers is { Count: > 0 })
         {
             var name = options.Value.TargetVersion switch
