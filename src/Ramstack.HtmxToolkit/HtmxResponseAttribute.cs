@@ -1,6 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Filters;
 
 using Ramstack.HtmxToolkit.Internal;
@@ -8,13 +9,16 @@ using Ramstack.HtmxToolkit.Internal;
 namespace Ramstack.HtmxToolkit;
 
 /// <summary>
-/// Specifies HTMX response headers to apply when an action result is executed for an HTMX request.
+/// Specifies HTMX response headers to apply to the response to an HTMX request
+/// before the action or page handler runs.
 /// </summary>
 /// <remarks>
 /// <para>
 ///   A property that is not set, or is set to <see langword="false" />, <see langword="null" />,
-///   or an empty string, adds no header. The specified headers replace any values that the action
-///   has already set for them.
+///   or an empty string, adds no header. Because the headers are set before the action or page handler runs,
+///   the code can replace or remove them, for example with
+///   <see cref="HttpResponseExtensions.Htmx(HttpResponse, Action{HtmxResponse})" />.
+///   If another filter short-circuits the action or page handler, the headers are not set.
 /// </para>
 /// <para>
 ///   The attribute can be applied to an action, a controller, or a Razor Pages page model.
@@ -28,7 +32,7 @@ namespace Ramstack.HtmxToolkit;
 /// </para>
 /// </remarks>
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, Inherited = true, AllowMultiple = false)]
-public sealed class HtmxResponseAttribute : Attribute, IResultFilter
+public sealed class HtmxResponseAttribute : Attribute, IActionFilter, IPageFilter
 {
     private readonly List<(string Key, string Value)> _headers = [];
 
@@ -94,20 +98,40 @@ public sealed class HtmxResponseAttribute : Attribute, IResultFilter
     }
 
     /// <inheritdoc />
-    public void OnResultExecuting(ResultExecutingContext context)
+    public void OnActionExecuting(ActionExecutingContext context) =>
+        ApplyHeaders(context.HttpContext);
+
+    /// <inheritdoc />
+    public void OnActionExecuted(ActionExecutedContext context)
     {
-        if (context.HttpContext.Request.IsHtmxRequest())
-        {
-            var response = context.HttpContext.Response;
-            var headers = response.Headers;
-            foreach (ref var kvp in CollectionsMarshal.AsSpan(_headers))
-                headers[kvp.Key] = kvp.Value;
-        }
     }
 
     /// <inheritdoc />
-    public void OnResultExecuted(ResultExecutedContext context)
+    public void OnPageHandlerSelected(PageHandlerSelectedContext context)
     {
+    }
+
+    /// <inheritdoc />
+    public void OnPageHandlerExecuting(PageHandlerExecutingContext context) =>
+        ApplyHeaders(context.HttpContext);
+
+    /// <inheritdoc />
+    public void OnPageHandlerExecuted(PageHandlerExecutedContext context)
+    {
+    }
+
+    /// <summary>
+    /// Sets the specified headers if the request is an HTMX request.
+    /// </summary>
+    /// <param name="context">The HTTP context of the request.</param>
+    private void ApplyHeaders(HttpContext context)
+    {
+        if (context.Request.IsHtmxRequest())
+        {
+            var headers = context.Response.Headers;
+            foreach (ref var kvp in CollectionsMarshal.AsSpan(_headers))
+                headers[kvp.Key] = kvp.Value;
+        }
     }
 
     /// <summary>
