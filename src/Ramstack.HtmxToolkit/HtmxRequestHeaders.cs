@@ -9,6 +9,12 @@ namespace Ramstack.HtmxToolkit;
 /// <summary>
 /// Represents strongly typed HTMX request headers.
 /// </summary>
+/// <remarks>
+/// HTMX 1.9.x and 2.x URI-encode a header value that the browser cannot send as is, such as Cyrillic text,
+/// and mark it with an additional <c>*-URI-AutoEncoded</c> header. <see cref="Prompt" />, <see cref="Target" />,
+/// <see cref="Trigger" />, and <see cref="TriggerName" /> return such a value decoded.
+/// HTMX 4.x URI-encodes some values without marking them, so the properties return those values as sent.
+/// </remarks>
 [DebuggerTypeProxy(typeof(HtmxRequestHeadersDebugView))]
 public readonly struct HtmxRequestHeaders
 {
@@ -213,7 +219,7 @@ public readonly struct HtmxRequestHeaders
         dictionary.TryGetValue(key, out var value) && value is ["true"];
 
     /// <summary>
-    /// Gets the value of the specified header.
+    /// Returns the value of the specified header.
     /// </summary>
     /// <param name="dictionary">The header collection to inspect.</param>
     /// <param name="key">The name of the header.</param>
@@ -226,6 +232,15 @@ public readonly struct HtmxRequestHeaders
         return value;
     }
 
+    /// <summary>
+    /// Returns the value of the specified header, decoded if HTMX marked it as URI-encoded.
+    /// </summary>
+    /// <param name="dictionary">The header collection to inspect.</param>
+    /// <param name="key">The name of the header.</param>
+    /// <param name="autoEncodedKey">The name of the header that marks the value as URI-encoded.</param>
+    /// <returns>
+    /// The header value, or <see langword="null" /> if the header is not present.
+    /// </returns>
     private static string? GetString(IHeaderDictionary dictionary, string key, string autoEncodedKey)
     {
         var value = GetString(dictionary, key);

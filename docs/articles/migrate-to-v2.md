@@ -310,6 +310,17 @@ instead of the page after Back or Forward. In 2.0, the same code returns the ful
 HTMX 1.9.x and 2.x ignore response headers when restoring history, so skipping them loses nothing.
 To read the raw header, use `Request.GetHtmxHeaders().Request`. See [Handle history restoration](requests.md#handle-history-restoration).
 
+### Encoded header values are decoded
+
+> [!WARNING]
+> `Prompt`, `Target`, `Trigger`, and `TriggerName` now return the decoded value when HTMX URI-encoded it.
+> This is a silent behavior change.
+
+HTMX 1.9.x and 2.x URI-encode a header value that the browser cannot send as is, such as a Cyrillic `hx-prompt` answer
+or element ID, and mark it with an additional `*-URI-AutoEncoded` header. In 1.x, these properties returned the encoded value.
+Remove any manual `Uri.UnescapeDataString` call for them: decoding twice corrupts a value that contains `%`.
+HTMX 4.x does not mark encoded values, so they are still returned as sent; see [Request header properties](requests.md#request-header-properties).
+
 ### Boosted requests
 
 | 1.x                                      | 2.0                                                           |
