@@ -597,6 +597,47 @@ public class HtmxResponseTests
     }
 
     [Test]
+    public void TriggerEvent_ConstantZeroDetail_IsNotTreatedAsTiming()
+    {
+        var context = TestHelper.CreateHtmxRequestContext();
+        context.Response.Htmx(r => r
+            .TriggerEvent("int", 0)
+            .TriggerEvent("long", 0L)
+            .TriggerEvent("double", 0.0)
+            .TriggerEvent("decimal", 0m));
+
+        Assert.That(
+            context.Response.Headers[HtmxResponseHeaderNames.Trigger].ToString(),
+            Is.EqualTo("{\"int\":0,\"long\":0,\"double\":0,\"decimal\":0}"));
+    }
+
+    [Test]
+    public void TriggerEvent_DetailWithTiming_SetsSelectedTrigger()
+    {
+        var context = TestHelper.CreateHtmxRequestContext();
+        context.Response.Htmx(r => r.TriggerEvent("e", 0, HtmxTriggerTiming.AfterSwap));
+
+        Assert.That(
+            context.Response.Headers[HtmxResponseHeaderNames.TriggerAfterSwap].ToString(),
+            Is.EqualTo("{\"e\":0}"));
+    }
+
+    [Test]
+    public void TriggerEvent_DetailOfBaseType_SerializesRuntimeType()
+    {
+        TriggerEventBaseDetail detail = new TriggerEventDerivedDetail { Id = 1, Text = "a" };
+
+        var context = TestHelper.CreateHtmxRequestContext();
+        context.Response.Htmx(r => r.TriggerEvent("e", detail));
+
+        var header = context.Response.Headers[HtmxResponseHeaderNames.Trigger].ToString();
+        var json = JsonHelper.ParseJson(header);
+
+        Assert.That(json["e"].GetProperty("id").GetInt32(), Is.EqualTo(1));
+        Assert.That(json["e"].GetProperty("text").GetString(), Is.EqualTo("a"));
+    }
+
+    [Test]
     public void TriggerEvent_AfterResponseStarted_ThrowsInvalidOperationException()
     {
         var context = TestHelper.CreateHtmxRequestContext();
@@ -693,4 +734,14 @@ internal sealed partial class TriggerEventJsonSerializerContext : JsonSerializer
 internal sealed class TriggerEventDetail
 {
     public string Text { get; set; } = "";
+}
+
+internal class TriggerEventBaseDetail
+{
+    public string Text { get; set; } = "";
+}
+
+internal sealed class TriggerEventDerivedDetail : TriggerEventBaseDetail
+{
+    public int Id { get; set; }
 }
