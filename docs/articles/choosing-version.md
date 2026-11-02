@@ -3,7 +3,9 @@
 HtmxToolkit adapts configuration, request options, and response event headers to the selected HTMX version.
 Select the same major version that the browser loads.
 
-HTMX 2.x is selected when no version is specified.
+The selection is required. If `AddHtmxToolkit` selects no version, the application fails to start.
+If `AddHtmxToolkit` is not called, the Tag Helpers that depend on the version and `TriggerEvent`
+throw `InvalidOperationException` when they run.
 
 ## Select a version
 
@@ -38,7 +40,6 @@ trying to select a different version causes startup validation to fail.
 
 | Behavior                  | HTMX 1.9.x                                | HTMX 2.x                                  | HTMX 4.x          |
 |---------------------------|-------------------------------------------|-------------------------------------------|-------------------|
-| Default when omitted      | No                                        | Yes                                       | No                |
 | Global config type        | `HtmxV1Config`                            | `HtmxV2Config`                            | `HtmxV4Config`    |
 | Per-request attribute     | `hx-request`                              | `hx-request`                              | `hx-config`       |
 | Triggering element header | `HX-Trigger`                              | `HX-Trigger`                              | `HX-Source`       |
@@ -70,8 +71,8 @@ Only settings you assign a value are included in the generated configuration. A 
 For an existing application, select the version it already loads and review [Version compatibility](version-compatibility.md) before upgrading.
 
 For a new application with no version-specific requirements, start with HTMX 2.x to follow the introductory
-tutorials without changes. It is HtmxToolkit's default target. Choose V4 when you want its native morphing
-or Fetch API options, and check that the extensions you plan to use support it.
+tutorials without changes. Choose V4 when you want its native morphing or Fetch API options,
+and check that the extensions you plan to use support it.
 
 Continue with [Application configuration](configuration.md), then use the dedicated [HTMX 1.9.x](configuration-v1.md),
 [HTMX 2.x](configuration-v2.md), or [HTMX 4.x](configuration-v4.md) reference guide.

@@ -31,7 +31,7 @@ using Ramstack.HtmxToolkit.Hosting;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddRazorPages();
-builder.Services.AddHtmxToolkit();
+builder.Services.AddHtmxToolkit(options => options.UseHtmxV2());
 
 var app = builder.Build();
 
@@ -41,7 +41,8 @@ app.MapRazorPages();
 app.Run();
 ```
 
-`AddHtmxToolkit()` selects HTMX 2.x by default. It registers toolkit options; it does not download HTMX.
+`UseHtmxV2()` selects the HTMX major version that this tutorial loads. The selection is required: the application
+does not start without it. `AddHtmxToolkit` registers toolkit options; it does not download HTMX.
 `UseStaticFiles()` serves the Toolkit script included in the package.
 See [Static assets and deployment](static-assets.md) for `MapStaticAssets()` and production caching.
 

@@ -200,12 +200,21 @@ Check the response status. HTMX cannot process `HX-Redirect` or other `HX-*` hea
 because the browser follows that redirect internally. Return status 200 with `HX-Redirect` for the HTMX request,
 and use an ordinary ASP.NET Core redirect only for the non-HTMX path.
 
+## The HTMX version is not selected
+
+**Symptom:** The application fails to start with `OptionsValidationException`, or a page or a `TriggerEvent` call
+throws `InvalidOperationException`, with the message `The HTMX version is not selected`.
+
+**Check:** Call `AddHtmxToolkit` in `Program.cs` and select the major version that the browser loads:
+
+```csharp
+builder.Services.AddHtmxToolkit(options => options.UseHtmxV2());
+```
+
 ## The wrong per-request attribute is generated
 
 HTMX 1.9.x and 2.x receive `hx-request`; HTMX 4.x receives `hx-config`. Check `UseHtmxV1`, `UseHtmxV2`,
 or `UseHtmxV4` in service registration and verify that the browser loads the same major version.
-
-If no version is selected, HtmxToolkit uses V2.
 
 ## Request metadata is null
 

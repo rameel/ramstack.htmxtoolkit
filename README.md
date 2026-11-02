@@ -18,7 +18,7 @@ HtmxToolkit lets you do all of this from C# and Razor, without header strings or
 - Build `hx-get` and `hx-post` URLs from controllers, actions, and Razor Pages, just like the `asp-*` Tag Helpers do.
 - Configure HTMX once in `Program.cs` and send antiforgery tokens with HTMX requests automatically.
 
-HtmxToolkit runs on .NET 6 or later and supports HTMX 1.9.x, 2.x, and 4.x. HTMX 2.x is the default.
+HtmxToolkit runs on .NET 6 or later and supports HTMX 1.9.x, 2.x, and 4.x.
 
 ## Getting started
 
@@ -36,10 +36,11 @@ from a CDN or as a local file.
 ```csharp
 using Ramstack.HtmxToolkit.Hosting;
 
-builder.Services.AddHtmxToolkit();
+builder.Services.AddHtmxToolkit(options => options.UseHtmxV2());
 ```
 
-By default, the toolkit targets HTMX 2.x. If you use HTMX 1.9.x or 4.x, select it as shown in [Configuration](#configuration).
+Select the HTMX version your application loads: `UseHtmxV1`, `UseHtmxV2`, or `UseHtmxV4`.
+The application does not start without it. See [Configuration](#configuration) for details.
 
 **3. Enable the Tag Helpers in `_ViewImports.cshtml`:**
 

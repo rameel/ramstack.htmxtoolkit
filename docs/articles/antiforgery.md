@@ -35,7 +35,7 @@ See [Static assets and deployment](static-assets.md) for script URLs, caching, a
 
 ## Enable server-side validation
 
-Sending a token and validating it are separate steps. `AddHtmxToolkit()` configures toolkit services;
+Sending a token and validating it are separate steps. `AddHtmxToolkit` configures toolkit services;
 it does not add an antiforgery validation filter or middleware to your application.
 
 ### Razor Pages

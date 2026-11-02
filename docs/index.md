@@ -32,7 +32,7 @@ Choose your starting point:
 ## Supported environments
 
 The package targets .NET 6 and runs on .NET 6 or later.
-It supports HTMX 1.9.x, HTMX 2.x, and HTMX 4.x; HTMX 2.x is the default target.
+It supports HTMX 1.9.x, HTMX 2.x, and HTMX 4.x; the application selects the version it loads.
 
 > [!IMPORTANT]
 > HtmxToolkit does not bundle HTMX. Add the matching HTMX client release to the application separately.

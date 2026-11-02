@@ -1,6 +1,6 @@
 # Use HtmxToolkit with MVC
 
-This example uses ASP.NET Core MVC on .NET 10 and the default HTMX 2.x target.
+This example uses ASP.NET Core MVC on .NET 10 and HTMX 2.x.
 It loads product details into a partial view, then edits the product name with server validation.
 The request and response APIs are the same as in Razor Pages;
 MVC uses controller actions and `PartialView()` instead of page handlers and `Partial()`.
@@ -26,7 +26,7 @@ builder.Services.AddControllersWithViews(options =>
 {
     options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
 });
-builder.Services.AddHtmxToolkit();
+builder.Services.AddHtmxToolkit(options => options.UseHtmxV2());
 builder.Services.AddSingleton<ProductStore>();
 
 var app = builder.Build();
@@ -38,7 +38,7 @@ app.Run();
 ```
 
 The antiforgery filter validates the POST action used below.
-`AddHtmxToolkit()` does not install that filter for you.
+`AddHtmxToolkit` does not install that filter for you.
 
 Add these lines to the existing `Views/_ViewImports.cshtml`:
 
