@@ -307,6 +307,15 @@ public readonly struct HtmxResponse
     public HtmxResponse TriggerEvent(string eventName, object detail, HtmxTriggerTiming timing = HtmxTriggerTiming.Receive) =>
         TriggerEvent(eventName, detail, JsonOptions.Web, timing);
 
+    /// <inheritdoc cref="TriggerEvent(string, object, HtmxTriggerTiming)" />
+    /// <typeparam name="T">The event detail type.</typeparam>
+    [RequiresDynamicCode("Event details are serialized using reflection. Use the TriggerEvent overload that accepts JsonTypeInfo<T> for Native AOT applications.")]
+    [RequiresUnreferencedCode("Event details are serialized using reflection. Use the TriggerEvent overload that accepts JsonTypeInfo<T> for trimmed applications.")]
+    public HtmxResponse TriggerEvent<T>(string eventName, T detail, HtmxTriggerTiming timing = HtmxTriggerTiming.Receive) =>
+        // This overload keeps a constant zero from binding to the overload without a detail, because zero converts to any enum.
+        // The detail is passed as object so that it is serialized by its runtime type rather than by T.
+        TriggerEvent(eventName, (object)detail!, timing);
+
     /// <summary>
     /// Adds a client-side event and its detail, serialized with the specified JSON options,
     /// to the response header selected by <paramref name="timing" />.
