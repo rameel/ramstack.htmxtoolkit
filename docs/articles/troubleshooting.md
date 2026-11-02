@@ -294,3 +294,7 @@ Configure application options at startup. Do not change these options while hand
 Client settings such as `SelfRequestsOnly`, `Mode`, `WithCredentials`, and per-request credentials
 do not configure server CORS. Check the browser CORS error, ASP.NET Core CORS policy,
 allowed origins, cookies, and credential rules together.
+
+The policy must allow every header that the request sends. With HTMX 1.9.x and 2.x, the Toolkit script adds
+`HX-Request-Type` to the headers that HTMX sends, so include it in an explicit list of allowed headers.
+Otherwise, the browser blocks the request at the preflight and HTMX raises `htmx:sendError`.

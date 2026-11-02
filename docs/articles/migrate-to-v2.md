@@ -19,7 +19,7 @@ step; see [Version compatibility](version-compatibility.md) for that.
 | [Registration](#register-the-toolkit-and-select-the-htmx-version)   | Call `AddHtmxToolkit()` and select the HTMX version; HTMX 2.x is the default        | **Silent**        |
 | [Global configuration](#move-global-configuration-to-code)          | `<htmx-config>` attributes move to `AddHtmxToolkit()`                               | **Silent**        |
 | [Antiforgery](#antiforgery-metadata-is-on-by-default)               | Metadata on by default, moved out of `htmx.config`; token sent to own origin only   | **Silent**        |
-| [Toolkit script](#load-the-toolkit-script-as-a-static-asset)        | Inline script helpers and `MapHtmxAntiforgeryScript` replaced by a static web asset | Build             |
+| [Toolkit script](#load-the-toolkit-script-as-a-static-asset)        | Inline script helpers and `MapHtmxAntiforgeryScript` replaced by a static web asset | Build, **silent** |
 | [URL Tag Helper](#rename-the-url-tag-helper-attributes)             | `hx-*` URL attributes become `asp-*`; `hx-host` and `hx-protocol` are removed       | **Silent**        |
 | [Requests](#update-request-handling)                                | `IsHtmxRequest()` is `false` for history restoration; `Boosted` filter renamed      | Build, **silent** |
 | [Action result wrappers](#configure-responses-through-responsehtmx) | `IActionResult.Htmx(...)` removed                                                   | Build             |
@@ -207,6 +207,11 @@ Load the script on every page that uses HTMX, even when the application does not
 In 2.0 it also sends `HX-Request-Type` for HTMX 1.9.x and 2.x, replays events whose name repeats,
 and provides the `ramstack-swap` extension. See [What the Toolkit script does](antiforgery.md#what-the-toolkit-script-does)
 and [Static assets and deployment](static-assets.md).
+
+> [!WARNING]
+> The script also sends `HX-Request-Type` to other origins. If such an origin lists its allowed request headers explicitly,
+> add `HX-Request-Type` to its `Access-Control-Allow-Headers`. Otherwise, the browser blocks the request at the preflight
+> and HTMX raises `htmx:sendError`.
 
 ## Rename the URL Tag Helper attributes
 
