@@ -153,6 +153,21 @@ Response.Htmx(htmx => htmx.Reswap("innerHTML show:#result:top"));
 
 `Reselect("#result")` selects only the matching part of a larger response before it is swapped.
 
+### Non-ASCII values
+
+Response headers allow only ASCII characters. For any other character, Kestrel throws `InvalidOperationException`
+when the header is set, just as it does for `Results.Redirect("/путь")`. HTMX uses a header value as it is,
+so encode the value for the place where it ends up:
+
+- **URLs:** `Url.Action`, `Url.Page`, and `LinkGenerator` encode route values. In a URL built by hand,
+  percent-encode each path segment and query value, for example with `Uri.EscapeDataString`.
+- **Selectors:** prefer an ASCII ID or class, or use CSS escapes: `#\444 \43E \440 \43C \430` selects `#форма`.
+
+`Location(string, HtmxLocationOptions)` and `TriggerEvent` write JSON and escape non-ASCII characters automatically.
+
+Setting `KestrelServerOptions.ResponseHeaderEncodingSelector` to UTF-8 does not help:
+browsers do not read header values as UTF-8, so HTMX receives garbled text.
+
 ## Trigger client events
 
 ### Refresh another component
