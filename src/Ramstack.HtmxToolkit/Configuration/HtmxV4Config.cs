@@ -8,7 +8,7 @@ namespace Ramstack.HtmxToolkit.Configuration;
 /// <summary>
 /// Represents the configuration for HTMX 4.x.
 /// </summary>
-public sealed class HtmxV4Config() : HtmxConfig(HtmxTargetVersion.V4)
+public sealed class HtmxV4Config : HtmxConfig
 {
     /// <summary>
     /// Gets or sets a value indicating whether all HTMX events are logged to the console.
@@ -250,6 +250,13 @@ public sealed class HtmxV4Config() : HtmxConfig(HtmxTargetVersion.V4)
     {
         get;
         set => SetField(ref field, value);
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="HtmxV4Config" /> class.
+    /// </summary>
+    internal HtmxV4Config() : base(HtmxTargetVersion.V4)
+    {
     }
 
     /// <inheritdoc />
