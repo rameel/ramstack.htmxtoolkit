@@ -52,7 +52,7 @@ public sealed class HtmxLocationOptions
     ///   HTMX 4.0.0 converts an array to a single comma-separated field value.
     /// </para>
     /// </remarks>
-    public IDictionary<string, HtmxFieldValues>? Values { get; set; }
+    public IReadOnlyDictionary<string, HtmxFieldValues>? Values { get; set; }
 
     /// <summary>
     /// Gets or sets the headers to include with the request.
@@ -66,7 +66,7 @@ public sealed class HtmxLocationOptions
     ///   Pass complex data as a pre-serialized JSON string.
     /// </para>
     /// </remarks>
-    public IDictionary<string, string>? Headers { get; set; }
+    public IReadOnlyDictionary<string, string>? Headers { get; set; }
 
     /// <summary>
     /// Gets or sets a CSS selector used to filter the content to swap from the response.
