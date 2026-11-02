@@ -159,15 +159,15 @@ document._r_htmx ||= ((document, htmx) => {
 
     // HTMX reads hx-request from the element and its ancestors; the nearest value wins.
     // Values computed with "js:" cannot be read without evaluating them, so they are skipped.
-    const no_headers = elt => {
+    const has_no_headers = elt => {
         let result = false;
         api.getClosestMatch(elt, e => {
             let value = api.getAttributeValue(e, "hx-request")?.trim();
             if (value && !/^(js|javascript):/.test(value)) {
                 try {
-                    let { noHeaders } = JSON.parse(value[0] === "{" ? value : `{${value}}`);
-                    if (noHeaders != null) {
-                        result = !!noHeaders;
+                    let no_headers = JSON.parse(value[0] === "{" ? value : `{${value}}`).noHeaders;
+                    if (no_headers != null) {
+                        result = !!no_headers;
                         return true;
                     }
                 }
@@ -189,7 +189,7 @@ document._r_htmx ||= ((document, htmx) => {
             let elt = e.target;
             let { xhr, target, select, requestConfig } = e.detail;
 
-            if (requestConfig.headers["HX-Request-Type"] == null && !no_headers(elt)) {
+            if (requestConfig.headers["HX-Request-Type"] == null && !has_no_headers(elt)) {
                 select ||= api.getClosestAttributeValue(elt, "hx-select");
                 let request_type = target === document.body || select && select !== "unset" ? "full" : "partial";
                 xhr.setRequestHeader("HX-Request-Type", request_type);
