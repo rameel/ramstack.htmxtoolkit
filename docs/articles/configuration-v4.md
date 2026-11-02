@@ -13,7 +13,7 @@ builder.Services.AddHtmxToolkit(options =>
     {
         config.History = HtmxHistoryMode.Enabled;
         config.DefaultTimeout = 10_000;
-        config.Mode = HtmxFetchMode.SameOrigin;
+        config.Mode = HtmxRequestMode.SameOrigin;
         config.Transitions = true;
         config.NoSwap = ["204", "304", "4xx", "5xx"];
     });
@@ -49,6 +49,7 @@ no `HX-*` headers or `hx-headers` values, and no antiforgery token sent in a hea
 and `[HtmxRequest]` does not match. A cross-origin response is opaque, so HTMX cannot read its headers
 and swaps an empty body into the target.
 
+The mode applies to all requests: HTMX ignores a `mode` set on an element with `hx-config`.
 Changing this setting does not configure CORS on the ASP.NET Core server.
 
 ## History behavior

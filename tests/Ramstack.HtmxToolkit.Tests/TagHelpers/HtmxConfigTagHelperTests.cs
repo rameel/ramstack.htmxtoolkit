@@ -334,7 +334,7 @@ public class HtmxConfigTagHelperTests
             htmx.Extensions = "sse, ws";
             htmx.ImplicitInheritance = false;
             htmx.DefaultTimeout = 5000;
-            htmx.Mode = HtmxFetchMode.NoCors;
+            htmx.Mode = HtmxRequestMode.NoCors;
             htmx.DefaultFocusScroll = true;
             htmx.Transitions = true;
             htmx.MorphIgnore = ["data-htmx-powered"];
