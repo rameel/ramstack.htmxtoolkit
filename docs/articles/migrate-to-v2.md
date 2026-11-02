@@ -459,6 +459,9 @@ In 2.0, all events are sent in call order. HTMX cannot deliver a repeated name f
 so the [Toolkit script](antiforgery.md#what-the-toolkit-script-does) delivers such events;
 without the script, none of the events in that header fire.
 
+**A hand-written trigger header is no longer merged.** In 1.x, `TriggerEvent` added events to a JSON value
+already set in `Response.Headers`. In 2.0, set these headers only with `TriggerEvent`; a value set another way is not kept.
+
 Other changes:
 
 - `TriggerEvents(IReadOnlyDictionary<string, object>, HtmxTriggerTiming)` was removed. Call `TriggerEvent` once per event.
