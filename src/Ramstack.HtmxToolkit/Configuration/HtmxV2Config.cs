@@ -8,7 +8,7 @@ namespace Ramstack.HtmxToolkit.Configuration;
 /// <summary>
 /// Represents the configuration for HTMX 2.x.
 /// </summary>
-public sealed class HtmxV2Config() : HtmxConfig(HtmxTargetVersion.V2)
+public sealed class HtmxV2Config : HtmxConfig
 {
     /// <summary>
     /// Gets or sets a value indicating whether HTMX history support is enabled.
@@ -383,6 +383,13 @@ public sealed class HtmxV2Config() : HtmxConfig(HtmxTargetVersion.V2)
     {
         get;
         set => SetField(ref field, value);
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="HtmxV2Config" /> class.
+    /// </summary>
+    internal HtmxV2Config() : base(HtmxTargetVersion.V2)
+    {
     }
 
     /// <inheritdoc />
