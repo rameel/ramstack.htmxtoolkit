@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Text.Json.Serialization;
 
@@ -82,6 +83,7 @@ public readonly struct HtmxFieldValues : IReadOnlyList<string>
     /// <returns>
     /// An <see cref="HtmxFieldValues" /> containing the specified values.
     /// </returns>
+    [SuppressMessage("ReSharper", "UseCollectionExpression")]
     public static HtmxFieldValues Create(ReadOnlySpan<string> values)
     {
         return values.Length switch
@@ -100,6 +102,7 @@ public readonly struct HtmxFieldValues : IReadOnlyList<string>
     /// <returns>
     /// An <see cref="HtmxFieldValues" /> containing <paramref name="value" />.
     /// </returns>
+    [SuppressMessage("ReSharper", "UseCollectionExpression")]
     public static implicit operator HtmxFieldValues(string? value) =>
         new(value);
 
@@ -110,6 +113,7 @@ public readonly struct HtmxFieldValues : IReadOnlyList<string>
     /// <returns>
     /// An <see cref="HtmxFieldValues" /> containing <paramref name="values" />.
     /// </returns>
+    [SuppressMessage("ReSharper", "UseCollectionExpression")]
     public static implicit operator HtmxFieldValues(string[]? values) =>
         new(values);
 
