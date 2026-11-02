@@ -3,6 +3,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 
 using Ramstack.HtmxToolkit.Configuration;
 
@@ -417,6 +418,21 @@ public class HtmxResponseTests
         context.Response.Htmx(r => r.Reselect("#list"));
 
         Assert.That(context.Response.Headers[HtmxResponseHeaderNames.Reselect], Is.EqualTo("#list"));
+    }
+
+    [Test]
+    public void TriggerEvent_WithoutSelectedVersion_Throws()
+    {
+        var services = new ServiceCollection();
+        services.AddOptions();
+
+        var context = new DefaultHttpContext { RequestServices = services.BuildServiceProvider() };
+        context.Request.Headers[HtmxRequestHeaderNames.Request] = "true";
+
+        Assert.That(
+            () => context.Response.Htmx(r => r.TriggerEvent("notify")),
+            Throws.TypeOf<InvalidOperationException>()
+                  .With.Message.EqualTo("The HTMX version is not selected. Call UseHtmxV1, UseHtmxV2, or UseHtmxV4 in AddHtmxToolkit."));
     }
 
     [Test]

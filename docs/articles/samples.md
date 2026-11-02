@@ -16,7 +16,7 @@ dotnet run --project samples/Ramstack.HtmxToolkit.Demo --no-launch-profile -- --
 Open <http://localhost:5000>. This command uses HTTP for local development, so a development HTTPS certificate
 is not needed. The demo loads HTMX from a CDN and requires a network connection for that script.
 
-The demo currently selects HTMX 4.x. The introductory tutorials use HTMX 2.x, the toolkit default.
+The demo currently selects HTMX 4.x. The introductory tutorials use HTMX 2.x.
 To try another supported version, change both `UseHtmxV4(...)` in `Program.cs` and the HTMX script in
 `Pages/Shared/_Layout.cshtml`. Review [Version compatibility](version-compatibility.md) before changing
 version-specific options such as `NoSwap`.

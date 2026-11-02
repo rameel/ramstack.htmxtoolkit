@@ -4,6 +4,7 @@ using System.Text;
 using System.Text.Json;
 
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 using Ramstack.HtmxToolkit.Configuration;
@@ -289,8 +290,7 @@ internal sealed class PendingEvents
             : timing;
 
     /// <summary>
-    /// Returns the configured HTMX target version, or HTMX 2.x if
-    /// <see cref="IOptions{TOptions}" /> of <see cref="HtmxToolkitOptions" /> is not registered.
+    /// Returns the configured HTMX target version.
     /// </summary>
     /// <param name="response">The response whose request services are inspected.</param>
     /// <returns>
@@ -298,10 +298,8 @@ internal sealed class PendingEvents
     /// </returns>
     private static HtmxTargetVersion GetTargetVersion(HttpResponse response)
     {
-        var p = response.HttpContext.RequestServices;
-        var options = p.GetService(typeof(IOptions<HtmxToolkitOptions>)) as IOptions<HtmxToolkitOptions>;
-
-        return options?.Value.TargetVersion ?? HtmxTargetVersion.V2;
+        var options = response.HttpContext.RequestServices.GetRequiredService<IOptions<HtmxToolkitOptions>>();
+        return options.Value.TargetVersion;
     }
 
     #region Inner type: EventList

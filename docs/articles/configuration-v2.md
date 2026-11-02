@@ -1,6 +1,6 @@
 # HTMX 2.x configuration
 
-HTMX 2.x is the default target. Calling `UseHtmxV2` is optional unless settings need to be changed:
+Call `UseHtmxV2` when the application loads HTMX 2.x:
 
 ```csharp
 using Ramstack.HtmxToolkit;

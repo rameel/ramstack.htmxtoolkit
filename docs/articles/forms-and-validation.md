@@ -192,7 +192,7 @@ Run the application as in Getting started and open <http://localhost:5080/Profil
 5. Disable JavaScript and reload. The form should still save using normal navigation.
 
 For a valid HTMX save, the Network panel shows a POST followed by a GET for the summary.
-With the default HTMX 2.x setup, the POST response carries `HX-Trigger-After-Swap`.
+With HTMX 2.x, the POST response carries `HX-Trigger-After-Swap`.
 HTMX 4.x uses `HX-Trigger` for the same Toolkit call; see [event timing](version-compatibility.md#response-events).
 
 ## Why validation uses HTTP 200 here

@@ -1,6 +1,6 @@
 # HTMX 4.x configuration
 
-Select V4 explicitly when the application loads HTMX 4.x:
+Call `UseHtmxV4` when the application loads HTMX 4.x:
 
 ```csharp
 using Ramstack.HtmxToolkit;

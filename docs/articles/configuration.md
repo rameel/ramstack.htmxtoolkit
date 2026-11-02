@@ -2,6 +2,7 @@
 
 Application-wide settings are registered with `AddHtmxToolkit` and rendered into the page by `<htmx-config />`.
 HtmxToolkit uses a different strongly typed configuration class for each supported HTMX major version.
+Selecting the version is required; see [Choose an HTMX version](choosing-version.md).
 
 ## Configure HTMX
 

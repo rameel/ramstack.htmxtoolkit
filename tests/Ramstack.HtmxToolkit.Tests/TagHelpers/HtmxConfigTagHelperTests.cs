@@ -16,7 +16,7 @@ public class HtmxConfigTagHelperTests
     public async Task ProcessAsync_RendersMetaTag()
     {
         var output = TestHelper.CreateTagHelperOutput();
-        var helper = CreateHelper(new HtmxToolkitOptions());
+        var helper = CreateHelper(new HtmxToolkitOptions().UseHtmxV2());
 
         await helper.ProcessAsync(TestHelper.CreateTagHelperContext(), output);
 
@@ -37,7 +37,7 @@ public class HtmxConfigTagHelperTests
         };
 
         var output = TestHelper.CreateTagHelperOutput("meta", attributes);
-        var helper = CreateHelper(new HtmxToolkitOptions());
+        var helper = CreateHelper(new HtmxToolkitOptions().UseHtmxV2());
 
         await helper.ProcessAsync(TestHelper.CreateTagHelperContext("meta", attributes), output);
 
@@ -48,7 +48,7 @@ public class HtmxConfigTagHelperTests
     public async Task ProcessAsync_WithDefaults_SerializesEmptyHtmx2Object()
     {
         var output = TestHelper.CreateTagHelperOutput();
-        var helper = CreateHelper(new HtmxToolkitOptions());
+        var helper = CreateHelper(new HtmxToolkitOptions().UseHtmxV2());
 
         await helper.ProcessAsync(TestHelper.CreateTagHelperContext(), output);
 
@@ -59,7 +59,7 @@ public class HtmxConfigTagHelperTests
     public async Task ProcessAsync_UsesSingleQuotesForJsonAttribute()
     {
         var output = TestHelper.CreateTagHelperOutput();
-        var helper = CreateHelper(new HtmxToolkitOptions());
+        var helper = CreateHelper(new HtmxToolkitOptions().UseHtmxV2());
 
         await helper.ProcessAsync(TestHelper.CreateTagHelperContext(), output);
 
@@ -394,7 +394,7 @@ public class HtmxConfigTagHelperTests
     {
         var antiforgery = new StubAntiforgery();
         var httpContext = new DefaultHttpContext();
-        var options = new HtmxToolkitOptions();
+        var options = new HtmxToolkitOptions().UseHtmxV2();
         var helper = CreateHelper(options, antiforgery);
         helper.ViewContext = new ViewContext { HttpContext = httpContext };
 
@@ -418,7 +418,7 @@ public class HtmxConfigTagHelperTests
         var antiforgery = new StubAntiforgery();
         var output = TestHelper.CreateTagHelperOutput();
 
-        await CreateHelper(new HtmxToolkitOptions { IncludeAntiforgeryToken = false }, antiforgery)
+        await CreateHelper(new HtmxToolkitOptions { IncludeAntiforgeryToken = false }.UseHtmxV2(), antiforgery)
             .ProcessAsync(TestHelper.CreateTagHelperContext(), output);
 
         Assert.Multiple(() =>

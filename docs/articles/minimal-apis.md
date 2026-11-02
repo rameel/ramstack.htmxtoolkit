@@ -25,7 +25,7 @@ using Ramstack.HtmxToolkit;
 using Ramstack.HtmxToolkit.Hosting;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddHtmxToolkit();
+builder.Services.AddHtmxToolkit(options => options.UseHtmxV2());
 builder.Services.AddAntiforgery(options => options.HeaderName = "RequestVerificationToken");
 
 var app = builder.Build();
