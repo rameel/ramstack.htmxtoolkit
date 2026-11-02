@@ -59,8 +59,11 @@ Missing or version-inapplicable string headers return `null`.
 `Request` is `true` whenever the `HX-Request` header is present, whatever its value;
 unlike `IsHtmxRequest()`, it does not exclude history restoration.
 `Boosted` and `HistoryRestoreRequest` are `true` only when their header is exactly `true`.
-In HTMX 4.x, the `hx-prompt` extension sends the prompt answer URI-encoded;
-decode it with `Uri.UnescapeDataString` before use.
+HTMX 1.9.x and 2.x URI-encode a header value that the browser cannot send as is, such as a Cyrillic prompt answer
+or element ID, and mark it with an additional `*-URI-AutoEncoded` header. `Prompt`, `Target`, `Trigger`, and `TriggerName`
+return such a value decoded.
+HTMX 4.x does not mark encoded values: the `hx-prompt` extension URI-encodes the prompt answer, and `Target` and `Source`
+contain a URI-encoded element ID. Decode these values with `Uri.UnescapeDataString` before use.
 `RequestType` returns `HtmxRequestType.Full` for a history restoration request without its header,
 and `HtmxRequestType.Unspecified` for any other request without it.
 
