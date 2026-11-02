@@ -489,7 +489,10 @@ These changes affect fewer applications:
   The numeric values of the members that follow them changed; this matters only if the values are stored or cast.
 - Typed swap getters, such as `HtmxResponseHeaders.Reswap`, parse the style the way HTMX does:
   case-sensitively, and ignoring leading whitespace. A value such as `OUTERHTML` now returns `null`.
-- `HtmxHeaderTagHelper.Headers` changed from `Dictionary<string, string>` to `IDictionary<string, string>`,
+- `HtmxHeaderTagHelper` was renamed to `HtmxHeadersTagHelper`. `@addTagHelper *, Ramstack.HtmxToolkit` is not affected.
+  **Silent:** a directive that names the old class still builds but no longer matches it. With `@addTagHelper`,
+  `hx-header-*` attributes are rendered unchanged; with `@removeTagHelper`, the Tag Helper stays active.
+- `HtmxHeadersTagHelper.Headers` changed from `Dictionary<string, string>` to `IDictionary<string, string>`,
   and header names are compared without case.
 - `hx-header-*` and `hx-all-headers` throw `InvalidOperationException` when the element also has a hand-written
   `hx-headers` or `data-hx-headers`. In 1.x, the hand-written value was silently lost.

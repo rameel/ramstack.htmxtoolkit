@@ -7,7 +7,7 @@ using Ramstack.HtmxToolkit.Configuration;
 namespace Ramstack.HtmxToolkit.Tests.TagHelpers;
 
 [TestFixture]
-public class HtmxHeaderTagHelperTests
+public class HtmxHeadersTagHelperTests
 {
     [Test]
     public async Task ProcessAsync_SerializesHeaders()
@@ -181,7 +181,7 @@ public class HtmxHeaderTagHelperTests
         Assert.That(exception!.Message, Does.StartWith($"The {name} attribute"));
     }
 
-    private static HtmxHeaderTagHelper CreateHelper(HtmxTargetVersion version = HtmxTargetVersion.V2)
+    private static HtmxHeadersTagHelper CreateHelper(HtmxTargetVersion version = HtmxTargetVersion.V2)
     {
         var options = new HtmxToolkitOptions();
 
@@ -200,6 +200,6 @@ public class HtmxHeaderTagHelperTests
                 throw new ArgumentOutOfRangeException(nameof(version));
         }
 
-        return new HtmxHeaderTagHelper(Options.Create(options));
+        return new HtmxHeadersTagHelper(Options.Create(options));
     }
 }

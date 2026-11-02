@@ -6,10 +6,10 @@ example:
 ---
 
 ---
-uid: Ramstack.HtmxToolkit.TagHelpers.HtmxHeaderTagHelper
+uid: Ramstack.HtmxToolkit.TagHelpers.HtmxHeadersTagHelper
 example:
   - |-
-    [!code-razor[](../snippets/tag-helpers/HeaderTagHelper.cshtml)]
+    [!code-razor[](../snippets/tag-helpers/HeadersTagHelper.cshtml)]
 ---
 
 ---

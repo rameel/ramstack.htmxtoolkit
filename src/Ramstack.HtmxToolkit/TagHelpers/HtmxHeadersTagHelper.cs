@@ -35,7 +35,7 @@ namespace Ramstack.HtmxToolkit.TagHelpers;
 [HtmlTargetElement(Attributes = AppendAttributeName)]
 [HtmlTargetElement(Attributes = HeadersDictionaryName)]
 [HtmlTargetElement(Attributes = HeadersPrefix + "*")]
-public sealed class HtmxHeaderTagHelper(IOptions<HtmxToolkitOptions> options) : TagHelper
+public sealed class HtmxHeadersTagHelper(IOptions<HtmxToolkitOptions> options) : TagHelper
 {
     private const string InheritedAttributeName = "hx-headers-inherited";
     private const string AppendAttributeName = "hx-headers-append";
