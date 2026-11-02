@@ -205,7 +205,7 @@ public sealed class HtmxRequestTagHelper(IOptions<HtmxToolkitOptions> options) :
     public override Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
     {
         var attributeName = options.Value.TargetVersion == HtmxTargetVersion.V4 ? "hx-config" : "hx-request";
-        output.ThrowIfAttributeDeclared(attributeName, "hx-request-* attributes");
+        output.ThrowIfAttributeDeclared(attributeName, "hx-request-* attributes", options.Value);
 
         var json = options.Value.TargetVersion == HtmxTargetVersion.V4
             ? JsonSerializer.Serialize(new HtmxRequestDataV4(_request), HtmxRequestJsonSerializerContext.Default.HtmxRequestDataV4)

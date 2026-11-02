@@ -383,6 +383,10 @@ public class HtmxRequestTagHelperTests
     [TestCase(HtmxTargetVersion.V2, "hx-request")]
     [TestCase(HtmxTargetVersion.V4, "hx-config")]
     [TestCase(HtmxTargetVersion.V4, "hx-config:inherited")]
+    [TestCase(HtmxTargetVersion.V1, "data-hx-request")]
+    [TestCase(HtmxTargetVersion.V2, "data-hx-request")]
+    [TestCase(HtmxTargetVersion.V4, "data-hx-config")]
+    [TestCase(HtmxTargetVersion.V4, "data-hx-config:inherited")]
     public void ProcessAsync_DeclaredRenderedAttribute_Throws(HtmxTargetVersion version, string name)
     {
         var output = TestHelper.CreateTagHelperOutput(attributes:
@@ -400,6 +404,8 @@ public class HtmxRequestTagHelperTests
 
     [TestCase(HtmxTargetVersion.V2, "hx-config", "hx-request")]
     [TestCase(HtmxTargetVersion.V4, "hx-request", "hx-config")]
+    [TestCase(HtmxTargetVersion.V2, "data-hx-config", "hx-request")]
+    [TestCase(HtmxTargetVersion.V4, "data-hx-request", "hx-config")]
     public async Task ProcessAsync_AttributeOfOtherVersion_IsKept(HtmxTargetVersion version, string name, string rendered)
     {
         var output = TestHelper.CreateTagHelperOutput(attributes:

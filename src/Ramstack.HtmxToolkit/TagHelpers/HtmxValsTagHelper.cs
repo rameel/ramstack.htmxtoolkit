@@ -87,7 +87,7 @@ public sealed class HtmxValsTagHelper(IOptions<HtmxToolkitOptions> options) : Ta
     public override Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
     {
         const string SourceAttributes = $"{ValuesPrefix}*, {ValuesDictionaryName}, {InheritedAttributeName}, or {AppendAttributeName}";
-        output.ThrowIfAttributeDeclared("hx-vals", SourceAttributes);
+        output.ThrowIfAttributeDeclared("hx-vals", SourceAttributes, options.Value);
 
         if (Values is { Count: > 0 } values)
         {

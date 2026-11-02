@@ -87,7 +87,7 @@ public sealed class HtmxHeaderTagHelper(IOptions<HtmxToolkitOptions> options) : 
     public override Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
     {
         const string SourceAttributes = $"{HeadersPrefix}*, {HeadersDictionaryName}, {InheritedAttributeName}, or {AppendAttributeName}";
-        output.ThrowIfAttributeDeclared("hx-headers", SourceAttributes);
+        output.ThrowIfAttributeDeclared("hx-headers", SourceAttributes, options.Value);
 
         if (Headers is { Count: > 0 })
         {

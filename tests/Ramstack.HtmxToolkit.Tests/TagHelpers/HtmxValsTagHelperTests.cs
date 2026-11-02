@@ -175,6 +175,63 @@ public class HtmxValsTagHelperTests
         Assert.That(exception!.Message, Does.StartWith($"The {name} attribute"));
     }
 
+    [TestCase(HtmxTargetVersion.V1, "data-hx-vals")]
+    [TestCase(HtmxTargetVersion.V2, "data-hx-vals")]
+    [TestCase(HtmxTargetVersion.V4, "data-hx-vals")]
+    [TestCase(HtmxTargetVersion.V4, "DATA-HX-VALS")]
+    [TestCase(HtmxTargetVersion.V4, "data-hx-vals:inherited")]
+    public void ProcessAsync_DeclaredAlias_Throws(HtmxTargetVersion version, string name)
+    {
+        var output = TestHelper.CreateTagHelperOutput(attributes:
+        [
+            new TagHelperAttribute(name, new HtmlString("{\"a\":\"1\"}"))
+        ]);
+        var helper = CreateHelper(version);
+        helper.Values["b"] = "2";
+
+        var exception = Assert.ThrowsAsync<InvalidOperationException>(
+            async () => await helper.ProcessAsync(TestHelper.CreateTagHelperContext(), output));
+
+        Assert.That(exception!.Message, Does.StartWith($"The {name} attribute"));
+    }
+
+    [TestCase("x-vals")]
+    [TestCase("x-vals:append")]
+    public void ProcessAsync_DeclaredAliasWithCustomPrefix_Throws(string name)
+    {
+        var output = TestHelper.CreateTagHelperOutput(attributes:
+        [
+            new TagHelperAttribute(name, new HtmlString("{\"a\":\"1\"}"))
+        ]);
+        var helper = CreateHelper(HtmxTargetVersion.V4, prefix: "x-");
+        helper.Values["b"] = "2";
+
+        var exception = Assert.ThrowsAsync<InvalidOperationException>(
+            async () => await helper.ProcessAsync(TestHelper.CreateTagHelperContext(), output));
+
+        Assert.That(exception!.Message, Does.StartWith($"The {name} attribute"));
+    }
+
+    [TestCase("x-", "data-hx-vals")]
+    [TestCase("", "data-hx-vals")]
+    [TestCase("", "vals")]
+    [TestCase(null, "x-vals")]
+    [TestCase(null, "data-hx-vals-extra")]
+    public async Task ProcessAsync_AttributeThatIsNotAlias_IsKept(string? prefix, string name)
+    {
+        var output = TestHelper.CreateTagHelperOutput(attributes:
+        [
+            new TagHelperAttribute(name, "x")
+        ]);
+        var helper = CreateHelper(HtmxTargetVersion.V4, prefix);
+        helper.Values["b"] = "2";
+
+        await helper.ProcessAsync(TestHelper.CreateTagHelperContext(), output);
+
+        Assert.That(output.Attributes[name]!.Value, Is.EqualTo("x"));
+        Assert.That(output.Attributes["hx-vals"]!.Value.ToString(), Is.EqualTo("{\"b\":\"2\"}"));
+    }
+
     [Test]
     public void ProcessAsync_DeclaredHxVals_WithEmptyDictionary_Throws()
     {
@@ -204,7 +261,7 @@ public class HtmxValsTagHelperTests
         Assert.That(output.Attributes["hx-vals"]!.Value.ToString(), Is.EqualTo("{\"b\":\"2\"}"));
     }
 
-    private static HtmxValsTagHelper CreateHelper(HtmxTargetVersion version = HtmxTargetVersion.V2)
+    private static HtmxValsTagHelper CreateHelper(HtmxTargetVersion version = HtmxTargetVersion.V2, string? prefix = null)
     {
         var options = new HtmxToolkitOptions();
 
@@ -217,7 +274,7 @@ public class HtmxValsTagHelperTests
                 options.UseHtmxV2();
                 break;
             case HtmxTargetVersion.V4:
-                options.UseHtmxV4();
+                options.UseHtmxV4(config => config.Prefix = prefix);
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(version));
