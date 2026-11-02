@@ -245,7 +245,7 @@ Use `hx-request-*` attributes rather than hand-writing version-specific JSON:
         asp-page="/Reports"
         asp-page-handler="Preview"
         hx-request-timeout="2000"
-        hx-request-credentials="@HtmxRequestCredentials.SameOrigin"
+        hx-request-credentials="SameOrigin"
         hx-target="#preview">
     Generate preview
 </button>
@@ -275,6 +275,11 @@ The output depends on the configured HTMX target:
 Unsupported properties are omitted from the generated JSON. In particular, `HtmxRequestCredentials.Omit`
 cannot be represented by HTMX 1.9.x or 2.x and is omitted for those targets.
 
+Enum attributes take a member name, such as `hx-request-credentials="Include"`. A C# expression starts with `@`,
+for example `hx-request-credentials="@credentials"`; `HtmxRequestCredentials.Include` without `@` does not compile.
+`hx-request-no-headers` and `hx-request-validate` can be written without a value, which means `true`.
+To leave an option unset, omit its attribute; these attributes do not accept `null`.
+
 An element with `hx-request-*` attributes cannot also have a hand-written `hx-request` for HTMX 1.9.x and 2.x
 or `hx-config` for HTMX 4.x, with or without modifiers or the `data-hx-` prefix.
 The Tag Helper throws `InvalidOperationException` rather than lose one of the values.
@@ -283,8 +288,8 @@ Use `HtmxRequestCache` and `HtmxRequestRedirect` for the HTMX 4.x Fetch options:
 
 ```razor
 <button hx-get="/Reports/Preview"
-        hx-request-cache="@HtmxRequestCache.NoCache"
-        hx-request-redirect="@HtmxRequestRedirect.Error">
+        hx-request-cache="NoCache"
+        hx-request-redirect="Error">
     Generate preview
 </button>
 ```

@@ -111,11 +111,15 @@ public sealed class HtmxRequestTagHelper(IOptions<HtmxToolkitOptions> options) :
     ///   In HTMX 4.x, this property maps to the string <c>credentials</c> option
     ///   of <c>hx-config</c>.
     /// </para>
+    /// <para>
+    ///   If the property has not been set, the option is not rendered, HTMX uses its default value,
+    ///   and the property returns <see cref="HtmxRequestCredentials.SameOrigin" />.
+    /// </para>
     /// </remarks>
     [HtmlAttributeName(RequestCredentialsAttributeName)]
-    public HtmxRequestCredentials? Credentials
+    public HtmxRequestCredentials Credentials
     {
-        get => _request.Credentials;
+        get => _request.Credentials.GetValueOrDefault();
         set => _request.Credentials = value;
     }
 
@@ -127,33 +131,49 @@ public sealed class HtmxRequestTagHelper(IOptions<HtmxToolkitOptions> options) :
     /// <para>Supported only in HTMX 1.9.x and 2.x.</para>
     /// <para>Headers added by the browser are unaffected.</para>
     /// <para>The Toolkit script also omits the <c>HX-Request-Type</c> header.</para>
+    /// <para>
+    ///   If the property has not been set, the option is not rendered, HTMX uses its default value,
+    ///   and the property returns <see langword="false" />.
+    /// </para>
     /// </remarks>
     [HtmlAttributeName(RequestNoHeadersAttributeName)]
-    public bool? NoHeaders
+    public bool NoHeaders
     {
-        get => _request.NoHeaders;
+        get => _request.NoHeaders.GetValueOrDefault();
         set => _request.NoHeaders = value;
     }
 
     /// <summary>
     /// Gets or sets the Fetch cache mode for the request.
     /// </summary>
-    /// <remarks>Supported only in HTMX 4.x.</remarks>
+    /// <remarks>
+    /// <para>Supported only in HTMX 4.x.</para>
+    /// <para>
+    ///   If the property has not been set, the option is not rendered, HTMX uses its default value,
+    ///   and the property returns <see cref="HtmxRequestCache.Default" />.
+    /// </para>
+    /// </remarks>
     [HtmlAttributeName(RequestCacheAttributeName)]
-    public HtmxRequestCache? Cache
+    public HtmxRequestCache Cache
     {
-        get => _request.Cache;
+        get => _request.Cache.GetValueOrDefault();
         set => _request.Cache = value;
     }
 
     /// <summary>
     /// Gets or sets the Fetch redirect mode for the request.
     /// </summary>
-    /// <remarks>Supported only in HTMX 4.x.</remarks>
+    /// <remarks>
+    /// <para>Supported only in HTMX 4.x.</para>
+    /// <para>
+    ///   If the property has not been set, the option is not rendered, HTMX uses its default value,
+    ///   and the property returns <see cref="HtmxRequestRedirect.Follow" />.
+    /// </para>
+    /// </remarks>
     [HtmlAttributeName(RequestRedirectAttributeName)]
-    public HtmxRequestRedirect? Redirect
+    public HtmxRequestRedirect Redirect
     {
-        get => _request.Redirect;
+        get => _request.Redirect.GetValueOrDefault();
         set => _request.Redirect = value;
     }
 
@@ -194,11 +214,17 @@ public sealed class HtmxRequestTagHelper(IOptions<HtmxToolkitOptions> options) :
     /// <summary>
     /// Gets or sets a value indicating whether the form is validated before submission.
     /// </summary>
-    /// <remarks>Supported only in HTMX 4.x.</remarks>
+    /// <remarks>
+    /// <para>Supported only in HTMX 4.x.</para>
+    /// <para>
+    ///   If the property has not been set, the option is not rendered, HTMX uses its default value,
+    ///   and the property returns <see langword="false" />.
+    /// </para>
+    /// </remarks>
     [HtmlAttributeName(RequestValidateAttributeName)]
-    public bool? Validate
+    public bool Validate
     {
-        get => _request.Validate;
+        get => _request.Validate.GetValueOrDefault();
         set => _request.Validate = value;
     }
 
@@ -240,16 +266,16 @@ public sealed class HtmxRequestTagHelper(IOptions<HtmxToolkitOptions> options) :
         /// <inheritdoc cref="HtmxRequestTagHelper.Timeout" />
         public int? Timeout { get; set; }
 
-        /// <inheritdoc cref="HtmxRequestTagHelper.Credentials" />
+        /// <inheritdoc cref="HtmxRequestTagHelper.Credentials" path="/summary" />
         public HtmxRequestCredentials? Credentials { get; set; }
 
-        /// <inheritdoc cref="HtmxRequestTagHelper.NoHeaders" />
+        /// <inheritdoc cref="HtmxRequestTagHelper.NoHeaders" path="/summary" />
         public bool? NoHeaders { get; set; }
 
-        /// <inheritdoc cref="HtmxRequestTagHelper.Cache" />
+        /// <inheritdoc cref="HtmxRequestTagHelper.Cache" path="/summary" />
         public HtmxRequestCache? Cache { get; set; }
 
-        /// <inheritdoc cref="HtmxRequestTagHelper.Redirect" />
+        /// <inheritdoc cref="HtmxRequestTagHelper.Redirect" path="/summary" />
         public HtmxRequestRedirect? Redirect { get; set; }
 
         /// <inheritdoc cref="HtmxRequestTagHelper.Referrer" />
@@ -258,7 +284,7 @@ public sealed class HtmxRequestTagHelper(IOptions<HtmxToolkitOptions> options) :
         /// <inheritdoc cref="HtmxRequestTagHelper.Integrity" />
         public string? Integrity { get; set; }
 
-        /// <inheritdoc cref="HtmxRequestTagHelper.Validate" />
+        /// <inheritdoc cref="HtmxRequestTagHelper.Validate" path="/summary" />
         public bool? Validate { get; set; }
     }
 
