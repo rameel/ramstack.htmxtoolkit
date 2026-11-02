@@ -479,7 +479,7 @@ These changes affect fewer applications:
 - `HtmxHeaderTagHelper.Headers` changed from `Dictionary<string, string>` to `IDictionary<string, string>`,
   and header names are compared without case.
 - `hx-header-*` and `hx-all-headers` throw `InvalidOperationException` when the element also has a hand-written
-  `hx-headers`. In 1.x, the generated attribute silently replaced it.
+  `hx-headers` or `data-hx-headers`. In 1.x, the hand-written value was silently lost.
 - `HtmxScrollBehavior` gained `Instant`.
 - `Location`, `Redirect`, `Reswap(string)`, `Retarget`, and `Reselect` throw `ArgumentException` for a `null`
   or empty value, and `Location(string, HtmxLocationOptions)` also throws for `null` options.

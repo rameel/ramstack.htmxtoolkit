@@ -25,8 +25,9 @@ namespace Ramstack.HtmxToolkit.TagHelpers;
 /// </para>
 /// <para>
 ///   An <see cref="InvalidOperationException" /> is thrown when the element also has the attribute
-///   that the tag helper renders for the selected version, with or without HTMX 4.x modifiers,
-///   rather than replacing it.
+///   that the tag helper renders for the selected version, or its <c>data-hx-*</c> alias that HTMX reads
+///   as the same attribute, with or without HTMX 4.x modifiers, rather than losing one of the values.
+///   For HTMX 4.x, <see cref="HtmxV4Config.Prefix" /> determines the alias.
 /// </para>
 /// </remarks>
 [HtmlTargetElement(Attributes = RequestInheritedAttributeName)]
