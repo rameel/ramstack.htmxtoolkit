@@ -234,7 +234,7 @@ added with different timings.
 
 ### Serialize details with source-generated metadata
 
-The object overload discovers the shape of each detail type through reflection the first time it serializes that type.
+Without metadata, `TriggerEvent` discovers the shape of each detail type through reflection the first time it serializes that type.
 Pass source-generated JSON metadata to do this work at build time instead: the first event of each type is serialized
 without the reflection delay, the payload can be written by generated code, and the app needs less memory.
 Because no reflection is involved, this overload also supports trimming and Native AOT.
@@ -277,7 +277,7 @@ otherwise, the server rejects the header.
 
 ### Serialize details with custom options
 
-The object overload always uses the defaults described above, not the JSON options configured for the application.
+Without options, `TriggerEvent` always uses the defaults described above, not the JSON options configured for the application.
 To serialize a detail with other settings, for example with the application's options that write enums as strings,
 pass `JsonSerializerOptions`:
 
@@ -298,7 +298,7 @@ public sealed class ProductsController(IOptions<JsonOptions> jsonOptions) : Cont
 ```
 
 `JsonOptions` here is `Microsoft.AspNetCore.Mvc.JsonOptions`. In Minimal APIs, use `SerializerOptions`
-of `Microsoft.AspNetCore.Http.Json.JsonOptions`. Like the object overload, this overload uses reflection;
+of `Microsoft.AspNetCore.Http.Json.JsonOptions`. This overload also uses reflection;
 for trimming and Native AOT, use [source-generated metadata](#serialize-details-with-source-generated-metadata).
 
 The detail is always written as compact JSON, with non-ASCII characters in string values and dictionary keys

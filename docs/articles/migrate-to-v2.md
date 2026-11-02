@@ -452,8 +452,10 @@ Other changes:
 - The timing parameter of `TriggerEvent(string, HtmxTriggerTiming)` was renamed from `trigger` to `timing`.
 - An event without a detail now receives an empty object; in 1.x, `event.detail.value` was an empty string.
 - `TriggerEvent` throws `ArgumentException` for an empty or whitespace event name.
-- `TriggerEvent(string, object, HtmxTriggerTiming)` is annotated as incompatible with trimming and Native AOT.
-  Trimmed and Native AOT projects get warnings IL2026 and IL3050 for it; use the overload that accepts
+- A constant zero is now sent as the detail. In 1.x, `TriggerEvent("count", 0)` selected the overload with only a timing,
+  because zero converts to any enum, and the detail was lost.
+- `TriggerEvent` overloads that serialize a detail through reflection are annotated as incompatible with trimming and Native AOT.
+  Trimmed and Native AOT projects get warnings IL2026 and IL3050 for them; use the overload that accepts
   `JsonTypeInfo<T>`. See [Serialize details with source-generated metadata](responses.md#serialize-details-with-source-generated-metadata).
 - `HtmxTriggerTiming` members are ordered as HTMX processes them: `Receive`, `AfterSwap`, `AfterSettle`.
   The numeric values of `AfterSwap` and `AfterSettle` swapped; this matters only if the values are stored or cast.
