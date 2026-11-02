@@ -3,6 +3,14 @@ namespace Ramstack.HtmxToolkit.Configuration;
 /// <summary>
 /// Defines the HTTP methods that can be used in HTMX configuration.
 /// </summary>
+/// <remarks>
+/// <para>
+///   <c>HEAD</c> and <c>OPTIONS</c> have no <c>hx-*</c> attribute and are available only through <c>htmx.ajax</c>.
+/// </para>
+/// <para>
+///   There are no members for <c>CONNECT</c> and <c>TRACE</c>, because browsers do not allow requests with these methods.
+/// </para>
+/// </remarks>
 public enum HtmxHttpVerb
 {
     /// <summary>
@@ -33,22 +41,10 @@ public enum HtmxHttpVerb
     Delete,
 
     /// <summary>
-    /// The <c>CONNECT</c> method establishes a tunnel to the server
-    /// identified by the target resource.
-    /// </summary>
-    Connect,
-
-    /// <summary>
     /// The <c>OPTIONS</c> method describes the communication options
     /// for the target resource.
     /// </summary>
     Options,
-
-    /// <summary>
-    /// The <c>TRACE</c> method performs a message loop-back test
-    /// along the path to the target resource.
-    /// </summary>
-    Trace,
 
     /// <summary>
     /// The <c>PATCH</c> method applies partial modifications to a resource.

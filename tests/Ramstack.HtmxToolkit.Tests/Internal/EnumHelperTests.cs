@@ -83,9 +83,7 @@ public class EnumHelperTests
     [TestCase(HtmxHttpVerb.Post, "post")]
     [TestCase(HtmxHttpVerb.Put, "put")]
     [TestCase(HtmxHttpVerb.Delete, "delete")]
-    [TestCase(HtmxHttpVerb.Connect, "connect")]
     [TestCase(HtmxHttpVerb.Options, "options")]
-    [TestCase(HtmxHttpVerb.Trace, "trace")]
     [TestCase(HtmxHttpVerb.Patch, "patch")]
     public void GetHttpVerbValue_ReturnsExpectedString(HtmxHttpVerb value, string expected) =>
         Assert.That(value.GetHttpVerbValue(), Is.EqualTo(expected));

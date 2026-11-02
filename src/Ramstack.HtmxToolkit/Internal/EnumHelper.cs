@@ -116,9 +116,7 @@ internal static class EnumHelper
             or HtmxHttpVerb.Post
             or HtmxHttpVerb.Put
             or HtmxHttpVerb.Delete
-            or HtmxHttpVerb.Connect
             or HtmxHttpVerb.Options
-            or HtmxHttpVerb.Trace
             or HtmxHttpVerb.Patch);
 
         return value switch
@@ -128,9 +126,7 @@ internal static class EnumHelper
             HtmxHttpVerb.Post => "post",
             HtmxHttpVerb.Put => "put",
             HtmxHttpVerb.Delete => "delete",
-            HtmxHttpVerb.Connect => "connect",
             HtmxHttpVerb.Options => "options",
-            HtmxHttpVerb.Trace => "trace",
             _ => "patch"
         };
     }
