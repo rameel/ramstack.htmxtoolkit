@@ -20,7 +20,7 @@ example:
 ---
 
 ---
-uid: Ramstack.HtmxToolkit.Configuration.ResponseHandlingConfig
+uid: Ramstack.HtmxToolkit.Configuration.HtmxResponseHandlingOptions
 example:
   - |-
     [!code-csharp[](../snippets/configuration/ResponseHandling.cs)]

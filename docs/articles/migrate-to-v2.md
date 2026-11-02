@@ -40,10 +40,10 @@ The package still targets .NET 6 and runs on .NET 6 or later.
 
 Add these namespaces where needed:
 
-| Namespace                            | Contains                                                                                                                                                     |
-|--------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `Ramstack.HtmxToolkit.Hosting`       | `AddHtmxToolkit`                                                                                                                                             |
-| `Ramstack.HtmxToolkit.Configuration` | `HtmxToolkitOptions`, `HtmxV1Config`, `HtmxV2Config`, `HtmxV4Config`, and configuration enums such as `HtmxScrollBehavior`, `HtmxBinaryType`, and `HttpVerb` |
+| Namespace                            | Contains                                                                                                                                                         |
+|--------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `Ramstack.HtmxToolkit.Hosting`       | `AddHtmxToolkit`                                                                                                                                                 |
+| `Ramstack.HtmxToolkit.Configuration` | `HtmxToolkitOptions`, `HtmxV1Config`, `HtmxV2Config`, `HtmxV4Config`, and configuration enums such as `HtmxScrollBehavior`, `HtmxBinaryType`, and `HtmxHttpVerb` |
 
 `HtmxScrollBehavior` and `HtmxBinaryType` moved from `Ramstack.HtmxToolkit` to `Ramstack.HtmxToolkit.Configuration`.
 
@@ -116,7 +116,7 @@ on `HtmxV1Config` or `HtmxV2Config`. The exceptions are:
 | `include-antiforgery-token`   | `HtmxToolkitOptions.IncludeAntiforgeryToken`, now `true` by default; see the next section                          |
 | `use-template-fragments`      | `HtmxV1Config.UseTemplateFragments` only; HTMX 2.x always parses responses with templates                          |
 | `trigger-specs-cache`         | `TriggerSpecsCacheEnabled` (`bool?`)                                                                               |
-| `methods-that-use-url-params` | `MethodsThatUseUrlParams` (`IReadOnlyList<HttpVerb>` instead of `string[]`)                                        |
+| `methods-that-use-url-params` | `MethodsThatUseUrlParams` (`IReadOnlyList<HtmxHttpVerb>` instead of `string[]`)                                    |
 | `ws-reconnect-delay`          | Removed: HTMX accepts only a function or the default `"full-jitter"`, and a function cannot be passed through JSON |
 
 For every property, see [HTMX 1.9.x](configuration-v1.md), [HTMX 2.x](configuration-v2.md),

@@ -288,8 +288,8 @@ public sealed class HtmxV1Config() : HtmxConfig(HtmxTargetVersion.V1)
     /// Gets or sets the HTTP methods that use URL parameters.
     /// The HTMX default is <c>["get"]</c>.
     /// </summary>
-    [JsonConverter(typeof(HttpVerbListJsonConverter))]
-    public IReadOnlyList<HttpVerb>? MethodsThatUseUrlParams
+    [JsonConverter(typeof(HtmxHttpVerbListJsonConverter))]
+    public IReadOnlyList<HtmxHttpVerb>? MethodsThatUseUrlParams
     {
         get;
         set => SetField(ref field, value);

@@ -3,7 +3,7 @@ namespace Ramstack.HtmxToolkit.Configuration;
 /// <summary>
 /// Defines the HTTP methods that can be used in HTMX configuration.
 /// </summary>
-public enum HttpVerb
+public enum HtmxHttpVerb
 {
     /// <summary>
     /// The <c>GET</c> method requests a representation of the specified resource.
