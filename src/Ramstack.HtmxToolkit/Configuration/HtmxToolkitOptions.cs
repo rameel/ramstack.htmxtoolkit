@@ -8,27 +8,36 @@ namespace Ramstack.HtmxToolkit.Configuration;
 /// </summary>
 public sealed class HtmxToolkitOptions
 {
+    /// <summary>
+    /// The message reported when no HTMX version has been selected.
+    /// </summary>
+    internal const string VersionNotSelectedMessage =
+        "The HTMX version is not selected. Call UseHtmxV1, UseHtmxV2, or UseHtmxV4 in AddHtmxToolkit.";
+
     private HtmxConfig? _config;
 
     /// <summary>
     /// Gets the configuration for the selected HTMX major version.
     /// </summary>
     /// <remarks>
-    /// If no version has been selected, reading this property selects HTMX 2.x.
-    /// A later call to <see cref="UseHtmxV1" /> or <see cref="UseHtmxV4" /> then throws
-    /// <see cref="InvalidOperationException" />. Reading <see cref="TargetVersion" />
-    /// or calling <see cref="GetHtmxConfig{TConfig}" /> has the same effect.
+    /// Throws <see cref="InvalidOperationException" /> if no version has been selected with
+    /// <see cref="UseHtmxV1" />, <see cref="UseHtmxV2" />, or <see cref="UseHtmxV4" />.
     /// </remarks>
     public HtmxConfig HtmxConfig
     {
         get
         {
             if (_config is null)
-                UseHtmxV2();
+                Error_VersionNotSelected();
 
             return _config;
         }
     }
+
+    /// <summary>
+    /// Gets a value indicating whether an HTMX version has been selected.
+    /// </summary>
+    internal bool IsVersionSelected => _config is not null;
 
     /// <summary>
     /// Gets or sets a value indicating whether antiforgery request metadata is rendered
@@ -41,8 +50,14 @@ public sealed class HtmxToolkitOptions
     /// Gets the HTMX major version used for version-sensitive generated markup and response headers.
     /// </summary>
     /// <remarks>
-    /// For example, with HTMX 4.x, <see cref="HtmxResponse.TriggerEvent(string, HtmxTriggerTiming)" />
-    /// emits events with any <see cref="HtmxTriggerTiming" /> value through the <c>HX-Trigger</c> header.
+    /// <para>
+    ///   For example, with HTMX 4.x, <see cref="HtmxResponse.TriggerEvent(string, HtmxTriggerTiming)" />
+    ///   emits events with any <see cref="HtmxTriggerTiming" /> value through the <c>HX-Trigger</c> header.
+    /// </para>
+    /// <para>
+    ///   Throws <see cref="InvalidOperationException" /> if no version has been selected,
+    ///   as when reading <see cref="HtmxConfig" />.
+    /// </para>
     /// </remarks>
     public HtmxTargetVersion TargetVersion => HtmxConfig.TargetVersion;
 
@@ -99,9 +114,8 @@ public sealed class HtmxToolkitOptions
     /// The requested configuration instance.
     /// </returns>
     /// <remarks>
-    /// If no version has been selected, HTMX 2.x is selected, as when reading <see cref="HtmxConfig" />.
-    /// Throws <see cref="InvalidOperationException" /> if the configuration of the selected version
-    /// is not a <typeparamref name="TConfig" />.
+    /// Throws <see cref="InvalidOperationException" /> if no version has been selected,
+    /// or if the configuration of the selected version is not a <typeparamref name="TConfig" />.
     /// </remarks>
     public TConfig GetHtmxConfig<TConfig>() where TConfig : HtmxConfig
     {
@@ -147,6 +161,14 @@ public sealed class HtmxToolkitOptions
             if (current != version)
                 Error_ReconfigureTargetVersion(current, version);
     }
+
+    /// <summary>
+    /// Throws an <see cref="InvalidOperationException" /> when no HTMX version has been selected.
+    /// </summary>
+    /// <exception cref="InvalidOperationException">Always thrown.</exception>
+    [DoesNotReturn]
+    private static void Error_VersionNotSelected() =>
+        throw new InvalidOperationException(VersionNotSelectedMessage);
 
     /// <summary>
     /// Throws an <see cref="InvalidOperationException" /> when the requested HTMX

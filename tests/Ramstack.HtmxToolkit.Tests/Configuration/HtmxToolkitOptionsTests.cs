@@ -10,15 +10,14 @@ namespace Ramstack.HtmxToolkit.Tests.Configuration;
 public class HtmxToolkitOptionsTests
 {
     [Test]
-    public void DefaultsToHtmx2()
+    public void HtmxConfig_WithoutSelectedVersion_Throws()
     {
         var options = new HtmxToolkitOptions();
 
-        Assert.Multiple(() =>
-        {
-            Assert.That(options.TargetVersion, Is.EqualTo(HtmxTargetVersion.V2));
-            Assert.That(options.HtmxConfig, Is.TypeOf<HtmxV2Config>());
-        });
+        Assert.That(
+            () => options.HtmxConfig,
+            Throws.TypeOf<InvalidOperationException>()
+                  .With.Message.EqualTo("The HTMX version is not selected. Call UseHtmxV1, UseHtmxV2, or UseHtmxV4 in AddHtmxToolkit."));
     }
 
     [Test]
@@ -97,24 +96,6 @@ public class HtmxToolkitOptionsTests
     }
 
     [Test]
-    public void UseHtmxV4_AfterReadingDefault_ThrowsInvalidOperationException()
-    {
-        var options = new HtmxToolkitOptions();
-        var defaultHtmxConfig = options.HtmxConfig;
-
-        Assert.Multiple(() =>
-        {
-            Assert.That(defaultHtmxConfig, Is.TypeOf<HtmxV2Config>());
-            Assert.That(
-                () => options.UseHtmxV4(config => config.DefaultTimeout = 5000),
-                Throws.TypeOf<InvalidOperationException>()
-                      .With.Message.EqualTo("HTMX has already been configured for version V2. Cannot reconfigure to V4.")
-            );
-        });
-    }
-
-
-    [Test]
     public void AddHtmxToolkit_DependencyInjection_ExposesConfiguredOptions()
     {
         var services = new ServiceCollection();
@@ -136,19 +117,17 @@ public class HtmxToolkitOptionsTests
     }
 
     [Test]
-    public void AddHtmxToolkit_WithoutConfiguration_ExposesDefaultOptions()
+    public void AddHtmxToolkit_WithoutSelectedVersion_FailsValidation()
     {
         var services = new ServiceCollection();
-        services.AddHtmxToolkit();
+        services.AddHtmxToolkit(options => options.IncludeAntiforgeryToken = false);
 
         using var provider = services.BuildServiceProvider();
-        var options = provider.GetRequiredService<IOptions<HtmxToolkitOptions>>().Value;
+        var options = provider.GetRequiredService<IOptions<HtmxToolkitOptions>>();
 
-        Assert.Multiple(() =>
-        {
-            Assert.That(options.TargetVersion, Is.EqualTo(HtmxTargetVersion.V2));
-            Assert.That(options.HtmxConfig, Is.TypeOf<HtmxV2Config>());
-            Assert.That(options.IncludeAntiforgeryToken, Is.True);
-        });
+        Assert.That(
+            () => options.Value,
+            Throws.TypeOf<OptionsValidationException>()
+                  .With.Message.EqualTo("The HTMX version is not selected. Call UseHtmxV1, UseHtmxV2, or UseHtmxV4 in AddHtmxToolkit."));
     }
 }
