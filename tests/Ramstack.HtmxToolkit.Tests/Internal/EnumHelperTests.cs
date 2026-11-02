@@ -99,9 +99,9 @@ public class EnumHelperTests
     public void GetScrollBehaviorValue_ReturnsExpectedString(HtmxScrollBehavior value, string expected) =>
         Assert.That(value.GetScrollBehaviorValue(), Is.EqualTo(expected));
 
-    [TestCase(HtmxFetchMode.SameOrigin, "same-origin")]
-    [TestCase(HtmxFetchMode.Cors, "cors")]
-    [TestCase(HtmxFetchMode.NoCors, "no-cors")]
-    public void GetFetchModeValue_ReturnsExpectedString(HtmxFetchMode value, string expected) =>
-        Assert.That(value.GetFetchModeValue(), Is.EqualTo(expected));
+    [TestCase(HtmxRequestMode.SameOrigin, "same-origin")]
+    [TestCase(HtmxRequestMode.Cors, "cors")]
+    [TestCase(HtmxRequestMode.NoCors, "no-cors")]
+    public void GetRequestModeValue_ReturnsExpectedString(HtmxRequestMode value, string expected) =>
+        Assert.That(value.GetRequestModeValue(), Is.EqualTo(expected));
 }

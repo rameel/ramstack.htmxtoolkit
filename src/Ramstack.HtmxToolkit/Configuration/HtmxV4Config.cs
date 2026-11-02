@@ -166,10 +166,10 @@ public sealed class HtmxV4Config : HtmxConfig
 
     /// <summary>
     /// Gets or sets the request mode passed to the Fetch API.
-    /// The HTMX default is <see cref="HtmxFetchMode.SameOrigin" />.
+    /// The HTMX default is <see cref="HtmxRequestMode.SameOrigin" />.
     /// </summary>
-    [JsonConverter(typeof(HtmxFetchModeJsonConverter))]
-    public HtmxFetchMode? Mode
+    [JsonConverter(typeof(HtmxRequestModeJsonConverter))]
+    public HtmxRequestMode? Mode
     {
         get;
         set => SetField(ref field, value);

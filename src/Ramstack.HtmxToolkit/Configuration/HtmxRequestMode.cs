@@ -4,14 +4,17 @@ namespace Ramstack.HtmxToolkit.Configuration;
 /// Specifies the request mode used by HTMX.
 /// </summary>
 /// <remarks>
-/// <para>In HTMX 4.x, this is passed as the <c>mode</c> option of the Fetch API.</para>
+/// <para>
+///   In HTMX 4.x, this is passed as the <c>mode</c> option of the Fetch API. The mode applies to all requests:
+///   HTMX ignores a <c>mode</c> set on an element, so it is configured only with <see cref="HtmxV4Config.Mode" />.
+/// </para>
 /// <para>
 ///   HTMX 1.9.x and 2.x use <c>XMLHttpRequest</c> instead of <c>fetch</c>.
 ///   Use <see cref="HtmxV1Config.SelfRequestsOnly" /> or <see cref="HtmxV2Config.SelfRequestsOnly" />
 ///   to restrict requests to the current origin.
 /// </para>
 /// </remarks>
-public enum HtmxFetchMode
+public enum HtmxRequestMode
 {
     /// <summary>
     /// Allows requests only to the current origin.

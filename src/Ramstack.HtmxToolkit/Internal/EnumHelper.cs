@@ -132,43 +132,43 @@ internal static class EnumHelper
     }
 
     /// <summary>
-    /// Converts a <see cref="HtmxFetchMode" /> value
+    /// Converts a <see cref="HtmxRequestMode" /> value
     /// to the corresponding Fetch API request mode string.
     /// </summary>
-    /// <param name="value">The <see cref="HtmxFetchMode" /> value.</param>
+    /// <param name="value">The <see cref="HtmxRequestMode" /> value.</param>
     /// <returns>
     /// <c>same-origin</c>, <c>cors</c>, or <c>no-cors</c>.
     /// </returns>
-    public static string GetFetchModeValue(this HtmxFetchMode value)
+    public static string GetRequestModeValue(this HtmxRequestMode value)
     {
         Debug.Assert(value
-            is HtmxFetchMode.SameOrigin
-            or HtmxFetchMode.Cors
-            or HtmxFetchMode.NoCors);
+            is HtmxRequestMode.SameOrigin
+            or HtmxRequestMode.Cors
+            or HtmxRequestMode.NoCors);
 
         return value switch
         {
-            HtmxFetchMode.SameOrigin => "same-origin",
-            HtmxFetchMode.Cors => "cors",
+            HtmxRequestMode.SameOrigin => "same-origin",
+            HtmxRequestMode.Cors => "cors",
             _ => "no-cors"
         };
     }
 
     /// <summary>
-    /// Parses a string into a <see cref="HtmxFetchMode" /> value.
+    /// Parses a string into a <see cref="HtmxRequestMode" /> value.
     /// </summary>
     /// <param name="expression">The string to parse.</param>
     /// <returns>
-    /// The parsed <see cref="HtmxFetchMode" /> value if successful;
+    /// The parsed <see cref="HtmxRequestMode" /> value if successful;
     /// otherwise, <see langword="null" />.
     /// </returns>
-    public static HtmxFetchMode? ParseHtmxFetchMode(string? expression)
+    public static HtmxRequestMode? ParseHtmxRequestMode(string? expression)
     {
         return expression switch
         {
-            "same-origin" => HtmxFetchMode.SameOrigin,
-            "cors" => HtmxFetchMode.Cors,
-            "no-cors" => HtmxFetchMode.NoCors,
+            "same-origin" => HtmxRequestMode.SameOrigin,
+            "cors" => HtmxRequestMode.Cors,
+            "no-cors" => HtmxRequestMode.NoCors,
             _ => null
         };
     }
