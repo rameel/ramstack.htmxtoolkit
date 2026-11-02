@@ -8,7 +8,7 @@ namespace Ramstack.HtmxToolkit.Configuration;
 /// Represents the response handling configuration for responses that match
 /// a specific HTTP status code pattern.
 /// </summary>
-public sealed class ResponseHandlingConfig
+public sealed class HtmxResponseHandlingOptions
 {
     /// <summary>
     /// Gets or sets the regular expression used to match response status codes.

@@ -102,35 +102,35 @@ internal static class EnumHelper
     }
 
     /// <summary>
-    /// Converts a <see cref="HttpVerb" /> value to its corresponding lowercase HTTP method string.
+    /// Converts a <see cref="HtmxHttpVerb" /> value to its corresponding lowercase HTTP method string.
     /// </summary>
-    /// <param name="value">The <see cref="HttpVerb" /> value.</param>
+    /// <param name="value">The <see cref="HtmxHttpVerb" /> value.</param>
     /// <returns>
     /// The lowercase HTTP method name, such as <c>get</c>, <c>post</c>, or <c>delete</c>.
     /// </returns>
-    public static string GetHttpVerbValue(this HttpVerb value)
+    public static string GetHttpVerbValue(this HtmxHttpVerb value)
     {
         Debug.Assert(value
-            is HttpVerb.Get
-            or HttpVerb.Head
-            or HttpVerb.Post
-            or HttpVerb.Put
-            or HttpVerb.Delete
-            or HttpVerb.Connect
-            or HttpVerb.Options
-            or HttpVerb.Trace
-            or HttpVerb.Patch);
+            is HtmxHttpVerb.Get
+            or HtmxHttpVerb.Head
+            or HtmxHttpVerb.Post
+            or HtmxHttpVerb.Put
+            or HtmxHttpVerb.Delete
+            or HtmxHttpVerb.Connect
+            or HtmxHttpVerb.Options
+            or HtmxHttpVerb.Trace
+            or HtmxHttpVerb.Patch);
 
         return value switch
         {
-            HttpVerb.Get => "get",
-            HttpVerb.Head => "head",
-            HttpVerb.Post => "post",
-            HttpVerb.Put => "put",
-            HttpVerb.Delete => "delete",
-            HttpVerb.Connect => "connect",
-            HttpVerb.Options => "options",
-            HttpVerb.Trace => "trace",
+            HtmxHttpVerb.Get => "get",
+            HtmxHttpVerb.Head => "head",
+            HtmxHttpVerb.Post => "post",
+            HtmxHttpVerb.Put => "put",
+            HtmxHttpVerb.Delete => "delete",
+            HtmxHttpVerb.Connect => "connect",
+            HtmxHttpVerb.Options => "options",
+            HtmxHttpVerb.Trace => "trace",
             _ => "patch"
         };
     }

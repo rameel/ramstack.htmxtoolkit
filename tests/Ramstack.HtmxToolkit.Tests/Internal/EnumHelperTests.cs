@@ -78,16 +78,16 @@ public class EnumHelperTests
     public void ParseHtmxSwap_ReturnsNull_WithoutStyle(string? expression) =>
         Assert.That(EnumHelper.ParseHtmxSwap(expression), Is.Null);
 
-    [TestCase(HttpVerb.Get, "get")]
-    [TestCase(HttpVerb.Head, "head")]
-    [TestCase(HttpVerb.Post, "post")]
-    [TestCase(HttpVerb.Put, "put")]
-    [TestCase(HttpVerb.Delete, "delete")]
-    [TestCase(HttpVerb.Connect, "connect")]
-    [TestCase(HttpVerb.Options, "options")]
-    [TestCase(HttpVerb.Trace, "trace")]
-    [TestCase(HttpVerb.Patch, "patch")]
-    public void GetHttpVerbValue_ReturnsExpectedString(HttpVerb value, string expected) =>
+    [TestCase(HtmxHttpVerb.Get, "get")]
+    [TestCase(HtmxHttpVerb.Head, "head")]
+    [TestCase(HtmxHttpVerb.Post, "post")]
+    [TestCase(HtmxHttpVerb.Put, "put")]
+    [TestCase(HtmxHttpVerb.Delete, "delete")]
+    [TestCase(HtmxHttpVerb.Connect, "connect")]
+    [TestCase(HtmxHttpVerb.Options, "options")]
+    [TestCase(HtmxHttpVerb.Trace, "trace")]
+    [TestCase(HtmxHttpVerb.Patch, "patch")]
+    public void GetHttpVerbValue_ReturnsExpectedString(HtmxHttpVerb value, string expected) =>
         Assert.That(value.GetHttpVerbValue(), Is.EqualTo(expected));
 
     [TestCase(HtmxBinaryType.Blob, "blob")]

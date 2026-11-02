@@ -83,7 +83,7 @@ public class HtmxConfigTagHelperTests
         var options = new HtmxToolkitOptions();
         options.UseHtmxV2(htmx => htmx.ResponseHandling =
         [
-            new ResponseHandlingConfig
+            new HtmxResponseHandlingOptions
             {
                 Code = "404",
                 Swap = false,
@@ -130,18 +130,18 @@ public class HtmxConfigTagHelperTests
     [TestCase("customSwap settle:200ms", null)]
     public async Task ProcessAsync_SerializesResponseHandlingSwapOverrideExpression(string expression, HtmxSwap? expectedStyle)
     {
-        var handlingConfig = new ResponseHandlingConfig
+        var handlingOptions = new HtmxResponseHandlingOptions
         {
             SwapOverride = HtmxSwap.InnerHtml,
             SwapOverrideExpression = expression
         };
 
         var options = new HtmxToolkitOptions();
-        options.UseHtmxV2(config => config.ResponseHandling = [handlingConfig]);
+        options.UseHtmxV2(config => config.ResponseHandling = [handlingOptions]);
 
         var json = await RenderJson(options);
 
-        Assert.That(handlingConfig.SwapOverride, Is.EqualTo(expectedStyle));
+        Assert.That(handlingOptions.SwapOverride, Is.EqualTo(expectedStyle));
         Assert.That(
             json["responseHandling"].GetRawText(),
             Is.EqualTo("[{\"swapOverride\":\"" + expression + "\"}]"));
@@ -150,18 +150,18 @@ public class HtmxConfigTagHelperTests
     [Test]
     public async Task ProcessAsync_ResponseHandlingTypedSwapOverride_ReplacesExpression()
     {
-        var handlingConfig = new ResponseHandlingConfig
+        var handlingOptions = new HtmxResponseHandlingOptions
         {
             SwapOverrideExpression = "innerHTML settle:200ms",
             SwapOverride = HtmxSwap.OuterHtml
         };
 
         var options = new HtmxToolkitOptions();
-        options.UseHtmxV2(config => config.ResponseHandling = [handlingConfig]);
+        options.UseHtmxV2(config => config.ResponseHandling = [handlingOptions]);
 
         var json = await RenderJson(options);
 
-        Assert.That(handlingConfig.SwapOverrideExpression, Is.EqualTo("outerHTML"));
+        Assert.That(handlingOptions.SwapOverrideExpression, Is.EqualTo("outerHTML"));
         Assert.That(
             json["responseHandling"].GetRawText(),
             Is.EqualTo("[{\"swapOverride\":\"outerHTML\"}]"));
@@ -171,20 +171,20 @@ public class HtmxConfigTagHelperTests
     [TestCase(true)]
     public async Task ProcessAsync_OmitsClearedResponseHandlingSwapOverride(bool clearExpression)
     {
-        var handlingConfig = new ResponseHandlingConfig { SwapOverrideExpression = "outerHTML settle:200ms" };
+        var handlingOptions = new HtmxResponseHandlingOptions { SwapOverrideExpression = "outerHTML settle:200ms" };
 
         if (clearExpression)
-            handlingConfig.SwapOverrideExpression = null;
+            handlingOptions.SwapOverrideExpression = null;
         else
-            handlingConfig.SwapOverride = null;
+            handlingOptions.SwapOverride = null;
 
         var options = new HtmxToolkitOptions();
-        options.UseHtmxV2(config => config.ResponseHandling = [handlingConfig]);
+        options.UseHtmxV2(config => config.ResponseHandling = [handlingOptions]);
 
         var json = await RenderJson(options);
 
-        Assert.That(handlingConfig.SwapOverride, Is.Null);
-        Assert.That(handlingConfig.SwapOverrideExpression, Is.Null);
+        Assert.That(handlingOptions.SwapOverride, Is.Null);
+        Assert.That(handlingOptions.SwapOverrideExpression, Is.Null);
         Assert.That(json["responseHandling"].GetRawText(), Is.EqualTo("[{}]"));
     }
 
@@ -220,7 +220,7 @@ public class HtmxConfigTagHelperTests
             htmx.DefaultFocusScroll = true;
             htmx.GetCacheBusterParam = true;
             htmx.GlobalViewTransitions = true;
-            htmx.MethodsThatUseUrlParams = [HttpVerb.Get, HttpVerb.Delete];
+            htmx.MethodsThatUseUrlParams = [HtmxHttpVerb.Get, HtmxHttpVerb.Delete];
             htmx.IgnoreTitle = true;
             htmx.ScrollIntoViewOnBoost = false;
             htmx.TriggerSpecsCacheEnabled = true;
@@ -279,14 +279,14 @@ public class HtmxConfigTagHelperTests
             htmx.DefaultFocusScroll = true;
             htmx.GetCacheBusterParam = true;
             htmx.GlobalViewTransitions = true;
-            htmx.MethodsThatUseUrlParams = [HttpVerb.Get, HttpVerb.Delete];
+            htmx.MethodsThatUseUrlParams = [HtmxHttpVerb.Get, HtmxHttpVerb.Delete];
             htmx.IgnoreTitle = true;
             htmx.ScrollIntoViewOnBoost = false;
             htmx.TriggerSpecsCacheEnabled = true;
             htmx.ResponseHandling =
             [
-                new ResponseHandlingConfig { Code = "204", Swap = false },
-                new ResponseHandlingConfig { Code = "[45]..", Swap = false, Error = true }
+                new HtmxResponseHandlingOptions { Code = "204", Swap = false },
+                new HtmxResponseHandlingOptions { Code = "[45]..", Swap = false, Error = true }
             ];
             htmx.AllowNestedOobSwaps = true;
             htmx.HistoryRestoreAsHxRequest = false;

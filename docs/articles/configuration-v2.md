@@ -63,8 +63,8 @@ Use `SwapOverride` to select a typed swap style, or `SwapOverrideExpression` for
 expression with modifiers or a custom swap style:
 
 ```csharp
-new ResponseHandlingConfig { Code = "422", Swap = true, SwapOverride = HtmxSwap.OuterHtml };
-new ResponseHandlingConfig { Code = "422", Swap = true, SwapOverrideExpression = "outerHTML settle:200ms" };
+new HtmxResponseHandlingOptions { Code = "422", Swap = true, SwapOverride = HtmxSwap.OuterHtml };
+new HtmxResponseHandlingOptions { Code = "422", Swap = true, SwapOverrideExpression = "outerHTML settle:200ms" };
 ```
 
 Both properties use the same underlying expression and serialize as `swapOverride`.
