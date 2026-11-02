@@ -17,7 +17,7 @@
     <namespace fullname="Ramstack.HtmxToolkit.Internal" />
     <namespace fullname="Ramstack.HtmxToolkit.Serialization" />
     <type fullname="Ramstack.HtmxToolkit.TagHelpers.HtmxConfigTagHelper" />
-    <type fullname="Ramstack.HtmxToolkit.TagHelpers.HtmxHeaderTagHelper" />
+    <type fullname="Ramstack.HtmxToolkit.TagHelpers.HtmxHeadersTagHelper" />
     <type fullname="Ramstack.HtmxToolkit.TagHelpers.HtmxRequestTagHelper" />
     <type fullname="Ramstack.HtmxToolkit.TagHelpers.HtmxValsTagHelper" />
   </assembly>
