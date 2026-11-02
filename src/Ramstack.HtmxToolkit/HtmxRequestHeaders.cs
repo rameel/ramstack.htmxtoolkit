@@ -12,6 +12,8 @@ namespace Ramstack.HtmxToolkit;
 [DebuggerTypeProxy(typeof(HtmxRequestHeadersDebugView))]
 public readonly struct HtmxRequestHeaders
 {
+    private const string AutoEncodedSuffix = "-URI-AutoEncoded";
+
     private readonly IHeaderDictionary _headers;
 
     /// <summary>
@@ -66,7 +68,7 @@ public readonly struct HtmxRequestHeaders
     ///   restores this header and URI-encodes its value.
     /// </para>
     /// </remarks>
-    public string? Prompt => GetString(_headers, HtmxRequestHeaderNames.Prompt);
+    public string? Prompt => GetString(_headers, HtmxRequestHeaderNames.Prompt, HtmxRequestHeaderNames.Prompt + AutoEncodedSuffix);
 
     /// <summary>
     /// Gets a value indicating whether the request has the <c>HX-Request</c> header.
@@ -165,7 +167,7 @@ public readonly struct HtmxRequestHeaders
     ///   Examples include <c>div#results</c> and <c>body</c>.
     /// </para>
     /// </remarks>
-    public string? Target => GetString(_headers, HtmxRequestHeaderNames.Target);
+    public string? Target => GetString(_headers, HtmxRequestHeaderNames.Target, HtmxRequestHeaderNames.Target + AutoEncodedSuffix);
 
     /// <summary>
     /// Gets the <c>name</c> attribute of the element that triggered the request.
@@ -181,7 +183,7 @@ public readonly struct HtmxRequestHeaders
     ///   with <c>HX-Source</c> instead.
     /// </para>
     /// </remarks>
-    public string? TriggerName => GetString(_headers, HtmxRequestHeaderNames.TriggerName);
+    public string? TriggerName => GetString(_headers, HtmxRequestHeaderNames.TriggerName, HtmxRequestHeaderNames.TriggerName + AutoEncodedSuffix);
 
     /// <summary>
     /// Gets the ID of the element that triggered the request.
@@ -196,7 +198,7 @@ public readonly struct HtmxRequestHeaders
     ///   has no ID; HTMX 4.x identifies the source element with <c>HX-Source</c> instead.
     /// </para>
     /// </remarks>
-    public string? Trigger => GetString(_headers, HtmxRequestHeaderNames.Trigger);
+    public string? Trigger => GetString(_headers, HtmxRequestHeaderNames.Trigger, HtmxRequestHeaderNames.Trigger + AutoEncodedSuffix);
 
     /// <summary>
     /// Determines whether the specified header has the value <c>"true"</c>.
@@ -222,6 +224,15 @@ public readonly struct HtmxRequestHeaders
     {
         dictionary.TryGetValue(key, out var value);
         return value;
+    }
+
+    private static string? GetString(IHeaderDictionary dictionary, string key, string autoEncodedKey)
+    {
+        var value = GetString(dictionary, key);
+
+        return value is not null && GetBoolean(dictionary, autoEncodedKey)
+            ? Uri.UnescapeDataString(value)
+            : value;
     }
 
     #region Inner type: HtmxRequestHeadersDebugView

@@ -46,6 +46,52 @@ public class HtmxRequestHeadersTests
     }
 
     [Test]
+    public void StringProperties_AreDecoded_WhenHeaderIsAutoEncoded()
+    {
+        var headers = CreateHeaders(
+            (HtmxRequestHeaderNames.Prompt, "%D0%94%D0%B0%20100%2525"),
+            (HtmxRequestHeaderNames.Prompt + "-URI-AutoEncoded", "true"),
+            (HtmxRequestHeaderNames.Target, "%D1%86%D0%B5%D0%BB%D1%8C"),
+            (HtmxRequestHeaderNames.Target + "-URI-AutoEncoded", "true"),
+            (HtmxRequestHeaderNames.Trigger, "%D1%84%D0%BE%D1%80%D0%BC%D0%B0"),
+            (HtmxRequestHeaderNames.Trigger + "-URI-AutoEncoded", "true"),
+            (HtmxRequestHeaderNames.TriggerName, "%D0%B8%D0%BC%D1%8F"),
+            (HtmxRequestHeaderNames.TriggerName + "-URI-AutoEncoded", "true"));
+
+        Assert.That(headers.Prompt, Is.EqualTo("Да 100%25"));
+        Assert.That(headers.Target, Is.EqualTo("цель"));
+        Assert.That(headers.Trigger, Is.EqualTo("форма"));
+        Assert.That(headers.TriggerName, Is.EqualTo("имя"));
+    }
+
+    [Test]
+    public void Prompt_IsNotDecoded_WithoutAutoEncodedHeader()
+    {
+        var headers = CreateHeaders((HtmxRequestHeaderNames.Prompt, "100%25"));
+        Assert.That(headers.Prompt, Is.EqualTo("100%25"));
+    }
+
+    [Test]
+    public void Prompt_IsNotDecoded_WhenAutoEncodedHeaderIsNotTrue()
+    {
+        var headers = CreateHeaders(
+            (HtmxRequestHeaderNames.Prompt, "100%25"),
+            (HtmxRequestHeaderNames.Prompt + "-URI-AutoEncoded", "false"));
+
+        Assert.That(headers.Prompt, Is.EqualTo("100%25"));
+    }
+
+    [Test]
+    public void Prompt_IsNotDecoded_WhenOtherHeaderIsAutoEncoded()
+    {
+        var headers = CreateHeaders(
+            (HtmxRequestHeaderNames.Prompt, "100%25"),
+            (HtmxRequestHeaderNames.Trigger + "-URI-AutoEncoded", "true"));
+
+        Assert.That(headers.Prompt, Is.EqualTo("100%25"));
+    }
+
+    [Test]
     public void Request_ReturnsHeaderValue()
     {
         var headers = CreateHeaders((HtmxRequestHeaderNames.Request, "true"));
