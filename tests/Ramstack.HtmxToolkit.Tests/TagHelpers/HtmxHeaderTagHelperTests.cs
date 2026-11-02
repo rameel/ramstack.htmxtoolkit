@@ -164,6 +164,8 @@ public class HtmxHeaderTagHelperTests
 
     [TestCase("hx-headers")]
     [TestCase("hx-headers:inherited:append")]
+    [TestCase("data-hx-headers")]
+    [TestCase("data-hx-headers:inherited")]
     public void ProcessAsync_DeclaredHxHeaders_Throws(string name)
     {
         var output = TestHelper.CreateTagHelperOutput(attributes:

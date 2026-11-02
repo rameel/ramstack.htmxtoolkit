@@ -25,8 +25,9 @@ namespace Ramstack.HtmxToolkit.TagHelpers;
 /// </para>
 /// <para>
 ///   An <see cref="InvalidOperationException" /> is thrown when the element also has the attribute
-///   that the tag helper renders for the selected version, with or without HTMX 4.x modifiers,
-///   rather than replacing it.
+///   that the tag helper renders for the selected version, or its <c>data-hx-*</c> alias that HTMX reads
+///   as the same attribute, with or without HTMX 4.x modifiers, rather than losing one of the values.
+///   For HTMX 4.x, <see cref="HtmxV4Config.Prefix" /> determines the alias.
 /// </para>
 /// </remarks>
 [HtmlTargetElement(Attributes = RequestInheritedAttributeName)]
@@ -205,7 +206,7 @@ public sealed class HtmxRequestTagHelper(IOptions<HtmxToolkitOptions> options) :
     public override Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
     {
         var attributeName = options.Value.TargetVersion == HtmxTargetVersion.V4 ? "hx-config" : "hx-request";
-        output.ThrowIfAttributeDeclared(attributeName, "hx-request-* attributes");
+        output.ThrowIfAttributeDeclared(attributeName, "hx-request-* attributes", options.Value);
 
         var json = options.Value.TargetVersion == HtmxTargetVersion.V4
             ? JsonSerializer.Serialize(new HtmxRequestDataV4(_request), HtmxRequestJsonSerializerContext.Default.HtmxRequestDataV4)

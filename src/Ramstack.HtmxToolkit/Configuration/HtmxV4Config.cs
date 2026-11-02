@@ -24,6 +24,11 @@ public sealed class HtmxV4Config() : HtmxConfig(HtmxTargetVersion.V4)
     /// Gets or sets the secondary attribute prefix recognized alongside <c>hx-*</c>.
     /// The HTMX default is <c>data-hx-</c>.
     /// </summary>
+    /// <remarks>
+    /// An empty string disables the secondary prefix, so HTMX reads only <c>hx-*</c>. This helps when the application
+    /// renders user-supplied HTML through a sanitizer that allows <c>data-*</c> attributes,
+    /// which would otherwise let <c>data-hx-*</c> attributes reach HTMX.
+    /// </remarks>
     public string? Prefix
     {
         get;

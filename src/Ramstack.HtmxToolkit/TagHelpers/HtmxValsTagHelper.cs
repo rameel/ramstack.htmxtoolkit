@@ -26,7 +26,9 @@ namespace Ramstack.HtmxToolkit.TagHelpers;
 /// </list>
 /// <para>
 ///   An <see cref="InvalidOperationException" /> is thrown when the element also has an <c>hx-vals</c>
-///   attribute, with or without HTMX 4.x modifiers, rather than replacing it.
+///   attribute, or the <c>data-hx-vals</c> alias that HTMX reads as the same attribute, with or without
+///   HTMX 4.x modifiers, rather than losing one of the values. For HTMX 4.x,
+///   <see cref="HtmxV4Config.Prefix" /> determines the alias.
 /// </para>
 /// </remarks>
 [HtmlTargetElement(Attributes = InheritedAttributeName)]
@@ -87,7 +89,7 @@ public sealed class HtmxValsTagHelper(IOptions<HtmxToolkitOptions> options) : Ta
     public override Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
     {
         const string SourceAttributes = $"{ValuesPrefix}*, {ValuesDictionaryName}, {InheritedAttributeName}, or {AppendAttributeName}";
-        output.ThrowIfAttributeDeclared("hx-vals", SourceAttributes);
+        output.ThrowIfAttributeDeclared("hx-vals", SourceAttributes, options.Value);
 
         if (Values is { Count: > 0 } values)
         {
