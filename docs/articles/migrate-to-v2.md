@@ -408,8 +408,8 @@ See [History updates](responses.md#history-updates).
 | `Target`             | `Target`                                                                                      |
 | `Swap`               | `Swap` for a swap style; `SwapExpression` for a style with modifiers                          |
 | `Select`             | `Select`                                                                                      |
-| `Values` (`object`)  | `Values` (`IDictionary<string, HtmxFieldValues>`)                                             |
-| `Headers` (`object`) | `Headers` (`IDictionary<string, string>`)                                                     |
+| `Values` (`object`)  | `Values` (`IReadOnlyDictionary<string, HtmxFieldValues>`)                                     |
+| `Headers` (`object`) | `Headers` (`IReadOnlyDictionary<string, string>`)                                             |
 | `Event`, `Handler`   | Removed: HTMX expects a live browser event and a JavaScript function, which JSON cannot carry |
 | —                    | New: `SelectOob`, `HistoryUrl`, `HistoryAction`                                               |
 

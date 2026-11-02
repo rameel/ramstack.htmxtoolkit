@@ -32,12 +32,12 @@ internal readonly struct HtmxLocationOptionsJsonView(string path, HtmxLocationOp
     /// <summary>
     /// Gets the form field values.
     /// </summary>
-    public IDictionary<string, HtmxFieldValues>? Values => options.Values;
+    public IReadOnlyDictionary<string, HtmxFieldValues>? Values => options.Values;
 
     /// <summary>
     /// Gets the request headers.
     /// </summary>
-    public IDictionary<string, string>? Headers => options.Headers;
+    public IReadOnlyDictionary<string, string>? Headers => options.Headers;
 
     /// <summary>
     /// Gets the content selector.
