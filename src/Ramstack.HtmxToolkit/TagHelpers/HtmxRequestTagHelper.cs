@@ -24,10 +24,10 @@ namespace Ramstack.HtmxToolkit.TagHelpers;
 ///   If no supported option is set, the tag helper renders no attribute.
 /// </para>
 /// <para>
-///   An <see cref="InvalidOperationException" /> is thrown when the element also has the attribute
-///   that the tag helper renders for the selected version, or its <c>data-hx-*</c> alias that HTMX reads
-///   as the same attribute, with or without HTMX 4.x modifiers, rather than losing one of the values.
-///   For HTMX 4.x, <see cref="HtmxV4Config.Prefix" /> determines the alias.
+///   An <see cref="InvalidOperationException" /> is thrown if the element already has the attribute
+///   for the selected HTMX version or its alias. The default alias uses the <c>data-hx-</c>
+///   prefix; <see cref="HtmxV4Config.Prefix" /> determines the prefix in HTMX 4.x.
+///   The check also covers attributes with HTMX 4.x modifiers, such as <c>hx-config:inherited</c>.
 /// </para>
 /// </remarks>
 [HtmlTargetElement(Attributes = RequestInheritedAttributeName)]

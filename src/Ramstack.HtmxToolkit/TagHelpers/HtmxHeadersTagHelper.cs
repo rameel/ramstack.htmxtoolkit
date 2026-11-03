@@ -25,10 +25,10 @@ namespace Ramstack.HtmxToolkit.TagHelpers;
 ///   <item>In HTMX 4.x, the <c>append</c> modifier merges a child declaration into inherited headers.</item>
 /// </list>
 /// <para>
-///   An <see cref="InvalidOperationException" /> is thrown when the element also has an <c>hx-headers</c>
-///   attribute, or the <c>data-hx-headers</c> alias that HTMX reads as the same attribute, with or without
-///   HTMX 4.x modifiers, rather than losing one of the values. For HTMX 4.x,
-///   <see cref="HtmxV4Config.Prefix" /> determines the alias.
+///   An <see cref="InvalidOperationException" /> is thrown if the element already has an <c>hx-headers</c>
+///   attribute or its alias. The default alias is <c>data-hx-headers</c>;
+///   <see cref="HtmxV4Config.Prefix" /> determines the alias in HTMX 4.x.
+///   The check also covers attributes with HTMX 4.x modifiers, such as <c>hx-headers:inherited</c>.
 /// </para>
 /// </remarks>
 [HtmlTargetElement(Attributes = InheritedAttributeName)]

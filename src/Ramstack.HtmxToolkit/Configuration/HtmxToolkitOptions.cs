@@ -68,6 +68,14 @@ public sealed class HtmxToolkitOptions
     /// <returns>
     /// The current options instance.
     /// </returns>
+    /// <remarks>
+    /// <para>
+    ///   Calling this method again reuses the existing configuration and applies the supplied delegate.
+    /// </para>
+    /// <para>
+    ///   Throws <see cref="InvalidOperationException" /> if a different HTMX major version has already been selected.
+    /// </para>
+    /// </remarks>
     [MemberNotNull(nameof(_config))]
     public HtmxToolkitOptions UseHtmxV1(Action<HtmxV1Config>? configure = null)
     {
@@ -83,6 +91,14 @@ public sealed class HtmxToolkitOptions
     /// <returns>
     /// The current options instance.
     /// </returns>
+    /// <remarks>
+    /// <para>
+    ///   Calling this method again reuses the existing configuration and applies the supplied delegate.
+    /// </para>
+    /// <para>
+    ///   Throws <see cref="InvalidOperationException" /> if a different HTMX major version has already been selected.
+    /// </para>
+    /// </remarks>
     [MemberNotNull(nameof(_config))]
     public HtmxToolkitOptions UseHtmxV2(Action<HtmxV2Config>? configure = null)
     {
@@ -98,6 +114,14 @@ public sealed class HtmxToolkitOptions
     /// <returns>
     /// The current options instance.
     /// </returns>
+    /// <remarks>
+    /// <para>
+    ///   Calling this method again reuses the existing configuration and applies the supplied delegate.
+    /// </para>
+    /// <para>
+    ///   Throws <see cref="InvalidOperationException" /> if a different HTMX major version has already been selected.
+    /// </para>
+    /// </remarks>
     [MemberNotNull(nameof(_config))]
     public HtmxToolkitOptions UseHtmxV4(Action<HtmxV4Config>? configure = null)
     {
