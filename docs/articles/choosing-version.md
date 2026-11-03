@@ -30,8 +30,9 @@ builder.Services.AddHtmxToolkit(options =>
 });
 ```
 
-The version can be selected only once. Repeated configuration for the same version updates the same version-specific object;
-trying to select a different version causes startup validation to fail.
+Calling the same `UseHtmxV1`, `UseHtmxV2`, or `UseHtmxV4` method again reuses the existing version-specific
+configuration object and applies the supplied delegate. Calling a method for a different major version
+throws `InvalidOperationException`.
 
 > [!IMPORTANT]
 > Selecting a target version does not download or serve HTMX. The `<script>` loaded by the application must match the configured major version.

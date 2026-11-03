@@ -18,7 +18,7 @@ namespace Ramstack.HtmxToolkit;
 ///   or an empty string, adds no header. Because the headers are set before the action or page handler runs,
 ///   the code can replace or remove them, for example with
 ///   <see cref="HttpResponseExtensions.Htmx(HttpResponse, Action{HtmxResponse})" />.
-///   If another filter short-circuits the action or page handler, the headers are not set.
+///   Headers are not set if another filter short-circuits execution before this filter runs.
 /// </para>
 /// <para>
 ///   The attribute can be applied to an action, a controller, or a Razor Pages page model.

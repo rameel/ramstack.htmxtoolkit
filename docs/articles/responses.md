@@ -330,6 +330,8 @@ replaces the inherited one entirely.
 The attribute sets its headers before the action or page handler runs, so it works as a default.
 The code can replace a header with `Response.Htmx(...)` or remove it through `Response.GetHtmxHeaders()`,
 for example to retarget validation errors.
+Headers are not set if another filter short-circuits execution before this filter runs.
+If a later filter short-circuits execution, the headers have already been set.
 
 ## Access headers directly
 
