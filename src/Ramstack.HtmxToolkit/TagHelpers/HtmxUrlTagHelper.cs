@@ -16,7 +16,7 @@ using Ramstack.HtmxToolkit.Configuration;
 namespace Ramstack.HtmxToolkit.TagHelpers;
 
 /// <summary>
-/// Generates URLs for HTMX request attributes from the standard ASP.NET Core <c>asp-*</c> routing attributes.
+/// Represents a tag helper that generates URLs for HTMX request attributes from the standard ASP.NET Core <c>asp-*</c> routing attributes.
 /// </summary>
 /// <param name="factory">The factory used to create URL helpers.</param>
 /// <param name="options">The configured HtmxToolkit options.</param>

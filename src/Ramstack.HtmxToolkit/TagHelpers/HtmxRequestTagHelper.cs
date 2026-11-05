@@ -11,7 +11,7 @@ using Ramstack.HtmxToolkit.Serialization;
 namespace Ramstack.HtmxToolkit.TagHelpers;
 
 /// <summary>
-/// Renders request options as <c>hx-request</c> (HTMX 1.9.x and 2.x) or <c>hx-config</c> (HTMX 4.x).
+/// Represents a tag helper that renders request options as <c>hx-request</c> (HTMX 1.9.x and 2.x) or <c>hx-config</c> (HTMX 4.x).
 /// </summary>
 /// <remarks>
 /// <para>HTMX 1.9.x and 2.x merge-inherit <c>hx-request</c> from parent elements.</para>
@@ -259,7 +259,7 @@ public sealed class HtmxRequestTagHelper(IOptions<HtmxToolkitOptions> options) :
     #region Inner type: HtmxRequestData
 
     /// <summary>
-    /// Stores the request options before they are projected for the target HTMX version.
+    /// Represents the request options before they are projected for the target HTMX version.
     /// </summary>
     internal sealed class HtmxRequestData
     {
@@ -293,7 +293,7 @@ public sealed class HtmxRequestTagHelper(IOptions<HtmxToolkitOptions> options) :
     #region Inner type: HtmxRequestDataPrior
 
     /// <summary>
-    /// Projects request configuration into the <c>hx-request</c> contract used by HTMX 1.9.x and 2.x.
+    /// Represents the projection of request configuration into the <c>hx-request</c> contract used by HTMX 1.9.x and 2.x.
     /// </summary>
     /// <param name="data">The request options to project.</param>
     internal readonly struct HtmxRequestDataPrior(HtmxRequestData data)
@@ -321,7 +321,7 @@ public sealed class HtmxRequestTagHelper(IOptions<HtmxToolkitOptions> options) :
     #region Inner type: HtmxRequestDataV4
 
     /// <summary>
-    /// Projects request configuration into the <c>hx-config</c> contract used by HTMX 4.x.
+    /// Represents the projection of request configuration into the <c>hx-config</c> contract used by HTMX 4.x.
     /// </summary>
     /// <param name="data">The request options to project.</param>
     internal readonly struct HtmxRequestDataV4(HtmxRequestData data)

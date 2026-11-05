@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 namespace Ramstack.HtmxToolkit.Serialization;
 
 /// <summary>
-/// Exposes location options in the JSON format expected by HTMX.
+/// Represents a view of location options in the JSON format expected by HTMX.
 /// </summary>
 /// <param name="path">The path used for the AJAX request.</param>
 /// <param name="options">The location options to serialize.</param>

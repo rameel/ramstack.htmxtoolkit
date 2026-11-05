@@ -12,7 +12,7 @@ using Ramstack.HtmxToolkit.Serialization;
 namespace Ramstack.HtmxToolkit.TagHelpers;
 
 /// <summary>
-/// Applies an <c>hx-headers</c> attribute assembled from <c>hx-header-*</c> attributes
+/// Represents a tag helper that applies an <c>hx-headers</c> attribute assembled from <c>hx-header-*</c> attributes
 /// and the <c>hx-all-headers</c> dictionary.
 /// </summary>
 /// <remarks>
