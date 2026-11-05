@@ -12,7 +12,7 @@ using Ramstack.HtmxToolkit.Serialization;
 namespace Ramstack.HtmxToolkit.TagHelpers;
 
 /// <summary>
-/// Applies an <c>hx-vals</c> attribute assembled from <c>hx-val-*</c> attributes
+/// Represents a tag helper that applies an <c>hx-vals</c> attribute assembled from <c>hx-val-*</c> attributes
 /// and the <c>hx-all-vals</c> dictionary.
 /// </summary>
 /// <remarks>
